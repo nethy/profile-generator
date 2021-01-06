@@ -6,6 +6,16 @@ from util import file
 
 _LOG_DIR = "logs"
 
+
+class SingleLevelFilter(logging.Filter):
+    def __init__(self, level: str):
+        super().__init__()
+        self.level = level
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.levelname == self.level
+
+
 _CONFIG = {
     "version": 1,
     "formatters": {
@@ -17,11 +27,11 @@ _CONFIG = {
     },
     "filters": {
         "infoOnly": {
-            "class": "SingleLevelFilter",
+            "()": SingleLevelFilter,
             "level": "INFO",
         },
         "errorOnly": {
-            "class": "SingleLevelFilter",
+            "()": SingleLevelFilter,
             "level": "ERROR",
         },
     },
@@ -37,6 +47,7 @@ _CONFIG = {
             "stream": "ext://sys.stderr",
             "level": "ERROR",
             "filters": ["errorOnly"],
+            "formatter": "stderr",
         },
         "file": {
             "class": "logging.FileHandler",
@@ -52,15 +63,6 @@ _CONFIG = {
     },
     "root": {"level": "INFO", "handlers": ["file"]},
 }
-
-
-class SingleLevelFilter(logging.Filter):
-    def __init__(self, level: str):
-        super().__init__()
-        self.level = level
-
-    def filter(self, record: logging.LogRecord) -> bool:
-        return record.levelname != self.level
 
 
 def init() -> None:

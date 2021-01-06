@@ -60,14 +60,15 @@ def try_generate_profiles(
     errors = integration.SCHEMA.validate(cfg_template)
     if len(errors) > 0:
         console_logger.error("%s: invalid configuration schema", file_name)
-    cfg = configuration.create_from_template(cfg_template)
-    for name, body in cfg.items():
-        logging.info("creating profile: %s", name)
-        output_filename = f"{name}.pp3"
-        template_args = integration.get_profile_args(body)
-        output = template.format(**template_args)
-        file.write_file(output, output_dir, output_filename)
-        console_logger.info("Profile has been created: %s", name)
+    else:
+        cfg = configuration.create_from_template(cfg_template)
+        for name, body in cfg.items():
+            logging.info("creating profile: %s", name)
+            output_filename = f"{name}.pp3"
+            template_args = integration.get_profile_args(body)
+            output = template.format(**template_args)
+            file.write_file(output, output_dir, output_filename)
+            console_logger.info("Profile has been created: %s", name)
 
 
 if __name__ == "__main__":
