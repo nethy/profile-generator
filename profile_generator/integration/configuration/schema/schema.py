@@ -1,10 +1,10 @@
 from configuration.schema import list_of, map_of, object_of
 from feature import raw
-from feature.tone import contrast
+from feature.tone.contrast import bezier
 
 from ... import field_names
 
-_CURVE_SCHEMA = object_of(**{field_names.BEZIER: contrast.BEZIER_SCHEMA})
+_CURVE_SCHEMA = object_of(**{field_names.BEZIER: bezier.SCHEMA})
 _TONE_SCHEMA = object_of(**{field_names.CURVE: _CURVE_SCHEMA})
 _CONFIG_SCHEMA = object_of(
     **{field_names.TONE: _TONE_SCHEMA, field_names.RAW: raw.SCHEMA}
