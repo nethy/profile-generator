@@ -4,7 +4,7 @@ This is a tool for defining and combining multiple profiles for
 [RawTherapee](http://rawtherapee.com/).
 If you want multiple conrast presets (e.g. neutral, vivid) for different cameras -
 with different sensor characteristics, you can just set parameters for each
-and this tool will combining them into multiple profiles.
+and this tool will combine them into multiple profiles.
 
 *Example*
 
