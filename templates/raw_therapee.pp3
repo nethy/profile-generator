@@ -342,7 +342,7 @@ Height=900
 AllowUpscaling=false
 
 [PostDemosaicSharpening]
-Enabled=false
+Enabled={CaptureSharpeningEnabled}
 Contrast=10
 AutoContrast=true
 AutoRadius=true

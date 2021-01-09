@@ -22,3 +22,19 @@ class SchemaTest(unittest.TestCase):
                 "templates": [{"T": {"tone": {"curve": {"bezier": {}}}}}],
             }
         )
+
+    def test_raw(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"raw": {}},
+                "templates": [{"T": {"raw": {}}}],
+            }
+        )
+
+    def test_details_sharpening_capture(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"details": {"sharpening": {"capture": {}}}},
+                "templates": [{"T": {"details": {"sharpening": {"capture": {}}}}}],
+            }
+        )

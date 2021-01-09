@@ -1,3 +1,6 @@
+DETAILS = "details"
+SHARPENING = "sharpening"
+CAPTURE_SHARPENING = "capture"
 TONE = "tone"
 CURVE = "curve"
 BEZIER = "bezier"
