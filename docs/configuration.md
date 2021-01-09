@@ -6,6 +6,7 @@
 * [Tone](#tone)
     * [Curve](#curve)
         * [Bezier](#bezier)
+* [Raw](#raw)
 
 ## Overview
 
@@ -70,7 +71,7 @@ Content of the configurations are specified in their own chapters.
 
 ## Tone
 
-Field name: `"tone"`
+Field name: `tone`
 
 These parameters are related to the image tone, like exposure or contrast.
 
@@ -78,7 +79,7 @@ These parameters are related to the image tone, like exposure or contrast.
 
 #### Bezier
 
-Field name: `"bezier"`
+Field name: `bezier`
 
 Creates an S-cruve around the middle grey point with the given strength.
 
@@ -89,28 +90,35 @@ Creates an S-cruve around the middle grey point with the given strength.
 | ---           | ---                |
 | Type          | [integer, integer] |
 | Value range   | 0 - 255            |
+| Default value | [92, 119]          |
 
 The middle grey point, center of the S-curve.
 
 <br/>
 
 `strength`
-|               |                    |
-| ---           | ---                |
-| Type          | integer            |
-| Value range   | 0 - 100            |
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 0       |
 
 Amount of contrast. 0 will produce a linear tone curve, while 100 results in a near
 horizontal line around the middle grey point.
 
-<br/>
+## Raw
 
-Default values:
-```json
-{
-    "contrast_bezier": {
-        "middle_grey": [92, 119],
-        "strength": 0
-    }
-}
-```
+Field name: `raw`
+
+Raw conversion details.
+
+**Parameters**
+
+`demosaic`
+|               |                     |
+| ---           | ---                 |
+| Type          | [string]            |
+| Value range   | "RCD+VNG4", "LMMSE" |
+| Default value | "RCD+VNG4"          |
+
+Demosaicing algorithm.
