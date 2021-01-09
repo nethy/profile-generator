@@ -7,7 +7,7 @@ from .. import field_names
 
 marshallers = {
     ".".join(
-        [field_names.TONE, field_names.CONTRAST, field_names.BEZIER]
+        [field_names.TONE, field_names.CURVE, field_names.BEZIER]
     ): contrast.bezier.get_profile_args
 }
 

@@ -1,3 +1,3 @@
 TONE = "tone"
-CONTRAST = "contrast"
+CURVE = "curve"
 BEZIER = "bezier"

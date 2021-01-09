@@ -4,7 +4,7 @@
 * [Overview](#overview)
 * [Templates](#templates)
 * [Tone](#tone)
-    * [Contrast](#contrast)
+    * [Curve](#curve)
         * [Bezier](#bezier)
 
 ## Overview
@@ -74,7 +74,7 @@ Field name: `"tone"`
 
 These parameters are related to the image tone, like exposure or contrast.
 
-### Contrast
+### Curve
 
 #### Bezier
 
