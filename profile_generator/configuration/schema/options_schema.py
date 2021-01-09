@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List
+from typing import Any, List
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError

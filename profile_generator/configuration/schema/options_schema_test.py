@@ -21,6 +21,5 @@ class OptionsSchemaTest(unittest.TestCase):
         validator.assert_errors([error], [])
         validator.assert_errors([error], {})
 
-        error = InvalidOptionError(["a", "B"])
-        validator.assert_errors([error], "")
-        validator.assert_errors([error], "c")
+        validator.assert_errors([InvalidOptionError(["a", "B"])], "")
+        validator.assert_errors([InvalidOptionError(["a", "B"])], "c")

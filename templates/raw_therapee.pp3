@@ -584,7 +584,7 @@ HotDeadPixelThresh=100
 PreExposure=1
 
 [RAW Bayer]
-Method=fast
+Method={BayerMethod}
 Border=4
 ImageNum=1
 CcSteps=0
