@@ -3,8 +3,9 @@
 ### Table of content
 * [Overview](#overview)
 * [Templates](#templates)
-* [Tone group](#tone-group)
-    - [Bezier contrast curve](#bezier-contrast-curve)
+* [Tone](#tone)
+    * [Contrast](#contrast)
+        * [Bezier](#bezier)
 
 ## Overview
 
@@ -67,15 +68,17 @@ If `templates` is not provided or empty, a single **Default** profile will be cr
 
 Content of the configurations are specified in their own chapters.
 
-## Tone group
+## Tone
 
 Field name: `"tone"`
 
 These parameters are related to the image tone, like exposure or contrast.
 
-### Bezier contrast curve
+### Contrast
 
-Field name: `"contrast_bezier"`
+#### Bezier
+
+Field name: `"bezier"`
 
 Creates an S-cruve around the middle grey point with the given strength.
 

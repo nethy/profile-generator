@@ -1,2 +1,3 @@
 TONE = "tone"
-CONTRAST_BEZIER = "contrast_bezier"
+CONTRAST = "contrast"
+BEZIER = "bezier"

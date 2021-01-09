@@ -15,10 +15,10 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({"templates": []})
         self.validator.assert_valid({"defaults": {}, "templates": []})
 
-    def test_contrast_curve(self) -> None:
+    def test_tone_contrast_bezier(self) -> None:
         self.validator.assert_valid(
             {
-                "defaults": {"tone": {"contrast_bezier": {}}},
-                "templates": [{"T": {"tone": {"contrast_bezier": {}}}}],
+                "defaults": {"tone": {"contrast": {"bezier": {}}}},
+                "templates": [{"T": {"tone": {"contrast": {"bezier": {}}}}}],
             }
         )
