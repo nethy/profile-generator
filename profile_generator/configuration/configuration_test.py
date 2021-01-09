@@ -41,7 +41,7 @@ class FactoryTest(unittest.TestCase):
 
     def test_override_multiple_templates(self) -> None:
         self.assert_configurations(
-            {"T1-T2": {"a": 1, "b": 3, "c": 4}},
+            {"T1_T2": {"a": 1, "b": 3, "c": 4}},
             {
                 "templates": [
                     {"T1": {"a": 1, "b": 2}},
@@ -53,10 +53,10 @@ class FactoryTest(unittest.TestCase):
     def test_combining_templates(self) -> None:
         self.assert_configurations(
             {
-                "T11-T21": {"a": 3},
-                "T11-T22": {"a": 4},
-                "T12-T21": {"a": 3},
-                "T12-T22": {"a": 4},
+                "T11_T21": {"a": 3},
+                "T11_T22": {"a": 4},
+                "T12_T21": {"a": 3},
+                "T12_T22": {"a": 4},
             },
             {
                 "templates": [

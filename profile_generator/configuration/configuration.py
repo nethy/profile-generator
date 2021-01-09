@@ -26,7 +26,7 @@ def _merge_template(
     configuration: Configuration, template: Configuration
 ) -> Configuration:
     return {
-        cfg_name + "-" + template_name: _merge_dicts(cfg_body, template_body)
+        cfg_name + "_" + template_name: _merge_dicts(cfg_body, template_body)
         for cfg_name, cfg_body in configuration.items()
         for template_name, template_body in template.items()
     }
