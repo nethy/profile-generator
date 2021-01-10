@@ -46,3 +46,11 @@ class SchemaTest(unittest.TestCase):
                 "templates": [{"T": {"details": {"sharpening": {"output": {}}}}}],
             }
         )
+
+    def test_details_noise_reduction(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"details": {"noise_reduction": {}}},
+                "templates": [{"T": {"details": {"noise_reduction": {}}}}],
+            }
+        )

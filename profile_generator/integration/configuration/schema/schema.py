@@ -1,5 +1,6 @@
 from configuration.schema import list_of, map_of, object_of
 from feature import raw
+from feature.details import noise_reduction
 from feature.details.sharpening import capture, output
 from feature.tone.contrast import bezier
 
@@ -14,7 +15,12 @@ _SHARPENING_SCHEMA = object_of(
         field_names.OUTPUT_SHARPENGING: output.SCHEMA,
     }
 )
-_DETAILS_SCHEMA = object_of(**{field_names.SHARPENING: _SHARPENING_SCHEMA})
+_DETAILS_SCHEMA = object_of(
+    **{
+        field_names.SHARPENING: _SHARPENING_SCHEMA,
+        field_names.NOISE_REDUCTION: noise_reduction.SCHEMA,
+    }
+)
 
 _CONFIG_SCHEMA = object_of(
     **{

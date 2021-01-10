@@ -10,6 +10,7 @@
     * [Sharpening](#sharpening)
         * [Capture](#capture)
         * [Output](#output)
+    * [Noise reduction](#noise-reduction)
 * [Raw](#raw)
 
 ## Overview
@@ -160,6 +161,42 @@ Applies sharpening on the image using RL-Deconvolution algorithm.
 | Value range   | 0.4 - 2.5 |
 | Default value | 0.75      |
 
+
+### Noise reduction
+
+Field name: `noise_reduction`
+
+Reduce noise.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Enables noise reduction - it will automatically reduce chorminance noise.
+
+`strength`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 10      |
+
+Strength of the luminance noise reduction.
+
+`median`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Applies median fitler to clean up noise pattern, at the cost of softening
+the whole image.
 
 ## Raw
 

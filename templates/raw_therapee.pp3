@@ -222,26 +222,26 @@ Depth=25
 Luminance=false
 
 [Directional Pyramid Denoising]
-Enabled=false
+Enabled={DenoisingEnabled}
 Enhance=false
-Median=false
+Median={Median}
 Luma=0
-Ldetail=0
+Ldetail=67
 Chroma=15
 Method=Lab
-LMethod=SLI
-CMethod=MAN
+LMethod=CUR
+CMethod=AUT
 C2Method=AUTO
 SMethod=shal
 MedMethod=soft
 RGBMethod=soft
-MethodMed=none
+MethodMed=Lpab
 Redchro=0
 Bluechro=0
 Gamma=1.7
 Passes=1
-LCurve=1;0.050000000000000003;0.14999999999999999;0.34999999999999998;0.34999999999999998;0.55000000000000004;0.040000000000000001;0.34999999999999998;0.34999999999999998;
-CCCurve=1;0.050000000000000003;0.5;0.34999999999999998;0.34999999999999998;0.34999999999999998;0.050000000000000003;0.34999999999999998;0.34999999999999998;
+LCurve={DenoisingLCurve}
+CCCurve=1;0.05;0.33;0;0;0.20;0;0;0;
 
 [EPD]
 Enabled=false

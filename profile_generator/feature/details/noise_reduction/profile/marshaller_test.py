@@ -9,7 +9,7 @@ _DEFAULT = {
 }
 
 
-class MarshallerTest(unittest.TestCase):
+class NoiseMarshallerTest(unittest.TestCase):
     def test_default(self) -> None:
         self.assertEqual(
             _DEFAULT,
