@@ -16,7 +16,7 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({"enabled": False})
 
     def test_invalid_enabled(self) -> None:
-        self.validator.assert_errors(
-            [InvalidObjectError({"enabled": InvalidTypeError(bool)})],
+        self.validator.assert_error(
+            InvalidObjectError({"enabled": InvalidTypeError(bool)}),
             {"enabled": "True"},
         )

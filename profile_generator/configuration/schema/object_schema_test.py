@@ -19,26 +19,18 @@ class ObjectSchemaTest(unittest.TestCase):
         validator.assert_valid({})
 
         error = InvalidTypeError(dict)
-        validator.assert_errors([error], None)
-        validator.assert_errors([error], [])
-        validator.assert_errors([error], 0)
+        validator.assert_error(error, None)
+        validator.assert_error(error, [])
+        validator.assert_error(error, 0)
 
-        validator.assert_errors(
-            [InvalidObjectError({"a": InvalidTypeError(bool)})], {"a": None}
+        validator.assert_error(
+            InvalidObjectError({"a": InvalidTypeError(bool)}), {"a": None}
         )
-        validator.assert_errors(
-            [
-                InvalidObjectError(
-                    {"a": InvalidTypeError(bool), "b": UnkownMemberError()}
-                )
-            ],
+        validator.assert_error(
+            InvalidObjectError({"a": InvalidTypeError(bool), "b": UnkownMemberError()}),
             {"a": 0, "b": False},
         )
-        validator.assert_errors(
-            [
-                InvalidObjectError(
-                    {"b": UnkownMemberError(), "a": InvalidTypeError(bool)}
-                )
-            ],
+        validator.assert_error(
+            InvalidObjectError({"b": UnkownMemberError(), "a": InvalidTypeError(bool)}),
             {"b": False, "a": 0},
         )

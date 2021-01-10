@@ -14,18 +14,16 @@ class ListSchemaTest(unittest.TestCase):
         validator.assert_valid([0, 1])
 
         error = InvalidTypeError(list)
-        validator.assert_errors([error], None)
-        validator.assert_errors([error], False)
-        validator.assert_errors([error], {})
+        validator.assert_error(error, None)
+        validator.assert_error(error, False)
+        validator.assert_error(error, {})
 
-        validator.assert_errors(
-            [
-                InvalidListError(
-                    {
-                        2: InvalidTypeError(int),
-                        3: InvalidTypeError(int),
-                    }
-                )
-            ],
+        validator.assert_error(
+            InvalidListError(
+                {
+                    2: InvalidTypeError(int),
+                    3: InvalidTypeError(int),
+                }
+            ),
             [0, "NaN", None, 1],
         )

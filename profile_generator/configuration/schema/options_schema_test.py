@@ -15,11 +15,11 @@ class OptionsSchemaTest(unittest.TestCase):
         validator.assert_valid("B")
 
         error = InvalidTypeError(str)
-        validator.assert_errors([error], None)
-        validator.assert_errors([error], 0)
-        validator.assert_errors([error], False)
-        validator.assert_errors([error], [])
-        validator.assert_errors([error], {})
+        validator.assert_error(error, None)
+        validator.assert_error(error, 0)
+        validator.assert_error(error, False)
+        validator.assert_error(error, [])
+        validator.assert_error(error, {})
 
-        validator.assert_errors([InvalidOptionError(["a", "B"])], "")
-        validator.assert_errors([InvalidOptionError(["a", "B"])], "c")
+        validator.assert_error(InvalidOptionError(["a", "B"]), "")
+        validator.assert_error(InvalidOptionError(["a", "B"]), "c")

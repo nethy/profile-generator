@@ -1,6 +1,7 @@
 DETAILS = "details"
 SHARPENING = "sharpening"
 CAPTURE_SHARPENING = "capture"
+OUTPUT_SHARPENGING = "output"
 TONE = "tone"
 CURVE = "curve"
 BEZIER = "bezier"

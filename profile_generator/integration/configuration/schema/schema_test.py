@@ -38,3 +38,11 @@ class SchemaTest(unittest.TestCase):
                 "templates": [{"T": {"details": {"sharpening": {"capture": {}}}}}],
             }
         )
+
+    def test_details_sharpening_output(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"details": {"sharpening": {"output": {}}}},
+                "templates": [{"T": {"details": {"sharpening": {"output": {}}}}}],
+            }
+        )
