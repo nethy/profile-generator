@@ -6,6 +6,10 @@
 * [Tone](#tone)
     * [Curve](#curve)
         * [Bezier](#bezier)
+* [Details](#details)
+    * [Sharpening](#sharpening)
+        * [Capture](#capture)
+        * [Output](#output)
 * [Raw](#raw)
 
 ## Overview
@@ -94,8 +98,6 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 The middle grey point, center of the S-curve.
 
-<br/>
-
 `strength`
 |               |         |
 | ---           | ---     |
@@ -105,6 +107,59 @@ The middle grey point, center of the S-curve.
 
 Amount of contrast. 0 will produce a linear tone curve, while 100 results in a near
 horizontal line around the middle grey point.
+
+## Detials
+
+Field name: `details`
+
+### Sharpening
+
+Field name: `sharpening`
+
+#### Capture
+
+Field name: `capture`
+
+Enhance image details via caputre sharpening.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+#### Output
+
+Field name: `output`
+
+Applies sharpening on the image using RL-Deconvolution algorithm.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+`threshold`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 200 |
+| Default value | 20      |
+
+`radius`
+|               |           |
+| ---           | ---       |
+| Type          | float     |
+| Value range   | 0.4 - 2.5 |
+| Default value | 0.75      |
+
 
 ## Raw
 
