@@ -15,4 +15,4 @@ class MarshallerTest(unittest.TestCase):
 
         result = marshaller.get_profile_args({})
 
-        self.assertEqual(placeholders, list(result.keys()))
+        self.assertEqual(set(placeholders), set(result.keys()))

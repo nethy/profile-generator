@@ -1,5 +1,5 @@
 import unittest
-from typing import Any, List
+from typing import Any
 
 from .schema import Schema, SchemaError
 
@@ -10,11 +10,11 @@ class SchemaValidator:
         self.schema = schema
 
     def assert_valid(self, data: Any) -> None:
-        self.assert_errors([], data)
+        self.assertions.assertEqual([], self.schema.validate(data))
 
     def assert_invalid(self, data: Any) -> None:
         errors = self.schema.validate(data)
         self.assertions.assertTrue(len(errors) > 0)
 
-    def assert_errors(self, errors: List[SchemaError], data: Any) -> None:
-        self.assertions.assertEqual(errors, self.schema.validate(data))
+    def assert_error(self, error: SchemaError, data: Any) -> None:
+        self.assertions.assertEqual([error], self.schema.validate(data))

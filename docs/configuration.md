@@ -3,8 +3,15 @@
 ### Table of content
 * [Overview](#overview)
 * [Templates](#templates)
-* [Tone group](#tone-group)
-    - [Bezier contrast curve](#bezier-contrast-curve)
+* [Tone](#tone)
+    * [Curve](#curve)
+        * [Bezier](#bezier)
+* [Details](#details)
+    * [Sharpening](#sharpening)
+        * [Capture](#capture)
+        * [Output](#output)
+    * [Noise reduction](#noise-reduction)
+* [Raw](#raw)
 
 ## Overview
 
@@ -67,15 +74,17 @@ If `templates` is not provided or empty, a single **Default** profile will be cr
 
 Content of the configurations are specified in their own chapters.
 
-## Tone group
+## Tone
 
-Field name: `"tone"`
+Field name: `tone`
 
 These parameters are related to the image tone, like exposure or contrast.
 
-### Bezier contrast curve
+### Curve
 
-Field name: `"contrast_bezier"`
+#### Bezier
+
+Field name: `bezier`
 
 Creates an S-cruve around the middle grey point with the given strength.
 
@@ -86,28 +95,122 @@ Creates an S-cruve around the middle grey point with the given strength.
 | ---           | ---                |
 | Type          | [integer, integer] |
 | Value range   | 0 - 255            |
+| Default value | [92, 119]          |
 
 The middle grey point, center of the S-curve.
 
-<br/>
-
 `strength`
-|               |                    |
-| ---           | ---                |
-| Type          | integer            |
-| Value range   | 0 - 100            |
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 0       |
 
 Amount of contrast. 0 will produce a linear tone curve, while 100 results in a near
 horizontal line around the middle grey point.
 
-<br/>
+## Detials
 
-Default values:
-```json
-{
-    "contrast_bezier": {
-        "middle_grey": [92, 119],
-        "strength": 0
-    }
-}
-```
+Field name: `details`
+
+### Sharpening
+
+Field name: `sharpening`
+
+#### Capture
+
+Field name: `capture`
+
+Enhance image details via caputre sharpening.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+#### Output
+
+Field name: `output`
+
+Applies sharpening on the image using RL-Deconvolution algorithm.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+`threshold`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 200 |
+| Default value | 20      |
+
+`radius`
+|               |           |
+| ---           | ---       |
+| Type          | float     |
+| Value range   | 0.4 - 2.5 |
+| Default value | 0.75      |
+
+
+### Noise reduction
+
+Field name: `noise_reduction`
+
+Reduce noise.
+
+**Parameters**
+
+`enabled`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Enables noise reduction - it will automatically reduce chorminance noise.
+
+`strength`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 10      |
+
+Strength of the luminance noise reduction.
+
+`median`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Applies median fitler to clean up noise pattern, at the cost of softening
+the whole image.
+
+## Raw
+
+Field name: `raw`
+
+Raw conversion details.
+
+**Parameters**
+
+`demosaic`
+|               |                     |
+| ---           | ---                 |
+| Type          | [string]            |
+| Value range   | "RCD+VNG4", "LMMSE" |
+| Default value | "RCD+VNG4"          |
+
+Demosaicing algorithm.

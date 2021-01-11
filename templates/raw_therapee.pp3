@@ -115,9 +115,9 @@ LcCurve=0;
 ClCurve=0;
 
 [Sharpening]
-Enabled=false
-Contrast=20
-Method=usm
+Enabled={SharpeningEnabled}
+Contrast={SharpeningContrast}
+Method=rld
 Radius=0.5
 BlurRadius=0.20000000000000001
 Amount=200
@@ -127,10 +127,10 @@ EdgedetectionRadius=1.8999999999999999
 EdgeTolerance=1800
 HalocontrolEnabled=false
 HalocontrolAmount=85
-DeconvRadius=0.75
-DeconvAmount=100
+DeconvRadius={DeconvRadius}
+DeconvAmount=50
 DeconvDamping=0
-DeconvIterations=30
+DeconvIterations=5
 
 [Vibrance]
 Enabled=false
@@ -222,26 +222,26 @@ Depth=25
 Luminance=false
 
 [Directional Pyramid Denoising]
-Enabled=false
+Enabled={DenoisingEnabled}
 Enhance=false
-Median=false
+Median={Median}
 Luma=0
-Ldetail=0
+Ldetail=67
 Chroma=15
 Method=Lab
-LMethod=SLI
-CMethod=MAN
+LMethod=CUR
+CMethod=AUT
 C2Method=AUTO
 SMethod=shal
 MedMethod=soft
 RGBMethod=soft
-MethodMed=none
+MethodMed=Lpab
 Redchro=0
 Bluechro=0
 Gamma=1.7
 Passes=1
-LCurve=1;0.050000000000000003;0.14999999999999999;0.34999999999999998;0.34999999999999998;0.55000000000000004;0.040000000000000001;0.34999999999999998;0.34999999999999998;
-CCCurve=1;0.050000000000000003;0.5;0.34999999999999998;0.34999999999999998;0.34999999999999998;0.050000000000000003;0.34999999999999998;0.34999999999999998;
+LCurve={DenoisingLCurve}
+CCCurve=1;0.05;0.33;0;0;0.20;0;0;0;
 
 [EPD]
 Enabled=false
@@ -342,14 +342,14 @@ Height=900
 AllowUpscaling=false
 
 [PostDemosaicSharpening]
-Enabled=false
+Enabled={PostDemosaicSharpeningEnabled}
 Contrast=10
 AutoContrast=true
 AutoRadius=true
 DeconvRadius=0.75
 DeconvRadiusOffset=0
 DeconvIterCheck=true
-DeconvIterations=20
+DeconvIterations=10
 
 [PostResizeSharpening]
 Enabled=false
@@ -573,7 +573,7 @@ FlatFieldBlurRadius=32
 FlatFieldBlurType=Area Flatfield
 FlatFieldAutoClipControl=false
 FlatFieldClipControl=0
-CA=false
+CA=true
 CAAvoidColourshift=true
 CAAutoIterations=2
 CARed=0
@@ -584,7 +584,7 @@ HotDeadPixelThresh=100
 PreExposure=1
 
 [RAW Bayer]
-Method=fast
+Method={BayerMethod}
 Border=4
 ImageNum=1
 CcSteps=0

@@ -3,7 +3,8 @@ from typing import List, Tuple
 
 from unit import Line, Point, Strength
 
-from .bezier import bezier
+from . import bezier_fn
+from .bezier_fn import WeightedPoints
 
 _logger = logging.getLogger(__name__)
 
@@ -42,8 +43,8 @@ def _get_contrast_line(grey: Point, strength: Strength) -> Line:
     return Line(gradient, offset)
 
 
-def _get_bezier_curve(points: bezier.WeightedPoints) -> List[Point]:
+def _get_bezier_curve(points: WeightedPoints) -> List[Point]:
     return [
-        bezier.get_point_at(points, 1 / (_POINTS_COUNT - 1) * i)
+        bezier_fn.get_point_at(points, 1 / (_POINTS_COUNT - 1) * i)
         for i in range(_POINTS_COUNT)
     ]

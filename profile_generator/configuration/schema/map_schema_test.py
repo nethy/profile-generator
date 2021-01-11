@@ -14,12 +14,12 @@ class MapSchemaTest(unittest.TestCase):
         validator.assert_valid({})
 
         error = InvalidTypeError(dict)
-        validator.assert_errors([error], None)
-        validator.assert_errors([error], "")
+        validator.assert_error(error, None)
+        validator.assert_error(error, "")
 
-        validator.assert_errors(
-            [InvalidObjectError({"a": InvalidTypeError(bool)})], {"a": None}
+        validator.assert_error(
+            InvalidObjectError({"a": InvalidTypeError(bool)}), {"a": None}
         )
-        validator.assert_errors(
-            [InvalidObjectError({"a": InvalidTypeError(bool)})], {"a": 0, "b": True}
+        validator.assert_error(
+            InvalidObjectError({"a": InvalidTypeError(bool)}), {"a": 0, "b": True}
         )
