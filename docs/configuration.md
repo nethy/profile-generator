@@ -19,6 +19,9 @@ Configuration is a JSON object.
 Every specified field is optional, but it is forbidden to use any other
 to avoid typos.
 
+Dot notation also supported, so you can write something like `tone.curve.bezier.`
+instead of nesting each object. It is very useful for setting only one parameter.
+
 ## Templates
 
 ```json
