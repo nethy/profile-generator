@@ -1,10 +1,11 @@
-import unittest
 from typing import Any, Dict
+from unittest import TestCase
+from unittest.mock import Mock, call
 
 from .configuration import create_from_template
 
 
-class FactoryTest(unittest.TestCase):
+class FactoryTest(TestCase):
     def test_empty_configs(self) -> None:
         self.assert_configurations({"Default": {}}, {})
         self.assert_configurations({"Default": {}}, {"templates": []})
@@ -72,7 +73,27 @@ class FactoryTest(unittest.TestCase):
             },
         )
 
+    @staticmethod
+    def test_preprocess_defaults() -> None:
+        preprocessor_mock = Mock(side_effect=lambda x: x)
+
+        create_from_template({"defaults": {"a": 1}}, preprocessor_mock)
+
+        preprocessor_mock.assert_called_once_with({"a": 1})
+
+    @staticmethod
+    def test_preprocess_templates() -> None:
+        preprocessor_mock = Mock(side_effect=lambda x: x)
+
+        create_from_template(
+            {"templates": [{"T1": {"a": 1}}, {"T2": {"b": 2}}]}, preprocessor_mock
+        )
+
+        preprocessor_mock.assert_has_calls(
+            [call({"a": 1}), call({"b": 2})], any_order=True
+        )
+
     def assert_configurations(
         self, expected: Dict[str, Dict[str, Any]], config: Dict[str, Any]
     ) -> None:
-        self.assertEqual(expected, create_from_template(config))
+        self.assertEqual(expected, create_from_template(config, lambda x: x))

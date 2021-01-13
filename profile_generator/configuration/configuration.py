@@ -1,12 +1,20 @@
 from functools import reduce
-from typing import Any, Dict
+from typing import Any, Callable, Dict
 
 Configuration = Dict[str, Dict[str, Any]]
 
 
-def create_from_template(template: Dict[str, Any]) -> Configuration:
+def create_from_template(
+    template: Dict[str, Any], preprocess: Callable[[Dict[str, Any]], Dict[str, Any]]
+) -> Configuration:
     defaults = template.get("defaults", {})
     templates = template.get("templates", [])
+
+    defaults = preprocess(defaults)
+    templates = [
+        {key: preprocess(value) for key, value in template.items()}
+        for template in templates
+    ]
 
     if len(templates) == 0:
         return {"Default": defaults}
