@@ -1,15 +1,14 @@
 import unittest
-from typing import TypeVar
 from unittest.mock import Mock
 
-from .marshaller import get_profile_args
+from util import identity
 
-T = TypeVar("T")
+from .marshaller import get_profile_args
 
 
 class ResolverTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.marshallers = {"stub": self.identity, "other_stub": self.identity}
+        self.marshallers = {"stub": identity, "other_stub": identity}
 
     def test_marshal_returns_empty_when_no_resolvers_exist(self) -> None:
         self.assertEqual({}, get_profile_args({"a": 1}))
@@ -35,10 +34,6 @@ class ResolverTest(unittest.TestCase):
 
     def test_marhsal_invokes_resolver_by_hierarchical_key(self) -> None:
         config = {"nested": {"member": {"a": 1}}}
-        marshaller = {"nested.member": self.identity}
+        marshaller = {"nested.member": identity}
 
         self.assertEqual({"a": 1}, get_profile_args(config, **marshaller))
-
-    @staticmethod
-    def identity(x: T) -> T:
-        return x

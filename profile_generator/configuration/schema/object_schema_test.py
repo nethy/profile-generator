@@ -34,3 +34,24 @@ class ObjectSchemaTest(unittest.TestCase):
             InvalidObjectError({"b": UnkownMemberError(), "a": InvalidTypeError(bool)}),
             {"b": False, "a": 0},
         )
+
+    def test_validate_dot_notation(self) -> None:
+        schema = object_of(a=object_of(b=type_of(bool)))
+        validator = SchemaValidator(self, schema)
+
+        validator.assert_valid({"a": {"b": True}})
+        validator.assert_valid({"a.b": True})
+
+        validator.assert_error(
+            InvalidObjectError({"c": UnkownMemberError()}), {"c.b": True}
+        )
+        validator.assert_error(
+            InvalidObjectError({"a": InvalidObjectError({"c": UnkownMemberError()})}),
+            {"a.c": True},
+        )
+        validator.assert_error(
+            InvalidObjectError(
+                {"a": InvalidObjectError({"b": InvalidTypeError(bool)})}
+            ),
+            {"a.b": 0},
+        )

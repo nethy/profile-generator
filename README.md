@@ -12,12 +12,12 @@ and this tool will combine them into multiple profiles.
 {
   "templates": [
     {
-      "Camera_1": {
+      "Camera1": {
         "contrast_curve": {
           "middle_grey": [98, 119]
         }
       },
-      "Camera_2": {
+      "Camera2": {
         "contrast_curve": {
           "middle_grey": [83, 119]
         }
@@ -45,12 +45,12 @@ and this tool will combine them into multiple profiles.
 ```
 
 With the above configuration the generated profiles will be
-* Camera_1-Soft.pp3
-* Camera_1-Medium.pp3
-* Camera_1-Strong.pp3
-* Camera_2-Soft.pp3
-* Camera_2-Medium.pp3
-* Camera_2-Strong.pp3
+* Camera1_Soft.pp3
+* Camera1_Medium.pp3
+* Camera1_Strong.pp3
+* Camera2_Soft.pp3
+* Camera2_Medium.pp3
+* Camera2_Strong.pp3
 
 ## Usage
 

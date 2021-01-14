@@ -6,6 +6,7 @@ from json import JSONDecodeError
 import configuration
 import integration
 import log
+from configuration.preprocessor import dot_notation
 from util import file
 
 _PROFILES_DIR = "profiles"
@@ -61,7 +62,7 @@ def try_generate_profiles(
     if len(errors) > 0:
         console_logger.error("%s: invalid configuration schema", file_name)
     else:
-        cfg = configuration.create_from_template(cfg_template)
+        cfg = configuration.create_from_template(cfg_template, dot_notation.expand)
         for name, body in cfg.items():
             logging.info("creating profile: %s", name)
             output_filename = f"{name}.pp3"

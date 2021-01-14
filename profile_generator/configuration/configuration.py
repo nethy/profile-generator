@@ -1,12 +1,14 @@
 from functools import reduce
-from typing import Any, Dict
+from typing import Any, Callable, Dict, List
 
 Configuration = Dict[str, Dict[str, Any]]
 
 
-def create_from_template(template: Dict[str, Any]) -> Configuration:
-    defaults = template.get("defaults", {})
-    templates = template.get("templates", [])
+def create_from_template(
+    template: Dict[str, Any], preprocess: Callable[[Dict[str, Any]], Dict[str, Any]]
+) -> Configuration:
+    defaults = _get_defaults(template, preprocess)
+    templates = _get_templates(template, preprocess)
 
     if len(templates) == 0:
         return {"Default": defaults}
@@ -14,6 +16,23 @@ def create_from_template(template: Dict[str, Any]) -> Configuration:
     first_template, *rest_templates = templates
     first_cfg = _merge_first_template(defaults, first_template)
     return reduce(_merge_template, rest_templates, first_cfg)
+
+
+def _get_templates(
+    template: Dict[str, Any], preprocess: Callable[[Dict[str, Any]], Dict[str, Any]]
+) -> List[Configuration]:
+    templates = template.get("templates", [])
+    return [
+        {key: preprocess(value) for key, value in template.items()}
+        for template in templates
+    ]
+
+
+def _get_defaults(
+    template: Dict[str, Any], preprocess: Callable[[Dict[str, Any]], Dict[str, Any]]
+) -> Dict[str, Any]:
+    defaults = template.get("defaults", {})
+    return preprocess(defaults)
 
 
 def _merge_first_template(
