@@ -1,7 +1,7 @@
 import math
 from typing import Collection, Tuple
 
-from unit import Point
+from profile_generator.unit import Point
 
 WeightedPoints = Collection[Tuple[Point, float]]
 

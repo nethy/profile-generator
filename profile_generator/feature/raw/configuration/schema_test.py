@@ -1,6 +1,6 @@
 import unittest
 
-from configuration.schema import (
+from profile_generator.configuration.schema import (
     InvalidObjectError,
     InvalidOptionError,
     InvalidTypeError,

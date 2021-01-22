@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from util import validation
+from profile_generator.util import validation
 
 
 class Strength:

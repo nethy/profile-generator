@@ -2,6 +2,6 @@
 
 LOCAL_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-source $LOCAL_DIR/../.env
+. $LOCAL_DIR/../.env
 
-python -m unittest discover -v -s $PYTHONPATH -p "*_test.py"
+python -m unittest discover -v -s $PACKAGE -p "*_test.py"

@@ -1,6 +1,10 @@
 import unittest
 
-from configuration.schema import InvalidObjectError, InvalidTypeError, SchemaValidator
+from profile_generator.configuration.schema import (
+    InvalidObjectError,
+    InvalidTypeError,
+    SchemaValidator,
+)
 
 from .schema import SCHEMA
 

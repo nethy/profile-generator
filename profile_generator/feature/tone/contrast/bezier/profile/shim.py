@@ -1,6 +1,6 @@
 from typing import Any, Collection, Dict, Tuple
 
-from unit import Point, Strength
+from profile_generator.unit import Point, Strength
 
 _DEFAULT_GREY = [92, 119]
 _DEFAULT_STRENGTH = 0

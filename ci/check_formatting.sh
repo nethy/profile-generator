@@ -2,7 +2,7 @@
 
 LOCAL_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-source $LOCAL_DIR/../.env
+. $LOCAL_DIR/../.env
 
-black --check $PYTHONPATH
-isort --check --profile black $PYTHONPATH
+black --check $PACKAGE
+isort --check --profile black $PACKAGE

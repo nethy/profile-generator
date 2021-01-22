@@ -1,5 +1,8 @@
 __pycache__/
 .mypy_cache/
+build/
+*.egg-info/
+dist/
 
 configs/
 logs/

@@ -2,12 +2,12 @@
 
 LOCAL_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
-source $LOCAL_DIR/../.env
+. $LOCAL_DIR/../.env
 
 echo "Formatting code"
-black $PYTHONPATH
+black $PACKAGE
 echo
 
 echo "Sorting imports"
-isort --profile=black $PYTHONPATH
+isort --profile=black $PACKAGE
 echo
