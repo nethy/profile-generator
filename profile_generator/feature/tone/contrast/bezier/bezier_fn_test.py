@@ -1,7 +1,7 @@
 import unittest
 from functools import partial
 
-from unit import Point
+from profile_generator.unit import Point
 
 from . import bezier_fn
 

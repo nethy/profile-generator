@@ -1,7 +1,7 @@
 import re
 import unittest
 
-from util import file
+from profile_generator.util import file
 
 from . import marshaller
 

@@ -1,0 +1,5 @@
+include profile_generator/template
+
+global-exclude \
+    *.py[co] \
+    *_test.py \

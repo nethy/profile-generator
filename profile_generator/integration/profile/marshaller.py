@@ -1,10 +1,10 @@
 from functools import partial
-from profile import marshaller
 
-from feature import raw
-from feature.details import noise_reduction
-from feature.details.sharpening import capture, output
-from feature.tone.contrast import bezier
+from profile_generator.feature import raw
+from profile_generator.feature.details import noise_reduction
+from profile_generator.feature.details.sharpening import capture, output
+from profile_generator.feature.tone.contrast import bezier
+from profile_generator.profile import marshaller
 
 from .. import field_names
 

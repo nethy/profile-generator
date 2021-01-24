@@ -1,6 +1,6 @@
 import unittest
 
-from unit import Point, Strength
+from profile_generator.unit import Point, Strength
 
 from . import contrast_bezier
 

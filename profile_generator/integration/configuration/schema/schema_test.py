@@ -1,6 +1,6 @@
 import unittest
 
-from configuration.schema.schema_validator import SchemaValidator
+from profile_generator.configuration.schema.schema_validator import SchemaValidator
 
 from .schema import SCHEMA
 

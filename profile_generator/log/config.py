@@ -2,7 +2,7 @@ import logging
 import logging.config
 import logging.handlers
 
-from util import file
+from profile_generator.util import file
 
 _LOG_DIR = "logs"
 

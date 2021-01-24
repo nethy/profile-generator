@@ -1,8 +1,8 @@
-from configuration.schema import list_of, map_of, object_of
-from feature import raw
-from feature.details import noise_reduction
-from feature.details.sharpening import capture, output
-from feature.tone.contrast import bezier
+from profile_generator.configuration.schema import list_of, map_of, object_of
+from profile_generator.feature import raw
+from profile_generator.feature.details import noise_reduction
+from profile_generator.feature.details.sharpening import capture, output
+from profile_generator.feature.tone.contrast import bezier
 
 from ... import field_names
 

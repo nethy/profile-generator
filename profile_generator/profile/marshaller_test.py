@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import Mock
 
-from util import identity
+from profile_generator.util import identity
 
 from .marshaller import get_profile_args
 

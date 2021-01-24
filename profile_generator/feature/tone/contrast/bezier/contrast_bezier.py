@@ -1,7 +1,7 @@
 import logging
 from typing import List, Tuple
 
-from unit import Line, Point, Strength
+from profile_generator.unit import Line, Point, Strength
 
 from . import bezier_fn
 from .bezier_fn import WeightedPoints
