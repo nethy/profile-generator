@@ -25,13 +25,13 @@ def main() -> None:
     try:
         output_dir = file.create_dir(_PROFILES_DIR)
     except OSError:
-        console_logger.error("target directory creation failure", exc_info=True)
+        console_logger.error("Target directory creation failure", exc_info=True)
         sys.exit(1)
 
     try:
         template = file.read_file(_TEMPLATES_DIR, _RAW_THERAPEE_TEMPLATE)
     except OSError:
-        console_logger.error("template file read failure", exc_info=True)
+        console_logger.error("Template file read failure", exc_info=True)
         sys.exit(1)
 
     for cfg_file_name in sys.argv[1:]:
