@@ -18,29 +18,17 @@ def get_full_path(*paths: str) -> str:
 def create_dir(*paths: str) -> str:
     path = os.path.join(*paths)
     if not os.path.exists(path):
-        try:
-            os.makedirs(path, exist_ok=True)
-        except:
-            logging.error("Directory create error.", exc_info=True)
-            raise
+        os.makedirs(path, exist_ok=True)
     return path
 
 
 def read_file(*paths: str) -> str:
-    try:
-        path = os.path.join(*paths)
-        with open(path, "rt") as reader:
-            return reader.read()
-    except:
-        logging.error("File open error.", exc_info=True)
-        raise
+    path = os.path.join(*paths)
+    with open(path, "rt") as reader:
+        return reader.read()
 
 
 def write_file(content: str, *paths: str) -> None:
-    try:
-        path = os.path.join(*paths)
-        with open(path, "wt") as writer:
-            writer.write(content)
-    except:
-        logging.error("File write error.", exc_info=True)
-        raise
+    path = os.path.join(*paths)
+    with open(path, "wt") as writer:
+        writer.write(content)

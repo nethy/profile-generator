@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 
-def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, Any]:
+def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
     enabled = configuration.get("enabled", False)
     strength = configuration.get("strength", 10)
     median = configuration.get("median", False)
