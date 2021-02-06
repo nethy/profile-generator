@@ -1,15 +1,14 @@
-from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
+from profile_generator import generator
 from profile_generator.configuration.schema import object_of, type_of
-
-from . import profile_generator
-from .profile_generator import (
+from profile_generator.generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
     NoConfigFileError,
     OutputDirCreationFailure,
+    ProfileWriteError,
     TemplateFileReadError,
 )
 
@@ -17,17 +16,17 @@ from .profile_generator import (
 class ProfileGeneratorTest(TestCase):
     @patch("sys.argv", ["app.py", "one.json", "two.json"])
     def test_get_config_files_returns_config_files(self) -> None:
-        self.assertEqual(["one.json", "two.json"], profile_generator.get_config_files())
+        self.assertEqual(["one.json", "two.json"], generator.get_config_files())
 
     @patch("sys.argv", ["app.py"])
     def test_get_config_files_raises_error_when_arguments_are_missing(self) -> None:
-        self.assertRaises(NoConfigFileError, profile_generator.get_config_files)
+        self.assertRaises(NoConfigFileError, generator.get_config_files)
 
     @patch(
         "profile_generator.util.file.create_dir", lambda *xs: "/root/" + "/".join(xs)
     )
     def test_create_output_dir_raises_returns_created_dir_path(self) -> None:
-        self.assertEqual("/root/profiles", profile_generator.create_output_dir())
+        self.assertEqual("/root/profiles", generator.create_output_dir())
 
     @patch("profile_generator.util.file.create_dir")
     def test_create_output_dir_raises_error_when_cannot_create_dir(
@@ -35,7 +34,7 @@ class ProfileGeneratorTest(TestCase):
     ) -> None:
         create_dir.side_effect = OSError
 
-        self.assertRaises(OutputDirCreationFailure, profile_generator.create_output_dir)
+        self.assertRaises(OutputDirCreationFailure, generator.create_output_dir)
 
     @patch("profile_generator.util.file.read_file")
     @patch(
@@ -46,7 +45,7 @@ class ProfileGeneratorTest(TestCase):
     ) -> None:
         read_file.return_value = "file content"
 
-        self.assertEqual("file content", profile_generator.get_profile_template())
+        self.assertEqual("file content", generator.get_profile_template())
         read_file.assert_called_once_with("/root/templates/raw_therapee.pp3")
 
     @patch("profile_generator.util.file.read_file")
@@ -55,7 +54,7 @@ class ProfileGeneratorTest(TestCase):
     ) -> None:
         read_file.side_effect = OSError
 
-        self.assertRaises(TemplateFileReadError, profile_generator.get_profile_template)
+        self.assertRaises(TemplateFileReadError, generator.get_profile_template)
 
     @patch("profile_generator.util.file.read_file")
     def test_load_configuration_file_loads_configuration_files(
@@ -64,7 +63,7 @@ class ProfileGeneratorTest(TestCase):
         read_file.return_value = '{"a": 2}'
         schema = object_of(a=type_of(int))
 
-        config = profile_generator.load_configuration_file("config.json", schema)
+        config = generator.load_configuration_file("config.json", schema)
 
         self.assertEqual({"a": 2}, config)
         read_file.assert_called_once_with("config.json")
@@ -78,7 +77,7 @@ class ProfileGeneratorTest(TestCase):
 
         self.assertRaises(
             ConfigFileReadError,
-            profile_generator.load_configuration_file,
+            generator.load_configuration_file,
             "config.json",
             schema,
         )
@@ -92,7 +91,53 @@ class ProfileGeneratorTest(TestCase):
 
         self.assertRaises(
             InvalidConfigFileError,
-            profile_generator.load_configuration_file,
+            generator.load_configuration_file,
             "config.json",
             schema,
+        )
+
+    @patch("profile_generator.util.file.read_file")
+    def test_load_configuration_file_raises_error_when_config_file_is_invalid_json(
+        self, read_file: Mock
+    ) -> None:
+        read_file.return_value = '{"a": false'
+        schema = object_of(a=type_of(int))
+
+        self.assertRaises(
+            InvalidConfigFileError,
+            generator.load_configuration_file,
+            "config.json",
+            schema,
+        )
+
+    @classmethod
+    @patch("profile_generator.util.file.write_file")
+    def test_generate_profile_writes_profile_into_file(cls, write_file: Mock) -> None:
+        name = "profile_name"
+        config = {"a": "1"}
+        template = "{a}"
+        output_dir = "dir"
+
+        generator.generate_profile(name, config, lambda x: x, template, output_dir)
+
+        write_file.assert_called_once_with("1", output_dir, name + ".pp3")
+
+    @patch("profile_generator.util.file.write_file")
+    def test_generate_profile_raises_error_when_write_failed(
+        self, write_file: Mock
+    ) -> None:
+        name = "profile_name"
+        config = {"a": "1"}
+        template = "{a}"
+        output_dir = "dir"
+        write_file.side_effect = OSError
+
+        self.assertRaises(
+            ProfileWriteError,
+            generator.generate_profile,
+            name,
+            config,
+            lambda x: x,
+            template,
+            output_dir,
         )

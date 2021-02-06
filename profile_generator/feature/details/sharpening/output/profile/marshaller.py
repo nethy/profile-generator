@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 
-def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, Any]:
+def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
     enabled = configuration.get("enabled", False)
     threshold = configuration.get("threshold", 20)
     radius = configuration.get("radius", 0.75)
