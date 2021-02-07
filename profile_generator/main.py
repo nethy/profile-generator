@@ -42,9 +42,11 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         )
         config = configuration.create_from_template(cfg_template, dot_notation.expand)
         for name, body in config.items():
+            logging.info("creating profile: %s", name)
             generator.generate_profile(
                 name, body, integration.get_profile_args, template, output_dir
             )
+            console_logger.info("Profile has been created: %s", name)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError:

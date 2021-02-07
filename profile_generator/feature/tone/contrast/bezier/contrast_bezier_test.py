@@ -10,7 +10,7 @@ class ResolveTest(unittest.TestCase):
         grey = Point(0.3412, 0.46667)
         strength = Strength(0.2)
 
-        result = contrast_bezier.calculate(grey, strength)
+        result = contrast_bezier.calculate(grey, strength, (2, 1))
 
         self.assertSequenceEqual(
             (
@@ -37,7 +37,7 @@ class ResolveTest(unittest.TestCase):
         grey = Point(0.5, 0.5)
         strength = Strength(1)
 
-        result = contrast_bezier.calculate(grey, strength)
+        result = contrast_bezier.calculate(grey, strength, (2, 1))
 
         self.assertSequenceEqual(
             (
