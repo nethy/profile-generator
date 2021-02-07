@@ -14,14 +14,23 @@ _WHITE_POINT = Point(1, 1)
 _SHADOW_LIMIT = 8 / 255
 _HIGHLIGHT_LIMIT = 240 / 255
 
+_SHADOW_WEIGHT = 2.5
+_HIGHLIGHT_WEIGHT = _SHADOW_WEIGHT / 2
+
 _POINTS_COUNT = 8
 
 
-def calculate(grey: Point, strength: Strength) -> List[Point]:
+def calculate(
+    grey: Point,
+    strength: Strength,
+    weights: Tuple[float, float] = (_SHADOW_WEIGHT, _HIGHLIGHT_WEIGHT),
+) -> List[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
     (shadow, highlight) = _get_control_points(grey, strength)
-    toe = _get_bezier_curve([(_BLACK_POINT, 1), (shadow, 2), (grey, 1)])
-    shoulder = _get_bezier_curve([(grey, 1), (highlight, 1), (_WHITE_POINT, 1)])
+    toe = _get_bezier_curve([(_BLACK_POINT, 1), (shadow, weights[0]), (grey, 1)])
+    shoulder = _get_bezier_curve(
+        [(grey, 1), (highlight, weights[1]), (_WHITE_POINT, 1)]
+    )
     return toe + shoulder[1:]
 
 
