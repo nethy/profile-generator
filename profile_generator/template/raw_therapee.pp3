@@ -128,7 +128,7 @@ EdgeTolerance=1800
 HalocontrolEnabled=false
 HalocontrolAmount=85
 DeconvRadius={DeconvRadius}
-DeconvAmount=50
+DeconvAmount=33
 DeconvDamping=0
 DeconvIterations=5
 
