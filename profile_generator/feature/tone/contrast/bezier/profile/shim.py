@@ -35,7 +35,7 @@ def _get_strength(configuration: Dict[str, Any]) -> Strength:
 
 def _get_weights(configuration: Dict[str, Any]) -> Tuple[float, float]:
     values = configuration.get("weights", _DEFAULT_WEIGHTS)
-    return tuple(values)
+    return (values[0], values[1])
 
 
 def marshal_curve(curve: Collection[Point]) -> Dict[str, str]:
