@@ -14,16 +14,13 @@ _WHITE_POINT = Point(1, 1)
 _SHADOW_LIMIT = 8 / 255
 _HIGHLIGHT_LIMIT = 240 / 255
 
-_SHADOW_WEIGHT = 2.5
-_HIGHLIGHT_WEIGHT = _SHADOW_WEIGHT / 2
-
 _POINTS_COUNT = 8
 
 
 def calculate(
     grey: Point,
     strength: Strength,
-    weights: Tuple[float, float] = (_SHADOW_WEIGHT, _HIGHLIGHT_WEIGHT),
+    weights: Tuple[float, float],
 ) -> List[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
     (shadow, highlight) = _get_control_points(grey, strength)
