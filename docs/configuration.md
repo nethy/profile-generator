@@ -100,7 +100,7 @@ Creates an S-cruve around the middle grey point with the given strength.
 | Value range   | 0 - 255            |
 | Default value | [92, 119]          |
 
-The middle grey point, center of the S-curve.
+x, y coordinates of the middle grey point, center of the S-curve.
 
 `strength`
 |               |         |
@@ -111,6 +111,19 @@ The middle grey point, center of the S-curve.
 
 Amount of contrast. 0 will produce a linear tone curve, while 100 results in a near
 horizontal line around the middle grey point.
+
+`weights`
+|               |                |
+| ---           | ---            |
+| Type          | [float, float] |
+| Value range   | 0.0 - 5.0      |
+| Default value | [2.0, 1.0]     |
+
+Shadow and the highlight point weights of the tone curve. Determines how gradual or
+steep the curve is. Smaller value provides flatter, while larger value provides more
+steeper curve.
+Using higher weight for shadow helps to increase the contrast of the image, while
+highlights can be preserved as much as possible.
 
 ## Detials
 
