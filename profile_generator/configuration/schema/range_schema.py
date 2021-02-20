@@ -27,5 +27,5 @@ class InvalidRangeError(Generic[T], SchemaError):
     upper_bound: T
 
 
-def range_of(left: T, right: T) -> Schema:
-    return RangeSchema(left, right)
+def range_of(lower: T, upper: T) -> Schema:
+    return RangeSchema(lower, upper)
