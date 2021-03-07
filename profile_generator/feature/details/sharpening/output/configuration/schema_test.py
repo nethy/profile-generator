@@ -18,7 +18,15 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({})
 
     def test_valid_config(self) -> None:
-        self.validator.assert_valid({"enabled": True, "threshold": 50, "radius": 0.5})
+        self.validator.assert_valid(
+            {
+                "enabled": True,
+                "threshold": 50,
+                "radius": 0.5,
+                "amount": 50,
+                "iterations": 5,
+            }
+        )
 
     def test_invalid_enabled(self) -> None:
         self.validator.assert_error(
@@ -36,4 +44,15 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             InvalidObjectError({"radius": InvalidRangeError(0.4, 2.5)}),
             {"radius": "NaN"},
+        )
+
+    def test_invalid_amount(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"amount": InvalidRangeError(0, 100)}), {"amount": "NaN"}
+        )
+
+    def test_invalid_iterations(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"iterations": InvalidRangeError(5, 100)}),
+            {"iterations": "NaN"},
         )
