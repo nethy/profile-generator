@@ -128,9 +128,9 @@ EdgeTolerance=1800
 HalocontrolEnabled=false
 HalocontrolAmount=85
 DeconvRadius={DeconvRadius}
-DeconvAmount=33
+DeconvAmount={DeconvAmount}
 DeconvDamping=0
-DeconvIterations=5
+DeconvIterations={DeconvIterations}
 
 [Vibrance]
 Enabled=false

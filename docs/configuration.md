@@ -177,6 +177,20 @@ Applies sharpening on the image using RL-Deconvolution algorithm.
 | Value range   | 0.4 - 2.5 |
 | Default value | 0.75      |
 
+`amount`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 100     |
+
+`iterations`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 5 - 100 |
+| Default value | 30      |
+
 
 ### Noise reduction
 
