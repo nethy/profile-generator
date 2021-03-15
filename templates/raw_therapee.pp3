@@ -345,11 +345,11 @@ AllowUpscaling=false
 Enabled={PostDemosaicSharpeningEnabled}
 Contrast=10
 AutoContrast=true
-AutoRadius=true
-DeconvRadius=0.75
+AutoRadius=false
+DeconvRadius=0.67
 DeconvRadiusOffset=0
 DeconvIterCheck=true
-DeconvIterations=10
+DeconvIterations=20
 
 [PostResizeSharpening]
 Enabled=false

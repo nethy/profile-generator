@@ -39,6 +39,6 @@ class ResolveTest(unittest.TestCase):
         self.assertEqual({"Curve": "0;"}, shim.marshal_curve([]))
 
         self.assertEqual(
-            {"Curve": "1;0.00000;0.00000;1.00000;1.00000;"},
+            {"Curve": "4;0.00000;0.00000;1.00000;1.00000;"},
             shim.marshal_curve((Point(0, 0), Point(1, 1))),
         )
