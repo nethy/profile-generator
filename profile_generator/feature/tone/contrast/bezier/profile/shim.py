@@ -9,7 +9,7 @@ _DEFAULT_WEIGHTS = [2, 1]
 _TEMPLATE_FIELD = "Curve"
 
 _LINEAR_CURVE_ID = 0
-_STD_CURVE_ID = 1
+_FLEXIBLE_CURVE_ID = 4
 
 
 def get_arguments(
@@ -41,7 +41,7 @@ def _get_weights(configuration: Dict[str, Any]) -> Tuple[float, float]:
 def marshal_curve(curve: Collection[Point]) -> Dict[str, str]:
     value = ";".join((f"{p.x:.5f};{p.y:.5f}" for p in curve))
     if len(value) > 0:
-        value = f"{_STD_CURVE_ID};{value};"
+        value = f"{_FLEXIBLE_CURVE_ID};{value};"
     else:
         value = f"{_LINEAR_CURVE_ID};"
     return {_TEMPLATE_FIELD: value}
