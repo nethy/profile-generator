@@ -24,6 +24,7 @@ class SchemaTest(unittest.TestCase):
                 "threshold": 50,
                 "radius": 0.5,
                 "amount": 50,
+                "damping": 0,
                 "iterations": 5,
             }
         )
@@ -49,6 +50,12 @@ class SchemaTest(unittest.TestCase):
     def test_invalid_amount(self) -> None:
         self.validator.assert_error(
             InvalidObjectError({"amount": InvalidRangeError(0, 100)}), {"amount": "NaN"}
+        )
+
+    def test_invalid_damping(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"damping": InvalidRangeError(0, 100)}),
+            {"damping": "NaN"},
         )
 
     def test_invalid_iterations(self) -> None:
