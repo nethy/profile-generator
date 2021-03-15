@@ -184,6 +184,13 @@ Applies sharpening on the image using RL-Deconvolution algorithm.
 | Value range   | 0 - 100 |
 | Default value | 100     |
 
+`damping`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 0       |
+
 `iterations`
 |               |         |
 | ---           | ---     |

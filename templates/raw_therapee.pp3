@@ -16,7 +16,7 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=Standard
+CurveMode=FilmLike
 CurveMode2=Standard
 Curve={Curve}
 Curve2=0;
@@ -129,7 +129,7 @@ HalocontrolEnabled=false
 HalocontrolAmount=85
 DeconvRadius={DeconvRadius}
 DeconvAmount={DeconvAmount}
-DeconvDamping=0
+DeconvDamping={DeconvDamping}
 DeconvIterations={DeconvIterations}
 
 [Vibrance]
@@ -575,7 +575,7 @@ FlatFieldAutoClipControl=false
 FlatFieldClipControl=0
 CA=true
 CAAvoidColourshift=true
-CAAutoIterations=2
+CAAutoIterations=1
 CARed=0
 CABlue=0
 HotPixelFilter=false

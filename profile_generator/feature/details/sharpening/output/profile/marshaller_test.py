@@ -8,6 +8,7 @@ _DEFAULT = {
     "SharpeningContrast": "20",
     "DeconvRadius": "0.75",
     "DeconvAmount": "100",
+    "DeconvDamping": "0",
     "DeconvIterations": "30",
 }
 
@@ -34,6 +35,10 @@ class MarshallerTest(unittest.TestCase):
     def test_amount(self) -> None:
         self._assert_profile_args({"amount": 0}, DeconvAmount="0")
         self._assert_profile_args({"amount": 100}, DeconvAmount="100")
+
+    def test_damping(self) -> None:
+        self._assert_profile_args({"damping": 0}, DeconvDamping="0")
+        self._assert_profile_args({"damping": 100}, DeconvDamping="100")
 
     def test_iterations(self) -> None:
         self._assert_profile_args({"iterations": 5}, DeconvIterations="5")
