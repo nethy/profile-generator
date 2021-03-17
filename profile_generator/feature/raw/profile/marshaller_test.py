@@ -5,15 +5,15 @@ from .marshaller import get_profile_args
 
 class MarshallerTest(unittest.TestCase):
     def test_default(self) -> None:
-        self.assertEqual({"BayerMethod": "rcdvng4"}, get_profile_args({}))
+        self.assertEqual({"BayerMethod": "dcbvng4"}, get_profile_args({}))
 
     def test_demosaic(self) -> None:
         self.assertEqual(
-            {"BayerMethod": "rcdvng4"}, get_profile_args({"demosaic": "RCD+VNG4"})
+            {"BayerMethod": "dcbvng4"}, get_profile_args({"demosaic": "DCB+VNG4"})
         )
 
         self.assertEqual(
-            {"BayerMethod": "rcdvng4"}, get_profile_args({"demosaic": "rcd+vng4"})
+            {"BayerMethod": "dcbvng4"}, get_profile_args({"demosaic": "dcb+vng4"})
         )
 
         self.assertEqual(
