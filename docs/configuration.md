@@ -247,7 +247,7 @@ Raw conversion details.
 |               |                     |
 | ---           | ---                 |
 | Type          | [string]            |
-| Value range   | "RCD+VNG4", "LMMSE" |
-| Default value | "RCD+VNG4"          |
+| Value range   | "DCB+VNG4", "LMMSE" |
+| Default value | "DCB+VNG4"          |
 
 Demosaicing algorithm.
