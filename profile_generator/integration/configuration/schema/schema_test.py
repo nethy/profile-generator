@@ -23,6 +23,14 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
+    def test_tone_contrast(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"tone": {"contrast": {}}},
+                "templates": [{"T": {"tone": {"contrast": {}}}}],
+            }
+        )
+
     def test_raw(self) -> None:
         self.validator.assert_valid(
             {
