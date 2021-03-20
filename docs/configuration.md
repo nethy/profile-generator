@@ -4,6 +4,8 @@
 * [Overview](#overview)
 * [Templates](#templates)
 * [Tone](#tone)
+    * [Contrast](#contrast)
+        * [Local](#local)
     * [Curve](#curve)
         * [Bezier](#bezier)
 * [Details](#details)
@@ -83,7 +85,23 @@ Field name: `tone`
 
 These parameters are related to the image tone, like exposure or contrast.
 
+### Contrast
+
+Field name: `contrast`
+
+**Parameters**
+
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 0       |
+
+Increase the local contrast.
+
 ### Curve
+
+Field name: `curve`
 
 #### Bezier
 
