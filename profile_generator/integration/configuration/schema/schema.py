@@ -1,4 +1,4 @@
-from profile_generator.configuration.schema import list_of, map_of, object_of
+from profile_generator.configuration.schema import list_of, map_of, object_of, type_of
 from profile_generator.feature import raw
 from profile_generator.feature.details import noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
@@ -32,4 +32,6 @@ _CONFIG_SCHEMA = object_of(
     }
 )
 
-SCHEMA = object_of(defaults=_CONFIG_SCHEMA, templates=list_of(map_of(_CONFIG_SCHEMA)))
+_TEMPLATE_SCHAME = object_of(optional=type_of(bool), settings=map_of(_CONFIG_SCHEMA))
+
+SCHEMA = object_of(defaults=_CONFIG_SCHEMA, templates=list_of(_TEMPLATE_SCHAME))

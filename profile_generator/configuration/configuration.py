@@ -22,10 +22,11 @@ def _get_templates(
     template: Dict[str, Any], preprocess: Callable[[Dict[str, Any]], Dict[str, Any]]
 ) -> List[Configuration]:
     templates = template.get("templates", [])
-    return [
-        {key: preprocess(value) for key, value in template.items()}
-        for template in templates
-    ]
+    for t in templates:
+        config = t["settings"]
+        for name in config:
+            config[name] = preprocess(config[name])
+    return templates
 
 
 def _get_defaults(
@@ -38,17 +39,23 @@ def _get_defaults(
 def _merge_first_template(
     defaults: Dict[str, Any], template: Configuration
 ) -> Configuration:
-    return {name: _merge_dicts(defaults, body) for name, body in template.items()}
+    return {
+        name: _merge_dicts(defaults, body)
+        for name, body in _get_settings(template).items()
+    }
 
 
 def _merge_template(
     configuration: Configuration, template: Configuration
 ) -> Configuration:
-    return {
+    merged = {
         cfg_name + "_" + template_name: _merge_dicts(cfg_body, template_body)
         for cfg_name, cfg_body in configuration.items()
-        for template_name, template_body in template.items()
+        for template_name, template_body in _get_settings(template).items()
     }
+    if _get_optional(template):
+        merged = {**configuration, **merged}
+    return merged
 
 
 def _merge_dicts(base: Dict[str, Any], overrider: Dict[str, Any]) -> Dict[str, Any]:
@@ -60,3 +67,11 @@ def _merge_dicts(base: Dict[str, Any], overrider: Dict[str, Any]) -> Dict[str, A
         else:
             merged[key] = value
     return merged
+
+
+def _get_settings(template: Dict[str, Any]) -> Dict[str, Any]:
+    return template["settings"]
+
+
+def _get_optional(template: Dict[str, Any]) -> bool:
+    return template["optional"]
