@@ -20,7 +20,7 @@ class SchemaTest(unittest.TestCase):
 
     def test_valid_config(self) -> None:
         self.validator.assert_valid(
-            {"middle_grey": [128, 128], "strength": 25, "weights": [1.2, 1.2]}
+            {"middle_grey": [128, 128], "strength": 25.1, "weights": [1.2, 1.2]}
         )
 
     def test_invalid_middle_grey(self) -> None:
