@@ -21,22 +21,37 @@ class FactoryTest(TestCase):
 
     def test_creating_profiles(self) -> None:
         self.assert_configurations(
-            {"T1": {}, "T2": {}}, {"templates": [{"T1": {}, "T2": {}}]}
+            {"T1": {}, "T2": {}},
+            {"templates": [{"optional": False, "settings": {"T1": {}, "T2": {}}}]},
         )
 
-        self.assert_configurations({"T": {"a": 1}}, {"templates": [{"T": {"a": 1}}]})
+        self.assert_configurations(
+            {"T": {"a": 1}},
+            {"templates": [{"optional": False, "settings": {"T": {"a": 1}}}]},
+        )
+
+    def test_ignore_first_optional_template(self) -> None:
+        self.assert_configurations(
+            {"T": {"a": 1}},
+            {"templates": [{"optional": True, "settings": {"T": {"a": 1}}}]},
+        )
 
     def test_override_defaults_with_template(self) -> None:
         self.assert_configurations(
             {"T": {"a": 1, "b": 3, "c": 4}},
-            {"defaults": {"a": 1, "b": 2}, "templates": [{"T": {"b": 3, "c": 4}}]},
+            {
+                "defaults": {"a": 1, "b": 2},
+                "templates": [{"optional": False, "settings": {"T": {"b": 3, "c": 4}}}],
+            },
         )
 
         self.assert_configurations(
             {"T": {"nested": {"a": 1, "b": 3, "c": 4}}},
             {
                 "defaults": {"nested": {"a": 1, "b": 2}},
-                "templates": [{"T": {"nested": {"b": 3, "c": 4}}}],
+                "templates": [
+                    {"optional": False, "settings": {"T": {"nested": {"b": 3, "c": 4}}}}
+                ],
             },
         )
 
@@ -45,8 +60,8 @@ class FactoryTest(TestCase):
             {"T1_T2": {"a": 1, "b": 3, "c": 4}},
             {
                 "templates": [
-                    {"T1": {"a": 1, "b": 2}},
-                    {"T2": {"b": 3, "c": 4}},
+                    {"optional": False, "settings": {"T1": {"a": 1, "b": 2}}},
+                    {"optional": False, "settings": {"T2": {"b": 3, "c": 4}}},
                 ]
             },
         )
@@ -62,13 +77,30 @@ class FactoryTest(TestCase):
             {
                 "templates": [
                     {
-                        "T11": {"a": 1},
-                        "T12": {"a": 2},
+                        "optional": False,
+                        "settings": {
+                            "T11": {"a": 1},
+                            "T12": {"a": 2},
+                        },
                     },
                     {
-                        "T21": {"a": 3},
-                        "T22": {"a": 4},
+                        "optional": False,
+                        "settings": {
+                            "T21": {"a": 3},
+                            "T22": {"a": 4},
+                        },
                     },
+                ]
+            },
+        )
+
+    def test_optional_templates(self) -> None:
+        self.assert_configurations(
+            {"T1": {"a": 1, "b": 2}, "T1_T2": {"a": 1, "b": 3, "c": 4}},
+            {
+                "templates": [
+                    {"optional": False, "settings": {"T1": {"a": 1, "b": 2}}},
+                    {"optional": True, "settings": {"T2": {"b": 3, "c": 4}}},
                 ]
             },
         )
@@ -86,7 +118,13 @@ class FactoryTest(TestCase):
         preprocessor_mock = Mock(side_effect=lambda x: x)
 
         create_from_template(
-            {"templates": [{"T1": {"a": 1}}, {"T2": {"b": 2}}]}, preprocessor_mock
+            {
+                "templates": [
+                    {"optional": False, "settings": {"T1": {"a": 1}}},
+                    {"optional": False, "settings": {"T2": {"b": 2}}},
+                ]
+            },
+            preprocessor_mock,
         )
 
         preprocessor_mock.assert_has_calls(
