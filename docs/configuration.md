@@ -31,13 +31,22 @@ instead of nesting each object. It is very useful for setting only one parameter
     "defaults": <configuration>,
     "templates": [
         {
-            <template_name>: <configuration>,
-            ...
+            "optional": false,
+            "settings": {
+                <template_name>: <configuration>,
+                ...
+            }
         },
         ...
     ]
 }
 ```
+
+`settings`: template names and it's configuration
+
+`optional`: if a template is optional, then profiles will be created with and
+without it. Example: `T1` and `T2` are templates and `T2` is optional, then
+`T1` and `T1_T2` profiles will be created.
 
 Configuration templates are described in the `templates` field. Each template will be
 combined with predecessing ones.
@@ -121,14 +130,14 @@ Creates an S-cruve around the middle grey point with the given strength.
 x, y coordinates of the middle grey point, center of the S-curve.
 
 `strength`
-|               |         |
-| ---           | ---     |
-| Type          | integer |
-| Value range   | 0 - 100 |
-| Default value | 0       |
+|               |             |
+| ---           | ---         |
+| Type          | float       |
+| Value range   | 0.0 - 100.0 |
+| Default value | 0           |
 
 Amount of contrast. 0 will produce a linear tone curve, while 100 results in a near
-horizontal line around the middle grey point.
+vertical line around the middle grey point.
 
 `weights`
 |               |                |
