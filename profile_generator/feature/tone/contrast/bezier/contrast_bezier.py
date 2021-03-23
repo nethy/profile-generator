@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import List, Tuple
 
 from profile_generator.unit import Line, Point, Strength
@@ -32,8 +33,9 @@ def calculate(
 
 
 def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
-    if strength.value < 1:
-        contrast_line = _get_contrast_line(grey, strength)
+    corrected_strength = strength.value / math.sqrt(grey.y / grey.x)
+    if corrected_strength < 1:
+        contrast_line = _get_contrast_line(grey, corrected_strength)
         shadow = Point(contrast_line.get_x(_SHADOW_LIMIT), _SHADOW_LIMIT)
         highlight = Point(contrast_line.get_x(_HIGHLIGHT_LIMIT), _HIGHLIGHT_LIMIT)
         return (shadow, highlight)
@@ -43,8 +45,8 @@ def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
         return (shadow, highlight)
 
 
-def _get_contrast_line(grey: Point, strength: Strength) -> Line:
-    gradient = grey.y / (grey.x * (1 - strength.value))
+def _get_contrast_line(grey: Point, strength: float) -> Line:
+    gradient = grey.y / (grey.x * (1 - strength))
     offset = grey.y - gradient * grey.x
     return Line(gradient, offset)
 
