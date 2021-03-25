@@ -17,6 +17,8 @@ _HIGHLIGHT_LIMIT = 239 / 255
 
 _POINTS_COUNT = 8
 
+_CONTRAST_LIMIT = 2 * math.sqrt(2)
+
 
 def calculate(
     grey: Point,
@@ -33,20 +35,20 @@ def calculate(
 
 
 def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
-    corrected_strength = strength.value / math.sqrt(grey.y / grey.x)
-    if corrected_strength < 1:
-        contrast_line = _get_contrast_line(grey, corrected_strength)
-        shadow = Point(contrast_line.get_x(_SHADOW_LIMIT), _SHADOW_LIMIT)
-        highlight = Point(contrast_line.get_x(_HIGHLIGHT_LIMIT), _HIGHLIGHT_LIMIT)
-        return (shadow, highlight)
-    else:
-        shadow = Point(grey.x, _SHADOW_LIMIT)
-        highlight = Point(grey.x, _HIGHLIGHT_LIMIT)
-        return (shadow, highlight)
+    contrast_correction = math.sqrt(grey.y / grey.x)
+    q = (1 - 1 / (strength.value * (_CONTRAST_LIMIT - 1) + 1)) / contrast_correction
+    contrast_line = _get_contrast_line(grey, q)
+    shadow_line = Line.from_points(Point(grey.x, 0), Point(0, grey.y * (1 - q) / 4))
+    shadow = contrast_line.intersect(shadow_line)
+    highlight_line = Line.from_points(
+        Point(grey.x, 1), Point(1, 1 - (1 - grey.y) * (1 - q) / 2)
+    )
+    highlight = contrast_line.intersect(highlight_line)
+    return (shadow, highlight)
 
 
-def _get_contrast_line(grey: Point, strength: float) -> Line:
-    gradient = grey.y / (grey.x * (1 - strength))
+def _get_contrast_line(grey: Point, q: float) -> Line:
+    gradient = grey.y / (grey.x * (1 - q))
     offset = grey.y - gradient * grey.x
     return Line(gradient, offset)
 

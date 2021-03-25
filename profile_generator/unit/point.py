@@ -14,7 +14,7 @@ class Point:
         return math.sqrt(math.pow(diff_x, 2) + math.pow(diff_y, 2))
 
     def __repr__(self) -> str:
-        return f"Point(x={self.x:.3f}, y={self.y:.3f})"
+        return f"Point(x={self.x:.5f}, y={self.y:.5f})"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Point):

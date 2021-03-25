@@ -1,35 +1,35 @@
-import unittest
+from unittest import TestCase
 
 from profile_generator.unit import Point, Strength
 
 from . import contrast_bezier
 
 
-class ResolveTest(unittest.TestCase):
+class ResolveTest(TestCase):
     def test_calculate_when_strength_is_less_than_1(self) -> None:
-        grey = Point(0.3412, 0.46667)
+        grey = Point(87 / 255, 119 / 255)
         strength = Strength(0.2)
 
         result = contrast_bezier.calculate(grey, strength, (2, 1))
 
         self.assertSequenceEqual(
-            (
+            [
                 Point(0, 0),
-                Point(0.03603, 0.01999),
-                Point(0.06463, 0.04524),
-                Point(0.09294, 0.07816),
-                Point(0.12565, 0.12291),
-                Point(0.16847, 0.18727),
-                Point(0.23180, 0.28775),
-                Point(0.34120, 0.46667),
-                Point(0.42450, 0.59280),
-                Point(0.51140, 0.70228),
-                Point(0.60191, 0.79512),
-                Point(0.69602, 0.87131),
-                Point(0.79374, 0.93085),
-                Point(0.89507, 0.97375),
+                Point(0.04972, 0.03141),
+                Point(0.08479, 0.06206),
+                Point(0.11581, 0.09724),
+                Point(0.14852, 0.14199),
+                Point(0.18863, 0.20409),
+                Point(0.24548, 0.29917),
+                Point(0.34118, 0.46667),
+                Point(0.41723, 0.58862),
+                Point(0.49931, 0.69532),
+                Point(0.58741, 0.78677),
+                Point(0.68153, 0.86296),
+                Point(0.78166, 0.92389),
+                Point(0.88782, 0.96958),
                 Point(1, 1),
-            ),
+            ],
             result,
         )
 
@@ -40,22 +40,22 @@ class ResolveTest(unittest.TestCase):
         result = contrast_bezier.calculate(grey, strength, (2, 1))
 
         self.assertSequenceEqual(
-            (
+            [
                 Point(0, 0),
-                Point(0.20492, 0.02054),
-                Point(0.31884, 0.04717),
-                Point(0.39041, 0.08227),
-                Point(0.43836, 0.13022),
-                Point(0.47101, 0.19935),
-                Point(0.49180, 0.30743),
+                Point(0.13747, 0.01416),
+                Point(0.21947, 0.03777),
+                Point(0.27770, 0.07161),
+                Point(0.32564, 0.11955),
+                Point(0.37164, 0.18994),
+                Point(0.42436, 0.30104),
                 Point(0.50000, 0.50000),
-                Point(0.51020, 0.61729),
-                Point(0.54082, 0.71929),
-                Point(0.59184, 0.80600),
-                Point(0.66327, 0.87743),
-                Point(0.75510, 0.93357),
-                Point(0.86735, 0.97443),
+                Point(0.55095, 0.62545),
+                Point(0.60873, 0.73289),
+                Point(0.67333, 0.82233),
+                Point(0.74476, 0.89376),
+                Point(0.82301, 0.94718),
+                Point(0.90809, 0.98259),
                 Point(1, 1),
-            ),
+            ],
             result,
         )
