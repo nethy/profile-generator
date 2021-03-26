@@ -4,7 +4,7 @@ from profile_generator.unit import Point, Strength
 
 _DEFAULT_GREY = [92, 119]
 _DEFAULT_STRENGTH = 0
-_DEFAULT_WEIGHTS = [2, 1]
+_DEFAULT_WEIGHTS = [1, 1]
 
 _TEMPLATE_FIELD = "Curve"
 

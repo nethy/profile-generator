@@ -5,7 +5,7 @@ from . import shim
 from .shim import Point, Strength
 
 _DEFAULT_GREY = Point(92 / 255, 119 / 255)
-_DEFAULT_WEIGHTS = (2, 1)
+_DEFAULT_WEIGHTS = (1, 1)
 
 
 class ResolveTest(unittest.TestCase):
