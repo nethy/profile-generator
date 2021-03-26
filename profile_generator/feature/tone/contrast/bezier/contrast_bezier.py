@@ -12,42 +12,42 @@ _logger = logging.getLogger(__name__)
 _BLACK_POINT = Point(0, 0)
 _WHITE_POINT = Point(1, 1)
 
-_SHADOW_LIMIT = 8 / 255
-_HIGHLIGHT_LIMIT = 239 / 255
+_SHADOW_GRADE = 0.125
+_HIGHLIGHT_GRADE = 0.25
 
 _POINTS_COUNT = 8
 
+_CONTRAST_LIMIT = 2 * math.sqrt(2)
+
 
 def calculate(
-    grey: Point,
+    gray: Point,
     strength: Strength,
     weights: Tuple[float, float],
 ) -> List[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
-    (shadow, highlight) = _get_control_points(grey, strength)
-    toe = _get_bezier_curve([(_BLACK_POINT, 1), (shadow, weights[0]), (grey, 1)])
+    (shadow, highlight) = _get_control_points(gray, strength)
+    toe = _get_bezier_curve([(_BLACK_POINT, 1), (shadow, weights[0]), (gray, 1)])
     shoulder = _get_bezier_curve(
-        [(grey, 1), (highlight, weights[1]), (_WHITE_POINT, 1)]
+        [(gray, 1), (highlight, weights[1]), (_WHITE_POINT, 1)]
     )
     return toe + shoulder[1:]
 
 
-def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
-    corrected_strength = strength.value / math.sqrt(grey.y / grey.x)
-    if corrected_strength < 1:
-        contrast_line = _get_contrast_line(grey, corrected_strength)
-        shadow = Point(contrast_line.get_x(_SHADOW_LIMIT), _SHADOW_LIMIT)
-        highlight = Point(contrast_line.get_x(_HIGHLIGHT_LIMIT), _HIGHLIGHT_LIMIT)
-        return (shadow, highlight)
-    else:
-        shadow = Point(grey.x, _SHADOW_LIMIT)
-        highlight = Point(grey.x, _HIGHLIGHT_LIMIT)
-        return (shadow, highlight)
+def _get_control_points(gray: Point, strength: Strength) -> Tuple[Point, Point]:
+    contrast_correction = math.sqrt(gray.y / gray.x)
+    q = (1 - 1 / (strength.value * (_CONTRAST_LIMIT - 1) + 1)) / contrast_correction
+    contrast_line = _get_contrast_line(gray, q)
+    shadow_line = Line(-_SHADOW_GRADE, 0 + _SHADOW_GRADE * gray.x)
+    shadow = contrast_line.intersect(shadow_line)
+    highlight_line = Line(-_HIGHLIGHT_GRADE, 1 + _HIGHLIGHT_GRADE * gray.x)
+    highlight = contrast_line.intersect(highlight_line)
+    return (shadow, highlight)
 
 
-def _get_contrast_line(grey: Point, strength: float) -> Line:
-    gradient = grey.y / (grey.x * (1 - strength))
-    offset = grey.y - gradient * grey.x
+def _get_contrast_line(gray: Point, q: float) -> Line:
+    gradient = gray.y / (gray.x * (1 - q))
+    offset = gray.y - gradient * gray.x
     return Line(gradient, offset)
 
 
