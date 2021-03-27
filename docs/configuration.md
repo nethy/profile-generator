@@ -144,7 +144,7 @@ vertical line around the middle grey point.
 | ---           | ---            |
 | Type          | [float, float] |
 | Value range   | 0.0 - 5.0      |
-| Default value | [2.0, 1.0]     |
+| Default value | [1.0, 1.0]     |
 
 Shadow and the highlight point weights of the tone curve. Determines how gradual or
 steep the curve is. Smaller value provides flatter, while larger value provides more
