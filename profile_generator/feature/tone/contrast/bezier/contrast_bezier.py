@@ -17,7 +17,7 @@ _HIGHLIGHT_PROTECTION_SLOPE = 0.26794919243112270647255365849413  # 15 degree
 
 _POINTS_COUNT = 8
 
-_CONTRAST_LIMIT = 2 * math.sqrt(2)
+_CONTRAST_LIMIT = 4
 
 
 def calculate(
@@ -27,9 +27,11 @@ def calculate(
 ) -> List[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
     (shadow, highlight) = _get_control_points(gray, strength)
-    toe = _get_bezier_curve([(_BLACK_POINT, 1), (shadow, weights[0]), (gray, 1)])
+    toe = _get_bezier_curve(
+        [(_BLACK_POINT, weights[0]), (shadow, weights[0]), (gray, 1)]
+    )
     shoulder = _get_bezier_curve(
-        [(gray, 1), (highlight, weights[1]), (_WHITE_POINT, 1)]
+        [(gray, 1), (highlight, weights[1]), (_WHITE_POINT, weights[1])]
     )
     return toe + shoulder[1:]
 
