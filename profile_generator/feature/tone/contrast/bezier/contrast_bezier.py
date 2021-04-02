@@ -21,37 +21,37 @@ _CONTRAST_LIMIT = 4
 
 
 def calculate(
-    gray: Point,
+    grey: Point,
     strength: Strength,
     weights: Tuple[float, float],
 ) -> List[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
-    (shadow, highlight) = _get_control_points(gray, strength)
+    (shadow, highlight) = _get_control_points(grey, strength)
     toe = _get_bezier_curve(
-        [(_BLACK_POINT, weights[0]), (shadow, weights[0]), (gray, 1)]
+        [(_BLACK_POINT, weights[0]), (shadow, weights[0]), (grey, 1)]
     )
     shoulder = _get_bezier_curve(
-        [(gray, 1), (highlight, weights[1]), (_WHITE_POINT, weights[1])]
+        [(grey, 1), (highlight, weights[1]), (_WHITE_POINT, weights[1])]
     )
     return toe + shoulder[1:]
 
 
-def _get_control_points(gray: Point, strength: Strength) -> Tuple[Point, Point]:
-    contrast_correction = math.sqrt(gray.y / gray.x)
+def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
+    contrast_correction = math.sqrt(grey.y / grey.x)
     q = (1 - 1 / (strength.value * (_CONTRAST_LIMIT - 1) + 1)) / contrast_correction
-    contrast_line = _get_contrast_line(gray, q)
-    shadow_line = Line(-_SHADOW_PROTECTION_SLOPE, 0 + _SHADOW_PROTECTION_SLOPE * gray.x)
+    contrast_line = _get_contrast_line(grey, q)
+    shadow_line = Line(-_SHADOW_PROTECTION_SLOPE, 0 + _SHADOW_PROTECTION_SLOPE * grey.x)
     shadow = contrast_line.intersect(shadow_line)
     highlight_line = Line(
-        -_HIGHLIGHT_PROTECTION_SLOPE, 1 + _HIGHLIGHT_PROTECTION_SLOPE * gray.x
+        -_HIGHLIGHT_PROTECTION_SLOPE, 1 + _HIGHLIGHT_PROTECTION_SLOPE * grey.x
     )
     highlight = contrast_line.intersect(highlight_line)
     return (shadow, highlight)
 
 
-def _get_contrast_line(gray: Point, q: float) -> Line:
-    gradient = gray.y / (gray.x * (1 - q))
-    offset = gray.y - gradient * gray.x
+def _get_contrast_line(grey: Point, q: float) -> Line:
+    gradient = grey.y / (grey.x * (1 - q))
+    offset = grey.y - gradient * grey.x
     return Line(gradient, offset)
 
 

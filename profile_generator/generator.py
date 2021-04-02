@@ -3,7 +3,7 @@ import sys
 from json import JSONDecodeError
 from typing import Any, Callable, Dict, List
 
-from profile_generator.configuration.schema import Schema
+from profile_generator.configuration.schema import Schema, SchemaError
 from profile_generator.util import file
 
 _PROFILES_DIR = "profiles"
@@ -52,7 +52,9 @@ class ConfigFileReadError(Exception):
 
 
 class InvalidConfigFileError(Exception):
-    pass
+    def __init__(self, errors: List[SchemaError]):
+        super().__init__()
+        self.errors = errors
 
 
 def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
@@ -61,12 +63,12 @@ def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
         cfg_template = json.loads(raw_config)
         errors = schema.validate(cfg_template)
         if len(errors) > 0:
-            raise InvalidConfigFileError
+            raise InvalidConfigFileError(errors)
         return cfg_template
     except OSError as exc:
         raise ConfigFileReadError from exc
     except JSONDecodeError as exc:
-        raise InvalidConfigFileError from exc
+        raise InvalidConfigFileError([]) from exc
 
 
 class ProfileWriteError(Exception):
