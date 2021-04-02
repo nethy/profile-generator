@@ -1,6 +1,6 @@
 from functools import partial
 
-from profile_generator.feature import raw
+from profile_generator.feature import colors, raw
 from profile_generator.feature.details import noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
 from profile_generator.feature.tone.contrast import bezier, local
@@ -25,6 +25,7 @@ marshallers = {
     _NOISE_REDUCTION: noise_reduction.get_profile_args,
     _CAPTURE_SHARPENING: capture.get_profile_args,
     _OUTPUT_SHARPENING: output.get_profile_args,
+    field_names.COLORS: colors.get_profile_args,
 }
 
 get_profile_args = partial(marshaller.get_profile_args, **marshallers)

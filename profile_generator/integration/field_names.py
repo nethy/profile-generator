@@ -1,3 +1,4 @@
+COLORS = "colors"
 DETAILS = "details"
 SHARPENING = "sharpening"
 CAPTURE_SHARPENING = "capture"

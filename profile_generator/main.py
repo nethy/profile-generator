@@ -35,6 +35,7 @@ def main() -> None:
 
 
 def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> None:
+    logger = logging.getLogger(__name__)
     console_logger = log.get_console_logger()
     try:
         cfg_template = generator.load_configuration_file(
@@ -49,7 +50,8 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
             console_logger.info("Profile has been created: %s", name)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
-    except InvalidConfigFileError:
+    except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_file_name)
+        logger.error(exc.errors)
     except ProfileWriteError:
         console_logger.error("%s: file write failure", cfg_file_name)

@@ -1,5 +1,5 @@
 from profile_generator.configuration.schema import list_of, map_of, object_of, type_of
-from profile_generator.feature import raw
+from profile_generator.feature import colors, raw
 from profile_generator.feature.details import noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
 from profile_generator.feature.tone.contrast import bezier, local
@@ -29,6 +29,7 @@ _CONFIG_SCHEMA = object_of(
         field_names.RAW: raw.SCHEMA,
         field_names.TONE: _TONE_SCHEMA,
         field_names.DETAILS: _DETAILS_SCHEMA,
+        field_names.COLORS: colors.SCHEMA,
     }
 )
 
