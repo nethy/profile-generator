@@ -85,7 +85,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_color(self) -> None:
+    def test_colors(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"colors": {}},
