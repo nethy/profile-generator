@@ -20,19 +20,26 @@ class SchemaTest(unittest.TestCase):
 
     def test_valid_config(self) -> None:
         self.validator.assert_valid(
-            {"middle_grey": [128, 128], "strength": 25.1, "weights": [1.2, 1.2]}
+            {
+                "grey": {"x": 128, "y": 128},
+                "strength": 25.1,
+                "weights": [1.2, 1.2],
+            }
         )
 
     def test_invalid_middle_grey(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"middle_grey": InvalidListSizeError(2)}),
-            {"middle_grey": [128]},
+            InvalidObjectError(
+                {"grey": InvalidObjectError({"x": InvalidRangeError(0, 255)})}
+            ),
+            {"grey": {"x": False}},
         )
+
         self.validator.assert_error(
             InvalidObjectError(
-                {"middle_grey": InvalidListError({1: InvalidRangeError(0, 255)})}
+                {"grey": InvalidObjectError({"y": InvalidRangeError(0, 255)})}
             ),
-            {"middle_grey": [False, 128]},
+            {"grey": {"y": False}},
         )
 
     def test_invalid_strength(self) -> None:
