@@ -120,14 +120,23 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 **Parameters**
 
-`middle_grey`
-|               |                    |
-| ---           | ---                |
-| Type          | [integer, integer] |
-| Value range   | 0 - 255            |
-| Default value | [92, 119]          |
+`grey.x`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 255 |
+| Default value | 92      |
 
-x, y coordinates of the middle grey point, center of the S-curve.
+x coordinate of the middle grey point, center of the S-curve.
+
+`grey.y`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 255 |
+| Default value | 119      |
+
+y coordinate of the middle grey point, center of the S-curve.
 
 `strength`
 |               |             |

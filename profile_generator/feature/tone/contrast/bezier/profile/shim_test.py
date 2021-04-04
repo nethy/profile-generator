@@ -20,7 +20,7 @@ class ResolveTest(unittest.TestCase):
     def test_get_arguments_middle_grey(self) -> None:
         self.assertTupleEqual(
             (Point(90 / 255, 128 / 255), Strength(), _DEFAULT_WEIGHTS),
-            shim.get_arguments({"middle_grey": [90, 128]}),
+            shim.get_arguments({"grey": {"x": 90, "y": 128}}),
         )
 
     def test_get_arguments_strength(self) -> None:

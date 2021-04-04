@@ -2,7 +2,8 @@ from typing import Any, Collection, Dict, Tuple
 
 from profile_generator.unit import Point, Strength
 
-_DEFAULT_GREY = [92, 119]
+_DEFAULT_GREY_X = 92
+_DEFAULT_GREY_Y = 119
 _DEFAULT_STRENGTH = 0
 _DEFAULT_WEIGHTS = [1, 1]
 
@@ -22,9 +23,9 @@ def get_arguments(
 
 
 def _get_grey_point(configuration: Dict[str, Any]) -> Point:
-    grey_configuration = configuration.get("middle_grey", _DEFAULT_GREY)
-    x = grey_configuration[0] / 255
-    y = grey_configuration[1] / 255
+    grey = configuration.get("grey", {})
+    x = grey.get("x", _DEFAULT_GREY_X) / 255
+    y = grey.get("y", _DEFAULT_GREY_Y) / 255
     return Point(x, y)
 
 
