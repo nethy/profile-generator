@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
@@ -16,38 +16,27 @@ class ObjectSchema(Schema):
         return self._validate_object(data)
 
     def _validate_object(self, data: Any) -> List[SchemaError]:
-        errors: Dict[str, SchemaError] = {}
-        for key, value in data.items():
-            self._collect_errors(key, value, errors)
+        errors = self._collect_errors(data)
 
         if len(errors.keys()) > 0:
             return [InvalidObjectError(errors)]
         else:
             return []
 
-    def _collect_errors(
-        self, key: str, value: Any, errors: Dict[str, SchemaError]
-    ) -> None:
-        schema_members = self._object_schema.keys()
-        nested_name, nested_value = self._get_nested_key_value(key, value)
-        if nested_name not in schema_members:
-            errors[nested_name] = UnkownMemberError()
-        else:
-            member_error = self._get_member_error(nested_name, nested_value)
-            if len(member_error) > 0:
-                errors[nested_name] = member_error[0]
-
-    @staticmethod
-    def _get_nested_key_value(key: str, value: Any) -> Tuple[str, Any]:
-        dot_idx = key.find(".")
-        if dot_idx > -1:
-            return (key[:dot_idx], {key[dot_idx + 1 :]: value})
-        else:
-            return (key, value)
+    def _collect_errors(self, data: Any) -> Dict[str, SchemaError]:
+        errors: Dict[str, SchemaError] = {}
+        for name, value in data.items():
+            error = self._get_member_error(name, value)
+            if len(error) > 0:
+                errors[name] = error[0]
+        return errors
 
     def _get_member_error(self, name: str, value: Any) -> List[SchemaError]:
-        member_schema = self._object_schema.get(name, _ANY_SCHEMA)
-        return member_schema.validate(value)
+        if name not in self._object_schema.keys():
+            return [UnkownMemberError()]
+        else:
+            member_schema = self._object_schema.get(name, _ANY_SCHEMA)
+            return member_schema.validate(value)
 
 
 class AnySchema(Schema):
