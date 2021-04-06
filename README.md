@@ -13,31 +13,21 @@ and this tool will combine them into multiple profiles.
   "templates": [
     {
       "Camera1": {
-        "contrast_curve": {
-          "middle_grey": [98, 119]
-        }
+        "tone.contrast.bezier.grey": { "x": 98, "y": 119}
       },
       "Camera2": {
-        "contrast_curve": {
-          "middle_grey": [83, 119]
-        }
+        "tone.contrast.bezier.grey": { "x": 83, "y": 119}
       }
     },
     {
       "Soft": {
-        "contrast_curve": {
-          "strength": 10
-        }
+        "tone.contrast.bezier.strength": 10
       },
       "Medium": {
-        "contrast_curve": {
-          "strength": 20
-        }
+        "tone.contrast.bezier.strength": 20
       },
       "Strong": {
-        "contrast_curve": {
-          "strength": 30
-        }
+        "tone.contrast.bezier.strength": 30
       }
     }
   ]

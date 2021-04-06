@@ -2,7 +2,6 @@ import logging
 import sys
 
 from profile_generator import configuration, generator, integration, log
-from profile_generator.configuration.preprocessor import dot_notation
 from profile_generator.generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
@@ -41,7 +40,7 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         cfg_template = generator.load_configuration_file(
             cfg_file_name, integration.SCHEMA
         )
-        config = configuration.create_from_template(cfg_template, dot_notation.expand)
+        config = configuration.create_from_template(cfg_template)
         for name, body in config.items():
             logging.info("creating profile: %s", name)
             generator.generate_profile(

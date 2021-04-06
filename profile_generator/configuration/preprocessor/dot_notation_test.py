@@ -29,3 +29,15 @@ class DotNotationTest(TestCase):
             },
             expand({"a.b": 1, "a": {"c": 2, "d": 3}}),
         )
+
+    def test_epand_list_items(self) -> None:
+        self.assertEqual(
+            [
+                {"a": {"b": 1}},
+                {"c": {"d": 2}},
+            ],
+            expand([{"a.b": 1}, {"c.d": 2}]),
+        )
+
+    def test_expand_list_in_dict(self) -> None:
+        self.assertEqual({"a": [{"b": {"c": 1}}]}, expand({"a": [{"b.c": 1}]}))

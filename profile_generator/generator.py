@@ -3,6 +3,7 @@ import sys
 from json import JSONDecodeError
 from typing import Any, Callable, Dict, List
 
+from profile_generator.configuration.preprocessor import dot_notation
 from profile_generator.configuration.schema import Schema, SchemaError
 from profile_generator.util import file
 
@@ -61,6 +62,7 @@ def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
     try:
         raw_config = file.read_file(file_name)
         cfg_template = json.loads(raw_config)
+        cfg_template = dot_notation.expand(cfg_template)
         errors = schema.validate(cfg_template)
         if len(errors) > 0:
             raise InvalidConfigFileError(errors)
