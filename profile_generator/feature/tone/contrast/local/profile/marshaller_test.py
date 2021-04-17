@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from .marshaller import get_profile_args
 
-_CURVE_TEMPLATE = "1;0;0.5;0;0.16667;0.5;{};0.33333;0.3333333;1;0.5;0.166667;0;"
+_CURVE_TEMPLATE = "1;0;0.5;0;0.25;0.4;{value};0.25;0;0.6;{value};0;0.25;1;0.5;0.25;0;"
 
 
 class MarshallerTest(TestCase):
@@ -19,7 +19,7 @@ class MarshallerTest(TestCase):
         self.assertEqual(
             {
                 "WaveletEnabled": "true",
-                "OpacityCurveWL": _CURVE_TEMPLATE.format("0.60000"),
+                "OpacityCurveWL": _CURVE_TEMPLATE.format(value="0.60000"),
             },
             get_profile_args({"local": 20}),
         )
