@@ -2,11 +2,13 @@ from profile_generator.configuration.schema import list_of, map_of, object_of, t
 from profile_generator.feature import colors, raw
 from profile_generator.feature.details import noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
-from profile_generator.feature.tone.contrast import bezier, local
+from profile_generator.feature.tone.contrast import bezier, local, sigmoid
 
 from ... import field_names
 
-_CURVE_SCHEMA = object_of(**{field_names.BEZIER: bezier.SCHEMA})
+_CURVE_SCHEMA = object_of(
+    **{field_names.BEZIER: bezier.SCHEMA, field_names.SIGMOID: sigmoid.SCHEMA}
+)
 _TONE_SCHEMA = object_of(
     **{field_names.CURVE: _CURVE_SCHEMA, field_names.CONTRAST: local.SCHEMA}
 )
