@@ -5,7 +5,7 @@ from profile_generator.unit import Point, Strength
 from . import contrast_bezier
 
 
-class ResolveTest(TestCase):
+class ContrastBezierTest(TestCase):
     def test_calculate_when_strength_is_less_than_1(self) -> None:
         grey = Point(87 / 255, 119 / 255)
         strength = Strength(0.2)

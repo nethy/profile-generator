@@ -3,13 +3,13 @@ from functools import partial
 
 from profile_generator.unit import Point
 
-from . import bezier_fn
+from . import bezier
 
 
 class BezierTest(unittest.TestCase):
     def test_get_point_at(self) -> None:
         control_points = [(Point(0, 0), 1), (Point(0.2, 0), 2), (Point(0.5, 0.5), 1)]
-        bezier_at = partial(bezier_fn.get_point_at, control_points)
+        bezier_at = partial(bezier.get_point_at, control_points)
 
         self.assertEqual(Point(0, 0), bezier_at(0))
         self.assertEqual(Point(0.13182, 0.02273), bezier_at(0.25))

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import math
 
+_PRECISION = 0.00001
+
 
 class Point:
     def __init__(self, x: float, y: float):
@@ -20,7 +22,7 @@ class Point:
         if not isinstance(other, Point):
             return NotImplemented
 
-        return abs(self.x - other.x) < 0.00001 and abs(self.y - other.y) < 0.00001
+        return abs(self.x - other.x) < _PRECISION and abs(self.y - other.y) < _PRECISION
 
     def __ne__(self, other: object) -> bool:
         if not isinstance(other, Point):

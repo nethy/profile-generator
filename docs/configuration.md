@@ -8,6 +8,7 @@
         * [Local](#local)
     * [Curve](#curve)
         * [Bezier](#bezier)
+        * [Sigmoid](#sigmoid)
 * [Details](#details)
     * [Sharpening](#sharpening)
         * [Capture](#capture)
@@ -160,6 +161,41 @@ steep the curve is. Smaller value provides flatter, while larger value provides 
 steeper curve.
 Using higher weight for shadow helps to increase the contrast of the image, while
 highlights can be preserved as much as possible.
+
+#### Sigmoid
+
+Field name: `sigmoid`
+
+Creates an S-cruve around the middle grey point with the given strength.
+
+**Parameters**
+
+`grey.x`
+|               |          |
+| ---           | ---      |
+| Type          | integer  |
+| Value range   | 16 - 240 |
+| Default value | 92       |
+
+x coordinate of the middle grey point, center of the S-curve.
+
+`grey.y`
+|               |          |
+| ---           | ---      |
+| Type          | integer  |
+| Value range   | 64 - 192 |
+| Default value | 119      |
+
+y coordinate of the middle grey point, center of the S-curve.
+
+`strength`
+|               |             |
+| ---           | ---         |
+| Type          | float       |
+| Value range   | 0.0 - 100.0 |
+| Default value | 0           |
+
+Amount of contrast. 0 will produce a flat tone curve.
 
 ## Detials
 
