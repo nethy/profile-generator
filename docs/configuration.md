@@ -162,9 +162,9 @@ steeper curve.
 Using higher weight for shadow helps to increase the contrast of the image, while
 highlights can be preserved as much as possible.
 
-#### Bezier
+#### Sigmoid
 
-Field name: `bezier`
+Field name: `sigmoid`
 
 Creates an S-cruve around the middle grey point with the given strength.
 
@@ -195,7 +195,7 @@ y coordinate of the middle grey point, center of the S-curve.
 | Value range   | 0.0 - 100.0 |
 | Default value | 0           |
 
-Amount of contrast. 0 will produce a linear tone curve.
+Amount of contrast. 0 will produce a flat tone curve.
 
 ## Detials
 
