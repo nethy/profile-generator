@@ -4,8 +4,8 @@ from typing import List, Tuple
 
 from profile_generator.unit import Line, Point, Strength
 
-from . import bezier_fn
-from .bezier_fn import WeightedPoints
+from . import bezier
+from .bezier import WeightedPoints
 
 _logger = logging.getLogger(__name__)
 
@@ -57,6 +57,6 @@ def _get_contrast_line(grey: Point, q: float) -> Line:
 
 def _get_bezier_curve(points: WeightedPoints) -> List[Point]:
     return [
-        bezier_fn.get_point_at(points, 1 / (_POINTS_COUNT - 1) * i)
+        bezier.get_point_at(points, 1 / (_POINTS_COUNT - 1) * i)
         for i in range(_POINTS_COUNT)
     ]
