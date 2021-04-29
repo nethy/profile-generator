@@ -56,3 +56,16 @@ def _set_slope_strength(left: EqPoint, right: EqPoint, strength: float) -> None:
 
 def _transpose(point: Point) -> EqPoint:
     return EqPoint(point.x + 1, point.y, 0, 0)
+
+
+def to_raw_therapee(*points: Point) -> str:
+    return (
+        "1;"
+        + ";".join(
+            (
+                f"{p.x:.5f};{p.y:.5f};{p.left:.5f};{p.right:.5f}"
+                for p in equalize(*points)
+            )
+        )
+        + ";"
+    )
