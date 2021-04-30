@@ -222,7 +222,7 @@ Depth=25
 Luminance=false
 
 [Directional Pyramid Denoising]
-Enabled={DenoisingEnabled}
+Enabled={DenoiseEnabled}
 Enhance=false
 Median={Median}
 Luma=0
@@ -240,8 +240,8 @@ Redchro=0
 Bluechro=0
 Gamma=1.7
 Passes=1
-LCurve={DenoisingLCurve}
-CCCurve=1;0.05;0.33;0;0;0.20;0;0;0;
+LCurve={DenoiseLCurve}
+CCCurve={DenoiseCCCurve}
 
 [EPD]
 Enabled=false
