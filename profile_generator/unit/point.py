@@ -44,3 +44,6 @@ class Point:
 
     def __truediv__(self, other: float) -> Point:
         return Point(self.x / other, self.y / other)
+
+    def for_raw_therapee(self) -> str:
+        return f"{self.x:.5f};{self.y:.5f};"

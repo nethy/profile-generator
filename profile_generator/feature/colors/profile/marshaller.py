@@ -1,37 +1,29 @@
 from typing import Any, Dict
 
+from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
+from profile_generator.unit import Point, Strength
+
 _LAB_ENABLED = "LabEnabled"
-_LAB_CHROMATICITY = "LabChromaticity"
-_HSV_ENABLED = "HsvEnabled"
-_HSV_SCURVE = "HsvSCurve"
-_HSV_SCRUVE_TEMPLATE = "1;0;{value:.6f};0;0;1;{value:.6f};0;0;"
+_LAB_A_CURVE = "LabaCurve"
+_LAB_B_CURVE = "LabbCurve"
 
 _DEFAULT = {
     _LAB_ENABLED: "false",
-    _LAB_CHROMATICITY: "0",
-    _HSV_ENABLED: "false",
-    _HSV_SCURVE: "0;",
+    _LAB_A_CURVE: "0;",
+    _LAB_B_CURVE: "0;",
 }
 
 
 def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
     vibrance = configuration.get("vibrance", 0)
-    value = _DEFAULT
-    if vibrance > 0:
-        value = {**_DEFAULT, **_calculate_hsv_curve(vibrance)}
-    elif vibrance < 0:
-        value = {**_DEFAULT, **_calculate_chromaticity(vibrance)}
-    return value
+    args = _DEFAULT
+    if vibrance != 0:
+        args = {**_DEFAULT, **_calculate_curves(vibrance)}
+    return args
 
 
-def _calculate_hsv_curve(vibrance: int) -> Dict[str, str]:
-    saturation = 0.5 * (1 + vibrance / 100)
-    return {
-        _HSV_ENABLED: "true",
-        _HSV_SCURVE: _HSV_SCRUVE_TEMPLATE.format(value=saturation),
-    }
-
-
-def _calculate_chromaticity(vibrance: int) -> Dict[str, str]:
-    chromaticity = int(vibrance / 2)
-    return {_LAB_ENABLED: "true", _LAB_CHROMATICITY: str(chromaticity)}
+def _calculate_curves(vibrance: int) -> Dict[str, str]:
+    chroma_contrast_strength = Strength(vibrance / 2 / 100)
+    curve = contrast_sigmoid.calculate(Point(0.5, 0.5), chroma_contrast_strength, 17)
+    raw_curve = "1;" + "".join([p.for_raw_therapee() for p in curve])
+    return {_LAB_ENABLED: "true", _LAB_A_CURVE: raw_curve, _LAB_B_CURVE: raw_curve}

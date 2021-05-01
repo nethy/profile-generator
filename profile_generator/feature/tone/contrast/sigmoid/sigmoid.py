@@ -13,9 +13,18 @@ def brightness(b: float, x: float) -> float:
 def contrast(c: float, x: float) -> float:
     if c == 0:
         return x
+    elif c > 0:
+        return (1 / (1 + math.exp(c * (0.5 - x))) - 1 / (1 + math.exp(c / 2))) / (
+            1 / (1 + math.exp(c * (-0.5))) - 1 / (1 + math.exp(c / 2))
+        )
     else:
-        return (1 / (1 + math.exp(c * (0.5 - x))) - 1 / (1 + math.exp(c * 0.5))) / (
-            1 / (1 + math.exp(c * (0.5 - 1))) - 1 / (1 + math.exp(c * 0.5))
+        n_c = 2 - 1 / (math.exp((-c - math.sqrt(-c + 2)) / 2))
+        return (
+            math.log((n_c * (x - 0.5) + 1) / (1 - n_c * (x - 0.5)))
+            - math.log((-n_c / 2 + 1) / (1 + n_c / 2))
+        ) / (
+            math.log((n_c / 2 + 1) / (1 - n_c / 2))
+            - math.log((-n_c / 2 + 1) / (1 + n_c / 2))
         )
 
 

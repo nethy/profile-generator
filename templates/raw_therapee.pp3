@@ -100,13 +100,13 @@ AfterCurve=0;
 Enabled={LabEnabled}
 Brightness=0
 Contrast=0
-Chromaticity={LabChromaticity}
+Chromaticity=0
 AvoidColorShift=true
 RedAndSkinTonesProtection=0
 LCredsk=true
 LCurve=0;
-aCurve=0;
-bCurve=0;
+aCurve={LabaCurve}
+bCurve={LabbCurve}
 ccCurve=0;
 chCurve=0;
 lhCurve=0;
@@ -499,9 +499,9 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled={HsvEnabled}
+Enabled=false
 HCurve=0;
-SCurve={HsvSCurve}
+SCurve=0;
 VCurve=0;
 
 [SoftLight]
