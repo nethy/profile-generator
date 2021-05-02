@@ -1,6 +1,5 @@
+from profile_generator.model.sigmoid import approximate_brightness, curve
 from profile_generator.unit import Point, Strength
-
-from .sigmoid import approximate_brightness, curve
 
 
 def calculate(grey: Point, strength: Strength, sample_size: int) -> list[Point]:

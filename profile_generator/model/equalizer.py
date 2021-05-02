@@ -3,9 +3,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
-from profile_generator.unit import Point
-
-_PRECISION = 0.00001
+from profile_generator.unit import DECIMALS, PRECISION, Point
 
 
 @dataclass
@@ -27,7 +25,13 @@ class EqPoint:
 
     @staticmethod
     def _eq(a: float, b: float) -> bool:
-        return abs(a - b) < _PRECISION
+        return abs(a - b) < PRECISION
+
+    def for_raw_therapee(self) -> str:
+        return (
+            f"{self.x:.{DECIMALS}f};{self.y:.{DECIMALS}f};"
+            + f"{self.left:.{DECIMALS}f};{self.right:.{DECIMALS}f};"
+        )
 
 
 def equalize(*points: Point) -> list[EqPoint]:
@@ -56,16 +60,3 @@ def _set_slope_strength(left: EqPoint, right: EqPoint, strength: float) -> None:
 
 def _transpose(point: Point) -> EqPoint:
     return EqPoint(point.x + 1, point.y, 0, 0)
-
-
-def to_raw_therapee(*points: Point) -> str:
-    return (
-        "1;"
-        + ";".join(
-            (
-                f"{p.x:.5f};{p.y:.5f};{p.left:.5f};{p.right:.5f}"
-                for p in equalize(*points)
-            )
-        )
-        + ";"
-    )
