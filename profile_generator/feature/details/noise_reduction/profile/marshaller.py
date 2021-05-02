@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from profile_generator.functions import equalizer
+from profile_generator.model import equalizer
 from profile_generator.unit import Point
 
 

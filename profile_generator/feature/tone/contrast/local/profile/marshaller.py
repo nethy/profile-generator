@@ -1,6 +1,6 @@
 from typing import Any
 
-from profile_generator.functions import equalizer
+from profile_generator.model import equalizer
 from profile_generator.unit import Point
 
 _ENABLED_FIELD = "WaveletEnabled"

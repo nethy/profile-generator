@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .point import Point
+from .precision import DECIMALS
 
 
 class Line:
@@ -15,7 +16,10 @@ class Line:
         return Line(gradient, offset)
 
     def __repr__(self) -> str:
-        return f"Line(gradient={self.gradient:.3f}, offset={self.offset:.3f})"
+        return (
+            f"Line(gradient={self.gradient:.{DECIMALS}f}, "
+            + f"offset={self.offset:.{DECIMALS}f})"
+        )
 
     def intersect(self, other: Line) -> Point:
         x = (other.offset - self.offset) / (self.gradient - other.gradient)

@@ -2,10 +2,9 @@ import logging
 import math
 from typing import List, Tuple
 
+from profile_generator.model import bezier
+from profile_generator.model.bezier import WeightedPoints
 from profile_generator.unit import Line, Point, Strength
-
-from . import bezier
-from .bezier import WeightedPoints
 
 _logger = logging.getLogger(__name__)
 

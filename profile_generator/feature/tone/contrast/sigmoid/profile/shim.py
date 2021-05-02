@@ -1,6 +1,6 @@
 from typing import Any, Tuple
 
-from profile_generator.unit import Point, Strength
+from profile_generator.unit import DECIMALS, Point, Strength
 
 _DEFAULT_GREY_X = 92
 _DEFAULT_GREY_Y = 119
@@ -35,7 +35,7 @@ def _get_strength(configuration: dict[str, Any]) -> Strength:
 
 
 def marshal_curve(curve: list[Point]) -> dict[str, str]:
-    value = ";".join((f"{p.x:.5f};{p.y:.5f}" for p in curve))
+    value = ";".join((f"{p.x:.{DECIMALS}f};{p.y:.{DECIMALS}f}" for p in curve))
     if len(value) > 0:
         value = f"{_SPLINE_CURVE_ID};{value};"
     else:

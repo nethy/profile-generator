@@ -1,6 +1,6 @@
 import math
 
-from profile_generator.unit import Point
+from profile_generator.unit import PRECISION, Point
 
 
 def brightness(b: float, x: float) -> float:
@@ -32,8 +32,7 @@ def curve(c: float, b: float, x: float) -> float:
     return contrast(c, brightness(b, x))
 
 
-_PRECISION = 0.00001
-_LIMIT = 100
+_ITERATION_LIMIT = 100
 
 
 def approximate_brightness(grey: Point, c: float) -> float:
@@ -41,8 +40,8 @@ def approximate_brightness(grey: Point, c: float) -> float:
     high = 100.0
     b = 0.0
     y = curve(c, b, grey.x)
-    for _ in range(_LIMIT):
-        if abs(grey.y - y) < _PRECISION:
+    for _ in range(_ITERATION_LIMIT):
+        if abs(grey.y - y) < PRECISION:
             break
 
         if y < grey.y:

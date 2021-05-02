@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-_PRECISION = 0.00001
+from .precision import DECIMALS, PRECISION
 
 
 class Point:
@@ -16,13 +16,13 @@ class Point:
         return math.sqrt(math.pow(diff_x, 2) + math.pow(diff_y, 2))
 
     def __repr__(self) -> str:
-        return f"Point(x={self.x:.5f}, y={self.y:.5f})"
+        return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Point):
             return NotImplemented
 
-        return abs(self.x - other.x) < _PRECISION and abs(self.y - other.y) < _PRECISION
+        return abs(self.x - other.x) < PRECISION and abs(self.y - other.y) < PRECISION
 
     def __ne__(self, other: object) -> bool:
         if not isinstance(other, Point):
@@ -46,4 +46,4 @@ class Point:
         return Point(self.x / other, self.y / other)
 
     def for_raw_therapee(self) -> str:
-        return f"{self.x:.5f};{self.y:.5f};"
+        return f"{self.x:.{DECIMALS}f};{self.y:.{DECIMALS}f};"

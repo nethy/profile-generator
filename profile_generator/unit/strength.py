@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from profile_generator.util import validation
 
-_PRECISION = 0.00001
+from .precision import DECIMALS, PRECISION
 
 
 class Strength:
@@ -14,10 +14,10 @@ class Strength:
         return self._value
 
     def __repr__(self) -> str:
-        return f"Strength(value={self.value:.5f})"
+        return f"Strength(value={self.value:.{DECIMALS}f})"
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Strength):
             return NotImplemented
 
-        return round(abs(self.value - other.value), 5) < _PRECISION
+        return round(abs(self.value - other.value), 5) < PRECISION
