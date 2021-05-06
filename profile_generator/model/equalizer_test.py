@@ -13,14 +13,14 @@ class EqualizerTest(TestCase):
 
     def test_equalize(self) -> None:
         self.assertEqual(
-            [EqPoint(0, 1, 0, 0.43233), EqPoint(1, 0, 0.43233, 0)],
+            [EqPoint(0, 1, 0, 0.375), EqPoint(1, 0, 0.375, 0)],
             equalize(Point(0, 1), Point(1, 0)),
         )
 
         self.assertEqual(
             [
-                EqPoint(0, 1, 0.49983, 0.46526),
-                EqPoint(0.75, 0, 0.46526, 0.49983),
+                EqPoint(0, 1, 0.49805, 0.42125),
+                EqPoint(0.75, 0, 0.42125, 0.49805),
             ],
             equalize(Point(0, 1), Point(0.75, 0)),
         )

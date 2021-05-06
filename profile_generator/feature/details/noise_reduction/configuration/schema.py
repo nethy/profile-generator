@@ -1,5 +1,7 @@
-from profile_generator.configuration.schema import object_of, range_of, type_of
+from profile_generator.configuration.schema import object_of, options_of, range_of
 
 SCHEMA = object_of(
-    enabled=type_of(bool), strength=range_of(0, 100), median=type_of(bool)
+    mode=options_of("Conservative", "Aggressive"),
+    luminance=range_of(0, 100),
+    chrominance=range_of(0, 100),
 )

@@ -205,7 +205,7 @@ Curve2=0;
 Curve3=0;
 
 [Impulse Denoising]
-Enabled=false
+Enabled={ImpulseDenoiseEnabled}
 Threshold=50
 
 [Defringing]
@@ -224,18 +224,18 @@ Luminance=false
 [Directional Pyramid Denoising]
 Enabled={DenoiseEnabled}
 Enhance=false
-Median={Median}
+Median=false
 Luma=0
-Ldetail=67
+Ldetail=50
 Chroma=15
 Method=Lab
 LMethod=CUR
 CMethod=AUT
 C2Method=AUTO
-SMethod=shal
+SMethod={DenoiseSMethod}
 MedMethod=soft
 RGBMethod=soft
-MethodMed=Lpab
+MethodMed=none
 Redchro=0
 Bluechro=0
 Gamma=1.7
