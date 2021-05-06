@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 
 from profile_generator.unit import DECIMALS, PRECISION, Point
@@ -50,7 +49,7 @@ def _get_slope_strength(a: EqPoint, b: EqPoint) -> float:
     if a.x == b.x or a.y == b.y:
         return 0
     slope = abs((b.y - a.y) / (b.x - a.x))
-    return (1 - 1 / math.exp(2 * slope)) / 2
+    return (1 - 1 / 4 ** slope) / 2
 
 
 def _set_slope_strength(left: EqPoint, right: EqPoint, strength: float) -> None:

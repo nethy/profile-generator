@@ -2,8 +2,8 @@ import unittest
 
 from profile_generator.configuration.schema import (
     InvalidObjectError,
+    InvalidOptionError,
     InvalidRangeError,
-    InvalidTypeError,
     SchemaValidator,
 )
 
@@ -18,20 +18,26 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({})
 
     def test_valid_config(self) -> None:
-        self.validator.assert_valid({"enabled": True, "strength": 20, "median": False})
-
-    def test_invalid_enabled(self) -> None:
-        self.validator.assert_error(
-            InvalidObjectError({"enabled": InvalidTypeError(bool)}), {"enabled": 1}
+        self.validator.assert_valid(
+            {"mode": "Aggressive", "luminance": 20, "chrominance": 30}
         )
 
-    def test_invalid_strength(self) -> None:
+    def test_invalid_mode(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"strength": InvalidRangeError(0, 100)}),
-            {"strength": False},
+            InvalidObjectError(
+                {"mode": InvalidOptionError(("Conservative", "Aggressive"))}
+            ),
+            {"mode": "not_available"},
         )
 
-    def test_invalid_median(self) -> None:
+    def test_invalid_luminance(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"median": InvalidTypeError(bool)}), {"median": 0}
+            InvalidObjectError({"luminance": InvalidRangeError(0, 100)}),
+            {"luminance": False},
+        )
+
+    def test_invalid_chrominance(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"chrominance": InvalidRangeError(0, 100)}),
+            {"chrominance": True},
         )
