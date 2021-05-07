@@ -1,9 +1,11 @@
 from profile_generator.model.sigmoid import approximate_brightness, curve
 from profile_generator.unit import Point, Strength
 
+MAX_CONTRAST = 16
+
 
 def calculate(grey: Point, strength: Strength, sample_size: int) -> list[Point]:
-    contrast = strength.value * 16
+    contrast = strength.value * MAX_CONTRAST
     brightness = approximate_brightness(grey, contrast)
     return list(
         map(
