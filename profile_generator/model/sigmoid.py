@@ -28,6 +28,10 @@ def contrast(c: float, x: float) -> float:
         )
 
 
+def contrast_slope(c: float) -> float:
+    return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+
+
 def curve(c: float, b: float, x: float) -> float:
     return contrast(c, brightness(b, x))
 

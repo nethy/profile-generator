@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
+from profile_generator.model import sigmoid
 from profile_generator.unit import Point, Strength
 
 _LAB_ENABLED = "LabEnabled"
@@ -23,7 +24,13 @@ def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
 
 
 def _calculate_curves(vibrance: int) -> Dict[str, str]:
-    chroma_contrast_strength = Strength(vibrance / 2 / 100)
-    curve = contrast_sigmoid.calculate(Point(0.5, 0.5), chroma_contrast_strength, 17)
-    raw_curve = "1;" + "".join([p.for_raw_therapee() for p in curve])
+    chroma_contrast = Strength(vibrance / 2 / 100)
+    if chroma_contrast.value > 0:
+        curve = contrast_sigmoid.calculate(Point(0.5, 0.5), chroma_contrast, 17)
+    else:
+        slope = sigmoid.contrast_slope(
+            chroma_contrast.value * contrast_sigmoid.MAX_CONTRAST
+        )
+        curve = (Point(0, 0.5 - 0.5 / slope), Point(1, 0.5 + 0.5 / slope))
+    raw_curve = "1;" + "".join((p.for_raw_therapee() for p in curve))
     return {_LAB_ENABLED: "true", _LAB_A_CURVE: raw_curve, _LAB_B_CURVE: raw_curve}
