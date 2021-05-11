@@ -30,19 +30,25 @@ def _replace(
     variables: Mapping[str, Any], data: Any, context: str
 ) -> tuple[Any, Sequence[VariableError]]:
     if isinstance(data, str) and data.startswith("$"):
-        if data[1:] in variables:
-            return (variables[data[1:]], [])
-        else:
-            return (
-                {},
-                [UndefinedVariableError(_concat(context, data))],
-            )
+        return _replace_variable(variables, data, context)
     elif isinstance(data, dict):
         return _replace_dict(variables, data, context)
     elif isinstance(data, list):
         return _replace_list(variables, data, context)
     else:
         return (data, [])
+
+
+def _replace_variable(
+    variables: Mapping[str, Any], data: str, context: str
+) -> tuple[Any, Sequence[VariableError]]:
+    if data[1:] in variables:
+        return (variables[data[1:]], [])
+    else:
+        return (
+            {},
+            [UndefinedVariableError(_concat(context, data))],
+        )
 
 
 def _replace_dict(
