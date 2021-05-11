@@ -22,13 +22,16 @@ Configuration is a JSON object.
 Every specified field is optional, but it is forbidden to use any other
 to avoid typos.
 
-Dot notation also supported, so you can write something like `tone.curve.bezier.`
+Dot notation also supported, so you can write something like `tone.curve.bezier`
 instead of nesting each object. It is very useful for setting only one parameter.
 
 ## Templates
 
 ```json
 {
+    "variables": {
+        ...
+    },
     "defaults": <configuration>,
     "templates": [
         {
@@ -42,6 +45,8 @@ instead of nesting each object. It is very useful for setting only one parameter
     ]
 }
 ```
+
+`variables`: variables, that can be referenced rest of the template as `$<variable_name>`.
 
 `settings`: template names and it's configuration
 

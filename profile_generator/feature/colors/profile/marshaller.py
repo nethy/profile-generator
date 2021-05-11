@@ -31,6 +31,6 @@ def _calculate_curves(vibrance: int) -> Dict[str, str]:
         slope = sigmoid.contrast_slope(
             chroma_contrast.value * contrast_sigmoid.MAX_CONTRAST
         )
-        curve = (Point(0, 0.5 - 0.5 / slope), Point(1, 0.5 + 0.5 / slope))
+        curve = [Point(0, 0.5 - 0.5 / slope), Point(1, 0.5 + 0.5 / slope)]
     raw_curve = "1;" + "".join((p.for_raw_therapee() for p in curve))
     return {_LAB_ENABLED: "true", _LAB_A_CURVE: raw_curve, _LAB_B_CURVE: raw_curve}

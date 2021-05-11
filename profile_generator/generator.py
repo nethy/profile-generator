@@ -1,10 +1,11 @@
 import json
 import sys
+from collections.abc import Iterable
 from json import JSONDecodeError
 from typing import Any, Callable, Dict, List
 
-from profile_generator.configuration.preprocessor import dot_notation
-from profile_generator.configuration.schema import Schema, SchemaError
+from profile_generator.configuration.preprocessor import dot_notation, variable
+from profile_generator.configuration.schema import Schema
 from profile_generator.util import file
 
 _PROFILES_DIR = "profiles"
@@ -53,7 +54,7 @@ class ConfigFileReadError(Exception):
 
 
 class InvalidConfigFileError(Exception):
-    def __init__(self, errors: List[SchemaError]):
+    def __init__(self, errors: Iterable[Exception]):
         super().__init__()
         self.errors = errors
 
@@ -62,6 +63,9 @@ def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
     try:
         raw_config = file.read_file(file_name)
         cfg_template = json.loads(raw_config)
+        cfg_template, variable_errors = variable.replace(cfg_template)
+        if len(variable_errors) > 0:
+            raise InvalidConfigFileError(variable_errors)
         cfg_template = dot_notation.expand(cfg_template)
         errors = schema.validate(cfg_template)
         if len(errors) > 0:

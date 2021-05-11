@@ -83,6 +83,20 @@ class ProfileGeneratorTest(TestCase):
         )
 
     @patch("profile_generator.util.file.read_file")
+    def test_load_configuration_file_raises_error_when_contains_variable_error(
+        self, read_file: Mock
+    ) -> None:
+        read_file.return_value = '{"a": "$a"}'
+        schema = object_of(a=type_of(str))
+
+        self.assertRaises(
+            InvalidConfigFileError,
+            generator.load_configuration_file,
+            "config.json",
+            schema,
+        )
+
+    @patch("profile_generator.util.file.read_file")
     def test_load_configuration_file_raises_error_when_config_file_is_invalid(
         self, read_file: Mock
     ) -> None:
