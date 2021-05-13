@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .contrast_sigmoid import Point, Strength, calculate
+from .contrast_sigmoid import Point, Strength, calculate, calculate_with_hl_protection
 
 _GREY = Point(87 / 255, 119 / 255)
 _STRENGTH = Strength(0.5)
@@ -43,4 +43,28 @@ class ContrastSigmoid(TestCase):
                 Point(1.00000, 1.00000),
             ],
             calculate(Point(0.5, 0.5), Strength(), 3),
+        )
+
+    def test_calculate_with_hl_protection(self) -> None:
+        self.assertEqual(
+            [
+                Point(0.00000, 0.00000),
+                Point(0.06250, 0.02338),
+                Point(0.12500, 0.06836),
+                Point(0.18750, 0.14512),
+                Point(0.25000, 0.25824),
+                Point(0.31250, 0.39877),
+                Point(0.37500, 0.54451),
+                Point(0.43750, 0.66703),
+                Point(0.50000, 0.75716),
+                Point(0.56250, 0.81989),
+                Point(0.62500, 0.86376),
+                Point(0.68750, 0.89607),
+                Point(0.75000, 0.92173),
+                Point(0.81250, 0.94368),
+                Point(0.87500, 0.96353),
+                Point(0.93750, 0.98216),
+                Point(1.00000, 1.00000),
+            ],
+            calculate_with_hl_protection(_GREY, _STRENGTH, 17),
         )

@@ -3,6 +3,7 @@ import unittest
 from profile_generator.configuration.schema import (
     InvalidObjectError,
     InvalidRangeError,
+    InvalidTypeError,
     SchemaValidator,
 )
 
@@ -18,10 +19,7 @@ class SchemaTest(unittest.TestCase):
 
     def test_valid_config(self) -> None:
         self.validator.assert_valid(
-            {
-                "grey": {"x": 128, "y": 128},
-                "strength": 25.1,
-            }
+            {"grey": {"x": 128, "y": 128}, "strength": 25.1, "protect_hl": True}
         )
 
     def test_invalid_middle_grey(self) -> None:
@@ -43,4 +41,10 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             InvalidObjectError({"strength": InvalidRangeError(0.0, 100.0)}),
             {"strength": False},
+        )
+
+    def test_invalid_hl_protect(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
+            {"protect_hl": 0},
         )

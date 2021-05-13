@@ -1,6 +1,10 @@
 from unittest import TestCase
 
-from profile_generator.configuration.schema import SchemaValidator
+from profile_generator.configuration.schema import (
+    InvalidObjectError,
+    InvalidRangeError,
+    SchemaValidator,
+)
 
 from .schema import SCHEMA
 
@@ -16,4 +20,6 @@ class SchemaTest(TestCase):
         self.validator.assert_valid({"local": 50})
 
     def test_invalid_local(self) -> None:
-        self.validator.assert_invalid({"local": -1})
+        self.validator.assert_error(
+            InvalidObjectError({"local": InvalidRangeError(0, 100)}), {"local": -1}
+        )
