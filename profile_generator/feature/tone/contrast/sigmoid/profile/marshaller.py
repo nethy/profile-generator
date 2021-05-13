@@ -7,6 +7,11 @@ _SAMPLE_SIZE = 17
 
 
 def get_profile_args(configuration: dict[str, Any]) -> dict[str, str]:
-    grey, strength = shim.get_parameters(configuration)
-    points = contrast_sigmoid.calculate(grey, strength, _SAMPLE_SIZE)
+    grey, strength, protect_hl = shim.get_parameters(configuration)
+    if protect_hl:
+        points = contrast_sigmoid.calculate_with_hl_protection(
+            grey, strength, _SAMPLE_SIZE
+        )
+    else:
+        points = contrast_sigmoid.calculate(grey, strength, _SAMPLE_SIZE)
     return shim.marshal_curve(points)

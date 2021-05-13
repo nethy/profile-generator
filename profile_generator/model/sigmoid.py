@@ -1,6 +1,9 @@
 import math
+from collections.abc import Callable
 
 from profile_generator.unit import PRECISION, Point
+
+_ITERATION_LIMIT = 100
 
 
 def brightness(b: float, x: float) -> float:
@@ -36,23 +39,38 @@ def curve(c: float, b: float, x: float) -> float:
     return contrast(c, brightness(b, x))
 
 
-_ITERATION_LIMIT = 100
+def curve_with_hl_protection(c: float, b: float, x: float) -> float:
+    midpoint = _approximate_midpoint(b)
+    if x < midpoint:
+        return curve(c, b, x)
+    else:
+        return (1 - (x - midpoint) / (1 - midpoint)) * curve(c, b, x) + (
+            x - midpoint
+        ) / (1 - midpoint) * curve(c / 2, b, x)
+
+
+def _approximate_midpoint(b: float) -> float:
+    return _approximate(0, 1, lambda x: brightness(b, x), 0.5)
 
 
 def approximate_brightness(grey: Point, c: float) -> float:
-    low = -100.0
-    high = 100.0
-    b = 0.0
-    y = curve(c, b, grey.x)
+    return _approximate(-100, 100, lambda b: curve(c, b, grey.x), grey.y)
+
+
+def _approximate(
+    low: float, high: float, fn: Callable[[float], float], target: float
+) -> float:
+    guess = (low + high) / 2
+    value = fn(guess)
     for _ in range(_ITERATION_LIMIT):
-        if abs(grey.y - y) < PRECISION:
+        if abs(target - value) < PRECISION:
             break
 
-        if y < grey.y:
-            low = b
+        if value < target:
+            low = guess
         else:
-            high = b
+            high = guess
 
-        b = (low + high) / 2
-        y = curve(c, b, grey.x)
-    return b
+        guess = (low + high) / 2
+        value = fn(guess)
+    return guess

@@ -13,13 +13,11 @@ _SPLINE_CURVE_ID = 1
 _FLEXIBLE_CURVE_ID = 4
 
 
-def get_parameters(configuration: dict[str, Any]) -> Tuple[Point, Strength]:
+def get_parameters(configuration: dict[str, Any]) -> Tuple[Point, Strength, bool]:
     grey = _get_grey(configuration)
     strength = _get_strength(configuration)
-    return (
-        grey,
-        strength,
-    )
+    protect_hl = configuration.get("protect_hl", False)
+    return (grey, strength, protect_hl)
 
 
 def _get_grey(configuration: dict[str, Any]) -> Point:
