@@ -26,7 +26,7 @@ class SigmoidTest(TestCase):
 
     def test_curve_with_hl_protection(self) -> None:
         self.assertEqual(0.1638150623355538, curve_with_hl_protection(7, 1, 0.2))
-        self.assertEqual(0.9225177590875977, curve_with_hl_protection(7, 1, 0.8))
+        self.assertEqual(0.9113723964341864, curve_with_hl_protection(7, 1, 0.8))
 
     def test_find_contrast_slope(self) -> None:
         slope = contrast_slope(8) / (235 / 255 - 16 / 255)

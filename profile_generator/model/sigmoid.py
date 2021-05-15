@@ -50,9 +50,10 @@ def curve_with_hl_protection(c: float, b: float, x: float) -> float:
     if x < midpoint:
         return curve(c, b, x)
     else:
-        return (1 - (x - midpoint) / (1 - midpoint)) * curve(c, b, x) + (
-            x - midpoint
-        ) / (1 - midpoint) * curve(c / 2, b, x)
+        weight = (math.exp(-2.1972179412841797 * x) - math.exp(-midpoint)) / (
+            math.exp(-2.1972179412841797) - math.exp(-midpoint)
+        )
+        return (1 - weight) * curve(c, b, x) + weight * curve(c / 2, b, x)
 
 
 def _find_brightness_midpoint(b: float) -> float:
