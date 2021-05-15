@@ -211,7 +211,7 @@ Amount of contrast. 0 will produce a flat tone curve.
 
 Decreases gradiation in the tone curve's highlight region, aiming to preserve
 more details.
-Not recommended for if there is clipping in the image, and posterization
+Not recommended if there is clipping in the image - in that case posterization
 can occur.
 
 `matte_effect`
