@@ -202,6 +202,28 @@ y coordinate of the middle grey point, center of the S-curve.
 
 Amount of contrast. 0 will produce a flat tone curve.
 
+`protect_hl`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Decreases gradiation in the tone curve's highlight region, aiming to preserve
+more details.
+Not recommended if there is clipping in the image - in that case posterization
+can occur.
+
+`matte_effect`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Shrinks the dynamic range of the tone curve, to simulate faded look.
+
+
 ## Detials
 
 Field name: `details`

@@ -1,4 +1,5 @@
-from typing import Any, Dict
+from collections.abc import Mapping
+from typing import Any
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.model import sigmoid
@@ -15,7 +16,7 @@ _DEFAULT = {
 }
 
 
-def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
+def get_profile_args(configuration: Mapping[str, Any]) -> Mapping[str, str]:
     vibrance = configuration.get("vibrance", 0)
     args = _DEFAULT
     if vibrance != 0:
@@ -23,10 +24,10 @@ def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
     return args
 
 
-def _calculate_curves(vibrance: int) -> Dict[str, str]:
+def _calculate_curves(vibrance: int) -> Mapping[str, str]:
     chroma_contrast = Strength(vibrance / 2 / 100)
     if chroma_contrast.value > 0:
-        curve = contrast_sigmoid.calculate(Point(0.5, 0.5), chroma_contrast, 17)
+        curve = contrast_sigmoid.calculate(Point(0.5, 0.5), chroma_contrast)
     else:
         slope = sigmoid.contrast_slope(
             chroma_contrast.value * contrast_sigmoid.MAX_CONTRAST

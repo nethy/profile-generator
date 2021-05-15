@@ -8,8 +8,8 @@ _STRENGTH = Strength(0.5)
 
 class ContrastSigmoid(TestCase):
     def test_calcualate_returns_empty_list_if_sample_size_not_positive(self) -> None:
-        self.assertEqual([], calculate(_GREY, _STRENGTH, 0))
-        self.assertEqual([], calculate(_GREY, _STRENGTH, -1))
+        self.assertEqual([], calculate(_GREY, _STRENGTH, sample_size=0))
+        self.assertEqual([], calculate(_GREY, _STRENGTH, sample_size=-1))
 
     def test_calculate(self) -> None:
         self.assertEqual(
@@ -32,7 +32,7 @@ class ContrastSigmoid(TestCase):
                 Point(0.93750, 0.99448),
                 Point(1.00000, 1.00000),
             ],
-            calculate(_GREY, _STRENGTH, 17),
+            calculate(_GREY, _STRENGTH),
         )
 
     def test_calculate_linear(self) -> None:
@@ -42,7 +42,31 @@ class ContrastSigmoid(TestCase):
                 Point(0.50000, 0.50000),
                 Point(1.00000, 1.00000),
             ],
-            calculate(Point(0.5, 0.5), Strength(), 3),
+            calculate(Point(0.5, 0.5), Strength(), sample_size=3),
+        )
+
+    def test_calculate_with_offests(self) -> None:
+        self.assertEqual(
+            [
+                Point(0.00000, 0.06275),
+                Point(0.06250, 0.07533),
+                Point(0.12500, 0.10415),
+                Point(0.18750, 0.16214),
+                Point(0.25000, 0.26067),
+                Point(0.31250, 0.39584),
+                Point(0.37500, 0.54184),
+                Point(0.43750, 0.66822),
+                Point(0.50000, 0.76081),
+                Point(0.56250, 0.82204),
+                Point(0.62500, 0.86059),
+                Point(0.68750, 0.88449),
+                Point(0.75000, 0.89937),
+                Point(0.81250, 0.90879),
+                Point(0.87500, 0.91486),
+                Point(0.93750, 0.91887),
+                Point(1.00000, 0.92157),
+            ],
+            calculate(_GREY, _STRENGTH, (16 / 255, 235 / 255)),
         )
 
     def test_calculate_with_hl_protection(self) -> None:
@@ -66,5 +90,29 @@ class ContrastSigmoid(TestCase):
                 Point(0.93750, 0.98216),
                 Point(1.00000, 1.00000),
             ],
-            calculate_with_hl_protection(_GREY, _STRENGTH, 17),
+            calculate_with_hl_protection(_GREY, _STRENGTH),
+        )
+
+    def test_calculate_with_hl_protection_and_offests(self) -> None:
+        self.assertEqual(
+            [
+                Point(0.00000, 0.06275),
+                Point(0.06250, 0.07533),
+                Point(0.12500, 0.10415),
+                Point(0.18750, 0.16214),
+                Point(0.25000, 0.26067),
+                Point(0.31250, 0.39584),
+                Point(0.37500, 0.54117),
+                Point(0.43750, 0.65948),
+                Point(0.50000, 0.74023),
+                Point(0.56250, 0.79168),
+                Point(0.62500, 0.82506),
+                Point(0.68750, 0.84851),
+                Point(0.75000, 0.86677),
+                Point(0.81250, 0.88227),
+                Point(0.87500, 0.89624),
+                Point(0.93750, 0.90924),
+                Point(1.00000, 0.92157),
+            ],
+            calculate_with_hl_protection(_GREY, _STRENGTH, (16 / 255, 235 / 255)),
         )

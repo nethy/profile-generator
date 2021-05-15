@@ -32,7 +32,13 @@ def contrast(c: float, x: float) -> float:
 
 
 def contrast_slope(c: float) -> float:
+    if c == 0:
+        return 1
     return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+
+
+def find_contrast_slope(slope: float) -> float:
+    return _find(-100, 100, contrast_slope, slope)
 
 
 def curve(c: float, b: float, x: float) -> float:
@@ -40,7 +46,7 @@ def curve(c: float, b: float, x: float) -> float:
 
 
 def curve_with_hl_protection(c: float, b: float, x: float) -> float:
-    midpoint = _approximate_midpoint(b)
+    midpoint = _find_brightness_midpoint(b)
     if x < midpoint:
         return curve(c, b, x)
     else:
@@ -49,15 +55,15 @@ def curve_with_hl_protection(c: float, b: float, x: float) -> float:
         ) / (1 - midpoint) * curve(c / 2, b, x)
 
 
-def _approximate_midpoint(b: float) -> float:
-    return _approximate(0, 1, lambda x: brightness(b, x), 0.5)
+def _find_brightness_midpoint(b: float) -> float:
+    return _find(0, 1, lambda x: brightness(b, x), 0.5)
 
 
-def approximate_brightness(grey: Point, c: float) -> float:
-    return _approximate(-100, 100, lambda b: curve(c, b, grey.x), grey.y)
+def find_curve_brightness(grey: Point, c: float) -> float:
+    return _find(-100, 100, lambda b: curve(c, b, grey.x), grey.y)
 
 
-def _approximate(
+def _find(
     low: float, high: float, fn: Callable[[float], float], target: float
 ) -> float:
     guess = (low + high) / 2

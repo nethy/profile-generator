@@ -19,7 +19,12 @@ class SchemaTest(unittest.TestCase):
 
     def test_valid_config(self) -> None:
         self.validator.assert_valid(
-            {"grey": {"x": 128, "y": 128}, "strength": 25.1, "protect_hl": True}
+            {
+                "grey": {"x": 128, "y": 128},
+                "strength": 25.1,
+                "protect_hl": True,
+                "matte_effect": True,
+            }
         )
 
     def test_invalid_middle_grey(self) -> None:
@@ -47,4 +52,10 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
             {"protect_hl": 0},
+        )
+
+    def test_invalid_matte_effect(self) -> None:
+        self.validator.assert_error(
+            InvalidObjectError({"matte_effect": InvalidTypeError(bool)}),
+            {"matte_effect": 0},
         )
