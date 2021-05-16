@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from .precision import DECIMALS, PRECISION
+from .precision import DECIMALS, equals
 
 
 class Point:
@@ -22,7 +22,7 @@ class Point:
         if not isinstance(other, Point):
             return NotImplemented
 
-        return abs(self.x - other.x) < PRECISION and abs(self.y - other.y) < PRECISION
+        return equals(self.x, other.x) and equals(self.y, other.y)
 
     def __ne__(self, other: object) -> bool:
         if not isinstance(other, Point):
@@ -45,5 +45,5 @@ class Point:
     def __truediv__(self, other: float) -> Point:
         return Point(self.x / other, self.y / other)
 
-    def for_raw_therapee(self) -> str:
-        return f"{self.x:.{DECIMALS}f};{self.y:.{DECIMALS}f};"
+    def __hash__(self) -> int:
+        return hash((self.x, self.y))

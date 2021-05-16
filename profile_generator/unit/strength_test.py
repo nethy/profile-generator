@@ -9,4 +9,4 @@ class StrengthTest(unittest.TestCase):
         self.assertRaises(ValueError, Strength, 1.1)
 
     def test_repr(self) -> None:
-        self.assertEqual("Strength(value=0.50000)", Strength(0.5).__repr__())
+        self.assertEqual("Strength(value=0.500000)", Strength(0.5).__repr__())

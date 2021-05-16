@@ -24,8 +24,8 @@ class NoiseMarshallerTest(unittest.TestCase):
                 **_DEFAULT,
                 "DenoiseEnabled": "true",
                 "DenoiseLCurve": (
-                    "1;0.00000;0.40000;0.00000;0.00000;"
-                    + "0.75000;0.10000;0.42565;0.00000;"
+                    "1;0.000000;0.400000;0.000000;0.000000;"
+                    + "0.750000;0.100000;0.425651;0.000000;"
                 ),
             },
             get_profile_args({"luminance": 40}),
@@ -37,8 +37,8 @@ class NoiseMarshallerTest(unittest.TestCase):
                 **_DEFAULT,
                 "DenoiseEnabled": "true",
                 "DenoiseCCCurve": (
-                    "1;0.00000;0.40000;0.00000;0.46875;"
-                    + "0.20000;0.00000;0.46875;0.00000;"
+                    "1;0.000000;0.400000;0.000000;0.468750;"
+                    + "0.200000;0.000000;0.468750;0.000000;"
                 ),
             },
             get_profile_args({"chrominance": 40}),

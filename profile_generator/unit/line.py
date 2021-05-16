@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from .point import Point
-from .precision import DECIMALS
+from .precision import DECIMALS, equals
 
 
 class Line:
@@ -14,6 +14,10 @@ class Line:
         gradient = (b.y - a.y) / (b.x - a.x)
         offset = a.y - gradient * a.x
         return Line(gradient, offset)
+
+    @staticmethod
+    def at_point(gradient: float, point: Point) -> Line:
+        return Line(gradient, point.y - point.x * gradient)
 
     def __repr__(self) -> str:
         return (
@@ -31,3 +35,11 @@ class Line:
 
     def get_y(self, x: float) -> float:
         return self.gradient * x + self.offset
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Line):
+            return NotImplemented
+
+        return equals(self.gradient, other.gradient) and equals(
+            self.offset, other.offset
+        )
