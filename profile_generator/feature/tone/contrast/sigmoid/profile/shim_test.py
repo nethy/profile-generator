@@ -41,6 +41,6 @@ class ShimTest(TestCase):
     def test_marshal_curve(self) -> None:
         self.assertEqual({"Curve": "0;"}, marshal_curve([]))
         self.assertEqual(
-            {"Curve": "1;0.00000;0.00000;1.00000;1.00000;"},
+            {"Curve": "4;0.000000;0.000000;1.000000;1.000000;"},
             marshal_curve([Point(0, 0), Point(1, 1)]),
         )

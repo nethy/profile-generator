@@ -1,67 +1,76 @@
 import math
 from collections.abc import Callable
+from functools import cache
 
-from profile_generator.unit import PRECISION, Point
+from profile_generator.unit import Line, Point, equals
 
 _ITERATION_LIMIT = 100
 
+Curve = Callable[[float], float]
 
-def brightness(b: float, x: float) -> float:
-    if b == 0:
-        return x
+
+def get_brightness(b: float) -> Curve:
+    if equals(b, 0):
+        return lambda x: x
     else:
-        return (1 - math.exp(-b * x)) / (1 - math.exp(-b))
+        return lambda x: (1 - math.exp(-b * x)) / (1 - math.exp(-b))
 
 
-def contrast(c: float, x: float) -> float:
-    if c == 0:
-        return x
+def get_contrast(c: float) -> Curve:
+    if equals(c, 0):
+        return lambda x: x
     elif c > 0:
-        return (1 / (1 + math.exp(c * (0.5 - x))) - 1 / (1 + math.exp(c / 2))) / (
-            1 / (1 + math.exp(c * (-0.5))) - 1 / (1 + math.exp(c / 2))
-        )
+        return lambda x: (
+            1 / (1 + math.exp(c * (0.5 - x))) - 1 / (1 + math.exp(c / 2))
+        ) / (1 / (1 + math.exp(c * (-0.5))) - 1 / (1 + math.exp(c / 2)))
     else:
-        n_c = 2 - 1 / (math.exp((-c - math.sqrt(-c + 2)) / 2))
-        return (
-            math.log((n_c * (x - 0.5) + 1) / (1 - n_c * (x - 0.5)))
-            - math.log((-n_c / 2 + 1) / (1 + n_c / 2))
-        ) / (
-            math.log((n_c / 2 + 1) / (1 - n_c / 2))
-            - math.log((-n_c / 2 + 1) / (1 + n_c / 2))
-        )
+        slope = 1 / contrast_slope(c)
+        contrast_line = Line.at_point(slope, Point(0.5, 0.5))
+        return contrast_line.get_y
 
 
 def contrast_slope(c: float) -> float:
-    if c == 0:
+    if equals(c, 0):
         return 1
     return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
 
 
+@cache
 def find_contrast_slope(slope: float) -> float:
     return _find(-100, 100, contrast_slope, slope)
 
 
-def curve(c: float, b: float, x: float) -> float:
-    return contrast(c, brightness(b, x))
+def get_curve(c: float, b: float) -> Curve:
+    brightness = get_brightness(b)
+    contrast = get_contrast(c)
+    return lambda x: contrast(brightness(x))
 
 
-def curve_with_hl_protection(c: float, b: float, x: float) -> float:
+def get_curve_with_hl_protection(c: float, b: float) -> Curve:
     midpoint = _find_brightness_midpoint(b)
-    if x < midpoint:
-        return curve(c, b, x)
-    else:
-        weight = (math.exp(-2.1972179412841797 * x) - math.exp(-midpoint)) / (
-            math.exp(-2.1972179412841797) - math.exp(-midpoint)
-        )
-        return (1 - weight) * curve(c, b, x) + weight * curve(c / 2, b, x)
+    curve = get_curve(c, b)
+    damped_curve = get_curve(c / 2, b)
+
+    def _curve(x: float) -> float:
+        if x < midpoint:
+            return curve(x)
+        else:
+            weight = (math.exp(-2.1972179412841797 * x) - math.exp(-midpoint)) / (
+                math.exp(-2.1972179412841797) - math.exp(-midpoint)
+            )
+            return (1 - weight) * curve(x) + weight * damped_curve(x)
+
+    return _curve
 
 
+@cache
 def _find_brightness_midpoint(b: float) -> float:
-    return _find(0, 1, lambda x: brightness(b, x), 0.5)
+    return _find(0, 1, get_brightness(b), 0.5)
 
 
+@cache
 def find_curve_brightness(grey: Point, c: float) -> float:
-    return _find(-100, 100, lambda b: curve(c, b, grey.x), grey.y)
+    return _find(-100, 100, lambda b: get_curve(c, b)(grey.x), grey.y)
 
 
 def _find(
@@ -70,7 +79,7 @@ def _find(
     guess = (low + high) / 2
     value = fn(guess)
     for _ in range(_ITERATION_LIMIT):
-        if abs(target - value) < PRECISION:
+        if equals(target, value):
             break
 
         if value < target:

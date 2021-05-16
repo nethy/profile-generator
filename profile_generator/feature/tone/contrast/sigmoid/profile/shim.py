@@ -1,17 +1,14 @@
-from collections.abc import Iterable, Mapping
-from typing import Any
+from collections.abc import Mapping
+from typing import Any, Sequence
 
-from profile_generator.unit import DECIMALS, Point, Strength
+from profile_generator.model.view import raw_therapee
+from profile_generator.unit import Point, Strength
 
 _DEFAULT_GREY_X = 92
 _DEFAULT_GREY_Y = 119
 _DEFAULT_STRENGTH = 0
 
 _TEMPLATE_FIELD = "Curve"
-
-_LINEAR_CURVE_ID = 0
-_SPLINE_CURVE_ID = 1
-_FLEXIBLE_CURVE_ID = 4
 
 
 def get_parameters(
@@ -48,10 +45,8 @@ def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
         return (0, 1)
 
 
-def marshal_curve(curve: Iterable[Point]) -> Mapping[str, str]:
-    value = ";".join((f"{p.x:.{DECIMALS}f};{p.y:.{DECIMALS}f}" for p in curve))
-    if len(value) > 0:
-        value = f"{_SPLINE_CURVE_ID};{value};"
-    else:
-        value = f"{_LINEAR_CURVE_ID};"
+def marshal_curve(curve: Sequence[Point]) -> Mapping[str, str]:
+    value = raw_therapee.CurveType.LINEAR
+    if len(curve) > 0:
+        value = raw_therapee.CurveType.FLEXIBLE + raw_therapee.present_curve(curve)
     return {_TEMPLATE_FIELD: value}

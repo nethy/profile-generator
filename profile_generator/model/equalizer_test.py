@@ -19,8 +19,8 @@ class EqualizerTest(TestCase):
 
         self.assertEqual(
             [
-                EqPoint(0, 1, 0.49805, 0.42125),
-                EqPoint(0.75, 0, 0.42125, 0.49805),
+                EqPoint(0, 1, 0.498047, 0.421255),
+                EqPoint(0.75, 0, 0.421255, 0.498047),
             ],
             equalize(Point(0, 1), Point(0.75, 0)),
         )

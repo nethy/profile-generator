@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from profile_generator.util import validation
 
-from .precision import DECIMALS, PRECISION
+from .precision import DECIMALS, equals
 
 
 class Strength:
@@ -20,4 +20,4 @@ class Strength:
         if not isinstance(other, Strength):
             return NotImplemented
 
-        return round(abs(self.value - other.value), 5) < PRECISION
+        return equals(self.value, other.value)

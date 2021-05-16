@@ -1,6 +1,7 @@
 from typing import Any
 
 from profile_generator.model import equalizer
+from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Line, Point
 
 _MODES = {"Aggressive": "shalbi", "Conservative": "shal"}
@@ -25,13 +26,13 @@ def get_profile_args(configuration: dict[str, Any]) -> dict[str, str]:
 
 def _get_luminance_curve(luminance: int) -> str:
     if luminance > 0:
-        luminance_curve = equalizer.equalize(
+        luminance_eq = equalizer.equalize(
             Point(0, luminance / 100), Point(0.75, luminance / 100 / 4)
         )
-        luminance_curve[1].left += luminance_curve[0].right
-        luminance_curve[0].right = luminance_curve[0].left = 0
-        luminance_curve[1].right = 0
-        return "1;" + "".join((p.for_raw_therapee() for p in luminance_curve))
+        luminance_eq[1].left += luminance_eq[0].right
+        luminance_eq[0].right = luminance_eq[0].left = 0
+        luminance_eq[1].right = 0
+        return "1;" + raw_therapee.present_equalizer(luminance_eq)
     else:
         return "0;"
 
@@ -39,10 +40,10 @@ def _get_luminance_curve(luminance: int) -> str:
 def _get_chrominance_curve(chrominance: int) -> str:
     if chrominance > 0:
         chrome_line = Line(-2, chrominance / 100)
-        chroma_curve = equalizer.equalize(
+        chroma_eq = equalizer.equalize(
             Point(0, chrome_line.get_y(0)), Point(chrome_line.get_x(0), 0)
         )
-        chroma_curve[0].left = chroma_curve[1].right = 0
-        return "1;" + "".join((p.for_raw_therapee() for p in chroma_curve))
+        chroma_eq[0].left = chroma_eq[1].right = 0
+        return "1;" + raw_therapee.present_equalizer(chroma_eq)
     else:
         return "0;"

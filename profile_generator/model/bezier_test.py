@@ -12,7 +12,7 @@ class BezierTest(unittest.TestCase):
         bezier_at = partial(bezier.get_point_at, control_points)
 
         self.assertEqual(Point(0, 0), bezier_at(0))
-        self.assertEqual(Point(0.13182, 0.02273), bezier_at(0.25))
-        self.assertEqual(Point(0.21667, 0.08333), bezier_at(0.5))
-        self.assertEqual(Point(0.31364, 0.20455), bezier_at(0.75))
+        self.assertEqual(Point(0.131818, 0.022727), bezier_at(0.25))
+        self.assertEqual(Point(0.216667, 0.083333), bezier_at(0.5))
+        self.assertEqual(Point(0.313636, 0.204545), bezier_at(0.75))
         self.assertEqual(Point(0.5, 0.5), bezier_at(1))

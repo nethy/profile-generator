@@ -1,11 +1,11 @@
 from profile_generator.model.sigmoid import (
     contrast_slope,
-    curve,
-    curve_with_hl_protection,
     find_contrast_slope,
     find_curve_brightness,
+    get_curve,
+    get_curve_with_hl_protection,
 )
-from profile_generator.unit import PRECISION, Point, Strength
+from profile_generator.unit import Point, Strength, equals
 
 MAX_CONTRAST = 16
 
@@ -19,15 +19,11 @@ def calculate(
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
-    return list(
-        map(
-            lambda x: Point(
-                x,
-                curve(contrast, brightness, x) * (offsets[1] - offsets[0]) + offsets[0],
-            ),
-            (x / (sample_size - 1) for x in range(sample_size)),
-        ),
-    )
+    curve = get_curve(contrast, brightness)
+    return [
+        Point(x, curve(x) * (offsets[1] - offsets[0]) + offsets[0])
+        for x in (i / (sample_size - 1) for i in range(sample_size))
+    ]
 
 
 def calculate_with_hl_protection(
@@ -39,22 +35,16 @@ def calculate_with_hl_protection(
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
-    return list(
-        map(
-            lambda x: Point(
-                x,
-                curve_with_hl_protection(contrast, brightness, x)
-                * (offsets[1] - offsets[0])
-                + offsets[0],
-            ),
-            (x / (sample_size - 1) for x in range(sample_size)),
-        ),
-    )
+    curve = get_curve_with_hl_protection(contrast, brightness)
+    return [
+        Point(x, curve(x) * (offsets[1] - offsets[0]) + offsets[0])
+        for x in (i / (sample_size - 1) for i in range(sample_size))
+    ]
 
 
 def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
     shadow, highlight = offsets
-    if abs(1 - (highlight - shadow)) < PRECISION:
+    if equals(1, highlight - shadow):
         return c
     slope = contrast_slope(c) / (highlight - shadow)
     return find_contrast_slope(slope)
