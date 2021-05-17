@@ -16,7 +16,7 @@ _RAW_THERAPEE_TEMPLATE = "raw_therapee.pp3"
 
 
 class NoConfigFileError(Exception):
-    pass
+    ...
 
 
 def get_config_files() -> Sequence[str]:
@@ -27,7 +27,7 @@ def get_config_files() -> Sequence[str]:
 
 
 class OutputDirCreationFailure(Exception):
-    pass
+    ...
 
 
 def create_output_dir() -> str:
@@ -38,7 +38,7 @@ def create_output_dir() -> str:
 
 
 class TemplateFileReadError(Exception):
-    pass
+    ...
 
 
 def get_profile_template() -> str:
@@ -50,7 +50,7 @@ def get_profile_template() -> str:
 
 
 class ConfigFileReadError(Exception):
-    pass
+    ...
 
 
 class InvalidConfigFileError(Exception):
@@ -67,9 +67,9 @@ def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
         if len(variable_errors) > 0:
             raise InvalidConfigFileError(variable_errors)
         cfg_template = dot_notation.expand(cfg_template)
-        errors = schema.validate(cfg_template)
-        if len(errors) > 0:
-            raise InvalidConfigFileError(errors)
+        error = schema.validate(cfg_template)
+        if error is not None:
+            raise InvalidConfigFileError([error])
         return cfg_template
     except OSError as exc:
         raise ConfigFileReadError from exc
@@ -78,7 +78,7 @@ def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
 
 
 class ProfileWriteError(Exception):
-    pass
+    ...
 
 
 def generate_profile(

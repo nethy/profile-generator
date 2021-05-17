@@ -1,6 +1,6 @@
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Optional
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
@@ -10,21 +10,21 @@ class ListSchema(Schema):
     def __init__(self, item_schema: Schema):
         self._item_schema = item_schema
 
-    def validate(self, data: Any) -> Sequence[SchemaError]:
+    def validate(self, data: Any) -> Optional[SchemaError]:
         if not isinstance(data, list):
-            return [InvalidTypeError(list)]
+            return InvalidTypeError(list)
 
         errors = self._get_errors(data)
         if len(errors) > 0:
-            return [InvalidListError(errors)]
+            return InvalidListError(errors)
         else:
-            return []
+            return None
 
     def _get_errors(self, data: Any) -> Mapping[int, SchemaError]:
         return {
             i + 1: error
             for i, item in enumerate(data)
-            for error in self._item_schema.validate(item)
+            if (error := self._item_schema.validate(item)) is not None
         }
 
 
