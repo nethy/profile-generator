@@ -1,5 +1,6 @@
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Sequence
+from typing import Any
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError

@@ -1,8 +1,8 @@
 import json
 import sys
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from json import JSONDecodeError
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 from profile_generator.configuration.preprocessor import dot_notation, variable
 from profile_generator.configuration.schema import Schema
@@ -19,7 +19,7 @@ class NoConfigFileError(Exception):
     pass
 
 
-def get_config_files() -> List[str]:
+def get_config_files() -> Sequence[str]:
     if len(sys.argv) < 2:
         raise NoConfigFileError
 
@@ -59,7 +59,7 @@ class InvalidConfigFileError(Exception):
         self.errors = errors
 
 
-def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
+def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
     try:
         raw_config = file.read_file(file_name)
         cfg_template = json.loads(raw_config)
@@ -83,8 +83,8 @@ class ProfileWriteError(Exception):
 
 def generate_profile(
     name: str,
-    config: Dict[str, Any],
-    marshall: Callable[[Dict[str, Any]], Dict[str, str]],
+    config: Mapping[str, Any],
+    marshall: Callable[[Mapping[str, Any]], Mapping[str, str]],
     template: str,
     output_dir: str,
 ) -> None:

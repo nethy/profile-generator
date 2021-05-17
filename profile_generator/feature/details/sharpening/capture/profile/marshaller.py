@@ -1,6 +1,7 @@
-from typing import Any, Dict
+from collections.abc import Mapping
+from typing import Any
 
 
-def get_profile_args(configuration: Dict[str, Any]) -> Dict[str, str]:
+def get_profile_args(configuration: Mapping[str, Any]) -> Mapping[str, str]:
     enabled = configuration.get("enabled", False)
     return {"PostDemosaicSharpeningEnabled": str(enabled).lower()}

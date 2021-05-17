@@ -1,10 +1,10 @@
 from functools import reduce
-from typing import Any, Dict
+from typing import Any
 
-Configuration = Dict[str, Dict[str, Any]]
+Configuration = dict[str, dict[str, Any]]
 
 
-def create_from_template(template: Dict[str, Any]) -> Configuration:
+def create_from_template(template: dict[str, Any]) -> Configuration:
     defaults = template.get("defaults", {})
     templates = template.get("templates", [])
 
@@ -17,7 +17,7 @@ def create_from_template(template: Dict[str, Any]) -> Configuration:
 
 
 def _merge_first_template(
-    defaults: Dict[str, Any], template: Configuration
+    defaults: dict[str, Any], template: Configuration
 ) -> Configuration:
     return {
         name: _merge_dicts(defaults, body)
@@ -38,7 +38,7 @@ def _merge_template(
     return merged
 
 
-def _merge_dicts(base: Dict[str, Any], overrider: Dict[str, Any]) -> Dict[str, Any]:
+def _merge_dicts(base: dict[str, Any], overrider: dict[str, Any]) -> dict[str, Any]:
     merged = base.copy()
     for key, value in overrider.items():
         if isinstance(value, dict):
@@ -49,9 +49,9 @@ def _merge_dicts(base: Dict[str, Any], overrider: Dict[str, Any]) -> Dict[str, A
     return merged
 
 
-def _get_settings(template: Dict[str, Any]) -> Dict[str, Any]:
+def _get_settings(template: dict[str, Any]) -> dict[str, Any]:
     return template["settings"]
 
 
-def _get_optional(template: Dict[str, Any]) -> bool:
+def _get_optional(template: dict[str, Any]) -> bool:
     return template["optional"]

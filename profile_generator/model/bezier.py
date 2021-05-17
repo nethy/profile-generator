@@ -1,9 +1,9 @@
 import math
-from typing import Collection, Tuple
+from collections.abc import Sequence
 
 from profile_generator.unit import Point
 
-WeightedPoints = Collection[Tuple[Point, float]]
+WeightedPoints = Sequence[tuple[Point, float]]
 
 
 def get_point_at(control_points: WeightedPoints, t: float) -> Point:

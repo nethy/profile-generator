@@ -1,4 +1,5 @@
-from typing import Any, Dict, List
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from .object_schema import InvalidObjectError, InvalidTypeError
 from .schema import Schema, SchemaError
@@ -8,7 +9,7 @@ class MapSchema(Schema):
     def __init__(self, value_schema: Schema):
         self._value_schema = value_schema
 
-    def validate(self, data: Any) -> List[SchemaError]:
+    def validate(self, data: Any) -> Sequence[SchemaError]:
         if not isinstance(data, dict):
             return [InvalidTypeError(dict)]
 
@@ -18,7 +19,7 @@ class MapSchema(Schema):
         else:
             return []
 
-    def _get_errors(self, data: Any) -> Dict[str, SchemaError]:
+    def _get_errors(self, data: Any) -> Mapping[str, SchemaError]:
         return {
             member: error
             for member, value in data.items()

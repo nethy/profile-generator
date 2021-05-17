@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest import TestCase
 
 from .configuration import create_from_template
@@ -105,6 +105,6 @@ class FactoryTest(TestCase):
         )
 
     def assert_configurations(
-        self, expected: Dict[str, Dict[str, Any]], config: Dict[str, Any]
+        self, expected: dict[str, dict[str, Any]], config: dict[str, Any]
     ) -> None:
         self.assertEqual(expected, create_from_template(config))

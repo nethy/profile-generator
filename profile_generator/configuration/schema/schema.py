@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, List
+from collections.abc import Sequence
+from typing import Any
 
 
 class SchemaError(Exception, metaclass=ABCMeta):
@@ -13,5 +14,5 @@ class Schema(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def validate(self, data: Any) -> List[SchemaError]:
+    def validate(self, data: Any) -> Sequence[SchemaError]:
         pass
