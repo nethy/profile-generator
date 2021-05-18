@@ -1,5 +1,5 @@
 import unittest
-from typing import Any, Dict
+from typing import Any
 
 from .marshaller import get_profile_args
 
@@ -45,6 +45,6 @@ class MarshallerTest(unittest.TestCase):
         self._assert_profile_args({"iterations": 100}, DeconvIterations="100")
 
     def _assert_profile_args(
-        self, config: Dict[str, Any], **expect_output: str
+        self, config: dict[str, Any], **expect_output: str
     ) -> None:
         self.assertEqual({**_DEFAULT, **expect_output}, get_profile_args(config))

@@ -1,5 +1,5 @@
-from collections.abc import Mapping
-from typing import Any, Sequence
+from collections.abc import Mapping, Sequence
+from typing import Any
 
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength

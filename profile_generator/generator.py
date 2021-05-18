@@ -1,8 +1,8 @@
 import json
 import sys
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from json import JSONDecodeError
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 from profile_generator.configuration.preprocessor import dot_notation, variable
 from profile_generator.configuration.schema import Schema
@@ -16,10 +16,10 @@ _RAW_THERAPEE_TEMPLATE = "raw_therapee.pp3"
 
 
 class NoConfigFileError(Exception):
-    pass
+    ...
 
 
-def get_config_files() -> List[str]:
+def get_config_files() -> Sequence[str]:
     if len(sys.argv) < 2:
         raise NoConfigFileError
 
@@ -27,7 +27,7 @@ def get_config_files() -> List[str]:
 
 
 class OutputDirCreationFailure(Exception):
-    pass
+    ...
 
 
 def create_output_dir() -> str:
@@ -38,7 +38,7 @@ def create_output_dir() -> str:
 
 
 class TemplateFileReadError(Exception):
-    pass
+    ...
 
 
 def get_profile_template() -> str:
@@ -50,7 +50,7 @@ def get_profile_template() -> str:
 
 
 class ConfigFileReadError(Exception):
-    pass
+    ...
 
 
 class InvalidConfigFileError(Exception):
@@ -59,7 +59,7 @@ class InvalidConfigFileError(Exception):
         self.errors = errors
 
 
-def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
+def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
     try:
         raw_config = file.read_file(file_name)
         cfg_template = json.loads(raw_config)
@@ -67,9 +67,9 @@ def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
         if len(variable_errors) > 0:
             raise InvalidConfigFileError(variable_errors)
         cfg_template = dot_notation.expand(cfg_template)
-        errors = schema.validate(cfg_template)
-        if len(errors) > 0:
-            raise InvalidConfigFileError(errors)
+        error = schema.validate(cfg_template)
+        if error is not None:
+            raise InvalidConfigFileError([error])
         return cfg_template
     except OSError as exc:
         raise ConfigFileReadError from exc
@@ -78,13 +78,13 @@ def load_configuration_file(file_name: str, schema: Schema) -> Dict[str, Any]:
 
 
 class ProfileWriteError(Exception):
-    pass
+    ...
 
 
 def generate_profile(
     name: str,
-    config: Dict[str, Any],
-    marshall: Callable[[Dict[str, Any]], Dict[str, str]],
+    config: Mapping[str, Any],
+    marshall: Callable[[Mapping[str, Any]], Mapping[str, str]],
     template: str,
     output_dir: str,
 ) -> None:

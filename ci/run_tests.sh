@@ -4,4 +4,4 @@ LOCAL_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 . $LOCAL_DIR/../.env
 
-python -m unittest discover -v -s $PACKAGE -p "*_test.py"
+python -Wd -m unittest discover -v -s $PACKAGE -p "*_test.py"

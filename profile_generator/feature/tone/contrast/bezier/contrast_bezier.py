@@ -1,6 +1,6 @@
 import logging
 import math
-from typing import List, Tuple
+from collections.abc import Sequence
 
 from profile_generator.model import bezier
 from profile_generator.model.bezier import WeightedPoints
@@ -22,8 +22,8 @@ _CONTRAST_LIMIT = 4
 def calculate(
     grey: Point,
     strength: Strength,
-    weights: Tuple[float, float],
-) -> List[Point]:
+    weights: tuple[float, float],
+) -> Sequence[Point]:
     _logger.info("Calculating contrast curve: {grey} {strength}")
     (shadow, highlight) = _get_control_points(grey, strength)
     toe = _get_bezier_curve(
@@ -35,7 +35,7 @@ def calculate(
     return toe + shoulder[1:]
 
 
-def _get_control_points(grey: Point, strength: Strength) -> Tuple[Point, Point]:
+def _get_control_points(grey: Point, strength: Strength) -> tuple[Point, Point]:
     contrast_correction = math.sqrt(grey.y / grey.x)
     q = (1 - 1 / (strength.value * (_CONTRAST_LIMIT - 1) + 1)) / contrast_correction
     contrast_line = _get_contrast_line(grey, q)
@@ -54,7 +54,7 @@ def _get_contrast_line(grey: Point, q: float) -> Line:
     return Line(gradient, offset)
 
 
-def _get_bezier_curve(points: WeightedPoints) -> List[Point]:
+def _get_bezier_curve(points: WeightedPoints) -> list[Point]:
     return [
         bezier.get_point_at(points, 1 / (_POINTS_COUNT - 1) * i)
         for i in range(_POINTS_COUNT)

@@ -5,7 +5,7 @@ from typing import Any
 
 
 class VariableError(Exception, metaclass=ABCMeta):
-    pass
+    ...
 
 
 @dataclass
