@@ -18,7 +18,7 @@ def run_benchmark():
 
 
 def bench_find_contrast_slope():
-    test_over(-10, 10, sigmoid.find_contrast_slope)
+    test_over(-10, 10, sigmoid.find_contrast_gradient)
 
 
 def bench_find_brightness_midpoint():

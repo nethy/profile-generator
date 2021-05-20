@@ -1,6 +1,6 @@
 from profile_generator.model.sigmoid import (
-    contrast_slope,
-    find_contrast_slope,
+    contrast_gradient,
+    find_contrast_gradient,
     find_curve_brightness,
     get_curve,
     get_curve_with_hl_protection,
@@ -46,5 +46,5 @@ def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
     shadow, highlight = offsets
     if equals(1, highlight - shadow):
         return c
-    slope = contrast_slope(c) / (highlight - shadow)
-    return find_contrast_slope(slope)
+    slope = contrast_gradient(c) / (highlight - shadow)
+    return find_contrast_gradient(slope)
