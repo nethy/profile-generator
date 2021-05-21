@@ -27,7 +27,7 @@ def bench_find_brightness_midpoint():
 
 def bench_find_curve_brightness():
     grey = Point(92 / 255, 122 / 255)
-    test_over(-10, 10, lambda c: sigmoid.find_curve_brightness(grey, c))
+    test_over(-20, 20, lambda c: sigmoid.find_curve_brightness(grey, c))
 
 
 def bench_curve():

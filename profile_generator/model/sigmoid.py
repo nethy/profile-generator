@@ -44,7 +44,11 @@ def get_contrast(c: float) -> Curve:
 def contrast_gradient(c: float) -> float:
     if equals(c, 0):
         return 1
-    return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+    gradient = (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+    if c > 0:
+        return gradient
+    else:
+        return 1 / gradient
 
 
 @cache
@@ -87,17 +91,16 @@ def find_curve_brightness(grey: Point, c: float) -> float:
 
 
 def _find(lower_bound: float, upper_bound: float, fn: Curve, target: float) -> float:
-    lower = lower_bound
-    upper = upper_bound
+    left = lower_bound
+    right = upper_bound
     for _ in range(_ITERATION_LIMIT):
-        guess = (lower + upper) / 2
+        guess = (left + right) / 2
         value = fn(guess)
 
-        if equals(target, value):
+        if equals(value, target):
             break
-
-        if value < target:
-            lower = guess
+        elif value < target:
+            left = guess
         else:
-            upper = guess
+            right = guess
     return guess
