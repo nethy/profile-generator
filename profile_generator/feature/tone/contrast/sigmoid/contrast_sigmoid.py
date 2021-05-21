@@ -46,5 +46,5 @@ def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
     shadow, highlight = offsets
     if equals(1, highlight - shadow):
         return c
-    slope = contrast_gradient(c) / (highlight - shadow)
-    return find_contrast_gradient(slope)
+    gradient = contrast_gradient(c) / (highlight - shadow)
+    return find_contrast_gradient(gradient)

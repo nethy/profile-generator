@@ -16,14 +16,9 @@ def get_brightness(b: float) -> Curve:
         return lambda x: (1 - math.exp(-b * x)) / (1 - math.exp(-b))
 
 
-def brightness_slope_at_midpoint(b: float) -> float:
-    midpoint = _find_brightness_midpoint(b)
-    return brightness_slope(b)(midpoint)
-
-
-def brightness_slope(b: float) -> Curve:
+def brightness_gradient(b: float) -> Curve:
     if equals(b, 0):
-        return lambda x: x
+        return lambda x: 1
     else:
         return lambda x: b * math.exp(b - b * x) / (math.exp(b) - 1)
 
@@ -52,20 +47,21 @@ def contrast_gradient(c: float) -> float:
 
 
 @cache
-def find_contrast_gradient(slope: float) -> float:
-    return _find(-100, 100, contrast_gradient, slope)
+def find_contrast_gradient(gradient: float) -> float:
+    return _find(-100, 100, contrast_gradient, gradient)
 
 
 def get_curve(c: float, b: float) -> Curve:
+    gradient = _brightness_gradient_at_midpoint(b)
+    contrast = get_contrast(c / gradient)
     brightness = get_brightness(b)
-    contrast = get_contrast(c)
     return lambda x: contrast(brightness(x))
 
 
 def get_curve_with_hl_protection(c: float, b: float) -> Curve:
-    midpoint = _find_brightness_midpoint(b)
     curve = get_curve(c, b)
     damped_curve = get_curve(c / 2, b)
+    midpoint = find_brightness_midpoint(b)
 
     def _curve(x: float) -> float:
         if x < midpoint:
@@ -80,14 +76,20 @@ def get_curve_with_hl_protection(c: float, b: float) -> Curve:
 
 
 @cache
-def _find_brightness_midpoint(b: float) -> float:
+def find_brightness_midpoint(b: float) -> float:
     return _find(0, 1, get_brightness(b), 0.5)
 
 
 @cache
 def find_curve_brightness(grey: Point, c: float) -> float:
-    fn = lambda b: get_curve(c / brightness_slope_at_midpoint(b), b)(grey.x)
+    fn = lambda b: get_curve(c, b)(grey.x)
     return _find(-100, 100, fn, grey.y)
+
+
+@cache
+def _brightness_gradient_at_midpoint(b: float) -> float:
+    midpoint = find_brightness_midpoint(b)
+    return brightness_gradient(b)(midpoint)
 
 
 def _find(lower_bound: float, upper_bound: float, fn: Curve, target: float) -> float:
@@ -99,7 +101,8 @@ def _find(lower_bound: float, upper_bound: float, fn: Curve, target: float) -> f
 
         if equals(value, target):
             break
-        elif value < target:
+
+        if value < target:
             left = guess
         else:
             right = guess

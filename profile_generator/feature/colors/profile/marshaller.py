@@ -33,6 +33,6 @@ def _calculate_curves(vibrance: int) -> Mapping[str, str]:
         slope = sigmoid.contrast_gradient(
             chroma_contrast.value * contrast_sigmoid.MAX_CONTRAST
         )
-        curve = [Point(0, 0.5 - 0.5 / slope), Point(1, 0.5 + 0.5 / slope)]
+        curve = [Point(0, 0.5 - 0.5 * slope), Point(1, 0.5 + 0.5 * slope)]
     raw_curve = raw_therapee.CurveType.FLEXIBLE + raw_therapee.present_curve(curve)
     return {_LAB_ENABLED: "true", _LAB_A_CURVE: raw_curve, _LAB_B_CURVE: raw_curve}
