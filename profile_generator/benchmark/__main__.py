@@ -29,14 +29,14 @@ def bench_find_contrast_gradient():
 
 def bench_curve():
     for b in test_range(-10, 10, 20):
-        curve = sigmoid.get_curve(12, b)
+        curve = sigmoid.curve(b, 12)
         for x in test_range(0, 1, 50):
             curve(x)
 
 
 def bench_curve_with_hl_protection():
     for b in test_range(-10, 10, 20):
-        curve = sigmoid.get_curve_with_hl_protection(12, b)
+        curve = sigmoid.curve_with_hl_protection(b, 12)
         for x in test_range(0, 1, 50):
             curve(x)
 
