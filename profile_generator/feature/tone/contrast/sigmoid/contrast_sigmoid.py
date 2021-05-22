@@ -14,7 +14,7 @@ def calculate(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-    sample_size: int = 17,
+    sample_size: int = 25,
 ) -> list[Point]:
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
@@ -30,7 +30,7 @@ def calculate_with_hl_protection(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-    sample_size: int = 17,
+    sample_size: int = 25,
 ) -> list[Point]:
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
