@@ -11,23 +11,25 @@ and this tool will combine them into multiple profiles.
 ```json
 {
   "templates": [
-    {
-      "Camera1": {
-        "tone.contrast.bezier.grey": { "x": 98, "y": 119}
-      },
-      "Camera2": {
-        "tone.contrast.bezier.grey": { "x": 83, "y": 119}
+    { "settings": {
+        "Camera1": {
+          "tone.contrast.bezier.grey": { "x": 98, "y": 119}
+        },
+        "Camera2": {
+          "tone.contrast.bezier.grey": { "x": 83, "y": 119}
+        }
       }
     },
-    {
-      "Soft": {
-        "tone.contrast.bezier.strength": 10
-      },
-      "Medium": {
-        "tone.contrast.bezier.strength": 20
-      },
-      "Strong": {
-        "tone.contrast.bezier.strength": 30
+    { "settings": {
+        "Soft": {
+          "tone.contrast.bezier.strength": 10
+        },
+        "Medium": {
+          "tone.contrast.bezier.strength": 20
+        },
+        "Strong": {
+          "tone.contrast.bezier.strength": 30
+        }
       }
     }
   ]

@@ -52,5 +52,5 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
     except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_file_name)
         logger.error(exc.errors)
-    except ProfileWriteError:
-        console_logger.error("%s: file write failure", cfg_file_name)
+    except ProfileWriteError as exc:
+        console_logger.error("%s: file write failure", exc.filename)

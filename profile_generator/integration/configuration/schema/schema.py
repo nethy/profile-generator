@@ -35,6 +35,8 @@ _CONFIG_SCHEMA = object_of(
     }
 )
 
-_TEMPLATE_SCHAME = object_of(optional=type_of(bool), settings=map_of(_CONFIG_SCHEMA))
+_TEMPLATE_SCHAME = object_of(
+    optional=type_of(bool), directory=type_of(bool), settings=map_of(_CONFIG_SCHEMA)
+)
 
 SCHEMA = object_of(defaults=_CONFIG_SCHEMA, templates=list_of(_TEMPLATE_SCHAME))

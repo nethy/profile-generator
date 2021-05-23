@@ -1,6 +1,8 @@
 import json
+import os
 import sys
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from dataclasses import dataclass
 from json import JSONDecodeError
 from typing import Any
 
@@ -77,8 +79,9 @@ def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
         raise InvalidConfigFileError([]) from exc
 
 
+@dataclass
 class ProfileWriteError(Exception):
-    ...
+    filename: str
 
 
 def generate_profile(
@@ -94,4 +97,5 @@ def generate_profile(
         output = template.format(**template_args)
         file.write_file(output, output_dir, output_filename)
     except Exception as exc:
-        raise ProfileWriteError from exc
+        filename = os.path.normpath(os.path.join(output_dir, output_filename))
+        raise ProfileWriteError(filename) from exc
