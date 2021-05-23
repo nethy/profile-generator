@@ -30,5 +30,7 @@ def read_file(*paths: str) -> str:
 
 def write_file(content: str, *paths: str) -> None:
     path = os.path.join(*paths)
+    path = os.path.normpath(path)
+    create_dir(os.path.dirname(path))
     with open(path, "wt") as writer:
         writer.write(content)

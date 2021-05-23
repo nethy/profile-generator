@@ -35,7 +35,8 @@ instead of nesting each object. It is very useful for setting only one parameter
     "defaults": <configuration>,
     "templates": [
         {
-            "optional": false,
+            "optional": true,
+            "directory": true,
             "settings": {
                 <template_name>: <configuration>,
                 ...
@@ -53,6 +54,10 @@ instead of nesting each object. It is very useful for setting only one parameter
 `optional`: if a template is optional, then profiles will be created with and
 without it. Example: `T1` and `T2` are templates and `T2` is optional, then
 `T1` and `T1_T2` profiles will be created.
+Default value is `false`.
+
+`directory`: template will be a sub-directory instead. Each template represents
+a directory level.
 
 Configuration templates are described in the `templates` field. Each template will be
 combined with predecessing ones.

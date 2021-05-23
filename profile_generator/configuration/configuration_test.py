@@ -120,6 +120,52 @@ class FactoryTest(TestCase):
             },
         )
 
+    def test_directory_templates(self) -> None:
+        self.assert_configurations(
+            {"T/Default": {"a": 1}},
+            {"templates": [{"directory": True, "settings": {"T": {"a": 1}}}]},
+        )
+
+        self.assert_configurations(
+            {"T1/T2": {"a": 1, "b": 2}},
+            {
+                "templates": [
+                    {"directory": True, "settings": {"T1": {"a": 1}}},
+                    {"settings": {"T2": {"b": 2}}},
+                ]
+            },
+        )
+
+        self.assert_configurations(
+            {"T2/T1": {"a": 1, "b": 2}},
+            {
+                "templates": [
+                    {"settings": {"T1": {"a": 1}}},
+                    {"directory": True, "settings": {"T2": {"b": 2}}},
+                ]
+            },
+        )
+
+        self.assert_configurations(
+            {"T1/Default": {"a": 1}, "T1/T2": {"a": 1, "b": 2}},
+            {
+                "templates": [
+                    {"directory": True, "settings": {"T1": {"a": 1}}},
+                    {"optional": True, "settings": {"T2": {"b": 2}}},
+                ]
+            },
+        )
+
+        self.assert_configurations(
+            {"T1": {"a": 1}, "T2/T1": {"a": 1, "b": 2}},
+            {
+                "templates": [
+                    {"settings": {"T1": {"a": 1}}},
+                    {"directory": True, "optional": True, "settings": {"T2": {"b": 2}}},
+                ]
+            },
+        )
+
     def assert_configurations(
         self, expected: dict[str, dict[str, Any]], config: dict[str, Any]
     ) -> None:
