@@ -3,39 +3,38 @@ from typing import Any
 
 Configuration = dict[str, dict[str, Any]]
 
+_DEFAULT_NAME = "Default"
+
 
 def create_from_template(template: dict[str, Any]) -> Configuration:
     defaults = template.get("defaults", {})
     templates = template.get("templates", [])
 
-    if len(templates) == 0:
-        return {"Default": defaults}
-
-    first_template, *rest_templates = templates
-    first_cfg = _merge_first_template(defaults, first_template)
-    return reduce(_merge_template, rest_templates, first_cfg)
-
-
-def _merge_first_template(
-    defaults: dict[str, Any], template: Configuration
-) -> Configuration:
-    return {
-        name: _merge_dicts(defaults, body)
-        for name, body in _get_settings(template).items()
-    }
+    return reduce(_merge_template, templates, {_DEFAULT_NAME: defaults})
 
 
 def _merge_template(
     configuration: Configuration, template: Configuration
 ) -> Configuration:
+    settings = _get_settings(template)
+    if len(settings) == 0:
+        return configuration
+
     merged = {
-        cfg_name + "_" + template_name: _merge_dicts(cfg_body, template_body)
+        _merge_name(cfg_name, template_name): _merge_dicts(cfg_body, template_body)
         for cfg_name, cfg_body in configuration.items()
-        for template_name, template_body in _get_settings(template).items()
+        for template_name, template_body in settings.items()
     }
-    if _get_optional(template):
+    if _get_optional(template) and _DEFAULT_NAME not in configuration:
         merged = {**configuration, **merged}
     return merged
+
+
+def _merge_name(cfg_name: str, template_name: str) -> str:
+    if cfg_name == _DEFAULT_NAME:
+        return template_name
+    else:
+        return cfg_name + "_" + template_name
 
 
 def _merge_dicts(base: dict[str, Any], overrider: dict[str, Any]) -> dict[str, Any]:
@@ -50,8 +49,8 @@ def _merge_dicts(base: dict[str, Any], overrider: dict[str, Any]) -> dict[str, A
 
 
 def _get_settings(template: dict[str, Any]) -> dict[str, Any]:
-    return template["settings"]
+    return template.get("settings", {})
 
 
 def _get_optional(template: dict[str, Any]) -> bool:
-    return template["optional"]
+    return template.get("optional", False)

@@ -20,13 +20,29 @@ class FactoryTest(TestCase):
 
     def test_creating_profiles(self) -> None:
         self.assert_configurations(
+            {"T": {"a": 1}},
+            {"templates": [{"settings": {"T": {"a": 1}}}]},
+        )
+
+        self.assert_configurations(
             {"T1": {}, "T2": {}},
-            {"templates": [{"optional": False, "settings": {"T1": {}, "T2": {}}}]},
+            {"templates": [{"settings": {"T1": {}, "T2": {}}}]},
+        )
+
+    def test_ingore_empty_settings(self) -> None:
+        self.assert_configurations(
+            {"T": {"a": 1}},
+            {"templates": [{"settings": {}}, {"settings": {"T": {"a": 1}}}]},
         )
 
         self.assert_configurations(
             {"T": {"a": 1}},
-            {"templates": [{"optional": False, "settings": {"T": {"a": 1}}}]},
+            {"templates": [{}, {"settings": {"T": {"a": 1}}}]},
+        )
+
+        self.assert_configurations(
+            {"T": {"a": 1}},
+            {"templates": [{"settings": {"T": {"a": 1}}}, {}]},
         )
 
     def test_ignore_first_optional_template(self) -> None:
@@ -40,7 +56,7 @@ class FactoryTest(TestCase):
             {"T": {"a": 1, "b": 3, "c": 4}},
             {
                 "defaults": {"a": 1, "b": 2},
-                "templates": [{"optional": False, "settings": {"T": {"b": 3, "c": 4}}}],
+                "templates": [{"settings": {"T": {"b": 3, "c": 4}}}],
             },
         )
 
@@ -59,8 +75,8 @@ class FactoryTest(TestCase):
             {"T1_T2": {"a": 1, "b": 3, "c": 4}},
             {
                 "templates": [
-                    {"optional": False, "settings": {"T1": {"a": 1, "b": 2}}},
-                    {"optional": False, "settings": {"T2": {"b": 3, "c": 4}}},
+                    {"settings": {"T1": {"a": 1, "b": 2}}},
+                    {"settings": {"T2": {"b": 3, "c": 4}}},
                 ]
             },
         )
@@ -98,7 +114,7 @@ class FactoryTest(TestCase):
             {"T1": {"a": 1, "b": 2}, "T1_T2": {"a": 1, "b": 3, "c": 4}},
             {
                 "templates": [
-                    {"optional": False, "settings": {"T1": {"a": 1, "b": 2}}},
+                    {"settings": {"T1": {"a": 1, "b": 2}}},
                     {"optional": True, "settings": {"T2": {"b": 3, "c": 4}}},
                 ]
             },
