@@ -1,10 +1,12 @@
 from profile_generator.model.sigmoid import (
+    Curve,
     contrast_gradient,
     curve,
     curve_with_hl_protection,
     find_contrast_gradient,
     find_curve_brightness,
 )
+from profile_generator.model.spline import spline_of
 from profile_generator.unit import Point, Strength, equals
 
 MAX_CONTRAST = 16
@@ -14,32 +16,24 @@ def calculate(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-    sample_size: int = 25,
 ) -> list[Point]:
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
-    _curve = curve(brightness, contrast)
-    return [
-        Point(x, _curve(x) * (offsets[1] - offsets[0]) + offsets[0])
-        for x in (i / (sample_size - 1) for i in range(sample_size))
-    ]
+    _curve = _apply_offsets(curve(brightness, contrast), offsets)
+    return [Point(x, y) for x, y in spline_of(_curve)]
 
 
 def calculate_with_hl_protection(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-    sample_size: int = 25,
 ) -> list[Point]:
     contrast = strength.value * MAX_CONTRAST
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
-    _curve = curve_with_hl_protection(brightness, contrast)
-    return [
-        Point(x, _curve(x) * (offsets[1] - offsets[0]) + offsets[0])
-        for x in (i / (sample_size - 1) for i in range(sample_size))
-    ]
+    _curve = _apply_offsets(curve_with_hl_protection(brightness, contrast), offsets)
+    return [Point(x, y) for x, y in spline_of(_curve)]
 
 
 def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
@@ -48,3 +42,7 @@ def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
         return c
     gradient = contrast_gradient(c) / (highlight - shadow)
     return find_contrast_gradient(gradient)
+
+
+def _apply_offsets(fn: Curve, offsets: tuple[float, float]) -> Curve:
+    return lambda x: fn(x) * (offsets[1] - offsets[0]) + offsets[0]

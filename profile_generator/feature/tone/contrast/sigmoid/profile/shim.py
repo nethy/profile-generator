@@ -48,5 +48,5 @@ def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
 def marshal_curve(curve: Sequence[Point]) -> Mapping[str, str]:
     value = raw_therapee.CurveType.LINEAR
     if len(curve) > 0:
-        value = raw_therapee.CurveType.FLEXIBLE + raw_therapee.present_curve(curve)
+        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(curve)
     return {_TEMPLATE_FIELD: value}
