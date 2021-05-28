@@ -25,7 +25,15 @@ class SplineTest(TestCase):
         self.assertAlmostEqual(0.7, spline(0.7))
 
     def test_interpolate_should_interpolate_non_linear(self) -> None:
-        spline = interpolate([(0, 21), (1, 24), (2, 24), (3, 18), (4, 16)])
+        spline = interpolate(
+            [
+                (0, 21),
+                (1, 24),
+                (2, 24),
+                (3, 18),
+                (4, 16),
+            ]
+        )
         self.assertAlmostEqual(22.6138393, spline(0.5))
         self.assertAlmostEqual(21.1272321, spline(2.5))
         self.assertAlmostEqual(16.4575893, spline(3.5))

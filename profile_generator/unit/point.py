@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Iterator
 
 from .precision import DECIMALS, equals
 
@@ -47,3 +48,7 @@ class Point:
 
     def __hash__(self) -> int:
         return hash((self.x, self.y))
+
+    def __iter__(self) -> Iterator[float]:
+        yield self.x
+        yield self.y
