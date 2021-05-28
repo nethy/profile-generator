@@ -6,7 +6,7 @@ Matrix = list[list[float]]
 Vector = list[float]
 Point = tuple[float, float]
 
-EPSILON = 1 / 1024
+EPSILON = 1 / 256
 
 
 def spline_of(fn: Callable[[float], float]) -> Sequence[Point]:
