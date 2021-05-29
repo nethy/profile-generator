@@ -1,3 +1,4 @@
+from profile_generator.model import spline
 from profile_generator.model.sigmoid import (
     Curve,
     contrast_gradient,
@@ -6,7 +7,6 @@ from profile_generator.model.sigmoid import (
     find_contrast_gradient,
     find_curve_brightness,
 )
-from profile_generator.model.spline import spline_of
 from profile_generator.unit import Point, Strength, equals
 
 MAX_CONTRAST = 16
@@ -21,7 +21,7 @@ def calculate(
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
     _curve = _apply_offsets(curve(brightness, contrast), offsets)
-    return [Point(x, y) for x, y in spline_of(_curve)]
+    return [Point(x, y) for x, y in spline.fit(_curve)]
 
 
 def calculate_with_hl_protection(
@@ -33,7 +33,7 @@ def calculate_with_hl_protection(
     contrast = _corrigate_contrast(contrast, offsets)
     brightness = find_curve_brightness(grey, contrast)
     _curve = _apply_offsets(curve_with_hl_protection(brightness, contrast), offsets)
-    return [Point(x, y) for x, y in spline_of(_curve)]
+    return [Point(x, y) for x, y in spline.fit(_curve)]
 
 
 def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .spline import interpolate, solve, spline_of
+from .spline import fit, interpolate, solve
 
 
 class SplineTest(TestCase):
@@ -34,13 +34,15 @@ class SplineTest(TestCase):
                 (4, 16),
             ]
         )
+        self.assertAlmostEqual(21, spline(0))
         self.assertAlmostEqual(22.6138393, spline(0.5))
         self.assertAlmostEqual(21.1272321, spline(2.5))
         self.assertAlmostEqual(16.4575893, spline(3.5))
+        self.assertAlmostEqual(16, spline(4))
 
-    def test_spline_of(self) -> None:
-        self.assertEqual([(0, 1), (1, 1)], spline_of(lambda _: 1))
-        self.assertEqual([(0, 0), (1, 1)], spline_of(lambda x: x))
+    def test_fit(self) -> None:
+        self.assertEqual([(0, 1), (1, 1)], fit(lambda _: 1))
+        self.assertEqual([(0, 0), (1, 1)], fit(lambda x: x))
         self.assertEqual(
             [
                 (0, 0.0),
@@ -49,5 +51,5 @@ class SplineTest(TestCase):
                 (0.8117647058823529, 0.658961937716263),
                 (1, 1.0),
             ],
-            spline_of(lambda x: x ** 2),
+            fit(lambda x: x ** 2),
         )

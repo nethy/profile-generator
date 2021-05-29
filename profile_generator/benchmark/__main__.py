@@ -1,9 +1,16 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
+#   Report
+# find_curve_brightness     1760ms
+# spline_fitting            1243ms
+# find_contrast_gradient      27ms
+# curve_with_hl_protection    21ms
+# curve                        9ms
+
 from timeit import Timer
 
-from profile_generator.model import sigmoid
+from profile_generator.model import sigmoid, spline
 from profile_generator.unit import Point
 
 
@@ -13,6 +20,7 @@ def run_benchmark():
         bench_find_curve_brightness,
         bench_curve,
         bench_curve_with_hl_protection,
+        bench_spline_fitting,
     )
 
 
@@ -39,6 +47,12 @@ def bench_curve_with_hl_protection():
         curve = sigmoid.curve_with_hl_protection(b, 12)
         for x in test_range(0, 1, 50):
             curve(x)
+
+
+def bench_spline_fitting():
+    for b in test_range(1, 3, 8):
+        for c in test_range(2, 12, 8):
+            spline.fit(sigmoid.curve(b, c))
 
 
 def test_over(start, stop, step, fn):
