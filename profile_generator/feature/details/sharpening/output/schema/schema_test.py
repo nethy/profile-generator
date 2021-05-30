@@ -31,35 +31,35 @@ class SchemaTest(unittest.TestCase):
 
     def test_invalid_enabled(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"enabled": InvalidTypeError(bool)}),
             {"enabled": "false"},
+            InvalidObjectError({"enabled": InvalidTypeError(bool)}),
         )
 
     def test_invalid_threshold(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"threshold": InvalidRangeError(0, 200)}),
             {"threshold": "NaN"},
+            InvalidObjectError({"threshold": InvalidRangeError(0, 200)}),
         )
 
     def test_invalid_radius(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"radius": InvalidRangeError(0.4, 2.5)}),
             {"radius": "NaN"},
+            InvalidObjectError({"radius": InvalidRangeError(0.4, 2.5)}),
         )
 
     def test_invalid_amount(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"amount": InvalidRangeError(0, 100)}), {"amount": "NaN"}
+            {"amount": "NaN"}, InvalidObjectError({"amount": InvalidRangeError(0, 100)})
         )
 
     def test_invalid_damping(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"damping": InvalidRangeError(0, 100)}),
             {"damping": "NaN"},
+            InvalidObjectError({"damping": InvalidRangeError(0, 100)}),
         )
 
     def test_invalid_iterations(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"iterations": InvalidRangeError(5, 100)}),
             {"iterations": "NaN"},
+            InvalidObjectError({"iterations": InvalidRangeError(5, 100)}),
         )

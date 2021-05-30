@@ -21,6 +21,6 @@ class SchemaTest(TestCase):
 
     def test_invalid_vibrance(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"vibrance": InvalidRangeError(-100, 100)}),
             {"vibrance": False},
+            InvalidObjectError({"vibrance": InvalidRangeError(-100, 100)}),
         )

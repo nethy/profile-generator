@@ -13,11 +13,11 @@ class TypeSchemaTest(unittest.TestCase):
         validator.assert_valid(False)
 
         error = InvalidTypeError(bool)
-        validator.assert_error(error, 0)
-        validator.assert_error(error, 1.0)
-        validator.assert_error(error, "NaN")
-        validator.assert_error(error, [])
-        validator.assert_error(error, {})
+        validator.assert_error(0, error)
+        validator.assert_error(1.0, error)
+        validator.assert_error("NaN", error)
+        validator.assert_error([], error)
+        validator.assert_error({}, error)
 
     def test_validate_int(self) -> None:
         schema = type_of(int)
@@ -27,12 +27,12 @@ class TypeSchemaTest(unittest.TestCase):
         validator.assert_valid(-1)
 
         error = InvalidTypeError(int)
-        validator.assert_error(error, None)
-        validator.assert_error(error, False)
-        validator.assert_error(error, 1.0)
-        validator.assert_error(error, "NaN")
-        validator.assert_error(error, [])
-        validator.assert_error(error, {})
+        validator.assert_error(None, error)
+        validator.assert_error(False, error)
+        validator.assert_error(1.0, error)
+        validator.assert_error("NaN", error)
+        validator.assert_error([], error)
+        validator.assert_error({}, error)
 
     def test_validate_float(self) -> None:
         schema = type_of(float)
@@ -42,11 +42,11 @@ class TypeSchemaTest(unittest.TestCase):
         validator.assert_valid(1)
 
         error = InvalidTypeError(float)
-        validator.assert_error(error, None)
-        validator.assert_error(error, False)
-        validator.assert_error(error, "NaN")
-        validator.assert_error(error, [])
-        validator.assert_error(error, {})
+        validator.assert_error(None, error)
+        validator.assert_error(False, error)
+        validator.assert_error("NaN", error)
+        validator.assert_error([], error)
+        validator.assert_error({}, error)
 
     def test_validate_str(self) -> None:
         schema = type_of(str)
@@ -55,9 +55,9 @@ class TypeSchemaTest(unittest.TestCase):
         validator.assert_valid("")
 
         error = InvalidTypeError(str)
-        validator.assert_error(error, None)
-        validator.assert_error(error, False)
-        validator.assert_error(error, 0)
-        validator.assert_error(error, 1.0)
-        validator.assert_error(error, [])
-        validator.assert_error(error, {})
+        validator.assert_error(None, error)
+        validator.assert_error(False, error)
+        validator.assert_error(0, error)
+        validator.assert_error(1.0, error)
+        validator.assert_error([], error)
+        validator.assert_error({}, error)

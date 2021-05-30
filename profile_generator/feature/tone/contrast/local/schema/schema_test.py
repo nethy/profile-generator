@@ -21,5 +21,5 @@ class SchemaTest(TestCase):
 
     def test_invalid_local(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"local": InvalidRangeError(0, 100)}), {"local": -1}
+            {"local": -1}, InvalidObjectError({"local": InvalidRangeError(0, 100)})
         )

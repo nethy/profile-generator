@@ -1,4 +1,5 @@
 import unittest
+from collections.abc import Mapping
 from typing import Any
 
 from .schema import Schema, SchemaError
@@ -16,5 +17,9 @@ class SchemaValidator:
         error = self.schema.validate(data)
         self.assertions.assertIsNotNone(error)
 
-    def assert_error(self, error: SchemaError, data: Any) -> None:
-        self.assertions.assertEqual(error, self.schema.validate(data))
+    def assert_error(self, data: Any, error: SchemaError) -> None:
+        self.assertions.assertEqual(self.schema.validate(data), error)
+
+    def assert_process(self, data: Any, expectation: Mapping[str, str]) -> None:
+        actual = self.schema.process(data)
+        self.assertions.assertEqual(actual, expectation)

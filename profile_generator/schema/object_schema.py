@@ -1,14 +1,18 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
+from functools import reduce
 from typing import Any, Optional
 
-from .schema import Schema, SchemaError
+from .schema import PROCESSOR, Schema, SchemaError
 from .type_schema import InvalidTypeError
 
 
 class ObjectSchema(Schema):
-    def __init__(self, **object_schema: Schema):
+    def __init__(
+        self, object_schema: Mapping[str, Schema], processor: Optional[PROCESSOR] = None
+    ):
         self._object_schema = object_schema
+        self._processor = processor
 
     def validate(self, data: Any) -> Optional[SchemaError]:
         if not isinstance(data, dict):
@@ -39,6 +43,15 @@ class ObjectSchema(Schema):
             member_schema = self._object_schema.get(name, _ANY_SCHEMA)
             return member_schema.validate(value)
 
+    def process(self, data: Any) -> Mapping[str, str]:
+        if self._processor is None:
+            combine = lambda acc, next: acc | self._object_schema[next[0]].process(
+                next[1]
+            )
+            return reduce(combine, data.items(), {})
+        else:
+            return self._processor(data)
+
 
 class AnySchema(Schema):
     def validate(self, data: Any) -> Optional[SchemaError]:
@@ -58,5 +71,7 @@ class UnkownMemberError(SchemaError):
     ...
 
 
-def object_of(**object_schema: Schema) -> Schema:
-    return ObjectSchema(**object_schema)
+def object_of(
+    object_schema: Mapping[str, Schema], processor: Optional[PROCESSOR] = None
+) -> Schema:
+    return ObjectSchema(object_schema, processor)

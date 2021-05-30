@@ -24,20 +24,20 @@ class SchemaTest(unittest.TestCase):
 
     def test_invalid_mode(self) -> None:
         self.validator.assert_error(
+            {"mode": "not_available"},
             InvalidObjectError(
                 {"mode": InvalidOptionError(("Conservative", "Aggressive"))}
             ),
-            {"mode": "not_available"},
         )
 
     def test_invalid_luminance(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"luminance": InvalidRangeError(0, 100)}),
             {"luminance": False},
+            InvalidObjectError({"luminance": InvalidRangeError(0, 100)}),
         )
 
     def test_invalid_chrominance(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"chrominance": InvalidRangeError(0, 100)}),
             {"chrominance": True},
+            InvalidObjectError({"chrominance": InvalidRangeError(0, 100)}),
         )

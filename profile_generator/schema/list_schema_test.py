@@ -6,24 +6,28 @@ from .type_schema import InvalidTypeError, type_of
 
 
 class ListSchemaTest(unittest.TestCase):
-    def test_validate_list(self) -> None:
-        schema = list_of(type_of(int))
-        validator = SchemaValidator(self, schema)
+    def setUp(self) -> None:
+        self.schema = list_of(type_of(int))
+        self.validator = SchemaValidator(self, self.schema)
 
-        validator.assert_valid([])
-        validator.assert_valid([0, 1])
+    def test_validate_list(self) -> None:
+        self.validator.assert_valid([])
+        self.validator.assert_valid([0, 1])
 
         error = InvalidTypeError(list)
-        validator.assert_error(error, None)
-        validator.assert_error(error, False)
-        validator.assert_error(error, {})
+        self.validator.assert_error(None, error)
+        self.validator.assert_error(False, error)
+        self.validator.assert_error({}, error)
 
-        validator.assert_error(
+        self.validator.assert_error(
+            [0, "NaN", None, 1],
             InvalidListError(
                 {
                     2: InvalidTypeError(int),
                     3: InvalidTypeError(int),
                 }
             ),
-            [0, "NaN", None, 1],
         )
+
+    def test_process_list(self) -> None:
+        self.validator.assert_process([], {})

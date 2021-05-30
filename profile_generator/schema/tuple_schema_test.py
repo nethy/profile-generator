@@ -18,15 +18,15 @@ class TupleSchemaTest(unittest.TestCase):
         validator.assert_valid([True, False])
 
         error = InvalidTypeError(tuple)
-        validator.assert_error(error, None)
-        validator.assert_error(error, False)
-        validator.assert_error(error, {})
+        validator.assert_error(None, error)
+        validator.assert_error(False, error)
+        validator.assert_error({}, error)
 
-        validator.assert_error(InvalidListSizeError(2), [False])
-        validator.assert_error(InvalidListSizeError(2), [False, False, False])
+        validator.assert_error([False], InvalidListSizeError(2))
+        validator.assert_error([False, False, False], InvalidListSizeError(2))
         validator.assert_error(
-            InvalidListError({2: InvalidTypeError(bool)}), [False, 0]
+            [False, 0], InvalidListError({2: InvalidTypeError(bool)})
         )
         validator.assert_error(
-            InvalidListError({1: InvalidTypeError(bool)}), [0, False]
+            [0, False], InvalidListError({1: InvalidTypeError(bool)})
         )

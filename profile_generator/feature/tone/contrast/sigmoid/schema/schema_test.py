@@ -29,33 +29,33 @@ class SchemaTest(unittest.TestCase):
 
     def test_invalid_middle_grey(self) -> None:
         self.validator.assert_error(
+            {"grey": {"x": False}},
             InvalidObjectError(
                 {"grey": InvalidObjectError({"x": InvalidRangeError(16, 240)})}
             ),
-            {"grey": {"x": False}},
         )
 
         self.validator.assert_error(
+            {"grey": {"y": False}},
             InvalidObjectError(
                 {"grey": InvalidObjectError({"y": InvalidRangeError(64, 192)})}
             ),
-            {"grey": {"y": False}},
         )
 
     def test_invalid_strength(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"strength": InvalidRangeError(0.0, 100.0)}),
             {"strength": False},
+            InvalidObjectError({"strength": InvalidRangeError(0.0, 100.0)}),
         )
 
     def test_invalid_hl_protect(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
             {"protect_hl": 0},
+            InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
         )
 
     def test_invalid_matte_effect(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"matte_effect": InvalidTypeError(bool)}),
             {"matte_effect": 0},
+            InvalidObjectError({"matte_effect": InvalidTypeError(bool)}),
         )

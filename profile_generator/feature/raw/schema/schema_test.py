@@ -23,10 +23,10 @@ class SchemaTest(unittest.TestCase):
 
     def test_invalid_demosaic(self) -> None:
         self.validator.assert_error(
-            InvalidObjectError({"demosaic": InvalidTypeError(str)}),
             {"demosaic": 1},
+            InvalidObjectError({"demosaic": InvalidTypeError(str)}),
         )
         self.validator.assert_error(
-            InvalidObjectError({"demosaic": InvalidOptionError(("RCD+VNG4", "LMMSE"))}),
             {"demosaic": "not_available"},
+            InvalidObjectError({"demosaic": InvalidOptionError(("RCD+VNG4", "LMMSE"))}),
         )

@@ -1,5 +1,6 @@
 from collections.abc import Mapping
 from dataclasses import dataclass
+from functools import reduce
 from typing import Any, Optional
 
 from .schema import Schema, SchemaError
@@ -26,6 +27,13 @@ class ListSchema(Schema):
             for i, item in enumerate(data)
             if (error := self._item_schema.validate(item)) is not None
         }
+
+    def process(self, data: Any) -> Mapping[str, str]:
+        if not isinstance(data, list):
+            return super().process(data)
+
+        combine = lambda acc, next: acc | self._item_schema.process(next)
+        return reduce(combine, data, {})
 
 
 @dataclass

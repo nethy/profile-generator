@@ -61,7 +61,7 @@ class ProfileGeneratorTest(TestCase):
         self, read_file: Mock
     ) -> None:
         read_file.return_value = '{"a": 2}'
-        schema = object_of(a=type_of(int))
+        schema = object_of({"a": type_of(int)})
 
         config = generator.load_configuration_file("config.json", schema)
 
@@ -72,7 +72,7 @@ class ProfileGeneratorTest(TestCase):
     def test_load_configuration_file_raises_error_when_config_file_cannot_be_read(
         self, read_file: Mock
     ) -> None:
-        schema = object_of(a=type_of(int))
+        schema = object_of({"a": type_of(int)})
         read_file.side_effect = OSError
 
         self.assertRaises(
@@ -87,7 +87,7 @@ class ProfileGeneratorTest(TestCase):
         self, read_file: Mock
     ) -> None:
         read_file.return_value = '{"a": "$a"}'
-        schema = object_of(a=type_of(str))
+        schema = object_of({"a": type_of(str)})
 
         self.assertRaises(
             InvalidConfigFileError,
@@ -101,7 +101,7 @@ class ProfileGeneratorTest(TestCase):
         self, read_file: Mock
     ) -> None:
         read_file.return_value = '{"a": false}'
-        schema = object_of(a=type_of(int))
+        schema = object_of({"a": type_of(int)})
 
         self.assertRaises(
             InvalidConfigFileError,
@@ -115,7 +115,7 @@ class ProfileGeneratorTest(TestCase):
         self, read_file: Mock
     ) -> None:
         read_file.return_value = '{"a": false'
-        schema = object_of(a=type_of(int))
+        schema = object_of({"a": type_of(int)})
 
         self.assertRaises(
             InvalidConfigFileError,
