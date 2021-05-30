@@ -2,7 +2,6 @@ from unittest import TestCase
 from unittest.mock import Mock, patch
 
 from profile_generator import generator
-from profile_generator.configuration.schema import object_of, type_of
 from profile_generator.generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
@@ -11,6 +10,7 @@ from profile_generator.generator import (
     ProfileWriteError,
     TemplateFileReadError,
 )
+from profile_generator.schema import object_of, type_of
 
 
 class ProfileGeneratorTest(TestCase):

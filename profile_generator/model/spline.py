@@ -1,6 +1,5 @@
 import bisect
 from collections.abc import Callable, Sequence
-from math import pi
 
 from profile_generator.unit.precision import equals
 

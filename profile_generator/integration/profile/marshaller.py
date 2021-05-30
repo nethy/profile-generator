@@ -16,7 +16,7 @@ _CAPTURE_SHARPENING = (
     f"{field_names.DETAILS}.{field_names.SHARPENING}.{field_names.CAPTURE_SHARPENING}"
 )
 _OUTPUT_SHARPENING = (
-    f"{field_names.DETAILS}.{field_names.SHARPENING}.{field_names.OUTPUT_SHARPENGING}"
+    f"{field_names.DETAILS}.{field_names.SHARPENING}.{field_names.OUTPUT_SHARPENING}"
 )
 
 marshallers = {
