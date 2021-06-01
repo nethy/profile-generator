@@ -1,21 +1,23 @@
+import re
 import unittest
 
 from profile_generator.schema.schema_validator import SchemaValidator
+from profile_generator.util import file
 
-from .schema import SCHEMA
+from .schema import CONFIGURATION_SCHEMA, SCHEMA
 
 
 class SchemaTest(unittest.TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
 
-    def test_empty(self) -> None:
+    def test_validate_empty(self) -> None:
         self.validator.assert_valid({})
         self.validator.assert_valid({"defaults": {}})
         self.validator.assert_valid({"templates": []})
         self.validator.assert_valid({"defaults": {}, "templates": []})
 
-    def test_tone_curve_bezier(self) -> None:
+    def test_validate_tone_curve_bezier(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"tone": {"curve": {"bezier": {}}}},
@@ -28,7 +30,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_tone_curve_sigmoid(self) -> None:
+    def test_validate_tone_curve_sigmoid(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"tone": {"curve": {"sigmoid": {}}}},
@@ -41,7 +43,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_tone_contrast(self) -> None:
+    def test_validate_tone_contrast(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"tone": {"contrast": {}}},
@@ -51,7 +53,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_raw(self) -> None:
+    def test_validate_raw(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"raw": {}},
@@ -59,7 +61,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_details_sharpening_capture(self) -> None:
+    def test_validate_details_sharpening_capture(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"details": {"sharpening": {"capture": {}}}},
@@ -72,7 +74,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_details_sharpening_output(self) -> None:
+    def test_validate_details_sharpening_output(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"details": {"sharpening": {"output": {}}}},
@@ -85,7 +87,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_details_noise_reduction(self) -> None:
+    def test_validate_details_noise_reduction(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"details": {"noise_reduction": {}}},
@@ -98,10 +100,20 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_colors(self) -> None:
+    def test_validate_colors(self) -> None:
         self.validator.assert_valid(
             {
                 "defaults": {"colors": {}},
                 "templates": [{"optional": False, "settings": {"T": {"colors": {}}}}],
             }
         )
+
+    def test_process_completeness(self) -> None:
+        template_path = file.get_full_path("templates", "raw_therapee.pp3")
+        with open(template_path, "rt") as reader:
+            template = reader.read()
+        placeholders = re.findall(r"\{(\w+)\}", template)
+
+        result = CONFIGURATION_SCHEMA.process({})
+
+        self.assertEqual(set(placeholders), set(result.keys()))

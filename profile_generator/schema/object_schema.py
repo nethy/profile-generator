@@ -1,15 +1,16 @@
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from functools import reduce
 from typing import Any, Optional
 
-from .schema import PROCESSOR, Schema, SchemaError
+from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
+
+Processor = Callable[[Any], Mapping[str, str]]
 
 
 class ObjectSchema(Schema):
     def __init__(
-        self, object_schema: Mapping[str, Schema], processor: Optional[PROCESSOR] = None
+        self, object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
     ):
         self._object_schema = object_schema
         self._processor = processor
@@ -37,20 +38,22 @@ class ObjectSchema(Schema):
         return errors
 
     def _get_member_error(self, name: str, value: Any) -> Optional[SchemaError]:
-        if name not in self._object_schema.keys():
+        if name not in self._object_schema:
             return UnkownMemberError()
         else:
             member_schema = self._object_schema.get(name, _ANY_SCHEMA)
             return member_schema.validate(value)
 
     def process(self, data: Any) -> Mapping[str, str]:
-        if self._processor is None:
-            combine = lambda acc, next: acc | self._object_schema[next[0]].process(
-                next[1]
-            )
-            return reduce(combine, data.items(), {})
-        else:
+        if self._processor is not None:
             return self._processor(data)
+        else:
+            result: dict[str, str] = {}
+            for member, schema in self._object_schema.items():
+                config = data.get(member, {})
+                partial_result = schema.process(config)
+                result.update(partial_result)
+            return result
 
 
 class AnySchema(Schema):
@@ -72,6 +75,6 @@ class UnkownMemberError(SchemaError):
 
 
 def object_of(
-    object_schema: Mapping[str, Schema], processor: Optional[PROCESSOR] = None
+    object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
 ) -> Schema:
     return ObjectSchema(object_schema, processor)

@@ -1,9 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from collections.abc import Callable, Mapping
-from typing import Any, Optional, TypeVar
-
-T = TypeVar("T")
-PROCESSOR = Callable[[T], Mapping[str, str]]
+from collections.abc import Mapping
+from typing import Any, Optional
 
 
 class SchemaError(Exception, metaclass=ABCMeta):

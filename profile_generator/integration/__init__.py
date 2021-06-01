@@ -1,2 +1,1 @@
-from .profile import get_profile_args
-from .schema import SCHEMA
+from .schema import CONFIGURATION_SCHEMA, SCHEMA

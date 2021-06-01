@@ -14,10 +14,10 @@ class SchemaTest(unittest.TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
 
-    def test_empty_config(self) -> None:
+    def test_validate_empty_config(self) -> None:
         self.validator.assert_valid({})
 
-    def test_valid_config(self) -> None:
+    def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
                 "grey": {"x": 128, "y": 128},
@@ -27,7 +27,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_invalid_middle_grey(self) -> None:
+    def test_validate_invalid_middle_grey(self) -> None:
         self.validator.assert_error(
             {"grey": {"x": False}},
             InvalidObjectError(
@@ -42,19 +42,19 @@ class SchemaTest(unittest.TestCase):
             ),
         )
 
-    def test_invalid_strength(self) -> None:
+    def test_validate_invalid_strength(self) -> None:
         self.validator.assert_error(
             {"strength": False},
             InvalidObjectError({"strength": InvalidRangeError(0.0, 100.0)}),
         )
 
-    def test_invalid_hl_protect(self) -> None:
+    def test_validate_invalid_hl_protect(self) -> None:
         self.validator.assert_error(
             {"protect_hl": 0},
             InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
         )
 
-    def test_invalid_matte_effect(self) -> None:
+    def test_validate_invalid_matte_effect(self) -> None:
         self.validator.assert_error(
             {"matte_effect": 0},
             InvalidObjectError({"matte_effect": InvalidTypeError(bool)}),

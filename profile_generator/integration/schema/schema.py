@@ -26,7 +26,7 @@ _DETAILS_SCHEMA = object_of(
     }
 )
 
-_CONFIG_SCHEMA = object_of(
+CONFIGURATION_SCHEMA = object_of(
     {
         field_names.RAW: raw.SCHEMA,
         field_names.TONE: _TONE_SCHEMA,
@@ -39,8 +39,10 @@ _TEMPLATE_SCHAME = object_of(
     {
         "optional": type_of(bool),
         "directory": type_of(bool),
-        "settings": map_of(_CONFIG_SCHEMA),
+        "settings": map_of(CONFIGURATION_SCHEMA),
     }
 )
 
-SCHEMA = object_of({"defaults": _CONFIG_SCHEMA, "templates": list_of(_TEMPLATE_SCHAME)})
+SCHEMA = object_of(
+    {"defaults": CONFIGURATION_SCHEMA, "templates": list_of(_TEMPLATE_SCHAME)}
+)

@@ -87,7 +87,7 @@ class ProfileWriteError(Exception):
 def generate_profile(
     name: str,
     config: Mapping[str, Any],
-    marshall: Callable[[Mapping[str, Any]], Mapping[str, str]],
+    marshall: Callable[[Any], Mapping[str, str]],
     template: str,
     output_dir: str,
 ) -> None:

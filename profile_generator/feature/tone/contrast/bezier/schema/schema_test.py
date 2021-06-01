@@ -15,10 +15,10 @@ class SchemaTest(unittest.TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
 
-    def test_empty_config(self) -> None:
+    def test_validate_empty_config(self) -> None:
         self.validator.assert_valid({})
 
-    def test_valid_config(self) -> None:
+    def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
                 "grey": {"x": 128, "y": 128},
@@ -27,7 +27,7 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_invalid_middle_grey(self) -> None:
+    def test_validate_invalid_middle_grey(self) -> None:
         self.validator.assert_error(
             {"grey": {"x": False}},
             InvalidObjectError(
@@ -42,13 +42,13 @@ class SchemaTest(unittest.TestCase):
             ),
         )
 
-    def test_invalid_strength(self) -> None:
+    def test_validate_invalid_strength(self) -> None:
         self.validator.assert_error(
             {"strength": False},
             InvalidObjectError({"strength": InvalidRangeError(0, 100)}),
         )
 
-    def test_invalid_weights(self) -> None:
+    def test_validate_invalid_weights(self) -> None:
         self.validator.assert_error(
             {"weights": [1]}, InvalidObjectError({"weights": InvalidListSizeError(2)})
         )
