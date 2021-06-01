@@ -7,7 +7,7 @@ from json import JSONDecodeError
 from typing import Any
 
 from profile_generator.configuration.preprocessor import dot_notation, variable
-from profile_generator.configuration.schema import Schema
+from profile_generator.schema import Schema
 from profile_generator.util import file
 
 _PROFILES_DIR = "profiles"
@@ -87,7 +87,7 @@ class ProfileWriteError(Exception):
 def generate_profile(
     name: str,
     config: Mapping[str, Any],
-    marshall: Callable[[Mapping[str, Any]], Mapping[str, str]],
+    marshall: Callable[[Any], Mapping[str, str]],
     template: str,
     output_dir: str,
 ) -> None:

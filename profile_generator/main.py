@@ -44,7 +44,11 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         for name, body in config.items():
             logging.info("creating profile: %s", name)
             generator.generate_profile(
-                name, body, integration.get_profile_args, template, output_dir
+                name,
+                body,
+                integration.CONFIGURATION_SCHEMA.process,
+                template,
+                output_dir,
             )
             console_logger.info("Profile has been created: %s", name)
     except ConfigFileReadError:
