@@ -4,34 +4,28 @@ from profile_generator.feature.details.sharpening import capture, output
 from profile_generator.feature.tone.contrast import bezier, local, sigmoid
 from profile_generator.schema import list_of, map_of, object_of, type_of
 
-from .. import field_names
-
-_CURVE_SCHEMA = object_of(
-    {field_names.BEZIER: bezier.SCHEMA, field_names.SIGMOID: sigmoid.SCHEMA}
-)
-_TONE_SCHEMA = object_of(
-    {field_names.CURVE: _CURVE_SCHEMA, field_names.CONTRAST: local.SCHEMA}
-)
+_CURVE_SCHEMA = object_of({"bezier": bezier.SCHEMA, "sigmoid": sigmoid.SCHEMA})
+_TONE_SCHEMA = object_of({"curve": _CURVE_SCHEMA, "contrast": local.SCHEMA})
 
 _SHARPENING_SCHEMA = object_of(
     {
-        field_names.CAPTURE_SHARPENING: capture.SCHEMA,
-        field_names.OUTPUT_SHARPENING: output.SCHEMA,
+        "capture": capture.SCHEMA,
+        "output": output.SCHEMA,
     }
 )
 _DETAILS_SCHEMA = object_of(
     {
-        field_names.SHARPENING: _SHARPENING_SCHEMA,
-        field_names.NOISE_REDUCTION: noise_reduction.SCHEMA,
+        "sharpening": _SHARPENING_SCHEMA,
+        "noise_reduction": noise_reduction.SCHEMA,
     }
 )
 
 CONFIGURATION_SCHEMA = object_of(
     {
-        field_names.RAW: raw.SCHEMA,
-        field_names.TONE: _TONE_SCHEMA,
-        field_names.DETAILS: _DETAILS_SCHEMA,
-        field_names.COLORS: colors.SCHEMA,
+        "raw": raw.SCHEMA,
+        "tone": _TONE_SCHEMA,
+        "details": _DETAILS_SCHEMA,
+        "colors": colors.SCHEMA,
     }
 )
 
