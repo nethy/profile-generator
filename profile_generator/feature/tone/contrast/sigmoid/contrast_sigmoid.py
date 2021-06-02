@@ -1,7 +1,8 @@
+from collections.abc import Callable, Sequence
+
 from profile_generator.model import spline
 from profile_generator.model.sigmoid import (
     Curve,
-    contrast_gradient,
     curve,
     curve_with_hl_protection,
     find_contrast_gradient,
@@ -9,39 +10,51 @@ from profile_generator.model.sigmoid import (
 )
 from profile_generator.unit import Point, Strength, equals
 
-MAX_CONTRAST = 16
+MAX_CONTRAST = 4
 
 
 def calculate(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-) -> list[Point]:
-    contrast = strength.value * MAX_CONTRAST
-    contrast = _corrigate_contrast(contrast, offsets)
-    brightness = find_curve_brightness(grey, contrast)
-    _curve = _apply_offsets(curve(brightness, contrast), offsets)
-    return [Point(x, y) for x, y in spline.fit(_curve)]
+) -> Sequence[Point]:
+    return _calculate(grey, strength, offsets, curve)
 
 
 def calculate_with_hl_protection(
     grey: Point,
     strength: Strength,
     offsets: tuple[float, float] = (0, 1),
-) -> list[Point]:
-    contrast = strength.value * MAX_CONTRAST
-    contrast = _corrigate_contrast(contrast, offsets)
+) -> Sequence[Point]:
+    return _calculate(grey, strength, offsets, curve_with_hl_protection)
+
+
+def _calculate(
+    grey: Point,
+    strength: Strength,
+    offsets: tuple[float, float],
+    fn: Callable[[float, float], Curve],
+) -> Sequence[Point]:
+    gradient = _calculate_gradient(strength.value)
+    contrast = _calculate_contrast(gradient, offsets)
     brightness = find_curve_brightness(grey, contrast)
-    _curve = _apply_offsets(curve_with_hl_protection(brightness, contrast), offsets)
+    _curve = _apply_offsets(fn(brightness, contrast), offsets)
     return [Point(x, y) for x, y in spline.fit(_curve)]
 
 
-def _corrigate_contrast(c: float, offsets: tuple[float, float]) -> float:
+def _calculate_gradient(strength: float) -> float:
+    gradient = 1 + strength * (MAX_CONTRAST - 1)
+    if strength < 0:
+        return 1 / -gradient
+    return gradient
+
+
+def _calculate_contrast(gradient: float, offsets: tuple[float, float]) -> float:
     shadow, highlight = offsets
-    if equals(1, highlight - shadow):
-        return c
-    gradient = contrast_gradient(c) / (highlight - shadow)
-    return find_contrast_gradient(gradient)
+    corrigated_gradient = gradient
+    if not equals(1, highlight - shadow):
+        corrigated_gradient = gradient / (highlight - shadow)
+    return find_contrast_gradient(corrigated_gradient)
 
 
 def _apply_offsets(fn: Curve, offsets: tuple[float, float]) -> Curve:

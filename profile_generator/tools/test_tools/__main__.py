@@ -1,7 +1,7 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
-from profile_generator.feature.colors.profile import marshaller as colors_marshaller
+from profile_generator.feature.colors.schema import SCHEMA as color_schema
 from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
@@ -21,9 +21,7 @@ def print_calculation(name, fn, *args):
 
 
 if __name__ == "__main__":
-    print_calculation(
-        "test_vibrance", colors_marshaller.get_profile_args, {"vibrance": 50}
-    )
+    print_calculation("test_vibrance", color_schema.process, {"vibrance": 50})
     print_calculation("test_calculate", contrast_sigmoid.calculate, _GREY, _STRENGTH)
     print_calculation(
         "test_calculate_with_offests",
