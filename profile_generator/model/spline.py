@@ -1,13 +1,13 @@
 import bisect
 from collections.abc import Callable, Sequence
 
-from profile_generator.unit.precision import equals
+from profile_generator.unit import equals
 
 Matrix = list[list[float]]
 Vector = list[float]
 Point = tuple[float, float]
 
-EPSILON = 1 / 256
+EPSILON = 1e-3
 
 
 def fit(fn: Callable[[float], float]) -> Sequence[Point]:
@@ -144,7 +144,7 @@ def _swap_row(system: Matrix, pivot_idx: int) -> None:
     if not equals(system[pivot_idx][pivot_idx], 0):
         return
 
-    other_index = pivot_idx
+    other_index = 0
     while other_index < len(system) and equals(system[other_index][pivot_idx], 0):
         other_index += 1
 

@@ -124,34 +124,40 @@ class ProfileGeneratorTest(TestCase):
             schema,
         )
 
+    def test_create_profile_content_should_create_profile_content(self) -> None:
+        name = "profile_name"
+        template = "{a}"
+        cfg = {"a": "1"}
+        marshall = lambda x: x
+
+        actual = generator.create_profile_content(name, template, cfg, marshall)
+
+        self.assertEqual(actual, (name, "1"))
+
     @classmethod
     @patch("profile_generator.util.file.write_file")
-    def test_generate_profile_writes_profile_into_file(cls, write_file: Mock) -> None:
+    def test_presist_profile_should_persist_profile(cls, write_file: Mock) -> None:
         name = "profile_name"
-        config = {"a": "1"}
-        template = "{a}"
+        content = "1"
         output_dir = "dir"
 
-        generator.generate_profile(name, config, lambda x: x, template, output_dir)
+        generator.persist_profile(name, content, output_dir)
 
-        write_file.assert_called_once_with("1", output_dir, name + ".pp3")
+        write_file.assert_called_once_with(content, output_dir, f"{name}.pp3")
 
     @patch("profile_generator.util.file.write_file")
-    def test_generate_profile_raises_error_when_write_failed(
+    def test_persist_profile_should_raise_error_when_writing_file_failed(
         self, write_file: Mock
     ) -> None:
         name = "profile_name"
-        config = {"a": "1"}
-        template = "{a}"
+        content = "1"
         output_dir = "dir"
         write_file.side_effect = OSError
 
         self.assertRaises(
             ProfileWriteError,
-            generator.generate_profile,
+            generator.persist_profile,
             name,
-            config,
-            lambda x: x,
-            template,
+            content,
             output_dir,
         )

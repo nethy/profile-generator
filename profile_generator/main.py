@@ -1,7 +1,12 @@
+import concurrent.futures
 import logging
 import sys
+from collections.abc import Callable, Iterable, Mapping
+from concurrent.futures import Future
+from typing import Any
 
 from profile_generator import configuration, generator, integration, log
+from profile_generator.configuration.configuration import Configuration
 from profile_generator.generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
@@ -40,21 +45,60 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         cfg_template = generator.load_configuration_file(
             cfg_file_name, integration.SCHEMA
         )
-        config = configuration.create_from_template(cfg_template)
-        for name, body in config.items():
-            logging.info("creating profile: %s", name)
-            generator.generate_profile(
-                name,
-                body,
-                integration.CONFIGURATION_SCHEMA.process,
-                template,
-                output_dir,
-            )
-            console_logger.info("Profile has been created: %s", name)
+        cfg = configuration.create_from_template(cfg_template)
+        creators = _execute_creators(cfg, template)
+        persisters = _execute_persisters(creators, output_dir)
+        concurrent.futures.wait(persisters)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_file_name)
         logger.error(exc.errors)
+
+
+def _execute_creators(cfg: Configuration, template: str) -> Iterable[Future]:
+    with concurrent.futures.ProcessPoolExecutor() as process_pool:
+        return [
+            process_pool.submit(
+                _create_profile_content,
+                name,
+                template,
+                body,
+                integration.CONFIGURATION_SCHEMA.process,
+            )
+            for name, body in cfg.items()
+        ]
+
+
+def _create_profile_content(
+    name: str,
+    template: str,
+    cfg: Mapping[str, Any],
+    marshall: Callable[[Any], Mapping[str, str]],
+) -> tuple[str, str]:
+    logger = logging.getLogger(__name__)
+    logger.info("Creating profile: %s", name)
+    return generator.create_profile_content(name, template, cfg, marshall)
+
+
+def _execute_persisters(
+    creators: Iterable[Future], output_dir: str
+) -> Iterable[Future]:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as thread_pool:
+        return [
+            thread_pool.submit(
+                _persist_profile,
+                *creator.result(),
+                output_dir,
+            )
+            for creator in concurrent.futures.as_completed(creators)
+        ]
+
+
+def _persist_profile(name: str, content: str, output_dir: str) -> None:
+    console_logger = log.get_console_logger()
+    try:
+        generator.persist_profile(name, content, output_dir)
+        console_logger.info("Profile has been created: %s", name)
     except ProfileWriteError as exc:
         console_logger.error("%s: file write failure", exc.filename)

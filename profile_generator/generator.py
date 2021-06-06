@@ -84,18 +84,25 @@ class ProfileWriteError(Exception):
     filename: str
 
 
-def generate_profile(
+def create_profile_content(
     name: str,
-    config: Mapping[str, Any],
-    marshall: Callable[[Any], Mapping[str, str]],
     template: str,
+    cfg: Mapping[str, Any],
+    marshall: Callable[[Any], Mapping[str, str]],
+) -> tuple[str, str]:
+    template_args = marshall(cfg)
+    output = template.format(**template_args)
+    return (name, output)
+
+
+def persist_profile(
+    name: str,
+    content: str,
     output_dir: str,
 ) -> None:
     try:
         output_filename = f"{name}.pp3"
-        template_args = marshall(config)
-        output = template.format(**template_args)
-        file.write_file(output, output_dir, output_filename)
+        file.write_file(content, output_dir, output_filename)
     except Exception as exc:
         filename = os.path.normpath(os.path.join(output_dir, output_filename))
         raise ProfileWriteError(filename) from exc
