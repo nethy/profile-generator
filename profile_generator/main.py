@@ -46,8 +46,8 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
             cfg_file_name, integration.SCHEMA
         )
         cfg = configuration.create_from_template(cfg_template)
-        creators = _execute_creators(cfg, template)
-        persisters = _execute_persisters(creators, output_dir)
+        creators = _execute_creators(cfg, template, console_logger)
+        persisters = _execute_persisters(creators, output_dir, console_logger)
         concurrent.futures.wait(persisters)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
@@ -56,7 +56,9 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         logger.error(exc.errors)
 
 
-def _execute_creators(cfg: Configuration, template: str) -> Iterable[Future]:
+def _execute_creators(
+    cfg: Configuration, template: str, logger: logging.Logger
+) -> Iterable[Future]:
     with concurrent.futures.ProcessPoolExecutor() as process_pool:
         return [
             process_pool.submit(
@@ -65,6 +67,7 @@ def _execute_creators(cfg: Configuration, template: str) -> Iterable[Future]:
                 template,
                 body,
                 integration.CONFIGURATION_SCHEMA.process,
+                logger,
             )
             for name, body in cfg.items()
         ]
@@ -75,30 +78,27 @@ def _create_profile_content(
     template: str,
     cfg: Mapping[str, Any],
     marshall: Callable[[Any], Mapping[str, str]],
+    logger: logging.Logger,
 ) -> tuple[str, str]:
-    logger = logging.getLogger(__name__)
     logger.info("Creating profile: %s", name)
     return generator.create_profile_content(name, template, cfg, marshall)
 
 
 def _execute_persisters(
-    creators: Iterable[Future], output_dir: str
+    creators: Iterable[Future], output_dir: str, logger: logging.Logger
 ) -> Iterable[Future]:
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as thread_pool:
         return [
-            thread_pool.submit(
-                _persist_profile,
-                *creator.result(),
-                output_dir,
-            )
+            thread_pool.submit(_persist_profile, *creator.result(), output_dir, logger)
             for creator in concurrent.futures.as_completed(creators)
         ]
 
 
-def _persist_profile(name: str, content: str, output_dir: str) -> None:
-    console_logger = log.get_console_logger()
+def _persist_profile(
+    name: str, content: str, output_dir: str, logger: logging.Logger
+) -> None:
     try:
         generator.persist_profile(name, content, output_dir)
-        console_logger.info("Profile has been created: %s", name)
+        logger.info("Profile has been created: %s", name)
     except ProfileWriteError as exc:
-        console_logger.error("%s: file write failure", exc.filename)
+        logger.error("%s: file write failure", exc.filename)
