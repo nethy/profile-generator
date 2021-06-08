@@ -1,6 +1,5 @@
 import concurrent.futures
 import logging
-import os
 import sys
 from collections.abc import Callable, Mapping
 from typing import Any
@@ -45,7 +44,7 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
             cfg_file_name, integration.SCHEMA
         )
         cfg = configuration.create_from_template(cfg_template)
-        with concurrent.futures.ThreadPoolExecutor(os.cpu_count()) as thread_pool:
+        with concurrent.futures.ThreadPoolExecutor() as thread_pool:
             creators = [
                 thread_pool.submit(
                     _create_profile_content,

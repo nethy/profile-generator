@@ -11,30 +11,23 @@ EPSILON = 1 / 2048
 
 
 def fit(fn: Callable[[float], float]) -> Sequence[Point]:
-    ref_values = [(x / 255, fn(x / 255)) for x in range(256)]
-    points: list[Point] = [(0, ref_values[0][1]), (1, ref_values[-1][1])]
+    values = [(x / 255, fn(x / 255)) for x in range(256)]
+    knots: list[Point] = [(0.0, values[0][1]), (1.0, values[-1][1])]
     for _ in range(3, 24 + 1):
-        spline = interpolate(points)
-        max_diff, point, idx = _find_max_diff(ref_values, spline)
+        spline = interpolate(knots)
+        max_diff, point, idx = _find_max_diff(values, spline)
         if max_diff > EPSILON:
-            bisect.insort(points, point)
-            del ref_values[idx]
+            bisect.insort(knots, point)
+            del values[idx]
         else:
             break
-    return points
+    return knots
 
 
 def _find_max_diff(
-    ref_values: list[Point], spline: Callable[[float], float]
+    values: list[Point], spline: Callable[[float], float]
 ) -> tuple[float, Point, int]:
-    max_diff, point, idx = 0.0, (0.0, 0.0), -1
-    for i, (x, y) in enumerate(ref_values):
-        diff = abs(y - spline(x))
-        if diff < EPSILON:
-            del ref_values[i]
-        elif diff > max_diff:
-            max_diff, point, idx = diff, (x, y), i
-    return (max_diff, point, idx)
+    return max(((abs(y - spline(x)), (x, y), i) for i, (x, y) in enumerate(values)))
 
 
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
