@@ -1,12 +1,11 @@
 import concurrent.futures
 import logging
+import os
 import sys
-from collections.abc import Callable, Iterable, Mapping
-from concurrent.futures import Future
+from collections.abc import Callable, Mapping
 from typing import Any
 
 from profile_generator import configuration, generator, integration, log
-from profile_generator.configuration.configuration import Configuration
 from profile_generator.generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
@@ -46,31 +45,25 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
             cfg_file_name, integration.SCHEMA
         )
         cfg = configuration.create_from_template(cfg_template)
-        creators = _execute_creators(cfg, template, console_logger)
-        persisters = _execute_persisters(creators, output_dir, console_logger)
-        concurrent.futures.wait(persisters)
+        with concurrent.futures.ThreadPoolExecutor(os.cpu_count()) as thread_pool:
+            creators = [
+                thread_pool.submit(
+                    _create_profile_content,
+                    name,
+                    template,
+                    body,
+                    integration.CONFIGURATION_SCHEMA.process,
+                    console_logger,
+                )
+                for name, body in cfg.items()
+            ]
+            for creator in concurrent.futures.as_completed(creators):
+                _persist_profile(*creator.result(), output_dir, console_logger)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_file_name)
         logger.error(exc.errors)
-
-
-def _execute_creators(
-    cfg: Configuration, template: str, logger: logging.Logger
-) -> Iterable[Future]:
-    with concurrent.futures.ProcessPoolExecutor() as process_pool:
-        return [
-            process_pool.submit(
-                _create_profile_content,
-                name,
-                template,
-                body,
-                integration.CONFIGURATION_SCHEMA.process,
-                logger,
-            )
-            for name, body in cfg.items()
-        ]
 
 
 def _create_profile_content(
@@ -82,16 +75,6 @@ def _create_profile_content(
 ) -> tuple[str, str]:
     logger.info("Creating profile: %s", name)
     return generator.create_profile_content(name, template, cfg, marshall)
-
-
-def _execute_persisters(
-    creators: Iterable[Future], output_dir: str, logger: logging.Logger
-) -> Iterable[Future]:
-    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as thread_pool:
-        return [
-            thread_pool.submit(_persist_profile, *creator.result(), output_dir, logger)
-            for creator in concurrent.futures.as_completed(creators)
-        ]
 
 
 def _persist_profile(
