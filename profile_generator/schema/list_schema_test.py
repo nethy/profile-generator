@@ -28,6 +28,3 @@ class ListSchemaTest(unittest.TestCase):
                 }
             ),
         )
-
-    def test_process_list(self) -> None:
-        self.validator.assert_process([], {})

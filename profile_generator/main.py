@@ -1,5 +1,8 @@
+import concurrent.futures
 import logging
 import sys
+from collections.abc import Callable, Mapping
+from typing import Any
 
 from profile_generator import configuration, generator, integration, log
 from profile_generator.generator import (
@@ -40,21 +43,44 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         cfg_template = generator.load_configuration_file(
             cfg_file_name, integration.SCHEMA
         )
-        config = configuration.create_from_template(cfg_template)
-        for name, body in config.items():
-            logging.info("creating profile: %s", name)
-            generator.generate_profile(
-                name,
-                body,
-                integration.CONFIGURATION_SCHEMA.process,
-                template,
-                output_dir,
-            )
-            console_logger.info("Profile has been created: %s", name)
+        cfg = configuration.create_from_template(cfg_template)
+        with concurrent.futures.ThreadPoolExecutor() as thread_pool:
+            creators = [
+                thread_pool.submit(
+                    _create_profile_content,
+                    name,
+                    template,
+                    body,
+                    integration.CONFIGURATION_SCHEMA.process,
+                    console_logger,
+                )
+                for name, body in cfg.items()
+            ]
+            for creator in concurrent.futures.as_completed(creators):
+                _persist_profile(*creator.result(), output_dir, console_logger)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_file_name)
         logger.error(exc.errors)
+
+
+def _create_profile_content(
+    name: str,
+    template: str,
+    cfg: Mapping[str, Any],
+    marshall: Callable[[Any], Mapping[str, str]],
+    logger: logging.Logger,
+) -> tuple[str, str]:
+    logger.info("Creating profile: %s", name)
+    return generator.create_profile_content(name, template, cfg, marshall)
+
+
+def _persist_profile(
+    name: str, content: str, output_dir: str, logger: logging.Logger
+) -> None:
+    try:
+        generator.persist_profile(name, content, output_dir)
+        logger.info("Profile has been created: %s", name)
     except ProfileWriteError as exc:
-        console_logger.error("%s: file write failure", exc.filename)
+        logger.error("%s: file write failure", exc.filename)

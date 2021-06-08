@@ -1,3 +1,4 @@
+from typing import Callable
 from unittest import TestCase
 
 from .spline import fit, interpolate, solve
@@ -11,9 +12,6 @@ class SplineTest(TestCase):
         solution = solve([[3, 2, -4], [2, 3, 3], [5, -3, 1]], [3, 15, 14])
         for expected, actual in zip([3, 1, 2], solution):
             self.assertAlmostEqual(expected, actual)
-
-    def test_solve_should_throw_error_when_system_is_unsolvable(self) -> None:
-        self.assertRaises(ValueError, solve, [[1, 0], [2, 0]], [1, 2])
 
     def test_interpolate_should_throw_error_at_no_point(self) -> None:
         spline = interpolate([])
@@ -43,13 +41,10 @@ class SplineTest(TestCase):
     def test_fit(self) -> None:
         self.assertEqual([(0, 1), (1, 1)], fit(lambda _: 1))
         self.assertEqual([(0, 0), (1, 1)], fit(lambda x: x))
-        self.assertEqual(
-            [
-                (0, 0.0),
-                (0.16862745098039217, 0.028435217224144563),
-                (0.5019607843137255, 0.2519646289888504),
-                (0.8117647058823529, 0.658961937716263),
-                (1, 1.0),
-            ],
-            fit(lambda x: x ** 2),
-        )
+        self._assert_fit(lambda x: x ** 16)
+
+    def _assert_fit(self, fn: Callable[[float], float]) -> None:
+        spline = interpolate(fit(fn))
+        for x in (i / 255 for i in range(256)):
+            print(x)
+            self.assertAlmostEqual(spline(x), fn(x), 3)

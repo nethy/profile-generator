@@ -1,38 +1,33 @@
 import bisect
 from collections.abc import Callable, Sequence
 
-from profile_generator.unit.precision import equals
+from profile_generator.unit import equals
 
 Matrix = list[list[float]]
 Vector = list[float]
 Point = tuple[float, float]
 
-EPSILON = 1 / 256
+EPSILON = 1 / 2048
 
 
 def fit(fn: Callable[[float], float]) -> Sequence[Point]:
-    ref_values = [fn(x / 255) for x in range(256)]
-    points: list[Point] = [(0, ref_values[0]), (1, ref_values[-1])]
+    values = [(x / 255, fn(x / 255)) for x in range(256)]
+    knots: list[Point] = [(0.0, values[0][1]), (1.0, values[-1][1])]
     for _ in range(3, 24 + 1):
-        spline = interpolate(points)
-        max_diff, point = _find_max_diff(ref_values, spline)
+        spline = interpolate(knots)
+        max_diff, point, idx = _find_max_diff(values, spline)
         if max_diff > EPSILON:
-            bisect.insort(points, point)
+            bisect.insort(knots, point)
+            del values[idx]
         else:
             break
-    return points
+    return knots
 
 
 def _find_max_diff(
-    ref_values: Sequence[float], spline: Callable[[float], float]
-) -> tuple[float, Point]:
-    max_diff, point = 0.0, (0.0, 0.0)
-    for i, y in enumerate(ref_values):
-        x = i / 255
-        diff = abs(y - spline(x))
-        if diff > max_diff:
-            max_diff, point = diff, (x, y)
-    return (max_diff, point)
+    values: list[Point], spline: Callable[[float], float]
+) -> tuple[float, Point, int]:
+    return max(((abs(y - spline(x)), (x, y), i) for i, (x, y) in enumerate(values)))
 
 
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
@@ -124,12 +119,15 @@ def _raise_value_out_of_domain_error() -> float:
 
 def solve(coefficients: Matrix, constants: Vector) -> Vector:
     system = _system_of(coefficients, constants)
-    rank = len(system)
-    for pivot_idx in range(rank):
-        _swap_row(system, pivot_idx)
-        _normalize(system[pivot_idx], pivot_idx)
-        _eliminate_column(system, pivot_idx)
-
+    pivot_idx = 0
+    for row in range(len(system)):
+        if not pivot_idx < len(system[0]):
+            break
+        pivot_idx = _swap_row(system, row, pivot_idx)
+        if pivot_idx < len(system[0]):
+            _normalize(system, row, pivot_idx)
+            _eliminate_column(system, row, pivot_idx)
+            pivot_idx += 1
     return [line[-1] for line in system]
 
 
@@ -140,37 +138,30 @@ def _system_of(coefficients: Matrix, constants: Vector) -> Matrix:
     ]
 
 
-def _swap_row(system: Matrix, pivot_idx: int) -> None:
-    if not equals(system[pivot_idx][pivot_idx], 0):
-        return
+def _swap_row(system: Matrix, row: int, pivot_idx: int) -> int:
+    i = row
+    while pivot_idx < len(system[0]) and equals(system[i][pivot_idx], 0):
+        i += 1
+        if i == len(system):
+            i = row
+            pivot_idx += 1
 
-    other_index = pivot_idx
-    while other_index < len(system) and equals(system[other_index][pivot_idx], 0):
-        other_index += 1
+    if i < len(system):
+        system[row], system[i] = system[i], system[row]
 
-    if other_index == len(system):
-        raise ValueError("Unsolvable system error")
-
-    system[pivot_idx], system[other_index] = system[other_index], system[pivot_idx]
-
-
-def _normalize(line: Vector, pivot_idx: int) -> None:
-    divisor = line[pivot_idx]
-    line[pivot_idx] = 1.0
-    for i in range(pivot_idx + 1, len(line)):
-        line[i] = line[i] / divisor
+    return pivot_idx
 
 
-def _eliminate_column(system: Matrix, pivot_idx: int) -> None:
-    rank = len(system)
-    for i in range(rank):
-        if i == pivot_idx:
-            continue
-        _eliminate(system[i], system[pivot_idx], pivot_idx)
+def _normalize(system: Matrix, row: int, pivot_idx: int) -> None:
+    divisor = system[row][pivot_idx]
+    system[row] = [value / divisor for value in system[row]]
 
 
-def _eliminate(actual_row: Vector, pivot_row: Vector, pivot_idx: int) -> None:
-    multiplier = actual_row[pivot_idx] / pivot_row[pivot_idx]
-    actual_row[pivot_idx] = 0.0
-    for i in range(pivot_idx + 1, len(actual_row)):
-        actual_row[i] = actual_row[i] - pivot_row[i] * multiplier
+def _eliminate_column(system: Matrix, row: int, pivot_idx: int) -> None:
+    for i, actual_row in enumerate(system):
+        if i != row:
+            multiplier = actual_row[pivot_idx]
+            system[i] = [
+                actual_row_value - pivot_row_value * multiplier
+                for actual_row_value, pivot_row_value in zip(actual_row, system[row])
+            ]
