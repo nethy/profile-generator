@@ -6,16 +6,23 @@ from .spline import fit, interpolate, solve
 
 class SplineTest(TestCase):
     def test_solve_should_solve_nothing(self) -> None:
-        self.assertEqual([], solve([], []))
+        self.assertEqual([], solve([]))
 
     def test_solve_should_solve_linear_system(self) -> None:
-        solution = solve([[3, 2, -4], [2, 3, 3], [5, -3, 1]], [3, 15, 14])
+        solution = solve([[3, 2, -4, 3], [2, 3, 3, 15], [5, -3, 1, 14]])
         for expected, actual in zip([3, 1, 2], solution):
-            self.assertAlmostEqual(expected, actual)
+            self.assertAlmostEqual(expected, float(actual))
 
-    def test_interpolate_should_throw_error_at_no_point(self) -> None:
+    def test_interpolate_should_be_zero_when_no_points(self) -> None:
         spline = interpolate([])
-        self.assertRaises(ValueError, spline, 0)
+        self.assertEqual(0.0, spline(0.0))
+        self.assertEqual(0.0, spline(1.0))
+        self.assertEqual(0.0, spline(10.0))
+
+    def test_interpolate_should_be_constant_when_single_point(self) -> None:
+        spline = interpolate([(0.0, 0.5)])
+        self.assertEqual(0.5, spline(0.0))
+        self.assertEqual(0.5, spline(1.0))
 
     def test_interpolate_should_interpolate_linear(self) -> None:
         spline = interpolate([(0, 0), (1, 1)])
@@ -46,5 +53,4 @@ class SplineTest(TestCase):
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         spline = interpolate(fit(fn))
         for x in (i / 255 for i in range(256)):
-            print(x)
-            self.assertAlmostEqual(spline(x), fn(x), 3)
+            self.assertAlmostEqual(spline(x), fn(x), 2)

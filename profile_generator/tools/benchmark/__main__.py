@@ -1,12 +1,6 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
-#   Report
-# find_curve_brightness     1760ms
-# spline_fitting            1243ms
-# find_contrast_gradient      27ms
-# curve_with_hl_protection    21ms
-# curve                        9ms
 
 from timeit import Timer
 
