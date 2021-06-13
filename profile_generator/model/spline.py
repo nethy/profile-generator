@@ -10,24 +10,27 @@ EPSILON = 1 / 256 / 2
 
 
 def fit(fn: Callable[[float], float]) -> Sequence[Point]:
-    values = [fn(i / 255) for i in range(1, 255)]
+    references = [(i / 255, fn(i / 255)) for i in range(1, 255)]
     knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
     for _ in range(3, 24 + 1):
         spline = interpolate(knots)
-        max_diff, i = _find_max_diff(values, spline)
+        max_diff, i = _find_max_diff(references, spline)
         if max_diff > EPSILON:
-            bisect.insort(knots, ((i + 1) / 255, values[i]))
+            knot = references.pop(i)
+            bisect.insort(knots, knot)
         else:
             break
     return knots
 
 
 def _find_max_diff(
-    values: list[float], spline: Callable[[float], float]
+    references: list[Point], spline: Callable[[float], float]
 ) -> tuple[float, int]:
-    return max(
-        ((abs(value - spline((i + 1) / 255)), i) for i, value in enumerate(values))
-    )
+    return max(((abs(y - spline(x)), i) for i, (x, y) in enumerate(references)))
+
+
+def _x_of(index: int) -> float:
+    return (index + 1) / 255
 
 
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
