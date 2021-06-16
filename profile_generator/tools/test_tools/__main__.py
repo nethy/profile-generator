@@ -9,7 +9,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _OFFSETS,
     _STRENGTH,
 )
-from profile_generator.model import sigmoid
+from profile_generator.model import linear_rgb, sigmoid
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength
 
