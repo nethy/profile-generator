@@ -1,3 +1,5 @@
+import math
+
 Color = list[float]
 ColorMatrix = list[list[float]]
 
@@ -16,8 +18,8 @@ RGB_TO_XYZ = [
 D65_XYZ = [0.9504700, 1, 1.0888300]
 
 LAB_F_SIGMA = 6 / 29
-LAB_F_SIGMA_QUADRATIC = LAB_F_SIGMA ** 2
-LAB_F_SIGMA_CUBIC = LAB_F_SIGMA ** 3
+LAB_F_SIGMA_2 = 36 / 841
+LAB_F_SIGMA_3 = 216 / 24389
 
 
 def srgb_to_rgb(srgb: Color) -> Color:
@@ -41,12 +43,11 @@ def xyz_to_lab(xyz: Color) -> Color:
     l = 116 * lab_f(y_ratio) - 16
     a = 500 * (lab_f(x_ratio) - lab_f(y_ratio))
     b = 200 * (lab_f(y_ratio) - lab_f(z_ratio))
-    return [l / 100, (a + 128) / 256, (b + 128) / 256]
+    return [l, a, b]
 
 
 def lab_to_xyz(lab: Color) -> Color:
     l, a, b = lab
-    l, a, b = l * 100, a * 256 - 128, b * 256 - 128
     x_ref, y_ref, z_ref = D65_XYZ
     l_ref = (l + 16) / 116
     x = x_ref * lab_f_inverse(l_ref + a / 500)
@@ -55,18 +56,34 @@ def lab_to_xyz(lab: Color) -> Color:
     return [x, y, z]
 
 
+def lab_to_lch(lab: Color) -> Color:
+    l, a, b = lab
+    c = math.sqrt(a ** 2 + b ** 2)
+    h = math.degrees(math.atan2(b, a))
+    if h < 0:
+        h += 360
+    return [l, c, h]
+
+
+def lch_to_lab(lch: Color) -> Color:
+    l, c, h = lch
+    a = c * math.cos(math.radians(h))
+    b = c * math.sin(math.radians(h))
+    return [l, a, b]
+
+
 def lab_f(x: float) -> float:
-    if x > LAB_F_SIGMA_CUBIC:
+    if x > LAB_F_SIGMA_3:
         return x ** (1 / 3)
     else:
-        return x / (3 * LAB_F_SIGMA_QUADRATIC) + 4 / 29
+        return x / (3 * LAB_F_SIGMA_2) + 4 / 29
 
 
 def lab_f_inverse(x: float) -> float:
     if x > LAB_F_SIGMA:
         return x ** 3
     else:
-        return 3 * LAB_F_SIGMA_QUADRATIC * (x - 4 / 29)
+        return 3 * LAB_F_SIGMA_2 * (x - 4 / 29)
 
 
 def gamma_inverse(x: float) -> float:
