@@ -15,7 +15,21 @@ RGB_TO_XYZ = [
     [0.019330819, 0.119194780, 0.950532152],
 ]
 
-D65_XYZ = [0.9504700, 1, 1.0888300]
+D65_XYZ = [0.95047, 1.0, 1.08883]
+D50_XYZ = [0.96422, 1.0, 0.82521]
+
+
+BRADFORD = [
+    [0.8951, 0.2664, -0.1614],
+    [-0.7502, 1.7135, 0.0367],
+    [0.0389, -0.0685, 1.0296],
+]
+BRADFORD_INVERSE = [
+    [0.9869929, -0.1470543, 0.1599627],
+    [0.4323053, 0.5183603, 0.0492912],
+    [-0.0085287, 0.0400428, 0.9684867],
+]
+
 
 LAB_F_SIGMA = 6 / 29
 LAB_F_SIGMA_2 = 36 / 841
@@ -31,11 +45,11 @@ def rgb_to_srgb(rgb: Color) -> Color:
 
 
 def rgb_to_xyz(rgb: Color) -> Color:
-    return multiply(RGB_TO_XYZ, rgb)
+    return transform(RGB_TO_XYZ, rgb)
 
 
 def xyz_to_rgb(xyz: Color) -> Color:
-    return multiply(XYZ_TO_RGB, xyz)
+    return transform(XYZ_TO_RGB, xyz)
 
 
 def xyz_to_lab(xyz: Color) -> Color:
@@ -100,9 +114,30 @@ def gamma(x: float) -> float:
         return min(1.0, 1.055 * x ** (1 / 2.4) - 0.055)
 
 
-def multiply(matrix: ColorMatrix, color: Color) -> Color:
+def transform(matrix: ColorMatrix, color: Color) -> Color:
     result = [0.0, 0.0, 0.0]
     for i in range(3):
         for j in range(3):
             result[i] += matrix[i][j] * color[j]
     return result
+
+
+def multiply(left: ColorMatrix, right: ColorMatrix) -> ColorMatrix:
+    result = [[0.0, 0.0, 0.0] for _ in range(3)]
+    for i in range(3):
+        for j in range(3):
+            for k in range(3):
+                result[i][j] += left[i][k] * right[k][j]
+    return result
+
+
+def chromatic_adaptation(xyz_source: Color, xyz_target: Color) -> ColorMatrix:
+    source = transform(BRADFORD, xyz_source)
+    target = transform(BRADFORD, xyz_target)
+    scale = [[0.0, 0.0, 0.0] for _ in range(3)]
+    for i in range(3):
+        scale[i][i] = target[i] / source[i]
+    return multiply(BRADFORD_INVERSE, multiply(scale, BRADFORD))
+
+
+D65_TO_D50_ADAPTATION = chromatic_adaptation(D65_XYZ, D50_XYZ)

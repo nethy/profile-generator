@@ -1,6 +1,8 @@
 from unittest import TestCase
 
 from .colorspace import (
+    D65_TO_D50_ADAPTATION,
+    ColorMatrix,
     lab_to_lch,
     lab_to_xyz,
     lch_to_lab,
@@ -59,18 +61,14 @@ class ColorspaceTest(TestCase):
 
     def test_lab_to_srgb(self) -> None:
         lab_to_srgb = lambda color: rgb_to_srgb(xyz_to_rgb(lab_to_xyz(color)))
+        self._assert_color_equal([0.0, 0.0, 0.0], lab_to_srgb([0.0, 0.0, 0.0]))
         self._assert_color_equal(
-            [0.0, 0.2517690, 0.7611571], lab_to_srgb([0.0, 0.0, 0.0])
+            [1.0, 0.57462277, 0.1939414], lab_to_srgb([100.0, 100.0, 100.0])
         )
         self._assert_color_equal(
-            [1.0, 0.2751861, 0.0], lab_to_srgb([1.0, 255 / 256, 255 / 256])
+            [0.5739826, 0.4558743, 0.0], lab_to_srgb([50.0, 0.0, 100.0])
         )
-        self._assert_color_equal(
-            [0.0, 0.5979016, 0.0], lab_to_srgb([0.5, 0 / 256, 255 / 256])
-        )
-        self._assert_color_equal(
-            [0.7182831, 0.0, 1.0], lab_to_srgb([0.5, 255 / 256, 0 / 256])
-        )
+        self._assert_color_equal([1.0, 0.0, 0.4827778], lab_to_srgb([50.0, 100.0, 0.0]))
 
     def test_lab_to_lch(self) -> None:
         self._assert_color_equal([0.0, 0.0, 0.0], lab_to_lch([0.0, 0.0, 0.0]))
@@ -97,6 +95,21 @@ class ColorspaceTest(TestCase):
         )
         self._assert_color_equal([75.0, 0.0, -1], lch_to_lab([75.0, 1.0, 270.0]))
 
+    def test_chromatic_adaption(self) -> None:
+        self._assert_matrix_equal(
+            [
+                [1.0478113, 0.0228865, -0.0501269],
+                [0.0295424, 0.9904845, -0.0170491],
+                [-0.0092345, 0.0150436, 0.7521316],
+            ],
+            D65_TO_D50_ADAPTATION,
+        )
+
     def _assert_color_equal(self, list1: list[float], list2: list[float]) -> None:
         for a, b in zip(list1, list2):
             self.assertAlmostEqual(a, b)
+
+    def _assert_matrix_equal(self, matrix1: ColorMatrix, matrix2: ColorMatrix) -> None:
+        for row1, row2 in zip(matrix1, matrix2):
+            for a, b in zip(row1, row2):
+                self.assertAlmostEqual(a, b)
