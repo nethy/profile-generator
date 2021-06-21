@@ -1,7 +1,7 @@
 from typing import Callable
 from unittest import TestCase
 
-from .spline import fit, interpolate, solve
+from .spline import fit, interpolate, inverse_matrix, solve
 
 
 class SplineTest(TestCase):
@@ -49,6 +49,17 @@ class SplineTest(TestCase):
         self.assertEqual([(0, 1), (1, 1)], fit(lambda _: 1))
         self.assertEqual([(0, 0), (1, 1)], fit(lambda x: x))
         self._assert_fit(lambda x: x ** 16)
+
+    def test_inverse_matrix(self) -> None:
+        expected = [
+            [-11 / 12, 1 / 3, 1 / 12],
+            [-1 / 6, 1 / 3, -1 / 6],
+            [3 / 4, -1 / 3, 1 / 12],
+        ]
+        inverse = inverse_matrix([[1, 2, 3], [4, 5, 6], [7, 2, 9]])
+        for expected_row, row in zip(expected, inverse):
+            for a, b in zip(expected_row, row):
+                self.assertAlmostEqual(a, b)
 
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         spline = interpolate(fit(fn))

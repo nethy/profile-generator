@@ -29,10 +29,6 @@ def _find_max_diff(
     return max(((abs(y - spline(x)), i) for i, (x, y) in enumerate(references)))
 
 
-def _x_of(index: int) -> float:
-    return (index + 1) / 255
-
-
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
     if len(points) == 0:
         return lambda x: 0.0
@@ -118,16 +114,29 @@ def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
 
 
 def solve(system: Matrix) -> Vector:
-    pivot_idx = 0
-    for row in range(len(system)):
-        if not pivot_idx < len(system[0]):
-            break
-        pivot_idx = _swap_row(system, row, pivot_idx)
-        if pivot_idx < len(system[0]):
-            _normalize(system, row, pivot_idx)
-            _eliminate_column(system, row, pivot_idx)
-            pivot_idx += 1
+    _inverse(system)
     return [line[-1] for line in system]
+
+
+def inverse_matrix(matrix: Matrix) -> Matrix:
+    unit_matrix = [[0.0] * len(matrix) for _ in range(len(matrix))]
+    for i, row in enumerate(unit_matrix):
+        row[i] = 1.0
+    system = [row + unit_row for row, unit_row in zip(matrix, unit_matrix)]
+    _inverse(system)
+    return [row[len(system) :] for row in system]
+
+
+def _inverse(matrix: Matrix) -> None:
+    pivot_idx = 0
+    for row in range(len(matrix)):
+        if not pivot_idx < len(matrix[0]):
+            break
+        pivot_idx = _swap_row(matrix, row, pivot_idx)
+        if pivot_idx < len(matrix[0]):
+            _normalize(matrix, row, pivot_idx)
+            _eliminate_column(matrix, row, pivot_idx)
+            pivot_idx += 1
 
 
 def _swap_row(matrix: Matrix, row: int, pivot_idx: int) -> int:
@@ -157,3 +166,22 @@ def _eliminate_column(matrix: Matrix, row: int, pivot_idx: int) -> None:
                 actual_row_value - pivot_row_value * multiplier
                 for actual_row_value, pivot_row_value in zip(actual_row, matrix[row])
             ]
+
+
+def transform(matrix: Matrix, vector: Vector) -> Vector:
+    n = len(vector)
+    result = [0.0] * n
+    for i in range(n):
+        for j in range(n):
+            result[i] += matrix[i][j] * vector[j]
+    return result
+
+
+def multiply(left: Matrix, right: Matrix) -> Matrix:
+    n = len(left)
+    result = [[0.0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(n):
+            for k in range(n):
+                result[i][j] += left[i][k] * right[k][j]
+    return result
