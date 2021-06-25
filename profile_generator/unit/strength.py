@@ -9,6 +9,11 @@ class Strength:
     def __init__(self, value: float = 0):
         self._value = validation.is_in_closed_interval(value, -1, 1)
 
+    @staticmethod
+    def non_negative(value: float = 0) -> Strength:
+        value = validation.is_in_closed_interval(value, 0, 1)
+        return Strength(value)
+
     @property
     def value(self) -> float:
         return self._value

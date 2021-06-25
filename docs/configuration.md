@@ -15,6 +15,7 @@
         * [Output](#output)
     * [Noise reduction](#noise-reduction)
 * [Raw](#raw)
+* [Coors](#colors)
 
 ## Overview
 
@@ -180,39 +181,30 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 **Parameters**
 
-`grey.x`
-|               |          |
-| ---           | ---      |
-| Type          | integer  |
-| Value range   | 16 - 240 |
-| Default value | 92       |
+`neutral5`
+|               |                             |
+| ---           | ---                         |
+| Type          | [integer, integer, integer] |
+| Value range   | 16 - 240                    |
+| Default value | [90, 90, 90]                |
 
-x coordinate of the middle grey point, center of the S-curve.
-
-`grey.y`
-|               |          |
-| ---           | ---      |
-| Type          | integer  |
-| Value range   | 64 - 192 |
-| Default value | 119      |
-
-y coordinate of the middle grey point, center of the S-curve.
+RGB value of the `Neutral5` patch of a color checker card.
 
 `strength`
 |               |             |
 | ---           | ---         |
-| Type          | float       |
-| Value range   | 0.0 - 100.0 |
+| Type          | integer     |
+| Value range   | -100 - 100  |
 | Default value | 0           |
 
 Amount of contrast. 0 will produce a flat tone curve.
 
-`protect_hl`
+`hl_protection`
 |               |             |
 | ---           | ---         |
-| Type          | boolean     |
-| Value range   | true, false |
-| Default value | false       |
+| Type          | integer     |
+| Value range   | 0 - 100     |
+| Default value | 0           |
 
 Decreases gradiation in the tone curve's highlight region, aiming to preserve
 more details.
@@ -350,8 +342,26 @@ Raw conversion details.
 `demosaic`
 |               |                     |
 | ---           | ---                 |
-| Type          | [string]            |
+| Type          | string              |
 | Value range   | "DCB+VNG4", "LMMSE" |
 | Default value | "DCB+VNG4"          |
 
 Demosaicing algorithm.
+
+
+## Colors
+
+Field name: `colors`
+
+Colors related adjustments.
+
+**Parameters**
+
+`Vibrance`
+|               |            |
+| ---           | ---        |
+| Type          | integer    |
+| Value range   | -100 - 100 |
+| Default value | 0          |
+
+Adjust the vibrance of the image.

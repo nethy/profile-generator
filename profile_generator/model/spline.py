@@ -1,9 +1,9 @@
 import bisect
-import math
 from collections.abc import Callable, Sequence
 
-Matrix = list[list[float]]
-Vector = list[float]
+from profile_generator.model import linalg
+from profile_generator.model.linalg import Matrix, Vector
+
 Point = tuple[float, float]
 
 EPSILON = 1 / 256 / 2
@@ -29,10 +29,6 @@ def _find_max_diff(
     return max(((abs(y - spline(x)), i) for i, (x, y) in enumerate(references)))
 
 
-def _x_of(index: int) -> float:
-    return (index + 1) / 255
-
-
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
     if len(points) == 0:
         return lambda x: 0.0
@@ -40,7 +36,7 @@ def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
         return lambda x: points[0][1]
     xs, ys = [x for x, _ in points], [y for _, y in points]
     system = _equations(xs, ys)
-    coefficients = solve(system)
+    coefficients = linalg.solve(system)
     return lambda x: _spline(x, xs, coefficients)
 
 
@@ -115,45 +111,3 @@ def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
             y = a * x ** 3 + b * x ** 2 + c * x + d
             break
     return y
-
-
-def solve(system: Matrix) -> Vector:
-    pivot_idx = 0
-    for row in range(len(system)):
-        if not pivot_idx < len(system[0]):
-            break
-        pivot_idx = _swap_row(system, row, pivot_idx)
-        if pivot_idx < len(system[0]):
-            _normalize(system, row, pivot_idx)
-            _eliminate_column(system, row, pivot_idx)
-            pivot_idx += 1
-    return [line[-1] for line in system]
-
-
-def _swap_row(matrix: Matrix, row: int, pivot_idx: int) -> int:
-    i = row
-    while pivot_idx < len(matrix[0]) and math.isclose(matrix[i][pivot_idx], 0):
-        i += 1
-        if i == len(matrix):
-            i = row
-            pivot_idx += 1
-
-    if i < len(matrix):
-        matrix[row], matrix[i] = matrix[i], matrix[row]
-
-    return pivot_idx
-
-
-def _normalize(matrix: Matrix, row: int, pivot_idx: int) -> None:
-    divisor = matrix[row][pivot_idx]
-    matrix[row] = [value / divisor for value in matrix[row]]
-
-
-def _eliminate_column(matrix: Matrix, row: int, pivot_idx: int) -> None:
-    for i, actual_row in enumerate(matrix):
-        if i != row:
-            multiplier = actual_row[pivot_idx]
-            matrix[i] = [
-                actual_row_value - pivot_row_value * multiplier
-                for actual_row_value, pivot_row_value in zip(actual_row, matrix[row])
-            ]

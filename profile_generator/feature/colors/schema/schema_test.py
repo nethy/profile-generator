@@ -10,8 +10,10 @@ from .schema import SCHEMA
 
 _DEFAULT = {
     "LabEnabled": "false",
-    "LabaCurve": "0;",
-    "LabbCurve": "0;",
+    "LabChromacity": "0",
+    "WB_Setting": "Camera",
+    "WB_Temperature": "6504",
+    "WB_Green": "1",
 }
 
 
@@ -31,6 +33,30 @@ class SchemaTest(TestCase):
             InvalidObjectError({"vibrance": InvalidRangeError(-100, 100)}),
         )
 
+    def test_validate_invalid_wb_temperature(self) -> None:
+        self.validator.assert_error(
+            {"white_balance": {"temperature": False}},
+            InvalidObjectError(
+                {
+                    "white_balance": InvalidObjectError(
+                        {"temperature": InvalidRangeError(1500, 60000)}
+                    )
+                }
+            ),
+        )
+
+    def test_validate_invalid_wb_tint(self) -> None:
+        self.validator.assert_error(
+            {"white_balance": {"tint": False}},
+            InvalidObjectError(
+                {
+                    "white_balance": InvalidObjectError(
+                        {"tint": InvalidRangeError(0.02, 10.0)}
+                    )
+                }
+            ),
+        )
+
     def test_process_defaults(self) -> None:
         self.validator.assert_process({}, _DEFAULT)
 
@@ -38,21 +64,29 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"vibrance": 50},
             {
+                **_DEFAULT,
                 "LabEnabled": "true",
-                "LabaCurve": "1;0.000000;0.000000;0.113725;0.041165;0.313725;0.208478;"
-                + "0.439216;0.394977;0.568627;0.618163;0.741176;0.853155;"
-                + "0.913725;0.971341;1.000000;1.000000;",
-                "LabbCurve": "1;0.000000;0.000000;0.113725;0.041165;0.313725;0.208478;"
-                + "0.439216;0.394977;0.568627;0.618163;0.741176;0.853155;"
-                + "0.913725;0.971341;1.000000;1.000000;",
+                "LabChromacity": "50",
             },
         )
 
         self.validator.assert_process(
             {"vibrance": -50},
             {
+                **_DEFAULT,
                 "LabEnabled": "true",
-                "LabaCurve": "1;0.000000;0.010163;1.000000;0.989837;",
-                "LabbCurve": "1;0.000000;0.010163;1.000000;0.989837;",
+                "LabChromacity": "-50",
             },
+        )
+
+    def test_process_wb_temperature(self) -> None:
+        self.validator.assert_process(
+            {"white_balance": {"temperature": 5500}},
+            {**_DEFAULT, "WB_Setting": "Custom", "WB_Temperature": "5500"},
+        )
+
+    def test_process_wb_tint(self) -> None:
+        self.validator.assert_process(
+            {"white_balance": {"tint": 0.880}},
+            {**_DEFAULT, "WB_Setting": "Custom", "WB_Green": "0.88"},
         )

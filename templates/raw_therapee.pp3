@@ -100,13 +100,13 @@ AfterCurve=0;
 Enabled={LabEnabled}
 Brightness=0
 Contrast=0
-Chromaticity=0
+Chromaticity={LabChromacity}
 AvoidColorShift=true
 RedAndSkinTonesProtection=0
 LCredsk=true
 LCurve=0;
-aCurve={LabaCurve}
-bCurve={LabbCurve}
+aCurve=0;
+bCurve=0;
 ccCurve=0;
 chCurve=0;
 lhCurve=0;
@@ -157,9 +157,9 @@ Uniformity=5
 
 [White Balance]
 Enabled=true
-Setting=Camera
-Temperature=6504
-Green=1
+Setting={WB_Setting}
+Temperature={WB_Temperature}
+Green={WB_Green}
 Equal=1
 TemperatureBias=0
 

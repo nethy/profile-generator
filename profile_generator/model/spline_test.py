@@ -1,18 +1,10 @@
 from typing import Callable
 from unittest import TestCase
 
-from .spline import fit, interpolate, solve
+from .spline import fit, interpolate
 
 
 class SplineTest(TestCase):
-    def test_solve_should_solve_nothing(self) -> None:
-        self.assertEqual([], solve([]))
-
-    def test_solve_should_solve_linear_system(self) -> None:
-        solution = solve([[3, 2, -4, 3], [2, 3, 3, 15], [5, -3, 1, 14]])
-        for expected, actual in zip([3, 1, 2], solution):
-            self.assertAlmostEqual(expected, float(actual))
-
     def test_interpolate_should_be_zero_when_no_points(self) -> None:
         spline = interpolate([])
         self.assertEqual(0.0, spline(0.0))

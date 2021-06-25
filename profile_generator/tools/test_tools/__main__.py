@@ -6,6 +6,7 @@ from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _GREY,
+    _HL_PROTECTION,
     _OFFSETS,
     _STRENGTH,
 )
@@ -14,9 +15,9 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength
 
 
-def print_calculation(name, fn, *args):
+def print_calculation(name, fn, *args, **kwargs):
     print(name)
-    print(fn(*args))
+    print(fn(*args, **kwargs))
     print()
 
 
@@ -28,19 +29,21 @@ if __name__ == "__main__":
         contrast_sigmoid.calculate,
         _GREY,
         _STRENGTH,
-        _OFFSETS,
+        offsets=_OFFSETS,
     )
     print_calculation(
         "test_calculate_with_hl_protection",
-        contrast_sigmoid.calculate_with_hl_protection,
+        contrast_sigmoid.calculate,
         _GREY,
         _STRENGTH,
+        _HL_PROTECTION,
     )
     print_calculation(
         "test_calculate_with_hl_protection_and_offests",
-        contrast_sigmoid.calculate_with_hl_protection,
+        contrast_sigmoid.calculate,
         _GREY,
         _STRENGTH,
+        _HL_PROTECTION,
         _OFFSETS,
     )
     print_calculation(

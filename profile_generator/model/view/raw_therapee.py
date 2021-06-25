@@ -14,6 +14,11 @@ class CurveType:
     FLEXIBLE = "4;"
 
 
+class WbSetting:
+    CAMERA = "Camera"
+    CUSTOM = "Custom"
+
+
 def _present_point(point: Point) -> str:
     return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
 
