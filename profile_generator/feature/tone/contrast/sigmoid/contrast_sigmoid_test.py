@@ -1,9 +1,10 @@
 from unittest import TestCase
 
-from .contrast_sigmoid import Point, Strength, calculate, calculate_with_hl_protection
+from .contrast_sigmoid import Point, Strength, calculate
 
 _GREY = Point(87 / 255, 119 / 255)
 _STRENGTH = Strength(0.5)
+_HL_PROTECTION = Strength(0.5)
 _OFFSETS = (16 / 255, 235 / 255)
 
 
@@ -45,40 +46,36 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.749020, y=0.903906),
                 Point(x=1.000000, y=0.921569),
             ],
-            calculate(_GREY, _STRENGTH, _OFFSETS),
+            calculate(_GREY, _STRENGTH, offsets=_OFFSETS),
         )
 
     def test_calculate_with_hl_protection(self) -> None:
         self.assertEqual(
             [
                 Point(x=0.000000, y=0.000000),
-                Point(x=0.074510, y=0.023995),
-                Point(x=0.196078, y=0.142747),
-                Point(x=0.286275, y=0.327713),
-                Point(x=0.360784, y=0.513930),
-                Point(x=0.411765, y=0.612773),
-                Point(x=0.525490, y=0.765551),
-                Point(x=0.737255, y=0.909023),
-                Point(x=0.886275, y=0.967424),
+                Point(x=0.078431, y=0.025971),
+                Point(x=0.203922, y=0.155489),
+                Point(x=0.298039, y=0.356759),
+                Point(x=0.384314, y=0.572088),
+                Point(x=0.517647, y=0.784105),
+                Point(x=0.623529, y=0.861082),
+                Point(x=0.737255, y=0.910929),
                 Point(x=1.000000, y=1.000000),
             ],
-            calculate_with_hl_protection(_GREY, _STRENGTH),
+            calculate(_GREY, _STRENGTH, _HL_PROTECTION),
         )
 
     def test_calculate_with_hl_protection_and_offests(self) -> None:
         self.assertEqual(
             [
                 Point(x=0.000000, y=0.062745),
-                Point(x=0.207843, y=0.177197),
-                Point(x=0.286275, y=0.327226),
-                Point(x=0.325490, y=0.423664),
-                Point(x=0.352941, y=0.493097),
-                Point(x=0.368627, y=0.525502),
-                Point(x=0.435294, y=0.640688),
-                Point(x=0.521569, y=0.737826),
-                Point(x=0.619608, y=0.804496),
-                Point(x=0.737255, y=0.855887),
+                Point(x=0.211765, y=0.182904),
+                Point(x=0.294118, y=0.345808),
+                Point(x=0.388235, y=0.576017),
+                Point(x=0.509804, y=0.753357),
+                Point(x=0.615686, y=0.815984),
+                Point(x=0.729412, y=0.853456),
                 Point(x=1.000000, y=0.921569),
             ],
-            calculate_with_hl_protection(_GREY, _STRENGTH, _OFFSETS),
+            calculate(_GREY, _STRENGTH, _HL_PROTECTION, _OFFSETS),
         )

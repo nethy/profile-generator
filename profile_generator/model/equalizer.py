@@ -15,21 +15,19 @@ class EqPoint:
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, EqPoint):
             return NotImplemented
-        return (
-            self._eq(self.x, other.x)
-            and self._eq(self.y, other.y)
-            and self._eq(self.left, other.left)
-            and self._eq(self.right, other.right)
-        )
 
-    @staticmethod
-    def _eq(a: float, b: float) -> bool:
-        return equals(a, b)
+        return (
+            equals(self.x, other.x)
+            and equals(self.y, other.y)
+            and equals(self.left, other.left)
+            and equals(self.right, other.right)
+        )
 
 
 def equalize(*points: Point) -> list[EqPoint]:
     if len(points) == 0:
         return []
+
     result = [EqPoint(p.x, p.y, 0, 0) for p in points]
     for i in range(len(result) - 1):
         strength = _get_slope_strength(result[i], result[i + 1])
@@ -40,8 +38,9 @@ def equalize(*points: Point) -> list[EqPoint]:
 
 
 def _get_slope_strength(a: EqPoint, b: EqPoint) -> float:
-    if a.x == b.x or a.y == b.y:
+    if equals(a.x, b.x) or equals(a.y, b.y):
         return 0
+
     slope = abs((b.y - a.y) / (b.x - a.x))
     return (1 - 1 / 4 ** slope) / 2
 

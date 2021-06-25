@@ -6,6 +6,8 @@ from profile_generator.schema import (
     InvalidTypeError,
     SchemaValidator,
 )
+from profile_generator.schema.list_schema import InvalidListError
+from profile_generator.schema.tuple_schema import InvalidListSizeError
 
 from .schema import SCHEMA
 
@@ -20,38 +22,43 @@ class SchemaTest(unittest.TestCase):
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
-                "grey": {"x": 128, "y": 128},
+                "neutral5": [87, 87, 87],
+                "exposure_compensation": -1.0,
                 "strength": 25.1,
-                "protect_hl": True,
+                "hl_protection": 50.1,
                 "matte_effect": True,
             }
         )
 
-    def test_validate_invalid_middle_grey(self) -> None:
+    def test_validate_invalid_neutral5(self) -> None:
         self.validator.assert_error(
-            {"grey": {"x": False}},
-            InvalidObjectError(
-                {"grey": InvalidObjectError({"x": InvalidRangeError(16, 240)})}
-            ),
+            {"neutral5": [87, 87]},
+            InvalidObjectError({"neutral5": InvalidListSizeError(3)}),
         )
 
         self.validator.assert_error(
-            {"grey": {"y": False}},
+            {"neutral5": [87, 87, False]},
             InvalidObjectError(
-                {"grey": InvalidObjectError({"y": InvalidRangeError(64, 192)})}
+                {"neutral5": InvalidListError({3: InvalidRangeError(16, 240)})}
             ),
+        )
+
+    def test_validate_invalid_exposure_compensation(self) -> None:
+        self.validator.assert_error(
+            {"exposure_compensation": False},
+            InvalidObjectError({"exposure_compensation": InvalidRangeError(-2.0, 2.0)}),
         )
 
     def test_validate_invalid_strength(self) -> None:
         self.validator.assert_error(
             {"strength": False},
-            InvalidObjectError({"strength": InvalidRangeError(0.0, 100.0)}),
+            InvalidObjectError({"strength": InvalidRangeError(0, 100)}),
         )
 
     def test_validate_invalid_hl_protect(self) -> None:
         self.validator.assert_error(
-            {"protect_hl": 0},
-            InvalidObjectError({"protect_hl": InvalidTypeError(bool)}),
+            {"hl_protection": False},
+            InvalidObjectError({"hl_protection": InvalidRangeError(0, 100)}),
         )
 
     def test_validate_invalid_matte_effect(self) -> None:

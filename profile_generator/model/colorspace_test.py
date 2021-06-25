@@ -1,18 +1,10 @@
 from unittest import TestCase
 
-from profile_generator.model import spline
+from profile_generator.model import linalg
 from profile_generator.model.spline import Matrix
 
 from .colorspace import (
-    D50_XYZ,
     D65_TO_D50_ADAPTATION,
-    D65_XYZ,
-    PROPHOTO_REFS,
-    PROPHOTO_TO_XYZ,
-    SRGB_REFS,
-    SRGB_TO_XYZ,
-    XYZ_TO_PROPHOTO,
-    XYZ_TO_SRGB,
     get_conversion_matrix,
     lab_to_lch,
     lab_to_xyz,
@@ -23,6 +15,16 @@ from .colorspace import (
     xyz_to_lab,
     xyz_to_srgb,
     xyz_to_xyy,
+)
+from .colorspace_constants import (
+    D50_XYZ,
+    D65_XYZ,
+    PROPHOTO_TO_XYZ,
+    PROPHOTO_XY,
+    SRGB_TO_XYZ,
+    SRGB_XY,
+    XYZ_TO_PROPHOTO,
+    XYZ_TO_SRGB,
 )
 
 
@@ -103,15 +105,15 @@ class ColorspaceTest(TestCase):
         )
 
     def test_get_conversion_matrix_srgb(self) -> None:
-        matrix = get_conversion_matrix(SRGB_REFS, D65_XYZ)
-        inverse = spline.inverse_matrix(list(matrix))
+        matrix = get_conversion_matrix(SRGB_XY, D65_XYZ)
+        inverse = linalg.inverse(list(matrix))
 
         self._assert_matrix_equal(SRGB_TO_XYZ, matrix)
         self._assert_matrix_equal(XYZ_TO_SRGB, inverse)
 
     def test_get_conversion_matrix_prophoto(self) -> None:
-        matrix = get_conversion_matrix(PROPHOTO_REFS, D50_XYZ)
-        inverse = spline.inverse_matrix(list(matrix))
+        matrix = get_conversion_matrix(PROPHOTO_XY, D50_XYZ)
+        inverse = linalg.inverse(list(matrix))
 
         self._assert_matrix_equal(PROPHOTO_TO_XYZ, matrix)
         self._assert_matrix_equal(XYZ_TO_PROPHOTO, inverse)
