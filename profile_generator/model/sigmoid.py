@@ -61,7 +61,7 @@ def find_contrast_gradient(gradient: float) -> float:
     return _jump_search(-100, 100, contrast_gradient, gradient)
 
 
-def _std_curve(brightness: float, contrast: float) -> Curve:
+def _base_curve(brightness: float, contrast: float) -> Curve:
     gradient = _brightness_gradient_at_midpoint(brightness)
     _contrast_curve = contrast_curve(contrast / gradient)
     _brightness_curve = brightness_curve(brightness)
@@ -69,11 +69,11 @@ def _std_curve(brightness: float, contrast: float) -> Curve:
 
 
 def curve(brightness: float, contrast: float, hl_protection: float = 1.0) -> Curve:
-    _curve = _std_curve(brightness, contrast)
+    _curve = _base_curve(brightness, contrast)
     if math.isclose(hl_protection, 1.0):
         return _curve
 
-    _damped_curve = _std_curve(brightness, contrast / hl_protection)
+    _damped_curve = _base_curve(brightness, contrast / hl_protection)
     midpoint = brightness_midpoint(brightness)
 
     def _merged_curve(x: float) -> float:

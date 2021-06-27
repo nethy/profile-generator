@@ -6,6 +6,7 @@ from profile_generator.schema import object_of, range_of
 
 _LAB_ENABLED = "LabEnabled"
 _LAB_CHROMACITY = "LabChromacity"
+_LAB_SKIN_PROTECTION = "LabRASTProtection"
 _WB_SETTING = "WB_Setting"
 _WB_TEMPERATURE = "WB_Temperature"
 _WB_GREEN = "WB_Green"
@@ -13,26 +14,34 @@ _WB_GREEN = "WB_Green"
 _DEFAULT = {
     _LAB_ENABLED: "false",
     _LAB_CHROMACITY: "0",
+    _LAB_SKIN_PROTECTION: "0",
     _WB_SETTING: raw_therapee.WbSetting.CAMERA,
     _WB_TEMPERATURE: "6504",
     _WB_GREEN: "1",
 }
 
 _DEFAULT_VIBRANCE = 0
+_DEFAULT_SKIN_PROTECTION = 0
 _DEFAULT_WB_TEMP = 6504
 _DEFAULT_WB_TINT = 1
 
 
 def _process(data: Any) -> Mapping[str, str]:
     vibrance = _get_vibrance(data)
+    skin_protection = _get_skin_protection(data)
     white_balance = _get_white_balance(data)
-    return _DEFAULT | vibrance | white_balance
+    return _DEFAULT | vibrance | skin_protection | white_balance
 
 
 def _get_vibrance(data: Any) -> Mapping[str, str]:
     vibrance = data.get("vibrance", _DEFAULT_VIBRANCE)
     is_enabled = str(vibrance != 0).lower()
     return {_LAB_ENABLED: is_enabled, _LAB_CHROMACITY: str(vibrance)}
+
+
+def _get_skin_protection(data: Any) -> Mapping[str, str]:
+    protection = data.get("skin_tone_protection", _DEFAULT_SKIN_PROTECTION)
+    return {_LAB_SKIN_PROTECTION: str(protection)}
 
 
 def _get_white_balance(data: Any) -> Mapping[str, str]:
@@ -56,5 +65,10 @@ _WB_SCHEMA = object_of(
     {"temperature": range_of(1500, 60000), "tint": range_of(0.02, 10.0)}
 )
 SCHEMA = object_of(
-    {"vibrance": range_of(-100, 100), "white_balance": _WB_SCHEMA}, _process
+    {
+        "vibrance": range_of(-100, 100),
+        "skin_tone_protection": range_of(0, 100),
+        "white_balance": _WB_SCHEMA,
+    },
+    _process,
 )

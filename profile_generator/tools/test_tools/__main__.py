@@ -5,10 +5,10 @@ from profile_generator.feature.colors.schema import SCHEMA as color_schema
 from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
+    _GAMMA,
     _GREY,
     _HL_PROTECTION,
     _OFFSETS,
-    _STRENGTH,
 )
 from profile_generator.model import sigmoid
 from profile_generator.model.view import raw_therapee
@@ -23,26 +23,26 @@ def print_calculation(name, fn, *args, **kwargs):
 
 if __name__ == "__main__":
     print_calculation("test_vibrance", color_schema.process, {"vibrance": 50})
-    print_calculation("test_calculate", contrast_sigmoid.calculate, _GREY, _STRENGTH)
+    print_calculation("test_calculate", contrast_sigmoid.calculate, _GREY, _GAMMA)
     print_calculation(
         "test_calculate_with_offests",
         contrast_sigmoid.calculate,
         _GREY,
-        _STRENGTH,
+        _GAMMA,
         offsets=_OFFSETS,
     )
     print_calculation(
         "test_calculate_with_hl_protection",
         contrast_sigmoid.calculate,
         _GREY,
-        _STRENGTH,
+        _GAMMA,
         _HL_PROTECTION,
     )
     print_calculation(
         "test_calculate_with_hl_protection_and_offests",
         contrast_sigmoid.calculate,
         _GREY,
-        _STRENGTH,
+        _GAMMA,
         _HL_PROTECTION,
         _OFFSETS,
     )

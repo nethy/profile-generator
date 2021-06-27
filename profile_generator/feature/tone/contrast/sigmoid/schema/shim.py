@@ -3,25 +3,25 @@ from typing import Any
 
 from profile_generator.model import colorspace
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Point, Strength
+from profile_generator.unit import Point
 
 _DEFAULT_GREY = [90.0, 90.0, 90.0]
 _REFERENCE_NEUTRAL5 = [122.0, 122.0, 121.0]
 _DEFAULT_EV_COMP = 0
-_DEFAULT_STRENGTH = 0
-_DEFAULT_HL_PROTECTION = 0
+_DEFAULT_GAMMA = 1.0
+_DEFAULT_HLP = 1.0
 
 _TEMPLATE_FIELD = "Curve"
 
 
 def get_parameters(
     configuration: Mapping[str, Any]
-) -> tuple[Point, Strength, Strength, tuple[float, float]]:
+) -> tuple[Point, float, float, tuple[float, float]]:
     grey = _get_grey(configuration)
-    strength = _get_strength(configuration)
-    protect_hl = _get_hl_protection(configuration)
+    gamma = _get_gamma(configuration)
+    hlp = _get_highlight_protection(configuration)
     offsets = _get_offsets(configuration)
-    return (grey, strength, protect_hl, offsets)
+    return (grey, gamma, hlp, offsets)
 
 
 def _get_grey(configuration: Mapping[str, Any]) -> Point:
@@ -34,14 +34,12 @@ def _get_grey(configuration: Mapping[str, Any]) -> Point:
     return Point(x, y)
 
 
-def _get_strength(configuration: Mapping[str, Any]) -> Strength:
-    value = configuration.get("strength", _DEFAULT_STRENGTH) / 100
-    return Strength(value)
+def _get_gamma(configuration: Mapping[str, Any]) -> float:
+    return configuration.get("gamma", _DEFAULT_GAMMA)
 
 
-def _get_hl_protection(configuration: Mapping[str, Any]) -> Strength:
-    value = configuration.get("hl_protection", _DEFAULT_HL_PROTECTION) / 100
-    return Strength(value)
+def _get_highlight_protection(configuration: Mapping[str, Any]) -> float:
+    return configuration.get("highlight_protection", _DEFAULT_HLP)
 
 
 def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:

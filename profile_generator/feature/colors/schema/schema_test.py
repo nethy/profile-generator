@@ -11,6 +11,7 @@ from .schema import SCHEMA
 _DEFAULT = {
     "LabEnabled": "false",
     "LabChromacity": "0",
+    "LabRASTProtection": "0",
     "WB_Setting": "Camera",
     "WB_Temperature": "6504",
     "WB_Green": "1",
@@ -31,6 +32,12 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"vibrance": False},
             InvalidObjectError({"vibrance": InvalidRangeError(-100, 100)}),
+        )
+
+    def test_validate_invalid_skin_tone_protection(self) -> None:
+        self.validator.assert_error(
+            {"skin_tone_protection": False},
+            InvalidObjectError({"skin_tone_protection": InvalidRangeError(0, 100)}),
         )
 
     def test_validate_invalid_wb_temperature(self) -> None:
@@ -77,6 +84,11 @@ class SchemaTest(TestCase):
                 "LabEnabled": "true",
                 "LabChromacity": "-50",
             },
+        )
+
+    def test_process_skin_tone_protection(self) -> None:
+        self.validator.assert_process(
+            {"skin_tone_protection": 50}, {**_DEFAULT, "LabRASTProtection": "50"}
         )
 
     def test_process_wb_temperature(self) -> None:

@@ -15,7 +15,7 @@
         * [Output](#output)
     * [Noise reduction](#noise-reduction)
 * [Raw](#raw)
-* [Coors](#colors)
+* [Colors](#colors)
 
 ## Overview
 
@@ -190,26 +190,27 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 RGB value of the `Neutral5` patch of a color checker card.
 
-`strength`
+`gamma`
 |               |             |
 | ---           | ---         |
-| Type          | integer     |
-| Value range   | -100 - 100  |
+| Type          | float       |
+| Value range   | 1.0 - 5.0   |
 | Default value | 0           |
 
-Amount of contrast. 0 will produce a flat tone curve.
+Amount of contrast. 1.0 will produce a linear tone curve.
+For portraits use 1.7-1.8, and landscapes around 2.0-2.2.
 
-`hl_protection`
+`highlight_protection`
 |               |             |
 | ---           | ---         |
-| Type          | integer     |
-| Value range   | 0 - 100     |
+| Type          | float       |
+| Value range   | 1.0 - 4.0   |
 | Default value | 0           |
 
 Decreases gradiation in the tone curve's highlight region, aiming to preserve
 more details.
-Not recommended if there is clipping in the image - in that case posterization
-can occur.
+Not recommended using high value if there is clipping in the image - in that case
+posterization can occur.
 
 `matte_effect`
 |               |             |
@@ -357,7 +358,7 @@ Colors related adjustments.
 
 **Parameters**
 
-`Vibrance`
+`vibrance`
 |               |            |
 | ---           | ---        |
 | Type          | integer    |
@@ -365,3 +366,12 @@ Colors related adjustments.
 | Default value | 0          |
 
 Adjust the vibrance of the image.
+
+`skin_tone_protection`
+|               |         |
+| ---           | ---     |
+| Type          | integer |
+| Value range   | 0 - 100 |
+| Default value | 0       |
+
+Dimming the vibrance strength in skin tones.

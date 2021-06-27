@@ -24,8 +24,8 @@ class SchemaTest(unittest.TestCase):
             {
                 "neutral5": [87, 87, 87],
                 "exposure_compensation": -1.0,
-                "strength": 25.1,
-                "hl_protection": 50.1,
+                "gamma": 1.7,
+                "highlight_protection": 1.8,
                 "matte_effect": True,
             }
         )
@@ -51,14 +51,14 @@ class SchemaTest(unittest.TestCase):
 
     def test_validate_invalid_strength(self) -> None:
         self.validator.assert_error(
-            {"strength": False},
-            InvalidObjectError({"strength": InvalidRangeError(0, 100)}),
+            {"gamma": False},
+            InvalidObjectError({"gamma": InvalidRangeError(1.0, 5.0)}),
         )
 
     def test_validate_invalid_hl_protect(self) -> None:
         self.validator.assert_error(
-            {"hl_protection": False},
-            InvalidObjectError({"hl_protection": InvalidRangeError(0, 100)}),
+            {"highlight_protection": False},
+            InvalidObjectError({"highlight_protection": InvalidRangeError(1.0, 4.0)}),
         )
 
     def test_validate_invalid_matte_effect(self) -> None:
