@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from .contrast_sigmoid import Point, Strength, calculate
+from .contrast_sigmoid import Point, calculate
 
 _GREY = Point(87 / 255, 119 / 255)
-_STRENGTH = Strength(0.5)
-_HL_PROTECTION = Strength(0.5)
+_GAMMA = 2.5
+_HL_PROTECTION = 2.5
 _OFFSETS = (16 / 255, 235 / 255)
 
 
@@ -22,7 +22,7 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.756863, y=0.969503),
                 Point(x=1.000000, y=1.000000),
             ],
-            calculate(_GREY, _STRENGTH),
+            calculate(_GREY, _GAMMA),
         )
 
     def test_calculate_linear(self) -> None:
@@ -31,7 +31,7 @@ class ContrastSigmoid(TestCase):
                 Point(0.00000, 0.00000),
                 Point(1.00000, 1.00000),
             ],
-            calculate(Point(0.5, 0.5), Strength()),
+            calculate(Point(0.5, 0.5), 1.0),
         )
 
     def test_calculate_with_offests(self) -> None:
@@ -46,7 +46,7 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.749020, y=0.903906),
                 Point(x=1.000000, y=0.921569),
             ],
-            calculate(_GREY, _STRENGTH, offsets=_OFFSETS),
+            calculate(_GREY, _GAMMA, offsets=_OFFSETS),
         )
 
     def test_calculate_with_hl_protection(self) -> None:
@@ -62,7 +62,7 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.737255, y=0.910929),
                 Point(x=1.000000, y=1.000000),
             ],
-            calculate(_GREY, _STRENGTH, _HL_PROTECTION),
+            calculate(_GREY, _GAMMA, _HL_PROTECTION),
         )
 
     def test_calculate_with_hl_protection_and_offests(self) -> None:
@@ -77,5 +77,5 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.729412, y=0.853456),
                 Point(x=1.000000, y=0.921569),
             ],
-            calculate(_GREY, _STRENGTH, _HL_PROTECTION, _OFFSETS),
+            calculate(_GREY, _GAMMA, _HL_PROTECTION, _OFFSETS),
         )

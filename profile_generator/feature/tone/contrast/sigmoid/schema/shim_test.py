@@ -1,20 +1,20 @@
 from unittest import TestCase
 
-from .shim import Point, Strength, get_parameters, marshal_curve
+from .shim import Point, get_parameters, marshal_curve
 
-_DEFAULT_STRENGTH = Strength(0)
-_DEFAULT_HL_PROTECTION = Strength(0)
+_DEFAULT_GAMMA = 1.0
+_DEFAULT_HLP = 1.0
 _DEFAULT_GREY_X = 90 / 255
 _DEFAULT_GREY_Y = 365 / 3 / 255
 
 
 class ShimTest(TestCase):
     def test_get_parameters_defaults(self) -> None:
-        grey, strength, hl_protection, offsets = get_parameters({})
+        grey, gamma, hlp, offsets = get_parameters({})
 
         self.assertEqual(grey, Point(_DEFAULT_GREY_X, _DEFAULT_GREY_Y))
-        self.assertEqual(strength, _DEFAULT_STRENGTH)
-        self.assertEqual(hl_protection, _DEFAULT_HL_PROTECTION)
+        self.assertEqual(gamma, _DEFAULT_GAMMA)
+        self.assertEqual(hlp, _DEFAULT_HLP)
         self.assertEqual(offsets, (0, 1))
 
     def test_get_parameters_neutral5(self) -> None:
@@ -28,13 +28,13 @@ class ShimTest(TestCase):
         grey, _, _, _ = get_parameters({"exposure_compensation": 1})
         self.assertEqual(grey, Point(_DEFAULT_GREY_X, 0.655301))
 
-    def test_get_parameters_strength(self) -> None:
-        _, strength, _, _ = get_parameters({"strength": 49})
-        self.assertEqual(Strength(0.49), strength)
+    def test_get_parameters_gamma(self) -> None:
+        _, gamma, _, _ = get_parameters({"gamma": 2.0})
+        self.assertEqual(2.0, gamma)
 
-    def test_get_parameters_hl_protection(self) -> None:
-        _, _, hl_protection, _ = get_parameters({"hl_protection": True})
-        self.assertTrue(hl_protection)
+    def test_get_parameters_highlight_protection(self) -> None:
+        _, _, hlp, _ = get_parameters({"highlight_protection": 2.0})
+        self.assertEqual(2.0, hlp)
 
     def test_get_parameters_matte_effect(self) -> None:
         _, _, _, offsets = get_parameters({"matte_effect": True})
