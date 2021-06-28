@@ -1,11 +1,12 @@
 from collections.abc import Callable, Iterable
 from typing import TypeVar
 
-from profile_generator.model.equalizer import EqPoint
 from profile_generator.unit import DECIMALS, Point
 
 _T = TypeVar("_T")
 _Presenter = Callable[[_T], str]
+
+_EQ_STRENGTH = f"{(1 / 3 * 1 / 4) ** (1 / 2):.{DECIMALS}f}"
 
 
 class CurveType:
@@ -27,14 +28,14 @@ def present_curve(points: Iterable[Point]) -> str:
     return "".join((_present_point(p) for p in points))
 
 
-def _present_eq_point(point: EqPoint) -> str:
+def _present_eq_point(point: Point) -> str:
     return (
         f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
-        + f"{point.left:.{DECIMALS}f};{point.right:.{DECIMALS}f};"
+        + f"{_EQ_STRENGTH};{_EQ_STRENGTH};"
     )
 
 
-def present_equalizer(points: Iterable[EqPoint]) -> str:
+def present_equalizer(points: Iterable[Point]) -> str:
     return _present(_present_eq_point, points)
 
 

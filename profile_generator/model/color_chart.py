@@ -1,0 +1,13 @@
+class ColorChart:
+    BLUE = [56, 61, 150]
+    GREEN = [70, 148, 73]
+    RED = [175, 54, 60]
+    YELLOW = [231, 199, 31]
+    MAGENTA = [187, 86, 149]
+    CYAN = [8, 133, 161]
+    WHITE = [243, 243, 242]
+    NEUTRAL80 = [200, 200, 200]
+    NETURAL65 = [160, 160, 160]
+    NEUTRAL50 = [122, 122, 121]
+    NETURAL25 = [85, 85, 85]
+    BLACK = [52, 52, 52]

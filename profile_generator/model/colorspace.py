@@ -31,6 +31,33 @@ def ev_comp_srgb(srgb: Vector, compensation: float) -> Vector:
     return list(map(srgb_gamma, linear))
 
 
+def rgb_to_hsv(rgb: Vector) -> Vector:
+    max_value = max(rgb)
+    min_value = min(rgb)
+    delta = max_value - min_value
+    hue = saturation = 0.0
+    if delta > 1e-9:
+        r, g, b = rgb
+        if max_value == r:
+            hue = (g - b) / delta
+        elif max_value == g:
+            hue = 2 + (b - r) / delta
+        elif max_value == b:
+            hue = 4 + (r - g) / delta
+
+        hue /= 6
+
+        if hue < 0:
+            hue += 1
+        elif hue > 1:
+            hue -= 1
+
+        if max_value > 1e-9:
+            saturation = delta / max_value
+
+    return [hue, saturation, max_value]
+
+
 def srgb_to_xyz(srgb: Vector) -> Vector:
     linear = list(map(srgb_gamma_inverse, srgb))
     return linalg.transform(SRGB_TO_XYZ, linear)
