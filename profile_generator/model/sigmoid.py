@@ -17,7 +17,7 @@ def brightness_curve(b: float) -> Curve:
 
 def brightness_gradient(b: float) -> Curve:
     if math.isclose(b, 0):
-        return lambda x: 1
+        return lambda _: 1
     else:
         return lambda x: b * math.exp(b - b * x) / (math.exp(b) - 1)
 
@@ -31,6 +31,52 @@ def brightness_midpoint(b: float) -> float:
 def _brightness_gradient_at_midpoint(b: float) -> float:
     midpoint = brightness_midpoint(b)
     return brightness_gradient(b)(midpoint)
+
+
+# y = (x+xb)/(1+bx)
+# y' = ((1+b)(1+bx)-(x+bx)b) / (1+bx)^2 = (1+b+bx+b^2x-bx-b^2x) / (1+(bx)^2+2bx) = (1+b)/(1+bx)^2
+# b = ?
+# y/x = (1+b)/(1+xb)
+# y/x + yxb/x = 1+b
+# y/x + yb = 1+b
+# y/x = 1 + b - yb
+# y/x - 1 = (1-y)b
+# b = (y-x)/x(1-y)
+
+# y/(1+b) = x/(1+bx)
+# (1+b)/y = 1/x + b
+# (1+b)/y -b = 1/x
+# (1+b-by)/y = 1/x
+# x = y/(1+b-by)
+# x' = ((1+b-by) - y(-b)) / (1+b-by)^2 = (1+b)/(1+b-by)^2
+# b=?
+# 1+b-by = y/x
+# 1+(1-y)b = y/x
+# b = (y-x)/(x(1-y)) = (y-x)/(x-xy)
+
+
+def gamma_reciprocal(g: float) -> Curve:
+    return lambda x: (x + g * x) / (1 + g * x)
+
+
+def gamma_gradient_reciprocal(g: float) -> Curve:
+    return lambda x: (1 + g) / (1 + g * x) ** 2
+
+
+def gamma_of_reciprocal(x: float, y: float) -> float:
+    return (y - x) / (x * (1 - y))
+
+
+def gamma_inverse_reciprocal(g: float) -> Curve:
+    return lambda x: x / (1 + g - g * x)
+
+
+def gamma_inverse_gradient_reciprocal(g: float) -> Curve:
+    return lambda x: (1 + g) / (1 + g - g * x) ** 2
+
+
+def gamma_of_inverse_reciprocal(x: float, y: float) -> float:
+    return (x - y) / (y - x * y)
 
 
 def contrast_curve(c: float) -> Curve:
