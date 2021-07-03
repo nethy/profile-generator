@@ -1,8 +1,8 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from profile_generator.model import linalg
-from profile_generator.model.colorspace import lab, rgb, xyz
+from profile_generator.model.color import constants, rgb
+from profile_generator.model.color.space import SRGB
 from profile_generator.model.linalg import Vector
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point
@@ -35,16 +35,14 @@ def _get_grey(configuration: Mapping[str, Any]) -> Point:
 
 
 def _srgb_to_luminance(color: Vector) -> float:
-    color = [rgb.srgb_gamma_inverse(x) for x in rgb.normalize(color)]
-    return rgb.srgb_luminance(color)
+    color = [SRGB.inverse_gamma(x) for x in rgb.normalize(color)]
+    return rgb.luminance(color, SRGB)
 
 
 def _set_middle_grey(in_lum: float, out_lum: float, ev_comp: float) -> Point:
-    linear_middle_grey = lab.lab_to_xyz([50, 0, 0], xyz.D50_XYZ)
-    linear_middle_grey = linalg.transform(xyz.XYZ_TO_SRGB, linear_middle_grey)
-    middle_grey_lum = rgb.srgb_luminance(linear_middle_grey)
-    x = in_lum * middle_grey_lum / out_lum
-    return Point(rgb.srgb_gamma(x), rgb.srgb_gamma(middle_grey_lum * 2 ** ev_comp))
+    x = in_lum * constants.SRGB_MIDDLE_GREY_LUMINANCE / out_lum
+    y = constants.SRGB_MIDDLE_GREY_LUMINANCE * 2 ** ev_comp
+    return Point(SRGB.gamma(x), SRGB.gamma(y))
 
 
 def _get_gamma(configuration: Mapping[str, Any]) -> float:

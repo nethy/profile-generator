@@ -3,7 +3,7 @@ from typing import Optional
 
 from profile_generator.model.linalg import Vector
 
-from .xyz import D65_XYZ
+from .white_point import D65_XYZ
 
 LAB_F_SIGMA = 6 / 29
 LAB_F_SIGMA_2 = 36 / 841
