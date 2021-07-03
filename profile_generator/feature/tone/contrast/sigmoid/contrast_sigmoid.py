@@ -1,24 +1,18 @@
 from collections.abc import Sequence
 
 from profile_generator.model import spline
-from profile_generator.model.sigmoid import (
-    Curve,
-    curve,
-    find_contrast_gradient,
-    find_curve_brightness,
-)
+from profile_generator.model.sigmoid import Curve, curve, find_contrast_gradient
 from profile_generator.unit import Point, equals
 
 
 def calculate(
-    grey: Point,
+    middle: Point,
     gamma: float,
     highlight_protection: float = 1.0,
     offsets: tuple[float, float] = (0.0, 1.0),
 ) -> Sequence[Point]:
-    contrast = _corrigate_gamma(gamma, offsets)
-    brightness = find_curve_brightness(grey, contrast)
-    _curve = _apply_offsets(curve(brightness, contrast, highlight_protection), offsets)
+    gradient = _corrigate_gamma(gamma, offsets)
+    _curve = _apply_offsets(curve(middle, gradient, highlight_protection), offsets)
     return [Point(x, y) for x, y in spline.fit(_curve)]
 
 
