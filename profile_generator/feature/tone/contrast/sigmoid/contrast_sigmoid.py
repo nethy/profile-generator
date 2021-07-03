@@ -1,8 +1,8 @@
 from collections.abc import Sequence
 
 from profile_generator.model import spline
-from profile_generator.model.sigmoid import Curve, curve, find_contrast_gradient
-from profile_generator.unit import Point, equals
+from profile_generator.model.sigmoid import Curve, curve
+from profile_generator.unit import Point
 
 
 def calculate(
@@ -18,10 +18,7 @@ def calculate(
 
 def _corrigate_gamma(gradient: float, offsets: tuple[float, float]) -> float:
     shadow, highlight = offsets
-    corrigated_gradient = gradient
-    if not equals(1, highlight - shadow):
-        corrigated_gradient = gradient / (highlight - shadow)
-    return find_contrast_gradient(corrigated_gradient)
+    return gradient / (highlight - shadow)
 
 
 def _apply_offsets(fn: Curve, offsets: tuple[float, float]) -> Curve:
