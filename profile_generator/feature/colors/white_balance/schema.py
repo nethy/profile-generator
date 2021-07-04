@@ -4,9 +4,9 @@ from typing import Any
 from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of
 
-_WB_SETTING = "WB_Setting"
-_WB_TEMPERATURE = "WB_Temperature"
-_WB_GREEN = "WB_Green"
+_WB_SETTING = "WBSetting"
+_WB_TEMPERATURE = "WBTemperature"
+_WB_GREEN = "WBGreen"
 
 DEFAULT = {
     _WB_SETTING: raw_therapee.WbSetting.CAMERA,

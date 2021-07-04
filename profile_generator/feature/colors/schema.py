@@ -3,6 +3,7 @@ from typing import Any
 
 from profile_generator.schema import object_of, range_of
 
+from .hsl import schema as hsl
 from .white_balance import schema as white_balance
 
 _LAB_ENABLED = "LabEnabled"
@@ -15,6 +16,7 @@ _DEFAULT = {
     _LAB_CHROMACITY: "0",
     _LAB_SKIN_PROTECTION: "0",
     **white_balance.DEFAULT,
+    **hsl.DEFAULT,
 }
 
 _DEFAULT_VIBRANCE = 0
@@ -25,7 +27,8 @@ def _process(data: Any) -> Mapping[str, str]:
     vibrance = _get_vibrance(data)
     skin_protection = _get_skin_protection(data)
     wb_result = white_balance.process(data)
-    return _DEFAULT | vibrance | skin_protection | wb_result
+    hsl_result = hsl.process(data.get("hsl", {}))
+    return _DEFAULT | vibrance | skin_protection | wb_result | hsl_result
 
 
 def _get_vibrance(data: Any) -> Mapping[str, str]:
@@ -44,6 +47,7 @@ SCHEMA = object_of(
         "vibrance": range_of(-100, 100),
         "skin_tone_protection": range_of(0, 100),
         "white_balance": white_balance.SCHEMA,
+        "hsl": hsl.SCHEMA,
     },
     _process,
 )

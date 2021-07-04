@@ -12,9 +12,12 @@ _DEFAULT = {
     "LabEnabled": "false",
     "LabChromacity": "0",
     "LabRASTProtection": "0",
-    "WB_Setting": "Camera",
-    "WB_Temperature": "6504",
-    "WB_Green": "1",
+    "WBSetting": "Camera",
+    "WBTemperature": "6504",
+    "WBGreen": "1",
+    "HhCurve": "0;",
+    "ChCurve": "0;",
+    "LhCurve": "0;",
 }
 
 
@@ -94,11 +97,11 @@ class SchemaTest(TestCase):
     def test_process_wb_temperature(self) -> None:
         self.validator.assert_process(
             {"white_balance": {"temperature": 5500}},
-            {**_DEFAULT, "WB_Setting": "Custom", "WB_Temperature": "5500"},
+            {**_DEFAULT, "WBSetting": "Custom", "WBTemperature": "5500"},
         )
 
     def test_process_wb_tint(self) -> None:
         self.validator.assert_process(
             {"white_balance": {"tint": 0.880}},
-            {**_DEFAULT, "WB_Setting": "Custom", "WB_Green": "0.88"},
+            {**_DEFAULT, "WBSetting": "Custom", "WBGreen": "0.88"},
         )

@@ -1,13 +1,16 @@
+from profile_generator.model.linalg import Vector
+
+
 class ColorChart:
-    BLUE = [56, 61, 150]
-    GREEN = [70, 148, 73]
-    RED = [175, 54, 60]
-    YELLOW = [231, 199, 31]
-    MAGENTA = [187, 86, 149]
-    CYAN = [8, 133, 161]
-    WHITE = [243, 243, 242]
-    NEUTRAL80 = [200, 200, 200]
-    NETURAL65 = [160, 160, 160]
-    NEUTRAL50 = [122, 122, 121]
-    NETURAL25 = [85, 85, 85]
-    BLACK = [52, 52, 52]
+    BLUE: Vector = [56, 61, 150]
+    GREEN: Vector = [70, 148, 73]
+    RED: Vector = [175, 54, 60]
+    YELLOW: Vector = [231, 199, 31]
+    MAGENTA: Vector = [187, 86, 149]
+    CYAN: Vector = [8, 133, 161]
+    WHITE: Vector = [243, 243, 242]
+    NEUTRAL80: Vector = [200, 200, 200]
+    NETURAL65: Vector = [160, 160, 160]
+    NEUTRAL50: Vector = [122, 122, 121]
+    NETURAL25: Vector = [85, 85, 85]
+    BLACK: Vector = [52, 52, 52]
