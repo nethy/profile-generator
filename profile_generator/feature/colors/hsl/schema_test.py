@@ -4,7 +4,7 @@ from profile_generator.schema import InvalidObjectError, SchemaValidator
 from profile_generator.schema.range_schema import InvalidRangeError
 from profile_generator.schema.type_schema import InvalidTypeError
 
-from .schema import SCHEMA, process
+from .schema import _STEPS, SCHEMA, process
 
 _DEFAULT = {
     "HhCurve": "0;",
@@ -24,28 +24,28 @@ class SchemaTest(TestCase):
         self.validator.assert_valid(
             {
                 "hue": {
-                    "magenta": -5,
+                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
-                    "blue": 5,
+                    "blue": 6,
                 },
                 "saturation": {
-                    "magenta": -5,
+                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
-                    "blue": 5,
+                    "blue": 6,
                 },
                 "luminance": {
-                    "magenta": -5,
+                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
-                    "blue": 5,
+                    "blue": 6,
                 },
             }
         )
@@ -71,19 +71,31 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"hue": {"blue": 1.2}},
             InvalidObjectError(
-                {"hue": InvalidObjectError({"blue": InvalidRangeError(-5, 5)})}
+                {
+                    "hue": InvalidObjectError(
+                        {"blue": InvalidRangeError(-_STEPS, _STEPS)}
+                    )
+                }
             ),
         )
         self.validator.assert_error(
-            {"hue": {"blue": -6}},
+            {"hue": {"blue": -8}},
             InvalidObjectError(
-                {"hue": InvalidObjectError({"blue": InvalidRangeError(-5, 5)})}
+                {
+                    "hue": InvalidObjectError(
+                        {"blue": InvalidRangeError(-_STEPS, _STEPS)}
+                    )
+                }
             ),
         )
         self.validator.assert_error(
             {"hue": {"blue": False}},
             InvalidObjectError(
-                {"hue": InvalidObjectError({"blue": InvalidRangeError(-5, 5)})}
+                {
+                    "hue": InvalidObjectError(
+                        {"blue": InvalidRangeError(-_STEPS, _STEPS)}
+                    )
+                }
             ),
         )
 
@@ -105,11 +117,12 @@ class SchemaTest(TestCase):
             {
                 **_DEFAULT,
                 "LabEnabled": "true",
-                "HhCurve": "1;0.140000;0.000000;0.288675;0.288675;"
-                + "0.339744;1.000000;0.288675;0.288675;"
-                + "0.530501;0.500000;0.288675;0.288675;"
-                + "0.657801;1.000000;0.288675;0.288675;"
-                + "0.896040;0.000000;0.288675;0.288675;",
+                "HhCurve": "1;0.140000;0.142857;0;0;"
+                + "0.339744;0.857143;0;0;"
+                + "0.530501;0.500000;0;0;"
+                + "0.657801;0.857143;0;0;"
+                + "0.896040;0.142857;0;0;"
+                + "0.991736;0.500000;0;0;",
             },
         )
 
@@ -125,8 +138,12 @@ class SchemaTest(TestCase):
             {
                 **_DEFAULT,
                 "LabEnabled": "true",
-                "ChCurve": "1;0.896040;0.200000;0.288675;0.288675;"
-                + "0.991736;0.800000;0.288675;0.288675;",
+                "ChCurve": "1;0.140000;0.500000;0;0;"
+                + "0.339744;0.500000;0;0;"
+                + "0.530501;0.500000;0;0;"
+                + "0.657801;0.500000;0;0;"
+                + "0.896040;0.285714;0;0;"
+                + "0.991736;0.714286;0;0;",
             },
         )
 
@@ -142,7 +159,11 @@ class SchemaTest(TestCase):
             {
                 **_DEFAULT,
                 "LabEnabled": "true",
-                "LhCurve": "1;0.896040;0.200000;0.288675;0.288675;"
-                + "0.991736;0.800000;0.288675;0.288675;",
+                "LhCurve": "1;0.140000;0.500000;0;0;"
+                + "0.339744;0.500000;0;0;"
+                + "0.530501;0.500000;0;0;"
+                + "0.657801;0.500000;0;0;"
+                + "0.896040;0.285714;0;0;"
+                + "0.991736;0.714286;0;0;",
             },
         )

@@ -69,7 +69,7 @@ def transform(matrix: Matrix, vector: Vector) -> Vector:
 
 
 def multiply_vector_vector(left: Vector, right: Vector) -> float:
-    return sum((a * b for a, b in zip(left, right)))
+    return sum(a * b for a, b in zip(left, right))
 
 
 def multiply_matrix_matrix(left: Matrix, right: Matrix) -> Matrix:
@@ -80,3 +80,7 @@ def multiply_matrix_matrix(left: Matrix, right: Matrix) -> Matrix:
             for k in range(n):
                 result[i][j] += left[i][k] * right[k][j]
     return result
+
+
+def scale_matrix(scale: Vector, matrix: Matrix) -> Matrix:
+    return [[a * x for x in row] for a, row in zip(scale, matrix)]

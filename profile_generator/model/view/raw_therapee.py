@@ -35,8 +35,16 @@ def _present_eq_point(point: Point) -> str:
     )
 
 
+def _present_linear_eq_point(point: Point) -> str:
+    return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};0;0;"
+
+
 def present_equalizer(points: Iterable[Point]) -> str:
     return _present(_present_eq_point, points)
+
+
+def present_linear_equalizer(points: Iterable[Point]) -> str:
+    return _present(_present_linear_eq_point, points)
 
 
 def _present(presenter: _Presenter, items: Iterable[_T]) -> str:

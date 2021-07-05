@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .linalg import Matrix, Vector, inverse, multiply_vector_vector, solve
+from .linalg import Matrix, Vector, inverse, multiply_vector_vector, scale_matrix, solve
 
 
 class LinalgTestCase(TestCase):
@@ -60,3 +60,9 @@ class LinalgTest(LinalgTestCase):
 
     def test_multiply_vector_vector(self) -> None:
         self.assertEqual(multiply_vector_vector([1, 2, 3], [4, 5, 6]), 4 + 10 + 18)
+
+    def test_scale_matrix(self) -> None:
+        self.assert_matrix_equal(
+            scale_matrix([1, 2, 3], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+            [[1, 2, 3], [8, 10, 12], [21, 24, 27]],
+        )

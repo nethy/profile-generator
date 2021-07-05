@@ -18,24 +18,24 @@ BRADFORD_INVERSE = [
 ]
 
 
-def rgb_to_xyz(rgb: Vector, color_space: ColorSpace) -> Vector:
+def from_rgb(rgb: Vector, color_space: ColorSpace) -> Vector:
     linear = [color_space.inverse_gamma(x) for x in rgb]
     return linalg.transform(color_space.xyz_matrix, linear)
 
 
-def xyz_to_rgb(xyz: Vector, color_space: ColorSpace) -> Vector:
+def to_rgb(xyz: Vector, color_space: ColorSpace) -> Vector:
     linear = linalg.transform(color_space.xyz_inverse_matrix, xyz)
     return [color_space.gamma(x) for x in linear]
 
 
-def xyy_to_xyz(xyy: Vector) -> Vector:
+def from_xyy(xyy: Vector) -> Vector:
     x, y, big_y = xyy
     if math.isclose(y, 0):
         return [0.0, 0.0, 0.0]
     return [x * big_y / y, big_y, (1 - x - y) * big_y / y]
 
 
-def xyz_to_xyy(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
+def to_xyy(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
     white_point = white_point or D65_XYZ
     x, y, z = xyz
     summary = x + y + z
@@ -47,11 +47,9 @@ def xyz_to_xyy(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
 def chromatic_adaptation(xyz_source: Vector, xyz_target: Vector) -> Matrix:
     source = linalg.transform(BRADFORD, xyz_source)
     target = linalg.transform(BRADFORD, xyz_target)
-    scale = [[0.0, 0.0, 0.0] for _ in range(3)]
-    for i in range(3):
-        scale[i][i] = target[i] / source[i]
+    scale = [t / s for t, s in zip(target, source)]
     return linalg.multiply_matrix_matrix(
-        BRADFORD_INVERSE, linalg.multiply_matrix_matrix(scale, BRADFORD)
+        BRADFORD_INVERSE, linalg.scale_matrix(scale, BRADFORD)
     )
 
 

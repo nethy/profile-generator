@@ -22,7 +22,7 @@ def ev_comp(
     return [color_space.gamma(x) for x in linear]
 
 
-def rgb_to_hsv(rgb: Vector) -> Vector:
+def to_hsv(rgb: Vector) -> Vector:
     max_value = max(rgb)
     min_value = min(rgb)
     delta = max_value - min_value

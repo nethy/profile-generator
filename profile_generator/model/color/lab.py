@@ -10,7 +10,7 @@ LAB_F_SIGMA_2 = 36 / 841
 LAB_F_SIGMA_3 = 216 / 24389
 
 
-def xyz_to_lab(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
+def from_xyz(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
     white_point = white_point or D65_XYZ
     x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz, white_point)]
     l = 116 * lab_f(y_ratio) - 16
@@ -19,7 +19,7 @@ def xyz_to_lab(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
     return [l, a, b]
 
 
-def lab_to_xyz(lab: Vector, white_point: Optional[Vector] = None) -> Vector:
+def to_xyz(lab: Vector, white_point: Optional[Vector] = None) -> Vector:
     white_point = white_point or D65_XYZ
     l, a, b = lab
     x_ref, y_ref, z_ref = white_point
@@ -30,7 +30,7 @@ def lab_to_xyz(lab: Vector, white_point: Optional[Vector] = None) -> Vector:
     return [x, y, z]
 
 
-def lab_to_lch(lab: Vector) -> Vector:
+def to_lch(lab: Vector) -> Vector:
     l, a, b = lab
     c = math.sqrt(a ** 2 + b ** 2)
     h = math.degrees(math.atan2(b, a))
@@ -39,7 +39,7 @@ def lab_to_lch(lab: Vector) -> Vector:
     return [l, c, h]
 
 
-def lch_to_lab(lch: Vector) -> Vector:
+def from_lch(lch: Vector) -> Vector:
     l, c, h = lch
     a = c * math.cos(math.radians(h))
     b = c * math.sin(math.radians(h))
