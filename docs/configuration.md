@@ -16,6 +16,7 @@
     * [Noise reduction](#noise-reduction)
 * [Raw](#raw)
 * [Colors](#colors)
+    * [HSL](#hsl)
 
 ## Overview
 
@@ -306,7 +307,7 @@ Reduce noise.
 
 `enabled`
 |               |             |
-| ---           | ---         |
+|---------------|-------------|
 | Type          | boolean     |
 | Value range   | true, false |
 | Default value | false       |
@@ -315,7 +316,7 @@ Enables noise reduction - it will automatically reduce chorminance noise.
 
 `strength`
 |               |         |
-| ---           | ---     |
+|---------------|---------|
 | Type          | integer |
 | Value range   | 0 - 100 |
 | Default value | 10      |
@@ -324,7 +325,7 @@ Strength of the luminance noise reduction.
 
 `median`
 |               |             |
-| ---           | ---         |
+|---------------|-------------|
 | Type          | boolean     |
 | Value range   | true, false |
 | Default value | false       |
@@ -342,7 +343,7 @@ Raw conversion details.
 
 `demosaic`
 |               |                     |
-| ---           | ---                 |
+|---------------|---------------------|
 | Type          | string              |
 | Value range   | "DCB+VNG4", "LMMSE" |
 | Default value | "DCB+VNG4"          |
@@ -360,7 +361,7 @@ Colors related adjustments.
 
 `vibrance`
 |               |            |
-| ---           | ---        |
+|---------------|------------|
 | Type          | integer    |
 | Value range   | -100 - 100 |
 | Default value | 0          |
@@ -369,9 +370,25 @@ Adjust the vibrance of the image.
 
 `skin_tone_protection`
 |               |         |
-| ---           | ---     |
+|---------------|---------|
 | Type          | integer |
 | Value range   | 0 - 100 |
 | Default value | 0       |
 
 Dimming the vibrance strength in skin tones.
+
+
+### HSL
+
+Field name: `hsl`
+
+Hue, saturation and luminance adjustments.
+
+`hue`, `saturation`, `luminance`
+
+`red`, `yellow`, `green`, `cyan`, `blue`, `magenta`
+|               |         |
+|---------------|---------|
+| Type          | integer |
+| Value Range   | -7 - 7  |
+| Default Value | 0       |

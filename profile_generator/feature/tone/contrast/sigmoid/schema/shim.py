@@ -1,7 +1,9 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from profile_generator.model import colorspace
+from profile_generator.model.color import constants, rgb
+from profile_generator.model.color.space import SRGB
+from profile_generator.model.linalg import Vector
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point
 
@@ -26,12 +28,21 @@ def get_parameters(
 
 def _get_grey(configuration: Mapping[str, Any]) -> Point:
     grey = configuration.get("neutral5", _DEFAULT_GREY)
-    x = sum(colorspace.normalize(grey)) / 3
+    in_lum = _srgb_to_luminance(grey)
     ev_comp = configuration.get("exposure_compensation", _DEFAULT_EV_COMP)
-    target = colorspace.normalize(_REFERENCE_NEUTRAL5)
-    target = colorspace.ev_comp_srgb(target, ev_comp)
-    y = sum(target) / 3
-    return Point(x, y)
+    out_lum = _srgb_to_luminance(_REFERENCE_NEUTRAL5)
+    return _set_middle_grey(in_lum, out_lum, ev_comp)
+
+
+def _srgb_to_luminance(color: Vector) -> float:
+    color = [SRGB.inverse_gamma(x) for x in rgb.normalize(color)]
+    return rgb.luminance(color, SRGB)
+
+
+def _set_middle_grey(in_lum: float, out_lum: float, ev_comp: float) -> Point:
+    x = in_lum * constants.SRGB_MIDDLE_GREY_LUMINANCE / out_lum
+    y = constants.SRGB_MIDDLE_GREY_LUMINANCE * 2 ** ev_comp
+    return Point(SRGB.gamma(x), SRGB.gamma(y))
 
 
 def _get_gamma(configuration: Mapping[str, Any]) -> float:

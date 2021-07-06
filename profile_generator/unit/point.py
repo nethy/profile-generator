@@ -14,7 +14,7 @@ class Point:
     def distance(self, other: Point) -> float:
         diff_x = self.x - other.x
         diff_y = self.y - other.y
-        return math.sqrt(math.pow(diff_x, 2) + math.pow(diff_y, 2))
+        return (diff_x ** 2 + diff_y ** 2) ** (1 / 2)
 
     def __repr__(self) -> str:
         return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
@@ -30,6 +30,12 @@ class Point:
             return NotImplemented
 
         return not self.__eq__(other)
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, Point):
+            return NotImplemented
+
+        return self.x < other.x or (math.isclose(self.x, other.x) and self.y < other.y)
 
     def __add__(self, operand: Point) -> Point:
         return Point(self.x + operand.x, self.y + operand.y)

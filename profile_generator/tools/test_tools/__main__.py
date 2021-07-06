@@ -10,7 +10,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _HL_PROTECTION,
     _OFFSETS,
 )
-from profile_generator.model import sigmoid
+from profile_generator.model import color, color_chart, linalg, sigmoid, spline
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength
 

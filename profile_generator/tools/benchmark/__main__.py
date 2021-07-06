@@ -10,43 +10,31 @@ from profile_generator.unit import Point
 
 def run_benchmark():
     bench(
-        bench_find_contrast_gradient,
-        bench_find_curve_brightness,
-        bench_curve,
-        bench_curve_with_hl_protection,
-        bench_spline_fitting,
+        bench_find_contrast_gradient_1000,
+        bench_curve_with_hl_protection_32_256,
+        bench_spline_fitting_120,
     )
 
 
-def bench_find_curve_brightness():
-    for x in range(48, 128 + 1, 8):
-        for y in range(92, 164 + 1, 8):
-            grey = Point(x / 255, y / 255)
-            test_over(-20, 20, 100, lambda c: sigmoid.find_curve_brightness(grey, c))
-
-
-def bench_find_contrast_gradient():
+def bench_find_contrast_gradient_1000():
     test_over(0.1, 10, 1000, sigmoid.find_contrast_gradient)
 
 
-def bench_curve():
-    for b in test_range(-10, 10, 20):
-        curve = sigmoid.curve(b, 12)
-        for x in test_range(0, 1, 50):
-            curve(x)
+def bench_curve_with_hl_protection_32_256():
+    for x in test_range(48, 104, 8):
+        for y in test_range(100, 130, 4):
+            middle = Point(x / 255, y / 255)
+            curve = sigmoid.curve(middle, 12, 2)
+            for x in test_range(0, 1, 256):
+                curve(x)
 
 
-def bench_curve_with_hl_protection():
-    for b in test_range(-10, 10, 20):
-        curve = sigmoid.curve_with_hl_protection(b, 12)
-        for x in test_range(0, 1, 50):
-            curve(x)
-
-
-def bench_spline_fitting():
-    for b in test_range(1, 3, 8):
-        for c in test_range(2, 12, 8):
-            spline.fit(sigmoid.curve(b, c))
+def bench_spline_fitting_120():
+    for x in test_range(48, 104, 5):
+        for y in test_range(100, 130, 3):
+            middle = Point(x / 255, y / 255)
+            for c in test_range(2, 12, 8):
+                spline.fit(sigmoid.curve(middle, c))
 
 
 def test_over(start, stop, step, fn):
@@ -75,7 +63,7 @@ def get_name(fn):
 
 def measure(fn):
     print("Benchmarking " + get_name(fn))
-    return Timer(fn).timeit(3)
+    return Timer(fn).timeit(1)
 
 
 if __name__ == "__main__":

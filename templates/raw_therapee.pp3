@@ -108,9 +108,9 @@ LCurve=0;
 aCurve=0;
 bCurve=0;
 ccCurve=0;
-chCurve=0;
-lhCurve=0;
-hhCurve=0;
+chCurve={ChCurve}
+lhCurve={LhCurve}
+hhCurve={HhCurve}
 LcCurve=0;
 ClCurve=0;
 
@@ -157,9 +157,9 @@ Uniformity=5
 
 [White Balance]
 Enabled=true
-Setting={WB_Setting}
-Temperature={WB_Temperature}
-Green={WB_Green}
+Setting={WBSetting}
+Temperature={WBTemperature}
+Green={WBGreen}
 Equal=1
 TemperatureBias=0
 

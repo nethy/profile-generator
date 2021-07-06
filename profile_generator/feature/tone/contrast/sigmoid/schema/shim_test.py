@@ -4,8 +4,8 @@ from .shim import Point, get_parameters, marshal_curve
 
 _DEFAULT_GAMMA = 1.0
 _DEFAULT_HLP = 1.0
-_DEFAULT_GREY_X = 90 / 255
-_DEFAULT_GREY_Y = 365 / 3 / 255
+_DEFAULT_GREY_X = 0.343895
+_DEFAULT_GREY_Y = 0.466327
 
 
 class ShimTest(TestCase):
@@ -19,14 +19,14 @@ class ShimTest(TestCase):
 
     def test_get_parameters_neutral5(self) -> None:
         grey, _, _, _ = get_parameters({"neutral5": [87, 87, 87]})
-        self.assertEqual(grey, Point(87 / 255, _DEFAULT_GREY_Y))
+        self.assertEqual(grey, Point(0.332391, _DEFAULT_GREY_Y))
 
     def test_get_parameters_exposure_compensation(self) -> None:
         grey, _, _, _ = get_parameters({"exposure_compensation": -1})
-        self.assertEqual(grey, Point(_DEFAULT_GREY_X, 0.343643))
+        self.assertEqual(grey, Point(_DEFAULT_GREY_X, 0.335554))
 
         grey, _, _, _ = get_parameters({"exposure_compensation": 1})
-        self.assertEqual(grey, Point(_DEFAULT_GREY_X, 0.655301))
+        self.assertEqual(grey, Point(_DEFAULT_GREY_X, 0.640888))
 
     def test_get_parameters_gamma(self) -> None:
         _, gamma, _, _ = get_parameters({"gamma": 2.0})
