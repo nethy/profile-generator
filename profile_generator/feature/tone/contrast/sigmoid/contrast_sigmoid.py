@@ -1,10 +1,12 @@
 from collections.abc import Sequence
+from functools import cache
 
 from profile_generator.model import spline
 from profile_generator.model.sigmoid import Curve, curve
 from profile_generator.unit import Point
 
 
+@cache
 def calculate(
     middle: Point,
     gamma: float,

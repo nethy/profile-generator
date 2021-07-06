@@ -1,8 +1,5 @@
-import concurrent.futures
 import logging
 import sys
-from collections.abc import Callable, Mapping
-from typing import Any
 
 from profile_generator import configuration, generator, integration, log
 from profile_generator.generator import (
@@ -44,20 +41,11 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
             cfg_file_name, integration.SCHEMA
         )
         cfg = configuration.create_from_template(cfg_template)
-        with concurrent.futures.ThreadPoolExecutor() as thread_pool:
-            creators = [
-                thread_pool.submit(
-                    _create_profile_content,
-                    name,
-                    template,
-                    body,
-                    integration.CONFIGURATION_SCHEMA.process,
-                    console_logger,
-                )
-                for name, body in cfg.items()
-            ]
-            for creator in concurrent.futures.as_completed(creators):
-                _persist_profile(*creator.result(), output_dir, console_logger)
+        for name, body in cfg.items():
+            content = generator.create_profile_content(
+                template, body, integration.CONFIGURATION_SCHEMA.process
+            )
+            _persist_profile(name, content, output_dir)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError as exc:
@@ -65,20 +53,8 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         logger.error(exc.errors)
 
 
-def _create_profile_content(
-    name: str,
-    template: str,
-    cfg: Mapping[str, Any],
-    marshall: Callable[[Any], Mapping[str, str]],
-    logger: logging.Logger,
-) -> tuple[str, str]:
-    logger.info("Creating profile: %s", name)
-    return generator.create_profile_content(name, template, cfg, marshall)
-
-
-def _persist_profile(
-    name: str, content: str, output_dir: str, logger: logging.Logger
-) -> None:
+def _persist_profile(name: str, content: str, output_dir: str) -> None:
+    logger = log.get_console_logger()
     try:
         generator.persist_profile(name, content, output_dir)
         logger.info("Profile has been created: %s", name)

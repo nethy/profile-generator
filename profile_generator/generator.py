@@ -85,14 +85,12 @@ class ProfileWriteError(Exception):
 
 
 def create_profile_content(
-    name: str,
     template: str,
     cfg: Mapping[str, Any],
     marshall: Callable[[Any], Mapping[str, str]],
-) -> tuple[str, str]:
+) -> str:
     template_args = marshall(cfg)
-    output = template.format(**template_args)
-    return (name, output)
+    return template.format(**template_args)
 
 
 def persist_profile(
