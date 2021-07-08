@@ -1,3 +1,4 @@
+from .composite_process import composite_process
 from .list_schema import InvalidListError, list_of
 from .map_schema import map_of
 from .object_schema import InvalidObjectError, object_of

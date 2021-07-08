@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from typing import Any
 
-from profile_generator.schema import object_of, range_of
+from profile_generator.schema import composite_process, object_of, range_of
 
 from .hsl import schema as hsl
 from .white_balance import schema as white_balance
@@ -11,13 +11,7 @@ _LAB_CHROMACITY = "LabChromacity"
 _LAB_SKIN_PROTECTION = "LabRASTProtection"
 
 
-_DEFAULT = {
-    _LAB_ENABLED: "false",
-    _LAB_CHROMACITY: "0",
-    _LAB_SKIN_PROTECTION: "0",
-    **white_balance.DEFAULT,
-    **hsl.DEFAULT,
-}
+_DEFAULT = {_LAB_ENABLED: "false", _LAB_CHROMACITY: "0", _LAB_SKIN_PROTECTION: "0"}
 
 _DEFAULT_VIBRANCE = 0
 _DEFAULT_SKIN_PROTECTION = 0
@@ -26,9 +20,7 @@ _DEFAULT_SKIN_PROTECTION = 0
 def _process(data: Any) -> Mapping[str, str]:
     vibrance = _get_vibrance(data)
     skin_protection = _get_skin_protection(data)
-    wb_result = white_balance.process(data)
-    hsl_result = hsl.process(data.get("hsl", {}))
-    return _DEFAULT | vibrance | skin_protection | wb_result | hsl_result
+    return _DEFAULT | vibrance | skin_protection
 
 
 def _get_vibrance(data: Any) -> Mapping[str, str]:
@@ -49,5 +41,7 @@ SCHEMA = object_of(
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,
     },
-    _process,
+    composite_process(
+        _process, {"white_balance": white_balance.process, "hsl": hsl.process}
+    ),
 )

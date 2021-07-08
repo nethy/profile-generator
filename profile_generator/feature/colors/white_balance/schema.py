@@ -21,9 +21,8 @@ SCHEMA = object_of({"temperature": range_of(1500, 60000), "tint": range_of(0.02,
 
 
 def process(data: Any) -> Mapping[str, str]:
-    white_balance = data.get("white_balance", {})
-    temperature = white_balance.get("temperature", _DEFAULT_WB_TEMP)
-    tint = white_balance.get("tint", _DEFAULT_WB_TINT)
+    temperature = data.get("temperature", _DEFAULT_WB_TEMP)
+    tint = data.get("tint", _DEFAULT_WB_TINT)
     result = {}
     if temperature != _DEFAULT_WB_TEMP:
         result[_WB_TEMPERATURE] = str(temperature)
@@ -34,4 +33,4 @@ def process(data: Any) -> Mapping[str, str]:
     if len(result) > 0:
         result[_WB_SETTING] = raw_therapee.WbSetting.CUSTOM
 
-    return result
+    return DEFAULT | result
