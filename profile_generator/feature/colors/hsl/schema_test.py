@@ -6,7 +6,7 @@ from profile_generator.schema.type_schema import InvalidTypeError
 
 from .schema import _STEPS, SCHEMA, process
 
-_DEFAULT = {
+DEFAULT = {
     "HhCurve": "0;",
     "ChCurve": "0;",
     "LhCurve": "0;",
@@ -16,9 +16,6 @@ _DEFAULT = {
 class SchemaTest(TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
-
-    def test_validate_empty_config(self) -> None:
-        self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
@@ -99,9 +96,6 @@ class SchemaTest(TestCase):
             ),
         )
 
-    def test_process_defaults(self) -> None:
-        self.assertEqual(process({}), _DEFAULT)
-
     def test_process_hue(self) -> None:
         data = {
             "hue": {
@@ -115,7 +109,7 @@ class SchemaTest(TestCase):
         self.assertEqual(
             process(data),
             {
-                **_DEFAULT,
+                **DEFAULT,
                 "LabEnabled": "true",
                 "HhCurve": "1;0.140000;0.142857;0;0;"
                 + "0.339744;0.857143;0;0;"
@@ -136,7 +130,7 @@ class SchemaTest(TestCase):
         self.assertEqual(
             process(data),
             {
-                **_DEFAULT,
+                **DEFAULT,
                 "LabEnabled": "true",
                 "ChCurve": "1;0.140000;0.500000;0;0;"
                 + "0.339744;0.500000;0;0;"
@@ -157,7 +151,7 @@ class SchemaTest(TestCase):
         self.assertEqual(
             process(data),
             {
-                **_DEFAULT,
+                **DEFAULT,
                 "LabEnabled": "true",
                 "LhCurve": "1;0.140000;0.500000;0;0;"
                 + "0.339744;0.500000;0;0;"

@@ -26,7 +26,7 @@ def fit(fn: Callable[[float], float]) -> Sequence[Point]:
 def _find_max_diff(
     references: list[Point], spline: Callable[[float], float]
 ) -> tuple[float, int]:
-    return max(((abs(y - spline(x)), i) for i, (x, y) in enumerate(references)))
+    return max((abs(y - spline(x)), i) for i, (x, y) in enumerate(references))
 
 
 def interpolate(points: Sequence[Point]) -> Callable[[float], float]:

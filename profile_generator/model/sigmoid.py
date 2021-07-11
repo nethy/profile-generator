@@ -1,6 +1,5 @@
 import math
 from collections.abc import Callable
-from functools import cache
 
 from profile_generator.unit import Line, Point
 from profile_generator.util.search import _jump_search
@@ -55,7 +54,6 @@ def contrast_gradient(c: float) -> float:
         return 1 / gradient
 
 
-@cache
 def find_contrast_gradient(gradient: float) -> float:
     return _jump_search(-100, 100, contrast_gradient, gradient)
 

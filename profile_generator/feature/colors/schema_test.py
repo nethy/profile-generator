@@ -6,18 +6,16 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
+from .hsl import schema_test as hsl_schema_test
 from .schema import SCHEMA
+from .white_balance import schema_test as wb_schema_test
 
 _DEFAULT = {
     "LabEnabled": "false",
     "LabChromacity": "0",
     "LabRASTProtection": "0",
-    "WBSetting": "Camera",
-    "WBTemperature": "6504",
-    "WBGreen": "1",
-    "HhCurve": "0;",
-    "ChCurve": "0;",
-    "LhCurve": "0;",
+    **wb_schema_test.DEFAULT,
+    **hsl_schema_test.DEFAULT,
 }
 
 
@@ -41,30 +39,6 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"skin_tone_protection": False},
             InvalidObjectError({"skin_tone_protection": InvalidRangeError(0, 100)}),
-        )
-
-    def test_validate_invalid_wb_temperature(self) -> None:
-        self.validator.assert_error(
-            {"white_balance": {"temperature": False}},
-            InvalidObjectError(
-                {
-                    "white_balance": InvalidObjectError(
-                        {"temperature": InvalidRangeError(1500, 60000)}
-                    )
-                }
-            ),
-        )
-
-    def test_validate_invalid_wb_tint(self) -> None:
-        self.validator.assert_error(
-            {"white_balance": {"tint": False}},
-            InvalidObjectError(
-                {
-                    "white_balance": InvalidObjectError(
-                        {"tint": InvalidRangeError(0.02, 10.0)}
-                    )
-                }
-            ),
         )
 
     def test_process_defaults(self) -> None:
@@ -92,16 +66,4 @@ class SchemaTest(TestCase):
     def test_process_skin_tone_protection(self) -> None:
         self.validator.assert_process(
             {"skin_tone_protection": 50}, {**_DEFAULT, "LabRASTProtection": "50"}
-        )
-
-    def test_process_wb_temperature(self) -> None:
-        self.validator.assert_process(
-            {"white_balance": {"temperature": 5500}},
-            {**_DEFAULT, "WBSetting": "Custom", "WBTemperature": "5500"},
-        )
-
-    def test_process_wb_tint(self) -> None:
-        self.validator.assert_process(
-            {"white_balance": {"tint": 0.880}},
-            {**_DEFAULT, "WBSetting": "Custom", "WBGreen": "0.88"},
         )
