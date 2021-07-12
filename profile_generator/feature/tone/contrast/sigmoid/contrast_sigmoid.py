@@ -2,7 +2,7 @@ from collections.abc import Sequence
 from functools import cache
 
 from profile_generator.model import spline
-from profile_generator.model.sigmoid import Curve, curve
+from profile_generator.model.sigmoid import Curve, curve, curve_sqrt
 from profile_generator.unit import Point
 
 
@@ -14,7 +14,10 @@ def calculate(
     offsets: tuple[float, float] = (0.0, 1.0),
 ) -> Sequence[Point]:
     gradient = _corrigate_gamma(gamma, offsets)
-    _curve = _apply_offsets(curve(middle, gradient, highlight_protection), offsets)
+    _curve = _apply_offsets(
+        curve_sqrt(middle, gradient, 1.0, 1 / highlight_protection),
+        offsets,
+    )
     return [Point(x, y) for x, y in spline.fit(_curve)]
 
 
