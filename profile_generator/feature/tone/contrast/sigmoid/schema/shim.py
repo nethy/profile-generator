@@ -11,19 +11,19 @@ _DEFAULT_GREY = [90.0, 90.0, 90.0]
 _REFERENCE_NEUTRAL5 = [122.0, 122.0, 121.0]
 _DEFAULT_EV_COMP = 0
 _DEFAULT_GAMMA = 1.0
-_DEFAULT_HLP = 1.0
+_DEFAULT_GAIN = 1.0
 
 _TEMPLATE_FIELD = "Curve"
 
 
 def get_parameters(
     configuration: Mapping[str, Any]
-) -> tuple[Point, float, float, tuple[float, float]]:
+) -> tuple[Point, float, tuple[float, float], tuple[float, float]]:
     grey = _get_grey(configuration)
     gamma = _get_gamma(configuration)
-    hlp = _get_highlight_protection(configuration)
+    gain = _get_gain(configuration)
     offsets = _get_offsets(configuration)
-    return (grey, gamma, hlp, offsets)
+    return (grey, gamma, gain, offsets)
 
 
 def _get_grey(configuration: Mapping[str, Any]) -> Point:
@@ -49,8 +49,11 @@ def _get_gamma(configuration: Mapping[str, Any]) -> float:
     return configuration.get("gamma", _DEFAULT_GAMMA)
 
 
-def _get_highlight_protection(configuration: Mapping[str, Any]) -> float:
-    return configuration.get("highlight_protection", _DEFAULT_HLP)
+def _get_gain(configuration: Mapping[str, Any]) -> tuple[float, float]:
+    gain = configuration.get("gain", {})
+    shadow = gain.get("shadow", _DEFAULT_GAIN)
+    highlight = gain.get("highlight", _DEFAULT_GAIN)
+    return (shadow, highlight)
 
 
 def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:

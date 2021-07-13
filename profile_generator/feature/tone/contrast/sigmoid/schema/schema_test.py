@@ -25,7 +25,7 @@ class SchemaTest(unittest.TestCase):
                 "neutral5": [87, 87, 87],
                 "exposure_compensation": -1.0,
                 "gamma": 1.7,
-                "highlight_protection": 1.8,
+                "gain": {"shadow": 1.5, "highlight": 1.5},
                 "matte_effect": True,
             }
         )
@@ -55,10 +55,20 @@ class SchemaTest(unittest.TestCase):
             InvalidObjectError({"gamma": InvalidRangeError(1.0, 5.0)}),
         )
 
-    def test_validate_invalid_hl_protect(self) -> None:
+    def test_validate_invalid_gain_shadow(self) -> None:
         self.validator.assert_error(
-            {"highlight_protection": False},
-            InvalidObjectError({"highlight_protection": InvalidRangeError(1.0, 4.0)}),
+            {"gain": {"shadow": False}},
+            InvalidObjectError(
+                {"gain": InvalidObjectError({"shadow": InvalidRangeError(1.0, 4.0)})}
+            ),
+        )
+
+    def test_validate_invalid_gain_highlight(self) -> None:
+        self.validator.assert_error(
+            {"gain": {"highlight": False}},
+            InvalidObjectError(
+                {"gain": InvalidObjectError({"highlight": InvalidRangeError(1.0, 4.0)})}
+            ),
         )
 
     def test_validate_invalid_matte_effect(self) -> None:

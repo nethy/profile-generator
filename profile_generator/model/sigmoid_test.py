@@ -80,8 +80,8 @@ class SigmoidTest(TestCase):
     def test_curve(self) -> None:
         _curve = curve(_GREY, 2)
 
-        self.assertAlmostEqual(0.1912693, _curve(0.2))
-        self.assertAlmostEqual(0.9582201, _curve(0.8))
+        self.assertAlmostEqual(0.1950690, _curve(0.2))
+        self.assertAlmostEqual(0.9561695, _curve(0.8))
 
     def test_curve_sqrt(self) -> None:
         _curve = curve_sqrt(_GREY, 2)
@@ -91,14 +91,20 @@ class SigmoidTest(TestCase):
 
     def test_curve_hl_protection(self) -> None:
         _curve = curve(_GREY, 2, 1.5)
-        self.assertAlmostEqual(0.1912693, _curve(0.2))
-        self.assertAlmostEqual(0.9229791, _curve(0.8))
+        self.assertAlmostEqual(0.1950690, _curve(0.2))
+        self.assertAlmostEqual(0.9158675, _curve(0.8))
 
-    def test_curve_sqrt_hl_protection(self) -> None:
-        _curve = curve_sqrt(_GREY, 2, 1.0, 1 / 1.5)
+    def test_curve_sqrt_shadow_gain(self) -> None:
+        _curve = curve_sqrt(_GREY, 2, 1.5, 1)
 
-        self.assertAlmostEqual(0.1783565, _curve(0.2))
-        self.assertAlmostEqual(0.9344908, _curve(0.8))
+        self.assertAlmostEqual(0.1710037, _curve(0.2))
+        self.assertAlmostEqual(0.9499429, _curve(0.8))
+
+    def test_curve_sqrt_highlight_gain(self) -> None:
+        _curve = curve_sqrt(_GREY, 2, 1.0, 1.5)
+
+        self.assertAlmostEqual(0.1999008, _curve(0.2))
+        self.assertAlmostEqual(0.9680550, _curve(0.8))
 
     def test_find_contrast_gradient(self) -> None:
         slope = contrast_gradient(8) / (235 / 255 - 16 / 255)

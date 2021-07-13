@@ -3,18 +3,18 @@ from unittest import TestCase
 from .shim import Point, get_parameters, marshal_curve
 
 _DEFAULT_GAMMA = 1.0
-_DEFAULT_HLP = 1.0
+_DEFAULT_GAIN = (1.0, 1.0)
 _DEFAULT_GREY_X = 0.343895
 _DEFAULT_GREY_Y = 0.466327
 
 
 class ShimTest(TestCase):
     def test_get_parameters_defaults(self) -> None:
-        grey, gamma, hlp, offsets = get_parameters({})
+        grey, gamma, gain, offsets = get_parameters({})
 
         self.assertEqual(grey, Point(_DEFAULT_GREY_X, _DEFAULT_GREY_Y))
         self.assertEqual(gamma, _DEFAULT_GAMMA)
-        self.assertEqual(hlp, _DEFAULT_HLP)
+        self.assertEqual(gain, _DEFAULT_GAIN)
         self.assertEqual(offsets, (0, 1))
 
     def test_get_parameters_neutral5(self) -> None:
@@ -32,9 +32,9 @@ class ShimTest(TestCase):
         _, gamma, _, _ = get_parameters({"gamma": 2.0})
         self.assertEqual(2.0, gamma)
 
-    def test_get_parameters_highlight_protection(self) -> None:
-        _, _, hlp, _ = get_parameters({"highlight_protection": 2.0})
-        self.assertEqual(2.0, hlp)
+    def test_get_parameters_gain(self) -> None:
+        _, _, gain, _ = get_parameters({"gain": {"shadow": 1.5, "highlight": 0.5}})
+        self.assertEqual(gain, (1.5, 0.5))
 
     def test_get_parameters_matte_effect(self) -> None:
         _, _, _, offsets = get_parameters({"matte_effect": True})

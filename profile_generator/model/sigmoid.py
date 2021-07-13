@@ -168,13 +168,13 @@ def tone_curve_sqrt(grey: Point, gradient: float) -> Curve:
 def curve_sqrt(
     middle: Point,
     gradient: float,
-    shadow_adjustment: float = 1.0,
-    highlight_adjustment: float = 1.0,
+    shadow_gain: float = 1.0,
+    highlight_gain: float = 1.0,
 ) -> Curve:
     _curve = tone_curve_sqrt(middle, gradient)
 
-    _shadow_curve = tone_curve_sqrt(middle, gradient * shadow_adjustment)
-    _highlight_curve = tone_curve_sqrt(middle, gradient * highlight_adjustment)
+    _shadow_curve = tone_curve_sqrt(middle, gradient * shadow_gain)
+    _highlight_curve = tone_curve_sqrt(middle, gradient * highlight_gain)
 
     def _merged_curve(x: float) -> float:
         if x < middle.x:
