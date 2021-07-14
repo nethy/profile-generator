@@ -17,14 +17,14 @@ def run_benchmark():
 
 
 def bench_find_contrast_gradient_1000():
-    test_over(0.1, 10, 1000, sigmoid.find_contrast_gradient)
+    test_over(0.1, 10, 1000, sigmoid.contrast_of_gradient_exp)
 
 
 def bench_curve_with_hl_protection_32_256():
     for x in test_range(48, 104, 8):
         for y in test_range(100, 130, 4):
             middle = Point(x / 255, y / 255)
-            curve = sigmoid.curve(middle, 12, 2)
+            curve = sigmoid.tone_curve_exp(middle, 2)
             for x in test_range(0, 1, 256):
                 curve(x)
 
@@ -33,8 +33,8 @@ def bench_spline_fitting_120():
     for x in test_range(48, 104, 5):
         for y in test_range(100, 130, 3):
             middle = Point(x / 255, y / 255)
-            for c in test_range(2, 12, 8):
-                spline.fit(sigmoid.curve(middle, c))
+            for c in test_range(1, 4, 8):
+                spline.fit(sigmoid.tone_curve_exp(middle, c))
 
 
 def test_over(start, stop, step, fn):

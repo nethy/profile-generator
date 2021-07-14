@@ -1,65 +1,31 @@
 from collections.abc import Mapping, Sequence
 from typing import Any
 
-from profile_generator.model.color import constants, rgb
-from profile_generator.model.color.space import SRGB
 from profile_generator.model.linalg import Vector
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point
 
-_DEFAULT_GREY = [90.0, 90.0, 90.0]
-_REFERENCE_NEUTRAL5 = [122.0, 122.0, 121.0]
-_DEFAULT_EV_COMP = 0
+_DEFAULT_NETRUAL5: Vector = [90, 90, 90]
+_DEFAULT_EV_COMP = 0.0
 _DEFAULT_GAMMA = 1.0
-_DEFAULT_GAIN = 1.0
 
 _TEMPLATE_FIELD = "Curve"
 
 
 def get_parameters(
     configuration: Mapping[str, Any]
-) -> tuple[Point, float, tuple[float, float], tuple[float, float]]:
-    grey = _get_grey(configuration)
-    gamma = _get_gamma(configuration)
-    gain = _get_gain(configuration)
-    offsets = _get_offsets(configuration)
-    return (grey, gamma, gain, offsets)
-
-
-def _get_grey(configuration: Mapping[str, Any]) -> Point:
-    grey = configuration.get("neutral5", _DEFAULT_GREY)
-    in_lum = _srgb_to_luminance(grey)
+) -> tuple[Vector, float, float, tuple[float, float]]:
+    netrual5 = configuration.get("neutral5", _DEFAULT_NETRUAL5)
     ev_comp = configuration.get("exposure_compensation", _DEFAULT_EV_COMP)
-    out_lum = _srgb_to_luminance(_REFERENCE_NEUTRAL5)
-    return _set_middle_grey(in_lum, out_lum, ev_comp)
-
-
-def _srgb_to_luminance(color: Vector) -> float:
-    color = [SRGB.inverse_gamma(x) for x in rgb.normalize(color)]
-    return rgb.luminance(color, SRGB)
-
-
-def _set_middle_grey(in_lum: float, out_lum: float, ev_comp: float) -> Point:
-    x = in_lum * constants.SRGB_MIDDLE_GREY_LUMINANCE / out_lum
-    y = constants.SRGB_MIDDLE_GREY_LUMINANCE * 2 ** ev_comp
-    return Point(SRGB.gamma(x), SRGB.gamma(y))
-
-
-def _get_gamma(configuration: Mapping[str, Any]) -> float:
-    return configuration.get("gamma", _DEFAULT_GAMMA)
-
-
-def _get_gain(configuration: Mapping[str, Any]) -> tuple[float, float]:
-    gain = configuration.get("gain", {})
-    shadow = gain.get("shadow", _DEFAULT_GAIN)
-    highlight = gain.get("highlight", _DEFAULT_GAIN)
-    return (shadow, highlight)
+    gamma = configuration.get("gamma", _DEFAULT_GAMMA)
+    offsets = _get_offsets(configuration)
+    return (netrual5, gamma, ev_comp, offsets)
 
 
 def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
     matte_effect = configuration.get("matte_effect", False)
     if matte_effect:
-        return (16 / 255, 235 / 255)
+        return (16 / 255, 1.0)
     else:
         return (0, 1)
 

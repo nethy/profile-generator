@@ -13,14 +13,13 @@ def _process(data: Any) -> Mapping[str, str]:
     return shim.marshal_curve(points)
 
 
-_GAIN_RANGE = range_of(1.0, 4.0)
+_MIDDLE_GREY_RGB = range_of(16.0, 240.0)
 
 SCHEMA = object_of(
     {
-        "neutral5": tuple_of(range_of(16, 240), range_of(16, 240), range_of(16, 240)),
+        "neutral5": tuple_of(_MIDDLE_GREY_RGB, _MIDDLE_GREY_RGB, _MIDDLE_GREY_RGB),
         "exposure_compensation": range_of(-2.0, 2.0),
         "gamma": range_of(1.0, 5.0),
-        "gain": object_of({"shadow": _GAIN_RANGE, "highlight": _GAIN_RANGE}),
         "matte_effect": type_of(bool),
     },
     _process,
