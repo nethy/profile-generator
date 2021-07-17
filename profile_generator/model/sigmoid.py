@@ -35,6 +35,56 @@ def gamma_of_inverse_sqrt(x: float, y: float) -> float:
     return ((x / y) ** 2 - 1) / (1 - x ** 2)
 
 
+def gamma_exp(g: float) -> Curve:
+    """
+    y = (e^(-ax)-1)/(e^(-a)-1)
+    """
+    if math.isclose(g, 0):
+        return lambda x: x
+    else:
+        return lambda x: (math.exp(-g * x) - 1) / (math.exp(-g) - 1)
+
+
+def gamma_gradient_exp(g: float) -> Curve:
+    """
+    y' = -a*e^(-ax)/(e^(-a)-1)
+    """
+    if math.isclose(g, 0):
+        return lambda x: 1
+    else:
+        return lambda x: (-g * math.exp(-g * x)) / (math.exp(-g) - 1)
+
+
+def gamma_of_exp(x: float, y: float) -> float:
+    return _jump_search(-100, 100, lambda g: gamma_exp(g)(x), y)
+
+
+def gamma_inverse_exp(g: float) -> Curve:
+    """
+    y = -ln(x(e^(-a)-1) + 1) / a
+    invert a to allow binary search
+    y = ln(x(e^a-1) + 1) / a
+    """
+    if math.isclose(g, 0):
+        return lambda x: x
+    else:
+        return lambda x: math.log(x * (math.exp(g) - 1) + 1) / g
+
+
+def gamma_gradient_inverse_exp(g: float) -> Curve:
+    """
+    y' = (1-e^a)/(a(e^a*(x-1)-x))
+    """
+    if math.isclose(g, 0):
+        return lambda x: 1
+    else:
+        return lambda x: (1 - math.exp(g)) / (g * (math.exp(g) * (x - 1) - x))
+
+
+def gamma_of_inverse_exp(x: float, y: float) -> float:
+    return _jump_search(-100, 100, lambda g: gamma_inverse_exp(g)(x), y)
+
+
 def contrast_curve_exp(c: float) -> Curve:
     """
     y = (1/(1+exp(-c(x-0.5)))-1/(1+exp(-c(-0.5)))) /
@@ -64,13 +114,13 @@ def contrast_of_gradient_exp(gradient: float) -> float:
 
 @cache
 def tone_curve_exp(grey: Point, gradient: float) -> Curve:
-    gamma_x = gamma_of_sqrt(grey.x, 0.5)
-    gamma_x_curve = gamma_sqrt(gamma_x)
-    gamma_x_gradient = gamma_gradient_sqrt(gamma_x)(grey.x)
+    gamma_x = gamma_of_exp(grey.x, 0.5)
+    gamma_x_curve = gamma_exp(gamma_x)
+    gamma_x_gradient = gamma_gradient_exp(gamma_x)(grey.x)
 
-    gamma_y = gamma_of_inverse_sqrt(0.5, grey.y)
-    gamma_y_curve = gamma_inverse_sqrt(gamma_y)
-    gamma_y_gradient = gamma_gradient_inverse_sqrt(gamma_y)(0.5)
+    gamma_y = gamma_of_inverse_exp(0.5, grey.y)
+    gamma_y_curve = gamma_inverse_exp(gamma_y)
+    gamma_y_gradient = gamma_gradient_inverse_exp(gamma_y)(0.5)
 
     contrast_gradient = max(1.0, gradient / gamma_x_gradient / gamma_y_gradient)
     contrast = contrast_of_gradient_exp(contrast_gradient)

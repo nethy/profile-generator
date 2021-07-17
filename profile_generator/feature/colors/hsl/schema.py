@@ -61,7 +61,7 @@ def process(data: Any) -> Mapping[str, str]:
     result: dict[str, str] = {}
     result |= _get_eq_curve(data, "hue", 0.5, _HH_CURVE)
     result |= _get_eq_curve(data, "saturation", 0.3, _CH_CURVE)
-    result |= _get_eq_curve(data, "luminance", 0.3, _LH_CURVE)
+    result |= _get_eq_curve(data, "luminance", 0.1, _LH_CURVE)
     if len(result) > 0:
         result[_LAB_ENABLED] = "true"
     return DEFAULT | result
