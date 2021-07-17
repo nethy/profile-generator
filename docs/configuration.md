@@ -189,7 +189,7 @@ Creates an S-cruve around the middle grey point with the given strength.
 | Value range   | 16 - 240                    |
 | Default value | [90, 90, 90]                |
 
-RGB value of the `Neutral5` patch of a color checker card.
+RGB value of the `Neutral50` patch of a color checker card.
 
 `exposure_compensation`
 |               |            |
