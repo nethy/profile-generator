@@ -1,10 +1,12 @@
 import math
 from collections.abc import Callable
+from typing import MutableMapping
 
 Function = Callable[[float], float]
+LUT = MutableMapping[float, float]
 
 
-def _jump_search(
+def jump_search(
     lower_bound: float, upper_bound: float, fn: Function, target: float
 ) -> float:
     left, right = lower_bound, upper_bound

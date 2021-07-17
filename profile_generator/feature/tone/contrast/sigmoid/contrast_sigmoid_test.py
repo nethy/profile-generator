@@ -2,9 +2,9 @@ from unittest import TestCase
 
 from .contrast_sigmoid import Point, calculate
 
-_GREY = Point(87 / 255, 119 / 255)
+_NEUTRAL5 = [87.0, 87.0, 87.0]
 _GAMMA = 2.5
-_HL_PROTECTION = 2.5
+_EV_COMP = 1.0
 _OFFSETS = (16 / 255, 235 / 255)
 
 
@@ -13,61 +13,45 @@ class ContrastSigmoid(TestCase):
         self.assertEqual(
             [
                 Point(x=0.000000, y=0.000000),
-                Point(x=0.082353, y=0.027076),
-                Point(x=0.207843, y=0.162525),
-                Point(x=0.286275, y=0.328911),
-                Point(x=0.396078, y=0.599328),
-                Point(x=0.552941, y=0.853619),
-                Point(x=0.654902, y=0.928806),
-                Point(x=0.772549, y=0.970894),
+                Point(x=0.078431, y=0.029364),
+                Point(x=0.200000, y=0.165243),
+                Point(x=0.278431, y=0.331873),
+                Point(x=0.388235, y=0.599825),
+                Point(x=0.545098, y=0.850898),
+                Point(x=0.647059, y=0.925872),
+                Point(x=0.768627, y=0.969580),
                 Point(x=1.000000, y=1.000000),
             ],
-            calculate(_GREY, _GAMMA),
+            calculate(_NEUTRAL5, _GAMMA),
         )
 
     def test_calculate_with_offests(self) -> None:
         self.assertEqual(
             [
                 Point(x=0.000000, y=0.062745),
-                Point(x=0.215686, y=0.188800),
-                Point(x=0.294118, y=0.346605),
-                Point(x=0.396078, y=0.594883),
-                Point(x=0.545098, y=0.817498),
-                Point(x=0.639216, y=0.873564),
-                Point(x=0.752941, y=0.903166),
+                Point(x=0.207843, y=0.190601),
+                Point(x=0.286275, y=0.348999),
+                Point(x=0.388235, y=0.595937),
+                Point(x=0.533333, y=0.812640),
+                Point(x=0.631373, y=0.871773),
+                Point(x=0.745098, y=0.901755),
                 Point(x=1.000000, y=0.921569),
             ],
-            calculate(_GREY, _GAMMA, offsets=_OFFSETS),
+            calculate(_NEUTRAL5, _GAMMA, offsets=_OFFSETS),
         )
 
-    def test_calculate_with_hl_protection(self) -> None:
+    def test_calculate_with_exposure_compensation(self) -> None:
         self.assertEqual(
             [
                 Point(x=0.000000, y=0.000000),
-                Point(x=0.078431, y=0.025030),
-                Point(x=0.196078, y=0.142906),
-                Point(x=0.290196, y=0.338481),
-                Point(x=0.372549, y=0.541737),
-                Point(x=0.498039, y=0.742227),
-                Point(x=0.611765, y=0.820896),
-                Point(x=0.741176, y=0.874187),
-                Point(x=0.898039, y=0.943932),
+                Point(x=0.066667, y=0.035833),
+                Point(x=0.160784, y=0.170723),
+                Point(x=0.321569, y=0.613199),
+                Point(x=0.392157, y=0.769165),
+                Point(x=0.470588, y=0.876280),
+                Point(x=0.580392, y=0.948718),
+                Point(x=0.709804, y=0.981536),
                 Point(x=1.000000, y=1.000000),
             ],
-            calculate(_GREY, _GAMMA, _HL_PROTECTION),
-        )
-
-    def test_calculate_with_hl_protection_and_offests(self) -> None:
-        self.assertEqual(
-            [
-                Point(x=0.000000, y=0.062745),
-                Point(x=0.207843, y=0.177049),
-                Point(x=0.290196, y=0.337271),
-                Point(x=0.380392, y=0.555261),
-                Point(x=0.498039, y=0.726663),
-                Point(x=0.607843, y=0.789019),
-                Point(x=0.729412, y=0.827931),
-                Point(x=1.000000, y=0.921569),
-            ],
-            calculate(_GREY, _GAMMA, _HL_PROTECTION, _OFFSETS),
+            calculate(_NEUTRAL5, _GAMMA, _EV_COMP),
         )
