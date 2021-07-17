@@ -3,7 +3,7 @@ from collections.abc import Callable
 from functools import cache
 
 from profile_generator.unit import Point
-from profile_generator.util.search import LUT, jump_search
+from profile_generator.util.search import jump_search
 
 Curve = Callable[[float], float]
 
@@ -55,12 +55,9 @@ def gamma_gradient_exp(g: float) -> Curve:
         return lambda x: (-g * math.exp(-g * x)) / (math.exp(-g) - 1)
 
 
-_gamma_of_exp_lut: LUT = {}
-
-
 @cache
 def gamma_of_exp(x: float, y: float) -> float:
-    return jump_search(-100, 100, lambda g: gamma_exp(g)(x), y, _gamma_of_exp_lut)
+    return jump_search(-100, 100, lambda g: gamma_exp(g)(x), y)
 
 
 def gamma_inverse_exp(g: float) -> Curve:
@@ -85,14 +82,9 @@ def gamma_gradient_inverse_exp(g: float) -> Curve:
         return lambda x: (1 - math.exp(g)) / (g * (math.exp(g) * (x - 1) - x))
 
 
-_gamma_of_inverse_exp_lut: LUT = {}
-
-
 @cache
 def gamma_of_inverse_exp(x: float, y: float) -> float:
-    return jump_search(
-        -100, 100, lambda g: gamma_inverse_exp(g)(x), y, _gamma_of_inverse_exp_lut
-    )
+    return jump_search(-100, 100, lambda g: gamma_inverse_exp(g)(x), y)
 
 
 def contrast_curve_exp(c: float) -> Curve:
@@ -114,17 +106,12 @@ def gradient_of_contrast_exp(c: float) -> float:
     return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
 
 
-_contrast_of_gradient_exp_lut: LUT = {}
-
-
 @cache
 def contrast_of_gradient_exp(gradient: float) -> float:
     if math.isclose(gradient, 1):
         return 0
     else:
-        return jump_search(
-            0, 100, gradient_of_contrast_exp, gradient, _contrast_of_gradient_exp_lut
-        )
+        return jump_search(0, 100, gradient_of_contrast_exp, gradient)
 
 
 @cache
