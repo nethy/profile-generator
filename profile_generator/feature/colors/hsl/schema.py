@@ -2,8 +2,6 @@ from collections.abc import Iterable, Mapping
 from typing import Any
 
 from profile_generator.feature.colors.white_balance.schema import DEFAULT
-from profile_generator.model.color import rgb
-from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of
 from profile_generator.unit import Point
@@ -39,21 +37,21 @@ SCHEMA = object_of(
 _BASE_VALUE = 0.5
 
 _COLORS = [
+    "red",
     "yellow",
     "green",
     "cyan",
     "blue",
     "magenta",
-    "red",
 ]
 
 HUES = {
-    "yellow": rgb.to_hsv(ColorChart.YELLOW)[0],
-    "green": rgb.to_hsv(ColorChart.GREEN)[0],
-    "cyan": rgb.to_hsv(ColorChart.CYAN)[0],
-    "blue": rgb.to_hsv(ColorChart.BLUE)[0],
-    "magenta": rgb.to_hsv(ColorChart.MAGENTA)[0],
-    "red": rgb.to_hsv(ColorChart.RED)[0],
+    "red": 0 / 360,
+    "yellow": 60 / 360,
+    "green": 120 / 360,
+    "cyan": 180 / 360,
+    "blue": 240 / 360,
+    "magenta": 300 / 360,
 }
 
 
