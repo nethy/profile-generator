@@ -63,7 +63,11 @@ def tone_curve_exp(grey: Point, gradient: float) -> Curve:
     )
     contrast = contrast_of_gradient_exp(contrast_gradient)
     _curve = contrast_curve_exp(contrast)
-    return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
+    weight = lambda x: max(0, min(0.25, (x - grey.x) / (1 - grey.x) / 2.828427124746))
+    return (
+        lambda x: (1 - weight(x)) * gamma_y_curve(_curve(gamma_x_curve(x)))
+        + weight(x) * x
+    )
 
 
 def contrast_curve_sqrt(c: float) -> Curve:
@@ -83,7 +87,7 @@ def contrast_curve_sqrt(c: float) -> Curve:
         )
 
 
-def contrast_of_gamma_sqrt(gamma: float) -> float:
+def contrast_of_gradient_sqrt(gamma: float) -> float:
     """
     y'= sqrt(0.25c+1)/(sqrt(c(x-0.5)^2+1)*(c(x^2-x+0.25)+1)), x = 0.5
     """
@@ -109,6 +113,6 @@ def tone_curve_sqrt(grey: Point, gamma: float) -> Curve:
     gamma_y_gradient = gamma_gradient_inverse_sqrt(gamma_y)(0.5)
 
     contrast_gradient = max(1.0, gamma / math.sqrt(gamma_x_gradient * gamma_y_gradient))
-    contrast = contrast_of_gamma_sqrt(contrast_gradient)
+    contrast = contrast_of_gradient_sqrt(contrast_gradient)
     _curve = contrast_curve_sqrt(contrast)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))

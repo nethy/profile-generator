@@ -2,8 +2,8 @@ from unittest import TestCase
 
 from .sigmoid import (
     Point,
-    contrast_of_gamma_sqrt,
     contrast_of_gradient_exp,
+    contrast_of_gradient_sqrt,
     gradient_of_contrast_exp,
     tone_curve_exp,
     tone_curve_sqrt,
@@ -36,4 +36,4 @@ class SigmoidTest(TestCase):
         self.assertAlmostEqual(9.4966168, contrast_of_gradient_exp(slope))
 
     def test_contrast_of_gradient_sqrt(self) -> None:
-        self.assertAlmostEqual(12, contrast_of_gamma_sqrt(2))
+        self.assertAlmostEqual(12, contrast_of_gradient_sqrt(2))
