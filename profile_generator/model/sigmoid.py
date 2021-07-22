@@ -1,4 +1,5 @@
 import math
+from enum import Enum, auto
 from functools import cache
 
 from profile_generator.unit import Point
@@ -6,13 +7,19 @@ from profile_generator.util.search import jump_search
 
 from .gamma import (
     Curve,
+    gamma_exp,
+    gamma_gradient_exp,
+    gamma_gradient_inverse_exp,
     gamma_gradient_inverse_linear,
     gamma_gradient_inverse_sqrt,
     gamma_gradient_linear,
     gamma_gradient_sqrt,
+    gamma_inverse_exp,
     gamma_inverse_linear,
     gamma_inverse_sqrt,
     gamma_linear,
+    gamma_of_exp,
+    gamma_of_inverse_exp,
     gamma_of_inverse_linear,
     gamma_of_inverse_sqrt,
     gamma_of_linear,
@@ -64,29 +71,7 @@ def tone_curve_exp(grey: Point, gradient: float) -> Curve:
     contrast = contrast_of_gradient_exp(contrast_gradient)
     _curve = contrast_curve_exp(contrast)
 
-    contrast_linear = contrast_of_gradient_linear(contrast_gradient)
-    _curve_linear = contrast_curve_linear(contrast_linear)
-
-    def _composite_curve(x: float) -> float:
-        if x < grey.x:
-            return gamma_y_curve(_curve(gamma_x_curve(x)))
-        else:
-            return (
-                gamma_y_curve(_curve(gamma_x_curve(x)))
-                + gamma_y_curve(_curve_linear(gamma_x_curve(x)))
-            ) / 2
-
-    return _composite_curve
-
-
-def contrast_of_gradient_linear(gradient: float) -> float:
-    return 2 * (gradient - 1)
-
-
-def contrast_curve_linear(c: float) -> Curve:
-    return lambda x: (
-        (c * (x - 0.5)) / (1 + c * abs(x - 0.5)) + (c / 2) / (1 + c / 2)
-    ) / (c / (1 + c / 2))
+    return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
 
 def contrast_curve_sqrt(c: float) -> Curve:
@@ -135,3 +120,64 @@ def tone_curve_sqrt(grey: Point, gamma: float) -> Curve:
     contrast = contrast_of_gradient_sqrt(contrast_gradient)
     _curve = contrast_curve_sqrt(contrast)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
+
+
+def contrast_of_gradient_abs(gradient: float) -> float:
+    return 2 * (gradient - 1)
+
+
+def contrast_curve_abs(c: float) -> Curve:
+    """
+    y = ((c(x-0.5)/(1+c|x-0.5|))/(c(-0.5)/(1+c|-0.5|)))/
+        ((c(1-0.5)/(1+c|1-0.5|))/(c(-0.5)/(1+c|-0.5|)))
+    """
+    return lambda x: (
+        (c * (x - 0.5)) / (1 + c * abs(x - 0.5)) + (c / 2) / (1 + c / 2)
+    ) / (c / (1 + c / 2))
+
+
+class HighlighTone(Enum):
+    NORMAL = auto()
+    INCREASED = auto()
+    DECREASED = auto()
+
+
+@cache
+def tone_curve_hybrid(
+    grey: Point, gradient: float, hl_tone: HighlighTone = HighlighTone.NORMAL
+) -> Curve:
+    gamma_x = gamma_of_exp(grey.x, 0.5)
+    gamma_x_curve = gamma_exp(gamma_x)
+    gamma_x_gradient = gamma_gradient_exp(gamma_x)(grey.x)
+
+    gamma_y = gamma_of_inverse_exp(0.5, grey.y)
+    gamma_y_curve = gamma_inverse_exp(gamma_y)
+    gamma_y_gradient = gamma_gradient_inverse_exp(gamma_y)(0.5)
+
+    contrast_gradient = max(
+        1.0, gradient / math.sqrt(gamma_x_gradient * gamma_y_gradient)
+    )
+    contrast = contrast_of_gradient_exp(contrast_gradient)
+    _curve = contrast_curve_exp(contrast)
+
+    contrast_abs = contrast_of_gradient_abs(contrast_gradient)
+    _curve_abs = contrast_curve_abs(contrast_abs)
+
+    if hl_tone is HighlighTone.NORMAL:
+        weight = 0.5
+    elif hl_tone is HighlighTone.INCREASED:
+        weight = 1
+    elif hl_tone is HighlighTone.DECREASED:
+        weight = 0
+    else:
+        raise ValueError("Unsupported highlight tone.")
+
+    def _compsite_curve(x: float) -> float:
+        if x < grey.x:
+            return gamma_y_curve(_curve(gamma_x_curve(x)))
+        else:
+            return weight * gamma_y_curve(_curve(gamma_x_curve(x))) + (
+                1 - weight
+            ) * gamma_y_curve(_curve_abs(gamma_x_curve(x)))
+
+    return _compsite_curve
