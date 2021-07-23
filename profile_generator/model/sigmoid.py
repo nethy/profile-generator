@@ -65,9 +65,7 @@ def tone_curve_exp(grey: Point, gradient: float) -> Curve:
     gamma_y_curve = gamma_inverse_linear(gamma_y)
     gamma_y_gradient = gamma_gradient_inverse_linear(gamma_y)(0.5)
 
-    contrast_gradient = max(
-        1.0, gradient / math.sqrt(gamma_x_gradient * gamma_y_gradient)
-    )
+    contrast_gradient = _correct_gradient(gradient, gamma_x_gradient * gamma_y_gradient)
     contrast = contrast_of_gradient_exp(contrast_gradient)
     _curve = contrast_curve_exp(contrast)
 
@@ -99,7 +97,7 @@ def contrast_of_gradient_sqrt(gamma: float) -> float:
 
 
 @cache
-def tone_curve_sqrt(grey: Point, gamma: float) -> Curve:
+def tone_curve_sqrt(grey: Point, gradient: float) -> Curve:
     """
     h(f(g(grey.x)))' = h'(f(g(grey.x))) * f(g(grey.x))' =
                        h'(f(g(grey.x))) * f'(g(grey.x)) * g'(grey.x)
@@ -116,7 +114,7 @@ def tone_curve_sqrt(grey: Point, gamma: float) -> Curve:
     gamma_y_curve = gamma_inverse_sqrt(gamma_y)
     gamma_y_gradient = gamma_gradient_inverse_sqrt(gamma_y)(0.5)
 
-    contrast_gradient = max(1.0, gamma / math.sqrt(gamma_x_gradient * gamma_y_gradient))
+    contrast_gradient = _correct_gradient(gradient, gamma_x_gradient * gamma_y_gradient)
     contrast = contrast_of_gradient_sqrt(contrast_gradient)
     _curve = contrast_curve_sqrt(contrast)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
@@ -131,9 +129,12 @@ def contrast_curve_abs(c: float) -> Curve:
     y = ((c(x-0.5)/(1+c|x-0.5|))/(c(-0.5)/(1+c|-0.5|)))/
         ((c(1-0.5)/(1+c|1-0.5|))/(c(-0.5)/(1+c|-0.5|)))
     """
-    return lambda x: (
-        (c * (x - 0.5)) / (1 + c * abs(x - 0.5)) + (c / 2) / (1 + c / 2)
-    ) / (c / (1 + c / 2))
+    if math.isclose(c, 0):
+        return lambda x: x
+    else:
+        return lambda x: (
+            (c * (x - 0.5)) / (1 + c * abs(x - 0.5)) + (c / 2) / (1 + c / 2)
+        ) / (c / (1 + c / 2))
 
 
 class HighlighTone(Enum):
@@ -154,14 +155,10 @@ def tone_curve_hybrid(
     gamma_y_curve = gamma_inverse_exp(gamma_y)
     gamma_y_gradient = gamma_gradient_inverse_exp(gamma_y)(0.5)
 
-    contrast_gradient = max(
-        1.0, gradient / math.sqrt(gamma_x_gradient * gamma_y_gradient)
-    )
-    contrast = contrast_of_gradient_exp(contrast_gradient)
-    _curve = contrast_curve_exp(contrast)
+    contrast_gradient = _correct_gradient(gradient, gamma_x_gradient * gamma_y_gradient)
 
-    contrast_abs = contrast_of_gradient_abs(contrast_gradient)
-    _curve_abs = contrast_curve_abs(contrast_abs)
+    _curve = contrast_curve_exp(contrast_of_gradient_exp(contrast_gradient))
+    _curve_abs = contrast_curve_abs(contrast_of_gradient_abs(contrast_gradient))
 
     if hl_tone is HighlighTone.NORMAL:
         weight = 0.5
@@ -181,3 +178,7 @@ def tone_curve_hybrid(
             ) * gamma_y_curve(_curve_abs(gamma_x_curve(x)))
 
     return _compsite_curve
+
+
+def _correct_gradient(gradient: float, gamma_gradient: float) -> float:
+    return max(1.0, gradient / math.sqrt(gamma_gradient))

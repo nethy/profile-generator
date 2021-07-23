@@ -9,6 +9,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _NEUTRAL5,
     _OFFSETS,
 )
+from profile_generator.model.sigmoid import HighlighTone
 from profile_generator.unit import Point, Strength
 
 
@@ -32,8 +33,22 @@ if __name__ == "__main__":
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
-        _EV_COMP,
+        ev_comp=_EV_COMP,
     )
+    print_calculation(
+        "test_calculate_with_hl_tone_increased",
+        contrast_sigmoid.calculate,
+        _NEUTRAL5,
+        _GAMMA,
+        HighlighTone.INCREASED,
+    ),
+    print_calculation(
+        "test_calculate_with_hl_tone_decreased",
+        contrast_sigmoid.calculate,
+        _NEUTRAL5,
+        _GAMMA,
+        HighlighTone.DECREASED,
+    ),
     print_calculation(
         "test_calculate_when_strength_is_less_than_1",
         contrast_bezier.calculate,
