@@ -1,13 +1,13 @@
 from unittest import TestCase
 
-from profile_generator.model.sigmoid import HighlighTone
+from profile_generator.unit.strength import Strength
 
 from .shim import Point, get_parameters, marshal_curve
 
 _DEFAULT_GAMMA = 1.0
 _DEFAULT_NEUTRAL5 = [90.0, 90.0, 90.0]
 _DEFAULT_EV_COMP = 0.0
-_DEFAULT_HL_TONE = HighlighTone.NORMAL
+_DEFAULT_HL_TONE = Strength(0)
 
 
 class ShimTest(TestCase):
@@ -29,14 +29,14 @@ class ShimTest(TestCase):
         self.assertEqual(gamma, 2.0)
 
     def test_get_parameters_hl_tone(self) -> None:
-        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": "NORMAL"})
-        self.assertEqual(hl_tone, HighlighTone.NORMAL)
+        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": 0})
+        self.assertEqual(hl_tone, Strength(0))
 
-        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": "INCREASED"})
-        self.assertEqual(hl_tone, HighlighTone.INCREASED)
+        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": 1})
+        self.assertEqual(hl_tone, Strength(1))
 
-        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": "DECREASED"})
-        self.assertEqual(hl_tone, HighlighTone.DECREASED)
+        _, _, hl_tone, _, _ = get_parameters({"highlight_tone": -1})
+        self.assertEqual(hl_tone, Strength(-1))
 
     def test_get_parameters_exposure_compensation(self) -> None:
         _, _, _, ev_comp, _ = get_parameters({"exposure_compensation": -1})

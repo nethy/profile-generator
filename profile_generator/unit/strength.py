@@ -26,3 +26,6 @@ class Strength:
             return NotImplemented
 
         return equals(self.value, other.value)
+
+    def __hash__(self) -> int:
+        return hash(self._value)

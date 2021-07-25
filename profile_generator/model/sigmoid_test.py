@@ -1,7 +1,8 @@
 from unittest import TestCase
 
+from profile_generator.unit import Strength
+
 from .sigmoid import (
-    HighlighTone,
     Point,
     contrast_of_gradient_exp,
     contrast_of_gradient_sqrt,
@@ -50,11 +51,11 @@ class SigmoidTest(TestCase):
         self.assertAlmostEqual(_curve(0), 0)
         self.assertAlmostEqual(_curve(0.2), 0.1828921)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9451921)
+        self.assertAlmostEqual(_curve(0.8), 0.9450238)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_hybrid_increased_hl_tone(self) -> None:
-        _curve = tone_curve_hybrid(_GREY, 2, HighlighTone.INCREASED)
+        _curve = tone_curve_hybrid(_GREY, 2, Strength(1))
 
         self.assertAlmostEqual(_curve(0), 0)
         self.assertAlmostEqual(_curve(0.2), 0.1828921)
@@ -63,7 +64,7 @@ class SigmoidTest(TestCase):
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_hybrid_decreased_hl_tone(self) -> None:
-        _curve = tone_curve_hybrid(_GREY, 2, HighlighTone.DECREASED)
+        _curve = tone_curve_hybrid(_GREY, 2, Strength(-1))
 
         self.assertAlmostEqual(_curve(0), 0)
         self.assertAlmostEqual(_curve(0.2), 0.1828921)

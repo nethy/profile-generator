@@ -5,14 +5,14 @@ from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.linalg import Vector
-from profile_generator.model.sigmoid import Curve, HighlighTone, tone_curve_hybrid
-from profile_generator.unit import Point
+from profile_generator.model.sigmoid import Curve, tone_curve_hybrid
+from profile_generator.unit import Point, Strength
 
 
 def calculate(
     neutral5: Vector,
     gamma: float,
-    highlight_tone: HighlighTone = HighlighTone.NORMAL,
+    highlight_tone: Strength,
     ev_comp: float = 0.0,
     offsets: tuple[float, float] = (0.0, 1.0),
 ) -> Sequence[Point]:

@@ -1,8 +1,9 @@
 import math
-from enum import Enum, auto
 from functools import cache
+from typing import Optional
 
 from profile_generator.unit import Point
+from profile_generator.unit.strength import Strength
 from profile_generator.util.search import jump_search
 
 from .gamma import (
@@ -137,15 +138,9 @@ def contrast_curve_abs(c: float) -> Curve:
         ) / (c / (1 + c / 2))
 
 
-class HighlighTone(Enum):
-    NORMAL = auto()
-    INCREASED = auto()
-    DECREASED = auto()
-
-
 @cache
 def tone_curve_hybrid(
-    grey: Point, gradient: float, hl_tone: HighlighTone = HighlighTone.NORMAL
+    grey: Point, gradient: float, hl_tone: Optional[Strength] = None
 ) -> Curve:
     gamma_x = gamma_of_exp(grey.x, 0.5)
     gamma_x_curve = gamma_exp(gamma_x)
@@ -160,22 +155,14 @@ def tone_curve_hybrid(
     _curve = contrast_curve_exp(contrast_of_gradient_exp(contrast_gradient))
     _curve_abs = contrast_curve_abs(contrast_of_gradient_abs(contrast_gradient))
 
-    if hl_tone is HighlighTone.NORMAL:
-        weight = 0.5
-    elif hl_tone is HighlighTone.INCREASED:
-        weight = 1
-    elif hl_tone is HighlighTone.DECREASED:
-        weight = 0
-    else:
-        raise ValueError("Unsupported highlight tone.")
-
     def _compsite_curve(x: float) -> float:
+        weight = ((hl_tone or Strength()).value + 1) / 2
         if x < grey.x:
             return gamma_y_curve(_curve(gamma_x_curve(x)))
         else:
-            return weight * gamma_y_curve(_curve(gamma_x_curve(x))) + (
-                1 - weight
-            ) * gamma_y_curve(_curve_abs(gamma_x_curve(x)))
+            return gamma_y_curve(_curve(gamma_x_curve(x))) ** (weight) * gamma_y_curve(
+                _curve_abs(gamma_x_curve(x))
+            ) ** (1 - weight)
 
     return _compsite_curve
 

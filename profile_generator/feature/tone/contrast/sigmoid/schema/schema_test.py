@@ -2,7 +2,6 @@ import unittest
 
 from profile_generator.schema import (
     InvalidObjectError,
-    InvalidOptionError,
     InvalidRangeError,
     InvalidTypeError,
     SchemaValidator,
@@ -57,14 +56,8 @@ class SchemaTest(unittest.TestCase):
 
     def test_validate_invalid_highlight_tone(self) -> None:
         self.validator.assert_error(
-            {"highlight_tone": "INVALID"},
-            InvalidObjectError(
-                {
-                    "highlight_tone": InvalidOptionError(
-                        ("NORMAL", "INCREASED", "DECREASED")
-                    )
-                }
-            ),
+            {"highlight_tone": 1.1},
+            InvalidObjectError({"highlight_tone": InvalidRangeError(-1.0, 1.0)}),
         )
 
     def test_validate_invalid_matte_effect(self) -> None:
