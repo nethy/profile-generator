@@ -48,10 +48,16 @@ class SchemaTest(unittest.TestCase):
             InvalidObjectError({"exposure_compensation": InvalidRangeError(-2.0, 2.0)}),
         )
 
-    def test_validate_invalid_strength(self) -> None:
+    def test_validate_invalid_gamma(self) -> None:
         self.validator.assert_error(
             {"gamma": False},
             InvalidObjectError({"gamma": InvalidRangeError(1.0, 5.0)}),
+        )
+
+    def test_validate_invalid_highlight_tone(self) -> None:
+        self.validator.assert_error(
+            {"highlight_tone": 1.1},
+            InvalidObjectError({"highlight_tone": InvalidRangeError(-1.0, 1.0)}),
         )
 
     def test_validate_invalid_matte_effect(self) -> None:

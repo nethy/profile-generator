@@ -5,20 +5,21 @@ from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.linalg import Vector
-from profile_generator.model.sigmoid import Curve, tone_curve_exp
-from profile_generator.unit import Point
+from profile_generator.model.sigmoid import Curve, tone_curve_hybrid
+from profile_generator.unit import Point, Strength
 
 
 def calculate(
     neutral5: Vector,
     gamma: float,
+    highlight_tone: Strength,
     ev_comp: float = 0.0,
     offsets: tuple[float, float] = (0.0, 1.0),
 ) -> Sequence[Point]:
     middle_grey = _get_middle_grey(neutral5, ev_comp)
     gradient = _corrigate_gamma(gamma, offsets)
     _curve = _apply_offsets(
-        tone_curve_exp(middle_grey, gradient),
+        tone_curve_hybrid(middle_grey, gradient, highlight_tone),
         offsets,
     )
     return [Point(x, y) for x, y in spline.fit(_curve)]

@@ -191,15 +191,6 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 RGB value of the `Neutral50` patch of a color checker card.
 
-`exposure_compensation`
-|               |            |
-| ---           | ---        |
-| Type          | float      |
-| Value range   | -2.0 - 2.0 |
-| Default value | 0.0        |
-
-Middle grey adjustment via expsure values.
-
 `gamma`
 |               |             |
 | ---           | ---         |
@@ -209,6 +200,24 @@ Middle grey adjustment via expsure values.
 
 Amount of contrast. 1.0 will produce a linear tone curve.
 For portraits use 1.7-1.8, and landscapes around 2.0-2.2.
+
+`highlight_tone`
+|               |             |
+| ---           | ---         |
+| Type          | float       |
+| Value range   | -1.0 - 1.0  |
+| Default value | 0           |
+
+Increase or decrease hightights of the tone curve.
+
+`exposure_compensation`
+|               |            |
+| ---           | ---        |
+| Type          | float      |
+| Value range   | -2.0 - 2.0 |
+| Default value | 0.0        |
+
+Middle grey adjustment via expsure values.
 
 `matte_effect`
 |               |             |

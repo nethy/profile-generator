@@ -1,4 +1,5 @@
 import bisect
+import math
 from collections.abc import Callable, Sequence
 
 from profile_generator.model import linalg
@@ -106,7 +107,11 @@ def _boundaries(coefficients: Matrix, xs: Vector) -> None:
 def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
     y = 0.0
     for i in range(len(knots) - 1):
-        if knots[i] <= x <= knots[i + 1]:
+        if (
+            knots[i] < x < knots[i + 1]
+            or math.isclose(x, knots[i])
+            or math.isclose(x, knots[i + 1])
+        ):
             a, b, c, d = coefficients[i * 4 : i * 4 + 4]
             y = a * x ** 3 + b * x ** 2 + c * x + d
             break

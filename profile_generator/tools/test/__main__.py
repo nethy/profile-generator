@@ -6,6 +6,9 @@ from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _EV_COMP,
     _GAMMA,
+    _HL_TONE_DEFAULT,
+    _HL_TONE_MAX,
+    _HL_TONE_MIN,
     _NEUTRAL5,
     _OFFSETS,
 )
@@ -19,12 +22,33 @@ def print_calculation(name, fn, *args, **kwargs):
 
 
 if __name__ == "__main__":
-    print_calculation("test_calculate", contrast_sigmoid.calculate, _NEUTRAL5, _GAMMA)
+    print_calculation(
+        "test_calculate",
+        contrast_sigmoid.calculate,
+        _NEUTRAL5,
+        _GAMMA,
+        _HL_TONE_DEFAULT,
+    )
+    print_calculation(
+        "test_calculate_with_hl_tone_max",
+        contrast_sigmoid.calculate,
+        _NEUTRAL5,
+        _GAMMA,
+        _HL_TONE_MAX,
+    ),
+    print_calculation(
+        "test_calculate_with_hl_tone_min",
+        contrast_sigmoid.calculate,
+        _NEUTRAL5,
+        _GAMMA,
+        _HL_TONE_MIN,
+    ),
     print_calculation(
         "test_calculate_with_offests",
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
+        _HL_TONE_DEFAULT,
         offsets=_OFFSETS,
     )
     print_calculation(
@@ -32,7 +56,8 @@ if __name__ == "__main__":
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
-        _EV_COMP,
+        _HL_TONE_DEFAULT,
+        ev_comp=_EV_COMP,
     )
     print_calculation(
         "test_calculate_when_strength_is_less_than_1",
