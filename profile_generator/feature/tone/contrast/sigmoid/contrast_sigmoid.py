@@ -17,6 +17,7 @@ def calculate(
     offsets: tuple[float, float] = (0.0, 1.0),
 ) -> Sequence[Point]:
     middle_grey = _get_middle_grey(neutral5, ev_comp)
+    middle_grey = _corrigate_middle_grey(middle_grey, offsets)
     gradient = _corrigate_gamma(gamma, offsets)
     _curve = _apply_offsets(
         tone_curve_hybrid(middle_grey, gradient, highlight_tone),
@@ -36,6 +37,11 @@ def _get_middle_grey(neutral5: Vector, ev_comp: float) -> Point:
 def _srgb_to_luminance(color: Vector) -> float:
     color = [SRGB.inverse_gamma(x) for x in rgb.normalize(color)]
     return rgb.luminance(color, SRGB)
+
+
+def _corrigate_middle_grey(middle: Point, offsets: tuple[float, float]) -> Point:
+    shadow, highlight = offsets
+    return Point(middle.x, (middle.y - shadow) / (highlight - shadow))
 
 
 def _corrigate_gamma(gradient: float, offsets: tuple[float, float]) -> float:
