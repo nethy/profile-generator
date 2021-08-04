@@ -49,25 +49,25 @@ class SigmoidTest(TestCase):
         _curve = tone_curve_hybrid(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1828921)
+        self.assertAlmostEqual(_curve(0.2), 0.1829012)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9450238)
+        self.assertAlmostEqual(_curve(0.8), 0.9576714)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_hybrid_increased_hl_tone(self) -> None:
-        _curve = tone_curve_hybrid(_GREY, 2, Strength(1))
+        _curve = tone_curve_hybrid(_GREY, 2, Strength(0))
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1828921)
+        self.assertAlmostEqual(_curve(0.2), 0.1829012)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9630253)
+        self.assertAlmostEqual(_curve(0.8), 0.9449044)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_hybrid_decreased_hl_tone(self) -> None:
         _curve = tone_curve_hybrid(_GREY, 2, Strength(-1))
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1828921)
+        self.assertAlmostEqual(_curve(0.2), 0.1829012)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9273589)
+        self.assertAlmostEqual(_curve(0.8), 0.9323077)
         self.assertAlmostEqual(_curve(1), 1)

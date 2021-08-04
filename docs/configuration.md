@@ -206,7 +206,7 @@ For portraits use 1.7-1.8, and landscapes around 2.0-2.2.
 | ---           | ---         |
 | Type          | float       |
 | Value range   | -1.0 - 1.0  |
-| Default value | 0           |
+| Default value | 1.0         |
 
 Increase or decrease hightights of the tone curve.
 

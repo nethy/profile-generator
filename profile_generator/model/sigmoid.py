@@ -8,19 +8,13 @@ from profile_generator.util.search import jump_search
 
 from .gamma import (
     Curve,
-    gamma_exp,
-    gamma_gradient_exp,
-    gamma_gradient_inverse_exp,
     gamma_gradient_inverse_linear,
     gamma_gradient_inverse_sqrt,
     gamma_gradient_linear,
     gamma_gradient_sqrt,
-    gamma_inverse_exp,
     gamma_inverse_linear,
     gamma_inverse_sqrt,
     gamma_linear,
-    gamma_of_exp,
-    gamma_of_inverse_exp,
     gamma_of_inverse_linear,
     gamma_of_inverse_sqrt,
     gamma_of_linear,
@@ -140,31 +134,47 @@ def contrast_curve_abs(c: float) -> Curve:
 
 @cache
 def tone_curve_hybrid(
-    grey: Point, gradient: float, hl_tone: Optional[Strength] = None
+    grey: Point,
+    gradient: float,
+    hl_tone: Optional[Strength] = None,
+    sh_tone: Optional[Strength] = None,
 ) -> Curve:
-    gamma_x = gamma_of_exp(grey.x, 0.5)
-    gamma_x_curve = gamma_exp(gamma_x)
-    gamma_x_gradient = gamma_gradient_exp(gamma_x)(grey.x)
-
-    gamma_y = gamma_of_inverse_exp(0.5, grey.y)
-    gamma_y_curve = gamma_inverse_exp(gamma_y)
-    gamma_y_gradient = gamma_gradient_inverse_exp(gamma_y)(0.5)
+    gamma_x_curve, gamma_x_gradient = get_gamma_x(grey.x)
+    gamma_y_curve, gamma_y_gradient = get_gamma_y(grey.y)
 
     contrast_gradient = _correct_gradient(gradient, gamma_x_gradient * gamma_y_gradient)
 
-    _curve = contrast_curve_exp(contrast_of_gradient_exp(contrast_gradient))
+    _curve = contrast_curve_sqrt(contrast_of_gradient_sqrt(contrast_gradient))
     _curve_abs = contrast_curve_abs(contrast_of_gradient_abs(contrast_gradient))
 
+    hl_weight = ((hl_tone or Strength(1)).value + 1) / 2
+    sh_weight = ((sh_tone or Strength(1)).value + 1) / 2
+
     def _compsite_curve(x: float) -> float:
-        weight = ((hl_tone or Strength()).value + 1) / 2
-        if x < grey.x:
-            return gamma_y_curve(_curve(gamma_x_curve(x)))
+        if x <= grey.x:
+            return math.pow(
+                gamma_y_curve(_curve(gamma_x_curve(x))), sh_weight
+            ) * math.pow(gamma_y_curve(_curve_abs(gamma_x_curve(x))), 1 - sh_weight)
         else:
-            return gamma_y_curve(_curve(gamma_x_curve(x))) ** (weight) * gamma_y_curve(
-                _curve_abs(gamma_x_curve(x))
-            ) ** (1 - weight)
+            return math.pow(
+                gamma_y_curve(_curve(gamma_x_curve(x))), hl_weight
+            ) * math.pow(gamma_y_curve(_curve_abs(gamma_x_curve(x))), 1 - hl_weight)
 
     return _compsite_curve
+
+
+def get_gamma_x(x: float) -> tuple[Curve, float]:
+    gamma = gamma_of_sqrt(x, 0.5)
+    curve = gamma_sqrt(gamma)
+    gradient = gamma_gradient_sqrt(gamma)(x)
+    return (curve, gradient)
+
+
+def get_gamma_y(y: float) -> tuple[Curve, float]:
+    gamma = gamma_of_inverse_sqrt(0.5, y)
+    curve = gamma_inverse_sqrt(gamma)
+    gradient = gamma_gradient_inverse_sqrt(gamma)(0.5)
+    return (curve, gradient)
 
 
 def _correct_gradient(gradient: float, gamma_gradient: float) -> float:

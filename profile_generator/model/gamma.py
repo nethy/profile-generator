@@ -15,7 +15,7 @@ def gamma_linear(g: float) -> Curve:
 
 
 def gamma_gradient_linear(g: float) -> Curve:
-    return lambda x: (g + 1) / (g * x + 1) ** 2
+    return lambda x: (g + 1) / math.pow(g * x + 1, 2)
 
 
 def gamma_of_linear(x: float, y: float) -> float:
@@ -27,7 +27,7 @@ def gamma_inverse_linear(g: float) -> Curve:
 
 
 def gamma_gradient_inverse_linear(g: float) -> Curve:
-    return lambda x: (g + 1) / (1 - g * (x - 1)) ** 2
+    return lambda x: (g + 1) / math.pow(1 - g * (x - 1), 2)
 
 
 def gamma_of_inverse_linear(x: float, y: float) -> float:
@@ -65,27 +65,27 @@ def gamma_sqrt(g: float) -> Curve:
     """
     y = x/sqrt(x^2+1), as bounded y = (x*sqrt(g+1))/sqrt(gx^2+1)
     """
-    return lambda x: (x * math.sqrt(g + 1)) / math.sqrt(g * x ** 2 + 1)
+    return lambda x: (x * math.sqrt(g + 1)) / math.sqrt(g * math.pow(x, 2) + 1)
 
 
 def gamma_gradient_sqrt(g: float) -> Curve:
-    return lambda x: math.sqrt(g + 1) / math.pow(g * x ** 2 + 1, 3 / 2)
+    return lambda x: math.sqrt(g + 1) / math.pow(g * math.pow(x, 2) + 1, 3 / 2)
 
 
 def gamma_of_sqrt(x: float, y: float) -> float:
-    return ((y / x) ** 2 - 1) / (1 - y ** 2)
+    return (math.pow(y / x, 2) - 1) / (1 - math.pow(y, 2))
 
 
 def gamma_inverse_sqrt(g: float) -> Curve:
-    return lambda x: x / math.sqrt(-g * x ** 2 + g + 1)
+    return lambda x: x / math.sqrt(-g * math.pow(x, 2) + g + 1)
 
 
 def gamma_gradient_inverse_sqrt(g: float) -> Curve:
-    return lambda x: (g + 1) / math.pow(-g * x ** 2 + g + 1, 3 / 2)
+    return lambda x: (g + 1) / math.pow(-g * math.pow(x, 2) + g + 1, 3 / 2)
 
 
 def gamma_of_inverse_sqrt(x: float, y: float) -> float:
-    return ((x / y) ** 2 - 1) / (1 - x ** 2)
+    return (math.pow(x / y, 2) - 1) / (1 - math.pow(x, 2))
 
 
 def gamma_exp(g: float) -> Curve:
