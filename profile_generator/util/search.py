@@ -7,7 +7,10 @@ LUT = MutableMapping[float, float]
 
 
 def jump_search(
-    lower_bound: float, upper_bound: float, fn: Function, target: float
+    lower_bound: float,
+    upper_bound: float,
+    fn: Function,
+    target: float,
 ) -> float:
     left, right = lower_bound, upper_bound
     mid = (left + right) / 2

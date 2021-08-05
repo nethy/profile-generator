@@ -89,14 +89,14 @@ class GammaTest(TestCase):
         gamma = gamma_exp(g)
         gamma_gradient = gamma_gradient_exp(g)
 
-        self.assertAlmostEqual(g, 1.3650177)
-        self.assertAlmostEqual(0.5, gamma(_GREY.x))
-        self.assertAlmostEqual(1.1506553, gamma_gradient(_GREY.x))
+        self.assertAlmostEqual(g, 2.7796410)
+        self.assertAlmostEqual(gamma(_GREY.x), 0.5)
+        self.assertAlmostEqual(gamma_gradient(_GREY.x), 1.2668930)
 
     def test_gamma_of_inverse_exp(self) -> None:
         g = gamma_of_inverse_exp(0.5, _GREY.y)
         gamma_inverse = gamma_inverse_exp(g)
         gamma_inverse_gradient = gamma_gradient_inverse_exp(g)
 
-        self.assertAlmostEqual(_GREY.y, gamma_inverse(0.5))
-        self.assertAlmostEqual(0.9940811, gamma_inverse_gradient(0.5))
+        self.assertAlmostEqual(gamma_inverse(0.5), _GREY.y)
+        self.assertAlmostEqual(gamma_inverse_gradient(0.5), 0.9725837)

@@ -90,22 +90,30 @@ def gamma_of_inverse_sqrt(x: float, y: float) -> float:
 
 def gamma_exp(g: float) -> Curve:
     """
-    y = (e^(-ax)-1)/(e^(-a)-1)
+    y = (1/(1+exp(-ax))-0.5) / (1/(1+exp(-a))-0.5)
     """
     if math.isclose(g, 0):
         return lambda x: x
     else:
-        return lambda x: (math.exp(-g * x) - 1) / (math.exp(-g) - 1)
+        return lambda x: (1 / (1 + math.exp(-g * x)) - 0.5) / (
+            1 / (1 + math.exp(-g)) - 0.5
+        )
 
 
 def gamma_gradient_exp(g: float) -> Curve:
     """
-    y' = -a*e^(-ax)/(e^(-a)-1)
+    y' = 2a(exp(a)+1)exp(ax)/((exp(a)-1)(exp(ax)+1)^2)
     """
     if math.isclose(g, 0):
         return lambda _: 1
     else:
-        return lambda x: (-g * math.exp(-g * x)) / (math.exp(-g) - 1)
+        return (
+            lambda x: 2
+            * g
+            * (math.exp(g) + 1)
+            * math.exp(g * x)
+            / ((math.exp(g) - 1) * math.pow(math.exp(g * x) + 1, 2))
+        )
 
 
 @cache
@@ -115,24 +123,24 @@ def gamma_of_exp(x: float, y: float) -> float:
 
 def gamma_inverse_exp(g: float) -> Curve:
     """
-    y = -ln(x(e^(-a)-1) + 1) / a
-    invert a to allow binary search
-    y = ln(x(e^a-1) + 1) / a
+    y = -ln(1/(x/(1+exp(-a))-x/2+0.5)-1)/a
     """
     if math.isclose(g, 0):
         return lambda x: x
     else:
-        return lambda x: math.log(x * (math.exp(g) - 1) + 1) / g
+        return lambda x: -math.log(1 / (x / (1 + math.exp(-g)) - x / 2 + 0.5) - 1) / g
 
 
 def gamma_gradient_inverse_exp(g: float) -> Curve:
     """
-    y' = (1-e^a)/(a(e^a*(x-1)-x))
+    y' = (2-2exp(2a))/(a(exp(a)(x-1)-x-1)(exp(a)(x+1)-x+1))
     """
     if math.isclose(g, 0):
         return lambda _: 1
     else:
-        return lambda x: (1 - math.exp(g)) / (g * (math.exp(g) * (x - 1) - x))
+        return lambda x: (2 - 2 * math.exp(2 * g)) / (
+            g * (math.exp(g) * (x - 1) - x - 1) * (math.exp(g) * (x + 1) - x + 1)
+        )
 
 
 @cache

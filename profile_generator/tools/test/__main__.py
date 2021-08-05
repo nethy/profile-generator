@@ -30,14 +30,14 @@ if __name__ == "__main__":
         _HL_TONE_DEFAULT,
     )
     print_calculation(
-        "test_calculate_with_hl_tone_max",
+        "test_calculate_with_tone_strength_max",
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
         _HL_TONE_MAX,
     ),
     print_calculation(
-        "test_calculate_with_hl_tone_min",
+        "test_calculate_with_tone_strength_min",
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
