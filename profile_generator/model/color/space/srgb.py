@@ -1,3 +1,5 @@
+import math
+
 from .. import white_point
 from .color_space import ColorSpace
 
@@ -8,14 +10,14 @@ def gamma(x: float) -> float:
     if x <= 0.0031308:
         return max(0.0, 12.92 * x)
     else:
-        return min(1.0, 1.055 * x ** (1 / 2.4) - 0.055)
+        return min(1.0, 1.055 * math.pow(x, 1 / 2.4) - 0.055)
 
 
 def inverse_gamma(x: float) -> float:
     if x <= 0.040449936:
         return max(0.0, x / 12.92)
     else:
-        return min(1.0, ((x + 0.055) / 1.055) ** 2.4)
+        return min(1.0, math.pow((x + 0.055) / 1.055, 2.4))
 
 
 SRGB = ColorSpace(

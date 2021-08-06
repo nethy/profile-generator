@@ -1,3 +1,4 @@
+import math
 from collections.abc import Callable, Iterable
 from typing import TypeVar
 
@@ -6,7 +7,7 @@ from profile_generator.unit import DECIMALS, Point
 _T = TypeVar("_T")
 _Presenter = Callable[[_T], str]
 
-_EQ_STRENGTH = f"{(1 / 3 * 1 / 4) ** (1 / 2):.{DECIMALS}f}"
+_EQ_STRENGTH = f"{math.sqrt(1 / (3 * 4)):.{DECIMALS}f}"
 
 
 class CurveType:

@@ -55,10 +55,15 @@ def _fn_equations(matrix: Matrix, xs: Vector, ys: Vector) -> None:
     n = len(xs)
     for i in range(n - 1):
         x, y = xs[i], ys[i]
-        matrix[i * 2][i * 4 : (i + 1) * 4] = [x ** 3, x ** 2, x, 1.0]
+        matrix[i * 2][i * 4 : (i + 1) * 4] = [math.pow(x, 3), math.pow(x, 2), x, 1.0]
         matrix[i * 2][-1] = y
         x, y = xs[i + 1], ys[i + 1]
-        matrix[i * 2 + 1][i * 4 : (i + 1) * 4] = [x ** 3, x ** 2, x, 1.0]
+        matrix[i * 2 + 1][i * 4 : (i + 1) * 4] = [
+            math.pow(x, 3),
+            math.pow(x, 2),
+            x,
+            1.0,
+        ]
         matrix[i * 2 + 1][-1] = y
 
 
@@ -68,11 +73,11 @@ def _dx_equations(matrix: Matrix, xs: Vector) -> None:
         x = xs[i + 1]
         offset = 2 * (n - 1)
         matrix[offset + i][i * 4 : (i + 2) * 4] = [
-            3 * x ** 2,
+            3 * math.pow(x, 2),
             2 * x,
             1.0,
             0.0,
-            -3 * x ** 2,
+            -3 * math.pow(x, 2),
             -2 * x,
             -1.0,
             0.0,
@@ -113,6 +118,6 @@ def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
             or math.isclose(x, knots[i + 1])
         ):
             a, b, c, d = coefficients[i * 4 : i * 4 + 4]
-            y = a * x ** 3 + b * x ** 2 + c * x + d
+            y = a * math.pow(x, 3) + b * math.pow(x, 2) + c * x + d
             break
     return y

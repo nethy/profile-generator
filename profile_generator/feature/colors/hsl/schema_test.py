@@ -66,16 +66,6 @@ class SchemaTest(TestCase):
 
     def test_validate_invalid_color_value(self) -> None:
         self.validator.assert_error(
-            {"hue": {"blue": 1.2}},
-            InvalidObjectError(
-                {
-                    "hue": InvalidObjectError(
-                        {"blue": InvalidRangeError(-_STEPS, _STEPS)}
-                    )
-                }
-            ),
-        )
-        self.validator.assert_error(
             {"hue": {"blue": -8}},
             InvalidObjectError(
                 {

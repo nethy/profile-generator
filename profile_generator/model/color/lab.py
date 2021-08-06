@@ -32,7 +32,7 @@ def to_xyz(lab: Vector, white_point: Optional[Vector] = None) -> Vector:
 
 def to_lch(lab: Vector) -> Vector:
     l, a, b = lab
-    c = math.sqrt(a ** 2 + b ** 2)
+    c = math.sqrt(math.pow(a, 2) + math.pow(b, 2))
     h = math.degrees(math.atan2(b, a))
     if h < 0:
         h += 360
@@ -48,13 +48,13 @@ def from_lch(lch: Vector) -> Vector:
 
 def lab_f(x: float) -> float:
     if x > LAB_F_SIGMA_3:
-        return x ** (1 / 3)
+        return math.pow(x, 1 / 3)
     else:
         return x / (3 * LAB_F_SIGMA_2) + 4 / 29
 
 
 def lab_f_inverse(x: float) -> float:
     if x > LAB_F_SIGMA:
-        return x ** 3
+        return math.pow(x, 3)
     else:
         return 3 * LAB_F_SIGMA_2 * (x - 4 / 29)

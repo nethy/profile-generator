@@ -1,3 +1,4 @@
+import math
 from typing import Callable
 from unittest import TestCase
 
@@ -40,7 +41,7 @@ class SplineTest(TestCase):
     def test_fit(self) -> None:
         self.assertEqual([(0, 1), (1, 1)], fit(lambda _: 1))
         self.assertEqual([(0, 0), (1, 1)], fit(lambda x: x))
-        self._assert_fit(lambda x: x ** 16)
+        self._assert_fit(lambda x: math.pow(x, 16))
 
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         spline = interpolate(fit(fn))

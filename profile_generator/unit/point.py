@@ -14,7 +14,11 @@ class Point:
     def distance(self, other: Point) -> float:
         diff_x = self.x - other.x
         diff_y = self.y - other.y
-        return (diff_x ** 2 + diff_y ** 2) ** (1 / 2)
+        return math.sqrt(math.pow(diff_x, 2) + math.pow(diff_y, 2))
+
+    @property
+    def gradient(self) -> float:
+        return self.y / self.x if not math.isclose(self.x, 0) else math.inf
 
     def __repr__(self) -> str:
         return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
