@@ -91,7 +91,8 @@ def contrast_curve_sqrt(c: float) -> Curve:
         partial_result = c / math.sqrt(1 + c / 4)
         return (
             lambda x: (
-                c * (x - 0.5) / math.sqrt(1 + c * (x - 0.5) ** 2) + partial_result / 2
+                c * (x - 0.5) / math.sqrt(1 + c * math.pow(x - 0.5, 2))
+                + partial_result / 2
             )
             / partial_result
         )
@@ -101,7 +102,7 @@ def contrast_of_gradient_sqrt(gamma: float) -> float:
     """
     y'= sqrt(0.25c+1)/(sqrt(c(x-0.5)^2+1)*(c(x^2-x+0.25)+1)), x = 0.5
     """
-    return 4 * (gamma ** 2 - 1)
+    return 4 * (math.pow(gamma, 2) - 1)
 
 
 @cache

@@ -18,7 +18,7 @@ def ev_comp(
         return rgb
 
     linear = (color_space.inverse_gamma(x) for x in rgb)
-    linear = (x * 2 ** compensation for x in linear)
+    linear = (x * math.pow(2, compensation) for x in linear)
     return [color_space.gamma(x) for x in linear]
 
 

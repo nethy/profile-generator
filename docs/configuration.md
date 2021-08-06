@@ -201,15 +201,6 @@ RGB value of the `Neutral50` patch of a color checker card.
 Amount of contrast. 1.0 will produce a linear tone curve.
 For portraits use 1.7-1.8, and landscapes around 2.0-2.2.
 
-`highlight_tone`
-|               |             |
-| ---           | ---         |
-| Type          | float       |
-| Value range   | -1.0 - 1.0  |
-| Default value | 1.0         |
-
-Increase or decrease hightights of the tone curve.
-
 `exposure_compensation`
 |               |            |
 | ---           | ---        |
@@ -226,7 +217,7 @@ Middle grey adjustment via expsure values.
 | Value range   | true, false |
 | Default value | false       |
 
-Shrinks the dynamic range of the tone curve, to simulate faded look.
+Brings up and softens the shadows of the photo to simulate faded look.
 
 
 ## Detials

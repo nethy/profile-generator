@@ -14,7 +14,7 @@ class Point:
     def distance(self, other: Point) -> float:
         diff_x = self.x - other.x
         diff_y = self.y - other.y
-        return (diff_x ** 2 + diff_y ** 2) ** (1 / 2)
+        return math.sqrt(math.pow(diff_x, 2) + math.pow(diff_y, 2))
 
     @property
     def gradient(self) -> float:

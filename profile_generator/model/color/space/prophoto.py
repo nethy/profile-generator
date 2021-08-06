@@ -1,3 +1,5 @@
+import math
+
 from .. import white_point
 from .color_space import ColorSpace
 
@@ -8,14 +10,14 @@ def gamma(x: float) -> float:
     if x < 0.001953125:
         return max(0.0, 16 * x)
     else:
-        return min(1.0, x ** (1 / 1.8))
+        return min(1.0, math.pow(x, 1 / 1.8))
 
 
 def inverse_gamma(x: float) -> float:
     if x < 0.03125:
         return max(0.0, x / 16)
     else:
-        return min(1.0, x ** 1.8)
+        return min(1.0, math.pow(x, 1.8))
 
 
 PROPHOTO = ColorSpace(
