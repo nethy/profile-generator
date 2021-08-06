@@ -72,13 +72,12 @@ def _dx_equations(matrix: Matrix, xs: Vector) -> None:
     for i in range(n - 2):
         x = xs[i + 1]
         offset = 2 * (n - 1)
-        square = math.pow(x, 2)
         matrix[offset + i][i * 4 : (i + 2) * 4] = [
-            3 * square,
+            3 * math.pow(x, 2),
             2 * x,
             1.0,
             0.0,
-            -3 * square,
+            -3 * math.pow(x, 2),
             -2 * x,
             -1.0,
             0.0,
