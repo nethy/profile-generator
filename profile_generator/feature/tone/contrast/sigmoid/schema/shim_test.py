@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .shim import Point, get_parameters, marshal_curve
+from .shim import Point, get_parameters, marshal_curves
 
 _DEFAULT_GAMMA = 1.0
 _DEFAULT_NEUTRAL5 = [90.0, 90.0, 90.0]
@@ -32,9 +32,12 @@ class ShimTest(TestCase):
         _, _, _, offsets = get_parameters({"matte_effect": True})
         self.assertEqual(offsets, (16 / 255, 1.0))
 
-    def test_marshal_curve(self) -> None:
-        self.assertEqual({"Curve": "0;"}, marshal_curve([]))
+    def test_marshal_curves(self) -> None:
+        self.assertEqual(marshal_curves([], []), {"Curve": "0;", "Curve2": "0;"})
         self.assertEqual(
-            {"Curve": "1;0.000000;0.000000;1.000000;1.000000;"},
-            marshal_curve([Point(0, 0), Point(1, 1)]),
+            marshal_curves([Point(0, 0), Point(1, 1)], [Point(0, 0), Point(1, 1)]),
+            {
+                "Curve": "3;0.000000;0.000000;1.000000;1.000000;",
+                "Curve2": "1;0.000000;0.000000;1.000000;1.000000;",
+            },
         )

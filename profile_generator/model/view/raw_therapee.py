@@ -13,6 +13,7 @@ _EQ_STRENGTH = f"{math.sqrt(1 / (3 * 4)):.{DECIMALS}f}"
 class CurveType:
     LINEAR = "0;"
     STANDARD = "1;"
+    CONTROL_CAGE = "3;"
     FLEXIBLE = "4;"
 
 

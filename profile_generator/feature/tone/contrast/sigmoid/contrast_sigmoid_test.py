@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .contrast_sigmoid import Point, calculate
+from .contrast_sigmoid import Point, base_controls, calculate
 
 _NEUTRAL5 = [87.0, 87.0, 87.0]
 _GAMMA = 2.5
@@ -56,5 +56,15 @@ class ContrastSigmoid(TestCase):
                 Point(x=0.615686, y=0.874198),
                 Point(x=0.725490, y=0.899140),
                 Point(x=1.000000, y=0.921569),
+            ],
+        )
+
+    def test_base_controls(self) -> None:
+        self.assertEqual(
+            base_controls(_NEUTRAL5),
+            [
+                Point(0.166195, 0.233163),
+                Point(0.332391, 0.466327),
+                Point(0.666195, 0.733163),
             ],
         )

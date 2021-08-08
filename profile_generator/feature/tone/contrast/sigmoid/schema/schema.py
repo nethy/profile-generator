@@ -9,8 +9,9 @@ from . import shim
 
 def _process(data: Any) -> Mapping[str, str]:
     grey, gamma, gain, offsets = shim.get_parameters(data)
-    points = contrast_sigmoid.calculate(grey, gamma, gain, offsets)
-    return shim.marshal_curve(points)
+    contrast = contrast_sigmoid.calculate(grey, gamma, gain, offsets)
+    controls = contrast_sigmoid.base_controls(grey)
+    return shim.marshal_curves(controls, contrast)
 
 
 _MIDDLE_GREY_RGB = range_of(16.0, 240.0)
