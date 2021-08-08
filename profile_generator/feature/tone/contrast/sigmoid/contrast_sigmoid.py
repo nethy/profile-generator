@@ -55,6 +55,7 @@ def _apply_offsets(fn: Curve, offsets: tuple[float, float]) -> Curve:
 
 def base_controls(neutral5: Vector) -> Sequence[Point]:
     middle_grey = _get_middle_grey(neutral5, 0)
+    middle_grey.y = middle_grey.x
     shadow_control = middle_grey / 2
     highlight_control = Point(middle_grey.x + 1, middle_grey.y + 1) / 2
-    return [shadow_control, middle_grey, highlight_control]
+    return [Point(0, 0), shadow_control, middle_grey, highlight_control, Point(1, 1)]

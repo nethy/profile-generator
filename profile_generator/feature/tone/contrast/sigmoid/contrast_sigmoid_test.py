@@ -63,8 +63,10 @@ class ContrastSigmoid(TestCase):
         self.assertEqual(
             base_controls(_NEUTRAL5),
             [
-                Point(0.166195, 0.233163),
-                Point(0.332391, 0.466327),
-                Point(0.666195, 0.733163),
+                Point(0, 0),
+                Point(0.166195, 0.166195),
+                Point(0.332391, 0.332391),
+                Point(0.666195, 0.666195),
+                Point(1, 1),
             ],
         )
