@@ -128,10 +128,6 @@ def contrast_curve_abs(gradient: float) -> Curve:
 
 
 def _correct_gradient(grey: Point, gradient: float, gamma_gradient: float) -> float:
-    base_contrast = grey.gradient
-    corrected_gradient = gradient / gamma_gradient
     return (
-        math.sqrt(base_contrast) * corrected_gradient
-        + base_contrast
-        - math.sqrt(base_contrast)
-    )
+        math.sqrt(grey.gradient) * gradient + grey.gradient - math.sqrt(grey.gradient)
+    ) / gamma_gradient

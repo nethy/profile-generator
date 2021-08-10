@@ -29,14 +29,13 @@ def calculate(
 def _get_middle_grey(neutral5: Vector, ev_comp: float) -> Point:
     in_lum = _srgb_to_luminance(neutral5)
     patch_lum = _srgb_to_luminance(ColorChart.NEUTRAL50)
-    in_lum = in_lum * constants.SRGB_MIDDLE_GREY_LUMINANCE / patch_lum
-    out_lum = constants.SRGB_MIDDLE_GREY_LUMINANCE * math.pow(2, ev_comp)
-    return Point(SRGB.gamma(in_lum), SRGB.gamma(out_lum))
+    in_lum = in_lum * SRGB.gamma(constants.SRGB_MIDDLE_GREY_LUMINANCE) / patch_lum
+    out_lum = SRGB.gamma(constants.SRGB_MIDDLE_GREY_LUMINANCE * math.pow(2, ev_comp))
+    return Point(in_lum, out_lum)
 
 
 def _srgb_to_luminance(color: Vector) -> float:
-    color = [SRGB.inverse_gamma(x) for x in rgb.normalize(color)]
-    return rgb.luminance(color, SRGB)
+    return rgb.luminance(rgb.normalize(color), SRGB)
 
 
 def _corrigate_middle_grey(middle: Point, offsets: tuple[float, float]) -> Point:
