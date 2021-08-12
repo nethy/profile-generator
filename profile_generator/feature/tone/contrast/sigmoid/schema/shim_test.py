@@ -3,7 +3,7 @@ from unittest import TestCase
 from .shim import Point, get_parameters, marshal_curves
 
 _DEFAULT_GAMMA = 1.0
-_DEFAULT_NEUTRAL5 = [90.0, 90.0, 90.0]
+_DEFAULT_NEUTRAL5 = 90.0
 _DEFAULT_EV_COMP = 0.0
 
 
@@ -37,7 +37,7 @@ class ShimTest(TestCase):
         self.assertEqual(
             marshal_curves([Point(0, 0), Point(1, 1)], [Point(0, 0), Point(1, 1)]),
             {
-                "Curve": "3;0.000000;0.000000;1.000000;1.000000;",
+                "Curve": "1;0.000000;0.000000;1.000000;1.000000;",
                 "Curve2": "1;0.000000;0.000000;1.000000;1.000000;",
             },
         )

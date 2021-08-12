@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from .contrast_sigmoid import Point, base_controls, calculate
 
-_NEUTRAL5 = [87.0, 87.0, 87.0]
+_NEUTRAL5 = 87.0
 _GAMMA = 2.5
 _EV_COMP = 1.0
 _OFFSETS = (16 / 255, 235 / 255)
@@ -25,26 +25,9 @@ class ContrastSigmoid(TestCase):
             ],
         )
 
-    def test_calculate_with_exposure_compensation(self) -> None:
-        self.assertEqual(
-            calculate(_NEUTRAL5, _GAMMA, _EV_COMP),
-            [
-                Point(x=0.000000, y=0.000000),
-                Point(x=0.113725, y=0.049541),
-                Point(x=0.203922, y=0.167931),
-                Point(x=0.270588, y=0.373498),
-                Point(x=0.313725, y=0.560730),
-                Point(x=0.352941, y=0.715852),
-                Point(x=0.447059, y=0.905306),
-                Point(x=0.564706, y=0.967545),
-                Point(x=0.690196, y=0.987029),
-                Point(x=1.000000, y=1.000000),
-            ],
-        )
-
     def test_calculate_with_offests(self) -> None:
         self.assertEqual(
-            calculate(_NEUTRAL5, _GAMMA, offsets=_OFFSETS),
+            calculate(_NEUTRAL5, _GAMMA, _OFFSETS),
             [
                 Point(x=0.000000, y=0.062745),
                 Point(x=0.121569, y=0.096259),
@@ -67,6 +50,28 @@ class ContrastSigmoid(TestCase):
                 Point(0.166371, 0.166371),
                 Point(0.332741, 0.332741),
                 Point(0.666371, 0.666371),
+                Point(1, 1),
+            ],
+        )
+
+    def test_base_controls_ev_corr(self) -> None:
+        self.assertEqual(
+            base_controls(_NEUTRAL5, 1),
+            [
+                Point(0, 0),
+                Point(0.235478, 0.332741),
+                Point(0.667259, 0.764522),
+                Point(1, 1),
+            ],
+        )
+
+    def test_base_controls_ev_comp(self) -> None:
+        self.assertEqual(
+            base_controls(_NEUTRAL5, ev_comp=1),
+            [
+                Point(0, 0),
+                Point(0.332741, 0.462572),
+                Point(0.537428, 0.667259),
                 Point(1, 1),
             ],
         )
