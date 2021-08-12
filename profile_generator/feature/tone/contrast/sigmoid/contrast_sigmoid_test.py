@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .contrast_sigmoid import Point, calculate
+from .contrast_sigmoid import Point, base_controls, calculate
 
 _NEUTRAL5 = [87.0, 87.0, 87.0]
 _GAMMA = 2.5
@@ -14,13 +14,13 @@ class ContrastSigmoid(TestCase):
             calculate(_NEUTRAL5, _GAMMA),
             [
                 Point(x=0.000000, y=0.000000),
-                Point(x=0.121569, y=0.048327),
-                Point(x=0.219608, y=0.161782),
-                Point(x=0.290196, y=0.332905),
-                Point(x=0.388235, y=0.635023),
-                Point(x=0.517647, y=0.860857),
-                Point(x=0.619608, y=0.930587),
-                Point(x=0.733333, y=0.967194),
+                Point(x=0.121569, y=0.049548),
+                Point(x=0.219608, y=0.164097),
+                Point(x=0.290196, y=0.333897),
+                Point(x=0.388235, y=0.631553),
+                Point(x=0.517647, y=0.857520),
+                Point(x=0.619608, y=0.928551),
+                Point(x=0.733333, y=0.966137),
                 Point(x=1.000000, y=1.000000),
             ],
         )
@@ -30,14 +30,14 @@ class ContrastSigmoid(TestCase):
             calculate(_NEUTRAL5, _GAMMA, _EV_COMP),
             [
                 Point(x=0.000000, y=0.000000),
-                Point(x=0.113725, y=0.046469),
-                Point(x=0.207843, y=0.168707),
-                Point(x=0.274510, y=0.382426),
-                Point(x=0.317647, y=0.576906),
-                Point(x=0.352941, y=0.719704),
-                Point(x=0.447059, y=0.909961),
-                Point(x=0.564706, y=0.969638),
-                Point(x=0.690196, y=0.987931),
+                Point(x=0.113725, y=0.049541),
+                Point(x=0.203922, y=0.167931),
+                Point(x=0.270588, y=0.373498),
+                Point(x=0.313725, y=0.560730),
+                Point(x=0.352941, y=0.715852),
+                Point(x=0.447059, y=0.905306),
+                Point(x=0.564706, y=0.967545),
+                Point(x=0.690196, y=0.987029),
                 Point(x=1.000000, y=1.000000),
             ],
         )
@@ -47,14 +47,26 @@ class ContrastSigmoid(TestCase):
             calculate(_NEUTRAL5, _GAMMA, offsets=_OFFSETS),
             [
                 Point(x=0.000000, y=0.062745),
-                Point(x=0.121569, y=0.095491),
-                Point(x=0.227451, y=0.194299),
-                Point(x=0.294118, y=0.346738),
-                Point(x=0.345098, y=0.506837),
-                Point(x=0.388235, y=0.631055),
-                Point(x=0.505882, y=0.815286),
-                Point(x=0.615686, y=0.874198),
-                Point(x=0.725490, y=0.899140),
+                Point(x=0.121569, y=0.096259),
+                Point(x=0.227451, y=0.196005),
+                Point(x=0.294118, y=0.347363),
+                Point(x=0.345098, y=0.505142),
+                Point(x=0.388235, y=0.628006),
+                Point(x=0.505882, y=0.812813),
+                Point(x=0.611765, y=0.871539),
+                Point(x=0.725490, y=0.898469),
                 Point(x=1.000000, y=0.921569),
+            ],
+        )
+
+    def test_base_controls(self) -> None:
+        self.assertEqual(
+            base_controls(_NEUTRAL5),
+            [
+                Point(0, 0),
+                Point(0.166371, 0.166371),
+                Point(0.332741, 0.332741),
+                Point(0.666371, 0.666371),
+                Point(1, 1),
             ],
         )

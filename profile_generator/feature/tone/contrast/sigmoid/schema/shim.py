@@ -9,7 +9,8 @@ _DEFAULT_NETRUAL5: Vector = [90, 90, 90]
 _DEFAULT_EV_COMP = 0.0
 _DEFAULT_GAMMA = 1.0
 
-_TEMPLATE_FIELD = "Curve"
+_CURVE = "Curve"
+_CURVE2 = "Curve2"
 
 
 def get_parameters(
@@ -30,8 +31,18 @@ def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
         return (0, 1)
 
 
-def marshal_curve(curve: Sequence[Point]) -> Mapping[str, str]:
+def marshal_curves(
+    control_curve: Sequence[Point], contrast_curve: Sequence[Point]
+) -> Mapping[str, str]:
+    control_curve_value = raw_therapee.CurveType.LINEAR
+    if len(control_curve) > 0:
+        control_curve_value = (
+            raw_therapee.CurveType.CONTROL_CAGE
+            + raw_therapee.present_curve(control_curve)
+        )
     value = raw_therapee.CurveType.LINEAR
-    if len(curve) > 0:
-        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(curve)
-    return {_TEMPLATE_FIELD: value}
+    if len(contrast_curve) > 0:
+        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(
+            contrast_curve
+        )
+    return {_CURVE: control_curve_value, _CURVE2: value}
