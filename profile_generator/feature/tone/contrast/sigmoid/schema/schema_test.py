@@ -6,8 +6,6 @@ from profile_generator.schema import (
     InvalidTypeError,
     SchemaValidator,
 )
-from profile_generator.schema.list_schema import InvalidListError
-from profile_generator.schema.tuple_schema import InvalidListSizeError
 
 from .schema import SCHEMA
 
@@ -22,7 +20,7 @@ class SchemaTest(unittest.TestCase):
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
-                "neutral5": [87, 87, 87],
+                "neutral5": 87,
                 "exposure_compensation": -1.0,
                 "gamma": 1.7,
                 "matte_effect": True,
@@ -31,15 +29,8 @@ class SchemaTest(unittest.TestCase):
 
     def test_validate_invalid_neutral5(self) -> None:
         self.validator.assert_error(
-            {"neutral5": [87, 87]},
-            InvalidObjectError({"neutral5": InvalidListSizeError(3)}),
-        )
-
-        self.validator.assert_error(
-            {"neutral5": [87, 87, False]},
-            InvalidObjectError(
-                {"neutral5": InvalidListError({3: InvalidRangeError(16, 240)})}
-            ),
+            {"neutral5": False},
+            InvalidObjectError({"neutral5": InvalidRangeError(16, 240)}),
         )
 
     def test_validate_invalid_exposure_compensation(self) -> None:
