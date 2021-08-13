@@ -9,7 +9,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _NEUTRAL5,
     _OFFSETS,
 )
-from profile_generator.model import linalg, sigmoid, spline
+from profile_generator.model import gamma, linalg, sigmoid, spline
 from profile_generator.model.color import lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
@@ -30,18 +30,18 @@ if __name__ == "__main__":
         _GAMMA,
     )
     print_calculation(
-        "test_calculate_with_exposure_compensation",
-        contrast_sigmoid.calculate,
-        _NEUTRAL5,
-        _GAMMA,
-        ev_comp=_EV_COMP,
-    )
-    print_calculation(
         "test_calculate_with_offests",
         contrast_sigmoid.calculate,
         _NEUTRAL5,
         _GAMMA,
-        offsets=_OFFSETS,
+        _OFFSETS,
+    )
+    print_calculation("test_base_controls", contrast_sigmoid.base_controls, _NEUTRAL5)
+    print_calculation(
+        "test_base_controls_ev_comp",
+        contrast_sigmoid.base_controls,
+        _NEUTRAL5,
+        _EV_COMP,
     )
     print_calculation(
         "test_calculate_when_strength_is_less_than_1",

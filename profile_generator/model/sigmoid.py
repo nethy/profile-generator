@@ -9,9 +9,7 @@ from .gamma import (
     gamma_exp,
     gamma_inverse_exp,
     gamma_inverse_linear,
-    gamma_inverse_sqrt,
     gamma_linear,
-    gamma_sqrt,
 )
 
 
@@ -49,7 +47,7 @@ def tone_curve_exp(grey: Point, gradient: float) -> Curve:
         gamma_y_curve, gamma_y_gradient = gamma_exp(0.5, grey.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _correct_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
     _curve = contrast_curve_exp(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
@@ -90,11 +88,11 @@ def tone_curve_sqrt(grey: Point, gradient: float) -> Curve:
     f(0.5) = 0.5
     h(0.5) = grey.y
     """
-    gamma_x_curve, gamma_x_gradient = gamma_sqrt(grey.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma_inverse_sqrt(0.5, grey.y)
+    gamma_x_curve, gamma_x_gradient = gamma_linear(grey.x, 0.5)
+    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, grey.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _correct_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
     _curve = contrast_curve_sqrt(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
@@ -104,7 +102,7 @@ def tone_curve_abs(grey: Point, gradient: float) -> Curve:
     gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, grey.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _correct_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
     _curve = contrast_curve_abs(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
@@ -127,7 +125,9 @@ def contrast_curve_abs(gradient: float) -> Curve:
         ) / (c / (1 + c / 2))
 
 
-def _correct_gradient(grey: Point, gradient: float, gamma_gradient: float) -> float:
+def _get_contrast_gradient(
+    grey: Point, gradient: float, gamma_gradient: float
+) -> float:
     return (
         math.sqrt(grey.gradient) * gradient + grey.gradient - math.sqrt(grey.gradient)
     ) / gamma_gradient
