@@ -263,7 +263,7 @@ Highlights=0
 HighlightTonalWidth=70
 Shadows=0
 ShadowTonalWidth=30
-Radius=40
+Radius={SHRadius}
 Lab=false
 
 [Crop]
