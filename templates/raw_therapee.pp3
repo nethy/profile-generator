@@ -260,10 +260,10 @@ Anchor=50
 [Shadows & Highlights]
 Enabled=false
 Highlights=0
-HighlightTonalWidth=70
+HighlightTonalWidth=80
 Shadows=0
-ShadowTonalWidth=30
-Radius=40
+ShadowTonalWidth=20
+Radius={SHRadius}
 Lab=false
 
 [Crop]

@@ -28,11 +28,17 @@ class SchemaTest(unittest.TestCase):
         )
         self.validator.assert_error(
             {"demosaic": "not_available"},
-            InvalidObjectError({"demosaic": InvalidOptionError(("RCD+VNG4", "LMMSE"))}),
+            InvalidObjectError(
+                {
+                    "demosaic": InvalidOptionError(
+                        ("AMaZE", "AMaZE+VNG4", "DCB+VNG4", "RCD+VNG4", "LMMSE")
+                    )
+                }
+            ),
         )
 
     def test_process_default(self) -> None:
-        self.validator.assert_process({}, {"BayerMethod": "dcbvng4"})
+        self.validator.assert_process({}, {"BayerMethod": "amaze"})
 
     def test_process_demosaic(self) -> None:
         self.validator.assert_process(
