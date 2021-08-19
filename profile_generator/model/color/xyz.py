@@ -20,11 +20,11 @@ BRADFORD_INVERSE = [
 
 def from_rgb(rgb: Vector, color_space: ColorSpace) -> Vector:
     linear = [color_space.inverse_gamma(x) for x in rgb]
-    return linalg.transform(color_space.xyz_matrix, linear)
+    return linalg.multiply_matrix_vector(color_space.xyz_matrix, linear)
 
 
 def to_rgb(xyz: Vector, color_space: ColorSpace) -> Vector:
-    linear = linalg.transform(color_space.xyz_inverse_matrix, xyz)
+    linear = linalg.multiply_matrix_vector(color_space.xyz_inverse_matrix, xyz)
     return [color_space.gamma(x) for x in linear]
 
 
@@ -45,8 +45,8 @@ def to_xyy(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
 
 
 def chromatic_adaptation(xyz_source: Vector, xyz_target: Vector) -> Matrix:
-    source = linalg.transform(BRADFORD, xyz_source)
-    target = linalg.transform(BRADFORD, xyz_target)
+    source = linalg.multiply_matrix_vector(BRADFORD, xyz_source)
+    target = linalg.multiply_matrix_vector(BRADFORD, xyz_target)
     scale = [t / s for t, s in zip(target, source)]
     return linalg.multiply_matrix_matrix(
         BRADFORD_INVERSE, linalg.scale_matrix(scale, BRADFORD)
@@ -61,7 +61,7 @@ def conversion_matrix_of(refs: Matrix, white_point: Vector) -> Matrix:
         [(1 - r[0] - r[1]) / r[1], (1 - g[0] - g[1]) / g[1], (1 - b[0] - b[1]) / b[1]],
     ]
     inverse = linalg.inverse(list(matrix))
-    coeffs = linalg.transform(inverse, white_point)
+    coeffs = linalg.multiply_matrix_vector(inverse, white_point)
     return [[coeff * value for coeff, value in zip(coeffs, row)] for row in matrix]
 
 

@@ -6,7 +6,7 @@ from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _EV_COMP,
     _GAMMA,
-    _NEUTRAL5,
+    _GREY18,
     _OFFSETS,
 )
 from profile_generator.model import gamma, linalg, sigmoid, spline
@@ -26,21 +26,21 @@ if __name__ == "__main__":
     print_calculation(
         "test_calculate",
         contrast_sigmoid.calculate,
-        _NEUTRAL5,
+        _GREY18,
         _GAMMA,
     )
     print_calculation(
         "test_calculate_with_offests",
         contrast_sigmoid.calculate,
-        _NEUTRAL5,
+        _GREY18,
         _GAMMA,
         _OFFSETS,
     )
-    print_calculation("test_base_controls", contrast_sigmoid.base_controls, _NEUTRAL5)
+    print_calculation("test_base_controls", contrast_sigmoid.base_controls, _GREY18)
     print_calculation(
         "test_base_controls_ev_comp",
         contrast_sigmoid.base_controls,
-        _NEUTRAL5,
+        _GREY18,
         _EV_COMP,
     )
     print_calculation(

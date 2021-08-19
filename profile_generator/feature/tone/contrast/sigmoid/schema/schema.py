@@ -16,7 +16,7 @@ def _process(data: Any) -> Mapping[str, str]:
 
 SCHEMA = object_of(
     {
-        "neutral5": range_of(16.0, 240.0),
+        "grey18": range_of(16.0, 240.0),
         "exposure_compensation": range_of(-2.0, 2.0),
         "gamma": range_of(1.0, 5.0),
         "matte_effect": type_of(bool),

@@ -6,7 +6,11 @@ from profile_generator.model.linalg import Vector
 
 
 def normalize(srgb: Vector) -> Vector:
-    return [x / 255 for x in srgb]
+    return [normalize_value(x) for x in srgb]
+
+
+def normalize_value(value: float) -> float:
+    return value / 255
 
 
 def ev_comp(

@@ -4,7 +4,7 @@ from typing import Any
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point
 
-_DEFAULT_NETRUAL5 = 90.0
+_DEFAULT_GREY18 = 90.0
 _DEFAULT_EV_COMP = 0.0
 _DEFAULT_GAMMA = 1.0
 
@@ -15,11 +15,11 @@ _CURVE2 = "Curve2"
 def get_parameters(
     configuration: Mapping[str, Any]
 ) -> tuple[float, float, float, tuple[float, float]]:
-    netrual5 = configuration.get("neutral5", _DEFAULT_NETRUAL5)
+    grey18 = configuration.get("grey18", _DEFAULT_GREY18)
     ev_comp = configuration.get("exposure_compensation", _DEFAULT_EV_COMP)
     gamma = configuration.get("gamma", _DEFAULT_GAMMA)
     offsets = _get_offsets(configuration)
-    return (netrual5, gamma, ev_comp, offsets)
+    return (grey18, gamma, ev_comp, offsets)
 
 
 def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
