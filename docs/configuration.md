@@ -182,14 +182,14 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 **Parameters**
 
-`neutral5`
+`grey18`
 |               |          |
 | ---           | ---      |
 | Type          | integer  |
 | Value range   | 16 - 240 |
 | Default value | 90       |
 
-RGB value of the `Neutral50` patch of a color checker card.
+Average sRGB value of 18% grey value.
 
 `gamma`
 |               |             |

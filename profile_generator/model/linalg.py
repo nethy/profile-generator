@@ -59,7 +59,7 @@ def _eliminate_column(matrix: Matrix, row: int, pivot_idx: int) -> None:
             ]
 
 
-def transform(matrix: Matrix, vector: Vector) -> Vector:
+def multiply_matrix_vector(matrix: Matrix, vector: Vector) -> Vector:
     n = len(vector)
     result = [0.0] * n
     for i in range(n):

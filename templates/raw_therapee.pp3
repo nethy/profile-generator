@@ -253,7 +253,7 @@ ReweightingIterates=0
 
 [FattalToneMapping]
 Enabled=false
-Threshold=30
+Threshold=100
 Amount=20
 Anchor=50
 

@@ -39,15 +39,15 @@ def _contrast_of_gradient_exp(gradient: float) -> float:
 
 
 @cache
-def tone_curve_exp(grey: Point, gradient: float) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma_exp(grey.x, 0.5)
-    if grey.y <= 0.5:
-        gamma_y_curve, gamma_y_gradient = gamma_inverse_exp(0.5, grey.y)
+def tone_curve_exp(middle: Point, gradient: float) -> Curve:
+    gamma_x_curve, gamma_x_gradient = gamma_exp(middle.x, 0.5)
+    if middle.y <= 0.5:
+        gamma_y_curve, gamma_y_gradient = gamma_inverse_exp(0.5, middle.y)
     else:
-        gamma_y_curve, gamma_y_gradient = gamma_exp(0.5, grey.y)
+        gamma_y_curve, gamma_y_gradient = gamma_exp(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
     _curve = contrast_curve_exp(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
@@ -79,7 +79,7 @@ def _contrast_of_gradient_sqrt(gradient: float) -> float:
 
 
 @cache
-def tone_curve_sqrt(grey: Point, gradient: float) -> Curve:
+def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
     """
     h(f(g(grey.x)))' = h'(f(g(grey.x))) * f(g(grey.x))' =
                        h'(f(g(grey.x))) * f'(g(grey.x)) * g'(grey.x)
@@ -88,21 +88,21 @@ def tone_curve_sqrt(grey: Point, gradient: float) -> Curve:
     f(0.5) = 0.5
     h(0.5) = grey.y
     """
-    gamma_x_curve, gamma_x_gradient = gamma_linear(grey.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, grey.y)
+    gamma_x_curve, gamma_x_gradient = gamma_linear(middle.x, 0.5)
+    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
     _curve = contrast_curve_sqrt(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
 
-def tone_curve_abs(grey: Point, gradient: float) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma_linear(grey.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, grey.y)
+def tone_curve_abs(middle: Point, gradient: float) -> Curve:
+    gamma_x_curve, gamma_x_gradient = gamma_linear(middle.x, 0.5)
+    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
-    contrast_gradient = _get_contrast_gradient(grey, gradient, gamma_gradient)
+    contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
     _curve = contrast_curve_abs(contrast_gradient)
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 

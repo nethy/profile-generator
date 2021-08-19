@@ -20,17 +20,17 @@ class SchemaTest(unittest.TestCase):
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
-                "neutral5": 87,
+                "grey18": 87,
                 "exposure_compensation": -1.0,
                 "gamma": 1.7,
                 "matte_effect": True,
             }
         )
 
-    def test_validate_invalid_neutral5(self) -> None:
+    def test_validate_invalid_grey18(self) -> None:
         self.validator.assert_error(
-            {"neutral5": False},
-            InvalidObjectError({"neutral5": InvalidRangeError(16, 240)}),
+            {"grey18": False},
+            InvalidObjectError({"grey18": InvalidRangeError(16, 240)}),
         )
 
     def test_validate_invalid_exposure_compensation(self) -> None:
