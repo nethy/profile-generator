@@ -5,17 +5,15 @@ from profile_generator.schema import object_of, range_of
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    value = data.get("strength", 0)
-    level0 = 1 + 0.1 * value
-    level1 = 1 + 0.2 * value
-    level2 = 1 + 0.1 * value
-    enabled = level0 != 1
+    strength = data.get("strength", 0)
+    level = 1 + 0.2 * strength
+    value = round(level, 2)
+    enabled = level >= 1.01
     return {
         "DPEEnabled": str(enabled).lower(),
-        "DPEMult0": str(round(level0, 2)),
-        "DPEMult1": str(round(level1, 2)),
-        "DPEMult2": str(round(level2, 2)),
+        "DPEMult0": str(value),
+        "DPEMult1": str(value),
     }
 
 
-SCHEMA = object_of({"strength": range_of(0, 5)}, _process)
+SCHEMA = object_of({"strength": range_of(0.0, 5.0)}, _process)

@@ -371,11 +371,11 @@ DeconvIterations=100
 [Color Management]
 InputProfile=(cameraICC)
 ToneCurve=false
-ApplyLookTable=true
+ApplyLookTable=false
 ApplyBaselineExposureOffset=true
 ApplyHueSatMap=true
 DCPIlluminant=0
-WorkingProfile=ProPhoto
+WorkingProfile={CMWorkingProfile}
 WorkingTRC=none
 WorkingTRCGamma=2.3999999999999999
 WorkingTRCSlope=12.9231
@@ -490,11 +490,11 @@ Gamutlab=false
 cbdlMethod=bef
 Mult0={DPEMult0}
 Mult1={DPEMult1}
-Mult2={DPEMult2}
+Mult2=1
 Mult3=1
 Mult4=1
 Mult5=1
-Threshold=0.1
+Threshold=0.20000000000000001
 Skinprotect=0
 Hueskin=-5;25;170;120;
 
