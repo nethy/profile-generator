@@ -23,7 +23,6 @@ class SchemaTest(unittest.TestCase):
                 "defaults": {"tone": {"curve": {"bezier": {}}}},
                 "templates": [
                     {
-                        "optional": False,
                         "settings": {"T": {"tone": {"curve": {"bezier": {}}}}},
                     }
                 ],
@@ -36,7 +35,6 @@ class SchemaTest(unittest.TestCase):
                 "defaults": {"tone": {"curve": {"sigmoid": {}}}},
                 "templates": [
                     {
-                        "optional": False,
                         "settings": {"T": {"tone": {"curve": {"sigmoid": {}}}}},
                     }
                 ],
@@ -47,9 +45,7 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid(
             {
                 "defaults": {"tone": {"contrast": {}}},
-                "templates": [
-                    {"optional": False, "settings": {"T": {"tone": {"contrast": {}}}}}
-                ],
+                "templates": [{"settings": {"T": {"tone": {"contrast": {}}}}}],
             }
         )
 
@@ -57,7 +53,15 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid(
             {
                 "defaults": {"raw": {}},
-                "templates": [{"optional": False, "settings": {"T": {"raw": {}}}}],
+                "templates": [{"settings": {"T": {"raw": {}}}}],
+            }
+        )
+
+    def test_validate_detials_enhance(self) -> None:
+        self.validator.assert_valid(
+            {
+                "defaults": {"details": {"enhance": {}}},
+                "templates": [{"settings": {"T": {"details": {"enhance": {}}}}}],
             }
         )
 
@@ -67,7 +71,6 @@ class SchemaTest(unittest.TestCase):
                 "defaults": {"details": {"sharpening": {"capture": {}}}},
                 "templates": [
                     {
-                        "optional": False,
                         "settings": {"T": {"details": {"sharpening": {"capture": {}}}}},
                     }
                 ],
@@ -80,7 +83,6 @@ class SchemaTest(unittest.TestCase):
                 "defaults": {"details": {"sharpening": {"output": {}}}},
                 "templates": [
                     {
-                        "optional": False,
                         "settings": {"T": {"details": {"sharpening": {"output": {}}}}},
                     }
                 ],
@@ -93,7 +95,6 @@ class SchemaTest(unittest.TestCase):
                 "defaults": {"details": {"noise_reduction": {}}},
                 "templates": [
                     {
-                        "optional": False,
                         "settings": {"T": {"details": {"noise_reduction": {}}}},
                     }
                 ],
@@ -104,7 +105,7 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid(
             {
                 "defaults": {"colors": {}},
-                "templates": [{"optional": False, "settings": {"T": {"colors": {}}}}],
+                "templates": [{"settings": {"T": {"colors": {}}}}],
             }
         )
 

@@ -343,7 +343,7 @@ AllowUpscaling=false
 
 [PostDemosaicSharpening]
 Enabled={PostDemosaicSharpeningEnabled}
-Contrast=0
+Contrast=0.05
 AutoContrast=false
 AutoRadius=false
 DeconvRadius=0.5
@@ -485,16 +485,16 @@ HueRange=-260;-250;-130;-140;
 Contrast=0
 
 [Directional Pyramid Equalizer]
-Enabled=false
+Enabled={DPEEnabled}
 Gamutlab=false
 cbdlMethod=bef
-Mult0=1
-Mult1=1
-Mult2=1
+Mult0={DPEMult0}
+Mult1={DPEMult1}
+Mult2={DPEMult2}
 Mult3=1
 Mult4=1
 Mult5=1
-Threshold=0.20000000000000001
+Threshold=0.1
 Skinprotect=0
 Hueskin=-5;25;170;120;
 
