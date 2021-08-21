@@ -7,6 +7,7 @@ from profile_generator.schema import (
 )
 
 from .hsl import schema_test as hsl_schema_test
+from .profile import schema_test as profile_test
 from .schema import SCHEMA
 from .white_balance import schema_test as wb_schema_test
 
@@ -16,6 +17,7 @@ _DEFAULT = {
     "LabRASTProtection": "0",
     **wb_schema_test.DEFAULT,
     **hsl_schema_test.DEFAULT,
+    **profile_test.DEFAULT,
 }
 
 

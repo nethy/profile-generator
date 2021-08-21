@@ -27,7 +27,6 @@ class SchemaTest(TestCase):
                 "DPEEnabled": "false",
                 "DPEMult0": "1.0",
                 "DPEMult1": "1.0",
-                "DPEMult2": "1.0",
             },
         )
 
@@ -36,8 +35,7 @@ class SchemaTest(TestCase):
             {"strength": 3},
             {
                 "DPEEnabled": "true",
-                "DPEMult0": "1.3",
+                "DPEMult0": "1.6",
                 "DPEMult1": "1.6",
-                "DPEMult2": "1.3",
             },
         )

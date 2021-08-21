@@ -19,6 +19,9 @@ class SchemaTest(TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
 
+    def test_validate_empty_config(self) -> None:
+        self.validator.assert_valid({})
+
     def test_validate_invalid_wb_temperature(self) -> None:
         self.validator.assert_error(
             {"temperature": False},
