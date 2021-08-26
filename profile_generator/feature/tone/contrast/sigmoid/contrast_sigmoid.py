@@ -1,6 +1,7 @@
 import math
 from collections.abc import Sequence
 
+from profile_generator.feature.tone.contrast import sigmoid
 from profile_generator.model import gamma, spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
@@ -43,22 +44,32 @@ def _apply_offsets(fn: Curve, offsets: tuple[float, float]) -> Curve:
     return lambda x: fn(x) * (offsets[1] - offsets[0]) + offsets[0]
 
 
-def base_controls(neutral5: float, ev_comp: float = 0.0) -> Sequence[Point]:
+def base_controls(
+    neutral5: float,
+    ev_comp: float = 0.0,
+    shadow_ev_comp: float = 0.0,
+    highlight_ev_comp: float = 0.0,
+) -> Sequence[Point]:
     middle_grey = _get_middle(neutral5)
     middle_grey.y = _adjust(middle_grey.x, ev_comp)
-    if math.isclose(*middle_grey):
-        shadow_control = middle_grey / 2
-        highlight_control = Point(middle_grey.x + 1, middle_grey.y + 1) / 2
-        return [
-            Point(0, 0),
-            shadow_control,
-            middle_grey,
-            highlight_control,
-            Point(1, 1),
-        ]
-    else:
-        base_curve, _ = gamma.gamma_linear(*middle_grey)
-        return [Point(x, y) for x, y in spline.fit(base_curve)]
+    brightness, _ = gamma.gamma_exp(*middle_grey)
+    # if math.isclose(*middle_grey):
+    shadow_control = Point(middle_grey.x / 2, brightness(middle_grey.x / 2))
+    shadow_control.y = _adjust(shadow_control.y, shadow_ev_comp)
+    highlight_control = Point(
+        (1 + middle_grey.x) / 2, brightness((1 + middle_grey.x) / 2)
+    )
+    highlight_control.y = _adjust(highlight_control.y, highlight_ev_comp)
+    return [
+        Point(0, 0),
+        shadow_control,
+        middle_grey,
+        highlight_control,
+        Point(1, 1),
+    ]
+    # else:
+    #     base_curve, _ = gamma.gamma_linear(*middle_grey)
+    #     return [Point(x, y) for x, y in spline.fit(base_curve)]
 
 
 def _adjust(value: float, ev: float) -> float:

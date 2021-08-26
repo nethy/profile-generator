@@ -343,7 +343,7 @@ AllowUpscaling=false
 
 [PostDemosaicSharpening]
 Enabled={PostDemosaicSharpeningEnabled}
-Contrast=0.05
+Contrast=0
 AutoContrast=false
 AutoRadius=false
 DeconvRadius=0.5

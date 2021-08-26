@@ -94,6 +94,7 @@ def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
 
     contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
     _curve = contrast_curve_sqrt(contrast_gradient)
+
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
 
