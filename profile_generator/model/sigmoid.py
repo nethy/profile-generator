@@ -1,4 +1,5 @@
 import math
+from collections.abc import Callable
 from functools import cache
 
 from profile_generator.unit import Point
@@ -88,24 +89,29 @@ def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
     f(0.5) = 0.5
     h(0.5) = grey.y
     """
+    return _tone_curve(middle, gradient, contrast_curve_sqrt)
+
+
+def _tone_curve(
+    middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
+) -> Curve:
     gamma_x_curve, gamma_x_gradient = gamma_linear(middle.x, 0.5)
     gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
     contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
-    _curve = contrast_curve_sqrt(contrast_gradient)
+    _curve = contrast_curve(contrast_gradient)
 
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
+
+
+@cache
+def tone_curve_hybrid(middle: Point, gradient: float) -> Curve:
+    return _tone_curve(middle, gradient, contrast_curve_hybrid)
 
 
 def tone_curve_abs(middle: Point, gradient: float) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma_linear(middle.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, middle.y)
-    gamma_gradient = gamma_x_gradient * gamma_y_gradient
-
-    contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
-    _curve = contrast_curve_abs(contrast_gradient)
-    return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
+    return _tone_curve(middle, gradient, contrast_curve_abs)
 
 
 def _contrast_of_gradient_abs(gradient: float) -> float:
@@ -124,6 +130,18 @@ def contrast_curve_abs(gradient: float) -> Curve:
         return lambda x: (
             (c * (x - 0.5)) / (1 + c * abs(x - 0.5)) + (c / 2) / (1 + c / 2)
         ) / (c / (1 + c / 2))
+
+
+def contrast_curve_hybrid(gradient: float) -> Curve:
+    def _curve(x: float) -> float:
+        curve_sqrt = contrast_curve_sqrt(gradient)
+        curve_abs = contrast_curve_abs(gradient)
+        if x < 0.5:
+            return curve_sqrt(x)
+        else:
+            return curve_abs(x)
+
+    return _curve
 
 
 def _get_contrast_gradient(

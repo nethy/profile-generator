@@ -19,7 +19,7 @@ ClampOOG=true
 CurveMode=FilmLike
 CurveMode2=FilmLike
 Curve={Curve}
-Curve2={Curve2}
+Curve2=0;
 
 [HLRecovery]
 Enabled=true

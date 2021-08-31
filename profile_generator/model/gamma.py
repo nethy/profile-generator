@@ -155,3 +155,36 @@ def _gamma_inverse_exp(g: float) -> Curve:
         return lambda x: x
     else:
         return lambda x: -math.log(1 / (x / (1 + math.exp(-g)) - x / 2 + 0.5) - 1) / g
+
+
+def gamma_spline(x: float, y: float) -> tuple[Curve, float]:
+    """
+    0, 0
+    gx, gy
+    1, 1
+
+    f  = a*x^3+b*x^2+c*x+d
+    f' = 3a*x^2+2b*x+c
+    f''= 6a*x+2b
+
+    f(gx) = gy
+    f(1) = 1
+    f'(gx) = gy/gx
+    f'(1) = 1
+    """
+    a = (y / x - 1) / (
+        3 * math.pow(x, 2)
+        + 2 * (2 * math.pow(x, 3) - 2) / (1 - math.pow(x, 2)) * (x - 1)
+        - 3
+    )
+    b = a * (2 * math.pow(x, 3) - 2) / (1 - math.pow(x, 2))
+    c = 1 - 3 * a - 2 * b
+    d = 1 - a - b - c
+
+    def _curve(val: float) -> float:
+        if val < x:
+            return val * y / x
+        else:
+            return a * math.pow(val, 3) + b * math.pow(val, 2) + c * val + d
+
+    return (_curve, y / x)

@@ -23,39 +23,44 @@ def print_calculation(name, fn, *args, **kwargs):
 
 
 if __name__ == "__main__":
-    # print_calculation(
-    #     "test_calculate",
-    #     contrast_sigmoid.calculate,
-    #     _GREY18,
-    #     _GAMMA,
-    # )
-    # print_calculation(
-    #     "test_calculate_with_offests",
-    #     contrast_sigmoid.calculate,
-    #     _GREY18,
-    #     _GAMMA,
-    #     _OFFSETS,
-    # )
-    # print_calculation("test_base_controls", contrast_sigmoid.base_controls, _GREY18)
-    # print_calculation(
-    #     "test_base_controls_ev_comp",
-    #     contrast_sigmoid.base_controls,
-    #     _GREY18,
-    #     _EV_COMP,
-    # )
-    # print_calculation(
-    #     "test_calculate_when_strength_is_less_than_1",
-    #     contrast_bezier.calculate,
-    #     Point(87 / 255, 119 / 255),
-    #     Strength(0.2),
-    #     (2, 1),
-    # )
-    # print_calculation(
-    #     "test_calculate_when_strength_is_1",
-    #     contrast_bezier.calculate,
-    #     Point(0.5, 0.5),
-    #     Strength(1),
-    #     (2, 1),
-    # )
-    for x, y in contrast_sigmoid.base_controls(86.44, 0, highlight_ev_comp=-0.5):
-        print(f"{x:.6f} {y:.6f}")
+    print_calculation(
+        "test_calculate",
+        contrast_sigmoid.calculate,
+        _GREY18,
+        _GAMMA,
+    )
+    print_calculation(
+        "test_calculate_offests",
+        contrast_sigmoid.calculate,
+        _GREY18,
+        _GAMMA,
+        _OFFSETS,
+    )
+    print_calculation(
+        "test_calculate_highlight_protection",
+        contrast_sigmoid.calculate,
+        _GREY18,
+        _GAMMA,
+        highlight_protection=True,
+    )
+    print_calculation(
+        "test_base_controls_ev_comp",
+        contrast_sigmoid.calculate,
+        _GREY18,
+        _GAMMA,
+        ev_comp=_EV_COMP,
+    )
+    print_calculation(
+        "test_calculate_when_strength_is_less_than_1",
+        contrast_bezier.calculate,
+        Point(87 / 255, 119 / 255),
+        Strength(0.2),
+        (2, 1),
+    )
+    print_calculation(
+        "test_calculate_when_strength_is_1",
+        contrast_bezier.calculate,
+        Point(0.5, 0.5),
+        Strength(1),
+        (2, 1),
+    )
