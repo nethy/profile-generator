@@ -106,8 +106,13 @@ def _tone_curve(
 
 
 @cache
-def tone_curve_hybrid(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, contrast_curve_hybrid)
+def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
+    return _tone_curve(middle, gradient, contrast_curve_filmic)
+
+
+@cache
+def tone_curve_hlp(middle: Point, gradient: float) -> Curve:
+    return _tone_curve(middle, gradient, contrast_curve_hlp)
 
 
 def tone_curve_abs(middle: Point, gradient: float) -> Curve:
@@ -132,7 +137,7 @@ def contrast_curve_abs(gradient: float) -> Curve:
         ) / (c / (1 + c / 2))
 
 
-def contrast_curve_hybrid(gradient: float) -> Curve:
+def contrast_curve_hlp(gradient: float) -> Curve:
     def _curve(x: float) -> float:
         curve_sqrt = contrast_curve_sqrt(gradient)
         curve_abs = contrast_curve_abs(gradient)
@@ -140,6 +145,18 @@ def contrast_curve_hybrid(gradient: float) -> Curve:
             return curve_sqrt(x)
         else:
             return curve_abs(x)
+
+    return _curve
+
+
+def contrast_curve_filmic(gradient: float) -> Curve:
+    def _curve(x: float) -> float:
+        curve_sqrt = contrast_curve_sqrt(gradient)
+        curve_abs = contrast_curve_abs(gradient)
+        if x < 0.5:
+            return curve_sqrt(x)
+        else:
+            return math.sqrt(curve_sqrt(x) * curve_abs(x))
 
     return _curve
 

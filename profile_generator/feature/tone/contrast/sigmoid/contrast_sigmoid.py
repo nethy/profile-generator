@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from profile_generator.model import gamma, spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
-from profile_generator.model.sigmoid import Curve, tone_curve_hybrid, tone_curve_sqrt
+from profile_generator.model.sigmoid import Curve, tone_curve_filmic, tone_curve_hlp
 from profile_generator.unit import Point
 
 
@@ -19,9 +19,9 @@ def calculate(
     middle = _corrigate_middle(middle, offsets)
     _gradient = _corrigate_gamma(gradient, offsets)
     _curve = (
-        tone_curve_sqrt(middle, _gradient)
+        tone_curve_filmic(middle, _gradient)
         if not highlight_protection
-        else tone_curve_hybrid(middle, _gradient)
+        else tone_curve_hlp(middle, _gradient)
     )
     _curve = _apply_offsets(
         _curve,

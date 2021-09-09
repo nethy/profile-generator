@@ -18,7 +18,14 @@ from profile_generator.unit import Point, Strength
 
 def print_calculation(name, fn, *args, **kwargs):
     print(name)
-    print(fn(*args, **kwargs))
+    result = fn(*args, **kwargs)
+    if isinstance(result, list):
+        print("[")
+        for item in result:
+            print(f"  {item},")
+        print("]")
+    else:
+        print(result)
     print()
 
 
