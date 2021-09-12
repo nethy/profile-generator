@@ -374,15 +374,6 @@ Colors related adjustments.
 
 Adjust the vibrance of the image.
 
-`skin_tone_protection`
-|               |         |
-|---------------|---------|
-| Type          | integer |
-| Value range   | 0 - 100 |
-| Default value | 0       |
-
-Dimming the vibrance strength in skin tones.
-
 
 ### HSL
 
