@@ -5,12 +5,10 @@ from collections.abc import Callable, Sequence
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 
-Point = tuple[float, float]
-
 EPSILON = 1 / 256 / 2
 
 
-def fit(fn: Callable[[float], float]) -> Sequence[Point]:
+def fit(fn: Callable[[float], float]) -> Sequence[tuple[float, float]]:
     references = [(i / 255, fn(i / 255)) for i in range(1, 255)]
     knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
     for _ in range(3, 24 + 1):
@@ -25,12 +23,12 @@ def fit(fn: Callable[[float], float]) -> Sequence[Point]:
 
 
 def _find_max_diff(
-    references: list[Point], spline: Callable[[float], float]
+    references: list[tuple[float, float]], spline: Callable[[float], float]
 ) -> tuple[float, int]:
     return max((abs(y - spline(x)), i) for i, (x, y) in enumerate(references))
 
 
-def interpolate(points: Sequence[Point]) -> Callable[[float], float]:
+def interpolate(points: Sequence[tuple[float, float]]) -> Callable[[float], float]:
     if len(points) == 0:
         return lambda x: 0.0
     elif len(points) == 1:

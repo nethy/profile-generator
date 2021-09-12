@@ -5,13 +5,8 @@ from functools import cache
 from profile_generator.unit import Point
 from profile_generator.util.search import jump_search
 
-from .gamma import (
-    Curve,
-    gamma_exp,
-    gamma_inverse_exp,
-    gamma_inverse_linear,
-    gamma_linear,
-)
+from . import gamma
+from .gamma import Curve
 
 
 def contrast_curve_exp(gradient: float) -> Curve:
@@ -41,11 +36,11 @@ def _contrast_of_gradient_exp(gradient: float) -> float:
 
 @cache
 def tone_curve_exp(middle: Point, gradient: float) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma_exp(middle.x, 0.5)
+    gamma_x_curve, gamma_x_gradient = gamma.exp(middle.x, 0.5)
     if middle.y <= 0.5:
-        gamma_y_curve, gamma_y_gradient = gamma_inverse_exp(0.5, middle.y)
+        gamma_y_curve, gamma_y_gradient = gamma.inverse_exp(0.5, middle.y)
     else:
-        gamma_y_curve, gamma_y_gradient = gamma_exp(0.5, middle.y)
+        gamma_y_curve, gamma_y_gradient = gamma.exp(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
     contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
@@ -95,8 +90,8 @@ def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma_linear(middle.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma_inverse_linear(0.5, middle.y)
+    gamma_x_curve, gamma_x_gradient = gamma.linear(middle.x, 0.5)
+    gamma_y_curve, gamma_y_gradient = gamma.inverse_linear(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
     contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)

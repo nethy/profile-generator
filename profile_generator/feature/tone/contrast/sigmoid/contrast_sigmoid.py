@@ -27,7 +27,7 @@ def calculate(
         _curve,
         offsets,
     )
-    _comp_curve, _ = gamma.gamma_sqrt(
+    _comp_curve, _ = gamma.sqrt(
         rgb.normalize_value(grey18),
         _adjust_ev(rgb.normalize_value(grey18), ev_comp),
     )
