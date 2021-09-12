@@ -102,7 +102,7 @@ Brightness=0
 Contrast=0
 Chromaticity={LabChromacity}
 AvoidColorShift=true
-RedAndSkinTonesProtection={LabRASTProtection}
+RedAndSkinTonesProtection=0
 LCredsk=true
 LCurve=0;
 aCurve=0;
@@ -499,9 +499,9 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled=false
+Enabled={HSVEEnabled}
 HCurve=0;
-SCurve=0;
+SCurve={HSVESCurve}
 VCurve=0;
 
 [SoftLight]
