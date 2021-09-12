@@ -19,7 +19,7 @@ ClampOOG=true
 CurveMode=FilmLike
 CurveMode2=FilmLike
 Curve={Curve}
-Curve2={Curve2}
+Curve2=0;
 
 [HLRecovery]
 Enabled=true
@@ -343,7 +343,7 @@ AllowUpscaling=false
 
 [PostDemosaicSharpening]
 Enabled={PostDemosaicSharpeningEnabled}
-Contrast=0.05
+Contrast=0
 AutoContrast=false
 AutoRadius=false
 DeconvRadius=0.5
@@ -574,8 +574,8 @@ FlatFieldBlurType=Area Flatfield
 FlatFieldAutoClipControl=false
 FlatFieldClipControl=0
 CA=true
-CAAvoidColourshift=true
-CAAutoIterations=1
+CAAvoidColourshift=false
+CAAutoIterations=2
 CARed=0
 CABlue=0
 HotPixelFilter=false

@@ -9,17 +9,17 @@ _DEFAULT_EV_COMP = 0.0
 _DEFAULT_GAMMA = 1.0
 
 _CURVE = "Curve"
-_CURVE2 = "Curve2"
 
 
 def get_parameters(
     configuration: Mapping[str, Any]
-) -> tuple[float, float, float, tuple[float, float]]:
+) -> tuple[float, float, bool, float, tuple[float, float]]:
     grey18 = configuration.get("grey18", _DEFAULT_GREY18)
-    ev_comp = configuration.get("exposure_compensation", _DEFAULT_EV_COMP)
     gamma = configuration.get("gamma", _DEFAULT_GAMMA)
+    hl_protection = configuration.get("highlight_protection", False)
+    ev_comp = configuration.get("exposure_compensation", _DEFAULT_EV_COMP)
     offsets = _get_offsets(configuration)
-    return (grey18, gamma, ev_comp, offsets)
+    return (grey18, gamma, hl_protection, ev_comp, offsets)
 
 
 def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
@@ -30,17 +30,8 @@ def _get_offsets(configuration: Mapping[str, Any]) -> tuple[float, float]:
         return (0, 1)
 
 
-def marshal_curves(
-    control_curve: Sequence[Point], contrast_curve: Sequence[Point]
-) -> Mapping[str, str]:
-    control_curve_value = raw_therapee.CurveType.LINEAR
-    if len(control_curve) > 0:
-        control_curve_value = (
-            raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(control_curve)
-        )
+def marshal_curve(curve: Sequence[Point]) -> Mapping[str, str]:
     value = raw_therapee.CurveType.LINEAR
-    if len(contrast_curve) > 0:
-        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(
-            contrast_curve
-        )
-    return {_CURVE: control_curve_value, _CURVE2: value}
+    if len(curve) > 0:
+        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(curve)
+    return {_CURVE: value}

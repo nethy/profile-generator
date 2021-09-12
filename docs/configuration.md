@@ -199,7 +199,16 @@ Average sRGB value of 18% grey value.
 | Default value | 0           |
 
 Amount of contrast. 1.0 will produce a linear tone curve.
-For portraits use 1.7-1.8, and landscapes around 2.0-2.2.
+For portraits use 1.3-1.5, and landscapes around 1.7-2.0.
+
+`highlight_protection`
+|               |             |
+| ---           | ---         |
+| Type          | boolean     |
+| Value range   | true, false |
+| Default value | false       |
+
+Use a milder curve for the brighter tones.
 
 `exposure_compensation`
 |               |            |

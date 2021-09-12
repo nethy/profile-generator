@@ -18,7 +18,14 @@ from profile_generator.unit import Point, Strength
 
 def print_calculation(name, fn, *args, **kwargs):
     print(name)
-    print(fn(*args, **kwargs))
+    result = fn(*args, **kwargs)
+    if isinstance(result, list):
+        print("[")
+        for item in result:
+            print(f"  {item},")
+        print("]")
+    else:
+        print(result)
     print()
 
 
@@ -30,18 +37,25 @@ if __name__ == "__main__":
         _GAMMA,
     )
     print_calculation(
-        "test_calculate_with_offests",
+        "test_calculate_offests",
         contrast_sigmoid.calculate,
         _GREY18,
         _GAMMA,
         _OFFSETS,
     )
-    print_calculation("test_base_controls", contrast_sigmoid.base_controls, _GREY18)
+    print_calculation(
+        "test_calculate_highlight_protection",
+        contrast_sigmoid.calculate,
+        _GREY18,
+        _GAMMA,
+        highlight_protection=True,
+    )
     print_calculation(
         "test_base_controls_ev_comp",
-        contrast_sigmoid.base_controls,
+        contrast_sigmoid.calculate,
         _GREY18,
-        _EV_COMP,
+        _GAMMA,
+        ev_comp=_EV_COMP,
     )
     print_calculation(
         "test_calculate_when_strength_is_less_than_1",
