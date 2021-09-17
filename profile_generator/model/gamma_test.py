@@ -14,7 +14,7 @@ from .gamma import (
     inverse_linear,
     inverse_sqrt,
     linear,
-    spline,
+    piecewise,
     sqrt,
 )
 
@@ -82,8 +82,8 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(gamma_inverse(0.5), _GREY.y)
         self.assertAlmostEqual(gradient, 0.9725837)
 
-    def test_gamma_spline(self) -> None:
-        gamma, gradient = spline(0.25, 0.5)
+    def test_gamma_piecewise(self) -> None:
+        gamma, gradient = piecewise(0.25, 0.5)
 
-        self.assertAlmostEqual(gamma(0.5), 0.7962963)
+        self.assertAlmostEqual(gamma(0.5), 0.8518519)
         self.assertAlmostEqual(gradient, 2)

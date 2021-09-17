@@ -17,7 +17,5 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength
 
 if __name__ == "__main__":
-    points = spline.fit(faded.curve(24 / 255, 0.1))
-    for x, y in points:
+    for x, y in contrast_sigmoid.calculate(80.44, 1.75):
         print(f"{x:.6f} {y:.6f}")
-    print(raw_therapee.present_curve([Point(x, y) for x, y in points]))

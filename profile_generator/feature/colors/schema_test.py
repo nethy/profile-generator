@@ -16,6 +16,8 @@ _DEFAULT = {
     "LabChromacity": "0",
     "HSVEEnabled": "false",
     "HSVESCurve": "0;",
+    "CTEnabled": "false",
+    "CTLabRegionPower": "1",
     **wb_schema_test.DEFAULT,
     **hsl_schema_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -36,6 +38,12 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"vibrance": False},
             InvalidObjectError({"vibrance": InvalidRangeError(-100, 100)}),
+        )
+
+    def test_validate_invalid_chrome(self) -> None:
+        self.validator.assert_error(
+            {"chrome": False},
+            InvalidObjectError({"chrome": InvalidRangeError(0, 100)}),
         )
 
     def test_process_defaults(self) -> None:
@@ -62,4 +70,15 @@ class SchemaTest(TestCase):
                 "LabEnabled": "true",
                 "LabChromacity": "-50",
             },
+        )
+
+    def test_process_chrome(self) -> None:
+        self.validator.assert_process({"chrome": 0}, _DEFAULT)
+        self.validator.assert_process(
+            {"chrome": 50},
+            {**_DEFAULT, "CTEnabled": "true", "CTLabRegionPower": "1.25"},
+        )
+        self.validator.assert_process(
+            {"chrome": 100},
+            {**_DEFAULT, "CTEnabled": "true", "CTLabRegionPower": "1.5"},
         )
