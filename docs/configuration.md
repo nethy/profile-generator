@@ -366,11 +366,11 @@ Colors related adjustments.
 **Parameters**
 
 `vibrance`
-|               |            |
-|---------------|------------|
-| Type          | integer    |
-| Value range   | -100 - 100 |
-| Default value | 0          |
+|               |          |
+|---------------|----------|
+| Type          | integer  |
+| Value range   | -10 - 10 |
+| Default value | 0        |
 
 Adjust the vibrance of the image.
 
