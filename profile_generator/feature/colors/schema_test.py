@@ -29,7 +29,7 @@ class SchemaTest(TestCase):
         self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
-        self.validator.assert_valid({"vibrance": 50})
+        self.validator.assert_valid({"vibrance": 5})
 
     def test_validate_invalid_vibrance(self) -> None:
         self.validator.assert_error(

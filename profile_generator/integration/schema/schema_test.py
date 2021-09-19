@@ -57,14 +57,6 @@ class SchemaTest(unittest.TestCase):
             }
         )
 
-    def test_validate_detials_enhance(self) -> None:
-        self.validator.assert_valid(
-            {
-                "defaults": {"details": {"enhance": {}}},
-                "templates": [{"settings": {"T": {"details": {"enhance": {}}}}}],
-            }
-        )
-
     def test_validate_details_sharpening_capture(self) -> None:
         self.validator.assert_valid(
             {

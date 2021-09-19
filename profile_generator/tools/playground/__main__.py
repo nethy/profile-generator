@@ -17,5 +17,5 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, Strength
 
 if __name__ == "__main__":
-    for x, y in contrast_sigmoid.calculate(80.44, 1.75):
+    for x, y in contrast_sigmoid.calculate(87.975, 1.75):
         print(f"{x:.6f} {y:.6f}")

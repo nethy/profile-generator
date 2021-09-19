@@ -146,7 +146,7 @@ def contrast_curve_hlp(gradient: float) -> Curve:
 
 def contrast_curve_filmic(gradient: float) -> Curve:
     def _curve(x: float) -> float:
-        curve_sqrt = contrast_curve_sqrt(gradient)
+        curve_sqrt = contrast_curve_exp(gradient)
         curve_abs = contrast_curve_abs(gradient)
         if x < 0.5:
             return curve_sqrt(x)

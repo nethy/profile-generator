@@ -17,32 +17,22 @@ class SchemaTest(TestCase):
         self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
-        self.validator.assert_valid({"local": 50})
+        self.validator.assert_valid({"local": 5})
 
     def test_validate_invalid_local(self) -> None:
         self.validator.assert_error(
-            {"local": -1}, InvalidObjectError({"local": InvalidRangeError(0, 100)})
+            {"local": -1}, InvalidObjectError({"local": InvalidRangeError(0, 10)})
         )
 
     def test_process_default(self) -> None:
-        self.validator.assert_process(
-            {}, {"WaveletEnabled": "false", "OpacityCurveWL": "0;"}
-        )
+        self.validator.assert_process({}, {"LCEnabled": "false", "LCAmount": "0.0"})
 
     def test_process_local(self) -> None:
         self.validator.assert_process(
-            {"local": 0},
-            {"WaveletEnabled": "false", "OpacityCurveWL": "0;"},
+            {"local": 1},
+            {"LCEnabled": "true", "LCAmount": "0.05"},
         )
         self.validator.assert_process(
-            {"local": 20},
-            {
-                "WaveletEnabled": "true",
-                "OpacityCurveWL": (
-                    "1;0.000000;0.500000;0.288675;0.288675;"
-                    + "0.400000;0.600000;0.288675;0.288675;"
-                    + "0.600000;0.600000;0.288675;0.288675;"
-                    + "1.000000;0.500000;0.288675;0.288675;"
-                ),
-            },
+            {"local": 10},
+            {"LCEnabled": "true", "LCAmount": "0.5"},
         )

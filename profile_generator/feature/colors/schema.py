@@ -31,7 +31,7 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
     power = 1
     if vibrance > 0:
         saturation = 5 * vibrance
-        power = 1 + vibrance / 20
+        power = 1 + 0.05 * vibrance
     else:
         saturation = 10 * vibrance
     return {
