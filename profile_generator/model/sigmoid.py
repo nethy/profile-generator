@@ -9,6 +9,7 @@ from . import gamma
 from .gamma import Curve
 
 
+@cache
 def contrast_curve_exp(gradient: float) -> Curve:
     """
     y = (1/(1+exp(-c(x-0.5)))-1/(1+exp(-c(-0.5)))) /
@@ -146,12 +147,12 @@ def contrast_curve_hlp(gradient: float) -> Curve:
 
 def contrast_curve_filmic(gradient: float) -> Curve:
     def _curve(x: float) -> float:
-        curve_sqrt = contrast_curve_exp(gradient)
+        curve_exp = contrast_curve_exp(gradient)
         curve_abs = contrast_curve_abs(gradient)
         if x < 0.5:
-            return curve_sqrt(x)
+            return curve_exp(x)
         else:
-            return (curve_sqrt(x) + curve_abs(x)) / 2
+            return (curve_exp(x) + curve_abs(x)) / 2.0
 
     return _curve
 

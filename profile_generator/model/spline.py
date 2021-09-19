@@ -5,7 +5,7 @@ from collections.abc import Callable, Sequence
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 
-EPSILON = 1 / 256 / 2
+EPSILON = 1 / 512
 
 
 def fit(fn: Callable[[float], float]) -> Sequence[tuple[float, float]]:
@@ -115,7 +115,7 @@ def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
             or math.isclose(x, knots[i])
             or math.isclose(x, knots[i + 1])
         ):
-            a, b, c, d = coefficients[i * 4 : i * 4 + 4]
+            a, b, c, d = coefficients[i * 4 : (i + 1) * 4]
             y = a * math.pow(x, 3) + b * math.pow(x, 2) + c * x + d
             break
     return y
