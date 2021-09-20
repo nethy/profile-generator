@@ -4,10 +4,9 @@
 from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
-    _EV_COMP,
-    _GAMMA,
+    _BRIGHTNESS,
     _GREY18,
-    _OFFSETS,
+    _SLOPE,
 )
 from profile_generator.model import gamma, linalg, sigmoid, spline
 from profile_generator.model.color import lab, rgb, xyz
@@ -34,28 +33,14 @@ if __name__ == "__main__":
         "test_calculate",
         contrast_sigmoid.calculate,
         _GREY18,
-        _GAMMA,
+        _SLOPE,
     )
     print_calculation(
-        "test_calculate_offests",
+        "test_base_controls_brightness",
         contrast_sigmoid.calculate,
         _GREY18,
-        _GAMMA,
-        _OFFSETS,
-    )
-    print_calculation(
-        "test_calculate_highlight_protection",
-        contrast_sigmoid.calculate,
-        _GREY18,
-        _GAMMA,
-        highlight_protection=True,
-    )
-    print_calculation(
-        "test_base_controls_ev_comp",
-        contrast_sigmoid.calculate,
-        _GREY18,
-        _GAMMA,
-        ev_comp=_EV_COMP,
+        _SLOPE,
+        _BRIGHTNESS,
     )
     print_calculation(
         "test_calculate_when_strength_is_less_than_1",
