@@ -156,34 +156,32 @@ def _inverse_exp(g: float) -> Curve:
         return lambda x: -math.log(1 / (x / (1 + math.exp(-g)) - x / 2 + 0.5) - 1) / g
 
 
-def spline(x: float, y: float) -> tuple[Curve, float]:
+def piecewise(x: float, y: float) -> tuple[Curve, float]:
     """
-    0, 0
-    gx, gy
-    1, 1
+    0  0
+    gx gy
+    1  1
 
-    f  = a*x^3+b*x^2+c*x+d
-    f' = 3a*x^2+2b*x+c
-    f''= 6a*x+2b
+    (1) f(gx) = gy
+    (2) f(1) = 1
+    (3) f'(gx) = gy/gx
+    (4) f''(1) = 0
 
-    f(gx) = gy
-    f(1) = 1
-    f'(gx) = gy/gx
-    f'(1) = 1
+    f   = ax^3+bx^2+cx+d
+    f'  = 3ax^2+2bx+c
+    f'' = 6ax+2b
     """
-    a = (y / x - 1) / (
-        3 * math.pow(x, 2)
-        + 2 * (2 * math.pow(x, 3) - 2) / (1 - math.pow(x, 2)) * (x - 1)
-        - 3
-    )
-    b = a * (2 * math.pow(x, 3) - 2) / (1 - math.pow(x, 2))
-    c = 1 - 3 * a - 2 * b
-    d = 1 - a - b - c
+    a = (1 - y / x) / 2 / (math.pow(x, 3) - 3 * math.pow(x, 2) + 3 * x - 1)
+    b = -3 * a
+    c = y / x - 3 * a * math.pow(x, 2) + 6 * a * x
+    d = 2 * a * math.pow(x, 3) - 3 * a * math.pow(x, 2)
 
     def _curve(val: float) -> float:
         if val < x:
             return val * y / x
         else:
-            return a * math.pow(val, 3) + b * math.pow(val, 2) + c * val + d
+            weight = (val - x) / (1 - x) * 0.707106781
+            curve = a * math.pow(val, 3) + b * math.pow(val, 2) + c * val + d
+            return (1 - weight) * curve + weight * val
 
     return (_curve, y / x)

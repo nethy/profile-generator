@@ -3,7 +3,6 @@ import unittest
 from profile_generator.schema import (
     InvalidObjectError,
     InvalidRangeError,
-    InvalidTypeError,
     SchemaValidator,
 )
 
@@ -21,10 +20,8 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid(
             {
                 "grey18": 87,
-                "gamma": 1.7,
-                "highlight_protection": True,
-                "exposure_compensation": -1.0,
-                "matte_effect": True,
+                "slope": 1.7,
+                "brightness": -1.0,
             }
         )
 
@@ -34,26 +31,14 @@ class SchemaTest(unittest.TestCase):
             InvalidObjectError({"grey18": InvalidRangeError(16, 240)}),
         )
 
-    def test_validate_invalid_gamma(self) -> None:
+    def test_validate_invalid_slope(self) -> None:
         self.validator.assert_error(
-            {"gamma": False},
-            InvalidObjectError({"gamma": InvalidRangeError(1.0, 5.0)}),
+            {"slope": False},
+            InvalidObjectError({"slope": InvalidRangeError(1.0, 5.0)}),
         )
 
-    def test_validate_invalid_highlight_protection(self) -> None:
+    def test_validate_invalid_brightness(self) -> None:
         self.validator.assert_error(
-            {"highlight_protection": "invalid"},
-            InvalidObjectError({"highlight_protection": InvalidTypeError(bool)}),
-        )
-
-    def test_validate_invalid_exposure_compensation(self) -> None:
-        self.validator.assert_error(
-            {"exposure_compensation": False},
-            InvalidObjectError({"exposure_compensation": InvalidRangeError(-2.0, 2.0)}),
-        )
-
-    def test_validate_invalid_matte_effect(self) -> None:
-        self.validator.assert_error(
-            {"matte_effect": 0},
-            InvalidObjectError({"matte_effect": InvalidTypeError(bool)}),
+            {"brightness": False},
+            InvalidObjectError({"brightness": InvalidRangeError(-2.0, 2.0)}),
         )

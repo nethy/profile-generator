@@ -17,16 +17,18 @@ class SchemaTest(TestCase):
         self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
-        self.validator.assert_valid({"image_size_in_mp": 12.8})
+        self.validator.assert_valid({"resolution_mp": 12.8})
 
     def test_validate_invalid_image_size(self) -> None:
         self.validator.assert_error(
-            {"image_size_in_mp": -1.0},
-            InvalidObjectError({"image_size_in_mp": InvalidRangeError(1.0, 1000.0)}),
+            {"resolution_mp": -1.0},
+            InvalidObjectError({"resolution_mp": InvalidRangeError(1.0, 1000.0)}),
         )
 
     def test_process_defaults(self) -> None:
-        self.validator.assert_process({}, {"SHRadius": "40"})
+        self.validator.assert_process({}, {"SHRadius": "40", "LCRadius": "40"})
 
     def test_process_image_size(self) -> None:
-        self.validator.assert_process({"image_size_in_mp": 49}, {"SHRadius": "70"})
+        self.validator.assert_process(
+            {"resolution_mp": 49}, {"SHRadius": "70", "LCRadius": "70"}
+        )
