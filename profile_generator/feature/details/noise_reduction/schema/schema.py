@@ -27,7 +27,7 @@ def _process(data: Any) -> Mapping[str, str]:
 
 def _get_luminance_curve(luminance: int) -> str:
     if luminance > 0:
-        luminance_eq = [Point(0, luminance / 100), Point(0.75, luminance / 100 / 4)]
+        luminance_eq = [Point(0, luminance / 100), Point(1, 0)]
         return "1;" + raw_therapee.present_equalizer(luminance_eq)
     else:
         return "0;"
