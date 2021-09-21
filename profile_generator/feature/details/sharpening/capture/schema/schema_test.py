@@ -2,7 +2,7 @@ import unittest
 
 from profile_generator.schema import (
     InvalidObjectError,
-    InvalidTypeError,
+    InvalidOptionError,
     SchemaValidator,
 )
 
@@ -17,23 +17,25 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
-        self.validator.assert_valid({"enabled": False})
+        self.validator.assert_valid({"type": "off"})
 
-    def test_validate_invalid_enabled(self) -> None:
+    def test_validate_invalid_type(self) -> None:
         self.validator.assert_error(
-            {"enabled": "True"},
-            InvalidObjectError({"enabled": InvalidTypeError(bool)}),
+            {"type": "True"},
+            InvalidObjectError({"type": InvalidOptionError(("off", "aa", "no_aa"))}),
         )
 
     def test_process_default(self) -> None:
-        self.validator.assert_process({}, {"PostDemosaicSharpeningEnabled": "false"})
-
-    def test_process_enabled(self) -> None:
         self.validator.assert_process(
-            {"enabled": True},
-            {"PostDemosaicSharpeningEnabled": "true"},
+            {}, {"PDSEnabled": "false", "PDSDeconvRadius": "0.5"}
+        )
+
+    def test_process_type(self) -> None:
+        self.validator.assert_process(
+            {"type": "aa"},
+            {"PDSEnabled": "true", "PDSDeconvRadius": "0.7"},
         )
         self.validator.assert_process(
-            {"enabled": False},
-            {"PostDemosaicSharpeningEnabled": "false"},
+            {"type": "no_aa"},
+            {"PDSEnabled": "true", "PDSDeconvRadius": "0.59"},
         )

@@ -342,11 +342,11 @@ Height=900
 AllowUpscaling=false
 
 [PostDemosaicSharpening]
-Enabled={PostDemosaicSharpeningEnabled}
+Enabled={PDSEnabled}
 Contrast=15
 AutoContrast=false
 AutoRadius=false
-DeconvRadius=0.59
+DeconvRadius={PDSDeconvRadius}
 DeconvRadiusOffset=0
 DeconvIterCheck=true
 DeconvIterations=20
