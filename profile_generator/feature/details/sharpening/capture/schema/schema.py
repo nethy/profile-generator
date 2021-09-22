@@ -4,10 +4,11 @@ from typing import Any
 from profile_generator.schema import object_of, options_of
 
 _OFF = "off"
-_AA = "aa"
+_MUTED = "muted"
 _NO_AA = "no_aa"
+_AA = "aa"
 
-_RADIUS = {_OFF: 0.5, _AA: 0.7, _NO_AA: 0.59}
+_RADIUS = {_OFF: 0.4, _MUTED: 0.5, _NO_AA: 0.59, _AA: 0.7}
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -18,4 +19,14 @@ def _process(data: Any) -> Mapping[str, str]:
     }
 
 
-SCHEMA = object_of({"type": options_of(_OFF, _AA, _NO_AA)}, _process)
+SCHEMA = object_of(
+    {
+        "type": options_of(
+            _OFF,
+            _MUTED,
+            _NO_AA,
+            _AA,
+        )
+    },
+    _process,
+)

@@ -176,12 +176,14 @@ def piecewise(x: float, y: float) -> tuple[Curve, float]:
     c = y / x - 3 * a * math.pow(x, 2) + 6 * a * x
     d = 2 * a * math.pow(x, 3) - 3 * a * math.pow(x, 2)
 
+    gradient = y / x
+
     def _curve(val: float) -> float:
         if val < x:
             return val * y / x
         else:
-            weight = (val - x) / (1 - x) * 0.707106781
+            weight = (val - x) / (1 - x)
             curve = a * math.pow(val, 3) + b * math.pow(val, 2) + c * val + d
-            return (1 - weight) * curve + weight * val
+            return (1 - weight) * curve + weight * (1 + (val - 1) / gradient)
 
-    return (_curve, y / x)
+    return (_curve, gradient)

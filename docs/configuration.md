@@ -245,12 +245,15 @@ Enhance image details via caputre sharpening.
 
 **Parameters**
 
-`enabled`
-|               |             |
-| ---           | ---         |
-| Type          | boolean     |
-| Value range   | true, false |
-| Default value | false       |
+`type`
+|               |                               |
+| ---           | ---                           |
+| Type          | string                        |
+| Value range   | "off", "muted", "no_aa", "aa" |
+| Default value | "off"                         |
+
+Capture sharpening strength based weather the image taken with anti-aliasing
+filter or not. `Muted` is preferred for slighly noisy photos.
 
 #### Output
 
