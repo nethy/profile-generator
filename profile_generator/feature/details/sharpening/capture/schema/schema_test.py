@@ -23,13 +23,13 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             {"type": "True"},
             InvalidObjectError(
-                {"type": InvalidOptionError(("off", "aa", "no_aa", "muted"))}
+                {"type": InvalidOptionError(("off", "muted", "no_aa", "aa"))}
             ),
         )
 
     def test_process_default(self) -> None:
         self.validator.assert_process(
-            {}, {"PDSEnabled": "false", "PDSDeconvRadius": "0.5"}
+            {}, {"PDSEnabled": "false", "PDSDeconvRadius": "0.4"}
         )
 
     def test_process_type(self) -> None:
