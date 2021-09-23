@@ -85,5 +85,5 @@ class GammaTest(TestCase):
     def test_gamma_piecewise(self) -> None:
         gamma, gradient = piecewise(0.25, 0.5)
 
-        self.assertAlmostEqual(gamma(0.5), 0.8179012)
+        self.assertAlmostEqual(gamma(0.5), 0.8518519)
         self.assertAlmostEqual(gradient, 2)

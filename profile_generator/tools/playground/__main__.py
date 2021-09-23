@@ -33,7 +33,7 @@ def power_brightness(x: float, y: float) -> Curve:
 
 
 if __name__ == "__main__":
-    # grey18 = 87.975 / 255
+    grey18 = 87.975 / 255
     # gradient = 1
     # contrast_curve = sigmoid.contrast_curve_exp(gradient)
     # knots = (
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # ):
     #     print(f"{x:.6f} {y:.6f}")
     # print()
-    for x, y in contrast_sigmoid.calculate(87.975, 1.75):
+    for x, y in contrast_sigmoid.calculate(87.975, 1.75, 1):
         print(f"{x:.6f} {y:.6f}")
 
     # gx = 0.25

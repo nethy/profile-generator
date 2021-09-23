@@ -14,11 +14,11 @@ def calculate(
     brightness: float = 0.0,
 ) -> Sequence[Point]:
     middle = _get_middle(grey18)
-    curve = tone_curve_filmic(middle, slope)
-    brightness_curve, _ = gamma.piecewise(
+    brightness_curve, _ = gamma.linear(
         rgb.normalize_value(grey18),
         _adjust_ev(rgb.normalize_value(grey18), brightness),
     )
+    curve = tone_curve_filmic(middle, slope)
     return [Point(x, y) for x, y in spline.fit(lambda x: curve(brightness_curve(x)))]
 
 

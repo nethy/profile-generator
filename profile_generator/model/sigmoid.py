@@ -128,13 +128,13 @@ def _get_contrast_gradient(
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:
-    shadow = contrast_curve_exp(gradient)
-    highlight = contrast_curve_abs(gradient)
+    exp_curve = contrast_curve_exp(gradient)
+    abs_curve = contrast_curve_abs(gradient)
 
     def _curve(x: float) -> float:
         if x < 0.5:
-            return shadow(x)
+            return exp_curve(x)
         else:
-            return highlight(x)
+            return (2 * abs_curve(x) + exp_curve(x)) / 3
 
     return _curve
