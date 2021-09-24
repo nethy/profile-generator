@@ -12,7 +12,28 @@ def linear(x: float, y: float) -> tuple[Curve, float]:
     """
     g = _coeff_of_linear(x, y)
     gradient = _gradient_linear(g, x)
-    return (_linear(g), gradient)
+    return (power_roll_off(x, y, _linear(g)), gradient)
+
+
+def power(x: float, y: float) -> Curve:
+    """
+    y = x^g
+    """
+    g = math.log(y) / math.log(x)
+    return lambda val: math.pow(val, g)
+
+
+def power_roll_off(x: float, y: float, curve: Curve) -> Curve:
+    roll_off = power(x, y)
+
+    def _curve(val: float) -> float:
+        if val <= x:
+            return curve(val)
+        else:
+            weight = (val - x) / (1 - x)
+            return (1 - weight) * curve(val) + weight * roll_off(val)
+
+    return _curve
 
 
 def _linear(g: float) -> Curve:
@@ -30,7 +51,7 @@ def _coeff_of_linear(x: float, y: float) -> float:
 def inverse_linear(x: float, y: float) -> tuple[Curve, float]:
     g = _coeff_of_inverse_linear(x, y)
     gradient = _gradient_inverse_linear(g, x)
-    return (_inverse_linear(g), gradient)
+    return (power_roll_off(x, y, _inverse_linear(g)), gradient)
 
 
 def _inverse_linear(g: float) -> Curve:
@@ -154,34 +175,3 @@ def _inverse_exp(g: float) -> Curve:
         return lambda x: x
     else:
         return lambda x: -math.log(1 / (x / (1 + math.exp(-g)) - x / 2 + 0.5) - 1) / g
-
-
-def piecewise(x: float, y: float) -> tuple[Curve, float]:
-    """
-    0  0
-    gx gy
-    1  1
-
-    (1) f(gx) = gy
-    (2) f(1) = 1
-    (3) f'(gx) = gy/gx
-    (4) f''(1) = 0
-
-    f   = ax^3+bx^2+cx+d
-    f'  = 3ax^2+2bx+c
-    f'' = 6ax+2b
-    """
-    a = (1 - y / x) / 2 / (math.pow(x, 3) - 3 * math.pow(x, 2) + 3 * x - 1)
-    b = -3 * a
-    c = y / x - 3 * a * math.pow(x, 2) + 6 * a * x
-    d = 2 * a * math.pow(x, 3) - 3 * a * math.pow(x, 2)
-
-    gradient = y / x
-
-    def _curve(val: float) -> float:
-        if val < x:
-            return val * y / x
-        else:
-            return a * math.pow(val, 3) + b * math.pow(val, 2) + c * val + d
-
-    return (_curve, gradient)

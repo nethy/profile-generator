@@ -54,13 +54,14 @@ if __name__ == "__main__":
     # ):
     #     print(f"{x:.6f} {y:.6f}")
     # print()
-    for x, y in contrast_sigmoid.calculate(87.975, 1.75, 1):
+    # for x, y in contrast_sigmoid.calculate(87.975, 1.75):
+    for x, y in contrast_sigmoid.calculate(82.365, 1.75, 1):
         print(f"{x:.6f} {y:.6f}")
 
     # gx = 0.25
     # gy = 0.5
 
-    # for x, y in spline.fit(gamma.piecewise(gx, gy)[0]):
+    # for x, y in spline.fit(gamma.linear(gx, gy)[0]):
     #     print(f"{x:.6f} {y:.6f}")
     # print()
     # for x, y in spline.fit(power_brightness(gx, gy)):
