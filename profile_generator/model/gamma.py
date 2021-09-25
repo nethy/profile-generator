@@ -105,6 +105,7 @@ def _coeff_of_inverse_sqrt(x: float, y: float) -> float:
     return (math.pow(x / y, 2) - 1) / (1 - math.pow(x, 2))
 
 
+@cache
 def exp(x: float, y: float) -> tuple[Curve, float]:
     g = _coeff_of_exp(x, y)
     gradient = _gradient_exp(g, x)
@@ -127,7 +128,6 @@ def _gradient_exp(g: float, x: float) -> float:
         )
 
 
-@cache
 def _coeff_of_exp(x: float, y: float) -> float:
     return jump_search(-100, 100, lambda g: _exp(g)(x), y)
 
@@ -144,6 +144,7 @@ def _exp(g: float) -> Curve:
         )
 
 
+@cache
 def inverse_exp(x: float, y: float) -> tuple[Curve, float]:
     g = _coeff_of_inverse_exp(x, y)
     gradient = _gradient_inverse_exp(g, x)
@@ -162,7 +163,6 @@ def _gradient_inverse_exp(g: float, x: float) -> float:
         )
 
 
-@cache
 def _coeff_of_inverse_exp(x: float, y: float) -> float:
     return jump_search(-100, 100, lambda g: _inverse_exp(g)(x), y)
 

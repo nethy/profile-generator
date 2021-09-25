@@ -1,6 +1,8 @@
 import math
 from collections.abc import Sequence
+from functools import cache
 
+from profile_generator.feature.tone.contrast.sigmoid.schema.highlight import Highlight
 from profile_generator.model import gamma, spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
@@ -8,17 +10,19 @@ from profile_generator.model.sigmoid import tone_curve_filmic
 from profile_generator.unit import Point
 
 
+@cache
 def calculate(
     grey18: float,
     slope: float,
     brightness: float = 0.0,
+    highlight: Highlight = Highlight.SOFT,
 ) -> Sequence[Point]:
     middle = _get_middle(grey18)
     brightness_curve, _ = gamma.linear(
         rgb.normalize_value(grey18),
         _adjust_ev(rgb.normalize_value(grey18), brightness),
     )
-    curve = tone_curve_filmic(middle, slope)
+    curve = tone_curve_filmic(middle, slope, highlight.value)
     return [Point(x, y) for x, y in spline.fit(lambda x: curve(brightness_curve(x)))]
 
 

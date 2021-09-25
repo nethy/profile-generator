@@ -30,12 +30,10 @@ def _gradient_of_contrast_exp(c: float) -> float:
     return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
 
 
-@cache
 def _contrast_of_gradient_exp(gradient: float) -> float:
     return jump_search(0, 100, _gradient_of_contrast_exp, gradient)
 
 
-@cache
 def tone_curve_exp(middle: Point, gradient: float) -> Curve:
     return _tone_curve(middle, gradient, contrast_curve_exp)
 
@@ -66,7 +64,6 @@ def _contrast_of_gradient_sqrt(gradient: float) -> float:
     return 4 * (math.pow(gradient, 2) - 1)
 
 
-@cache
 def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
     """
     h(f(g(grey.x)))' = h'(f(g(grey.x))) * f(g(grey.x))' =
@@ -92,9 +89,8 @@ def _tone_curve(
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
 
-@cache
-def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, contrast_curve_filmic)
+def tone_curve_filmic(middle: Point, gradient: float, highlight: float) -> Curve:
+    return _tone_curve(middle, gradient, lambda g: contrast_curve_filmic(g, highlight))
 
 
 def tone_curve_abs(middle: Point, gradient: float) -> Curve:
@@ -127,7 +123,7 @@ def _get_contrast_gradient(
     ) / gamma_gradient
 
 
-def contrast_curve_filmic(gradient: float) -> Curve:
+def contrast_curve_filmic(gradient: float, highlight: float) -> Curve:
     exp_curve = contrast_curve_exp(gradient)
     abs_curve = contrast_curve_abs(gradient)
 
@@ -135,6 +131,6 @@ def contrast_curve_filmic(gradient: float) -> Curve:
         if x < 0.5:
             return exp_curve(x)
         else:
-            return (2 * abs_curve(x) + exp_curve(x)) / 3
+            return highlight * exp_curve(x) + (1.0 - highlight) * abs_curve(x)
 
     return _curve
