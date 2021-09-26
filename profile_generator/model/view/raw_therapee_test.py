@@ -22,7 +22,7 @@ class TestRawTherapee(TestCase):
 
         self.assertEqual(
             present_equalizer([Point(0, 0), Point(1, 1)]),
-            "0.000000;0.000000;0.288675;0.288675;1.000000;1.000000;0.288675;0.288675;",
+            "0.000000;0.000000;0.25;0.25;1.000000;1.000000;0.25;0.25;",
         )
 
     def test_present_linear_equalizer(self) -> None:

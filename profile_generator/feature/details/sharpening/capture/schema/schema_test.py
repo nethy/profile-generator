@@ -1,10 +1,7 @@
 import unittest
 
-from profile_generator.schema import (
-    InvalidObjectError,
-    InvalidOptionError,
-    SchemaValidator,
-)
+from profile_generator.schema import InvalidObjectError, SchemaValidator
+from profile_generator.schema.range_schema import InvalidRangeError
 
 from .schema import SCHEMA
 
@@ -17,25 +14,25 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({})
 
     def test_validate_valid_config(self) -> None:
-        self.validator.assert_valid({"type": "off"})
+        self.validator.assert_valid({"radius": 0})
 
-    def test_validate_invalid_type(self) -> None:
+    def test_validate_invalid_radius(self) -> None:
         self.validator.assert_error(
-            {"type": "True"},
-            InvalidObjectError({"type": InvalidOptionError(("off", "aa", "no_aa"))}),
+            {"radius": "True"},
+            InvalidObjectError({"radius": InvalidRangeError(0.0, 2.0)}),
         )
 
     def test_process_default(self) -> None:
         self.validator.assert_process(
-            {}, {"PDSEnabled": "false", "PDSDeconvRadius": "0.5"}
+            {}, {"PDSEnabled": "false", "PDSDeconvRadius": "0.0"}
         )
 
-    def test_process_type(self) -> None:
+    def test_process_radius(self) -> None:
         self.validator.assert_process(
-            {"type": "aa"},
+            {"radius": 0.7},
             {"PDSEnabled": "true", "PDSDeconvRadius": "0.7"},
         )
         self.validator.assert_process(
-            {"type": "no_aa"},
-            {"PDSEnabled": "true", "PDSDeconvRadius": "0.59"},
+            {"radius": 0.39},
+            {"PDSEnabled": "false", "PDSDeconvRadius": "0.0"},
         )

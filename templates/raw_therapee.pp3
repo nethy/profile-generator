@@ -19,7 +19,7 @@ ClampOOG=false
 CurveMode=FilmLike
 CurveMode2=FilmLike
 Curve={Curve}
-Curve2=0;
+Curve2=3;0;0;0.4663266;0.4663266;1;1;
 
 [HLRecovery]
 Enabled=true
@@ -97,7 +97,7 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled={LabEnabled}
+Enabled=enabled
 Brightness=0
 Contrast=0
 Chromaticity=0
@@ -107,7 +107,7 @@ LCredsk=true
 LCurve=0;
 aCurve=0;
 bCurve=0;
-ccCurve=0;
+ccCurve=1;0;0;0.1333333;0.1333333;0.2705882;0.2660543;0.4549020;0.4004575;1;0.6
 chCurve={ChCurve}
 lhCurve={LhCurve}
 hhCurve={HhCurve}
@@ -228,7 +228,7 @@ Median=false
 Luma=0
 Ldetail=50
 Chroma=15
-Method=Lab
+Method=RGB
 LMethod=CUR
 CMethod=AUT
 C2Method=AUTO
@@ -238,7 +238,7 @@ RGBMethod=soft
 MethodMed=none
 Redchro=0
 Bluechro=0
-Gamma=1.7
+Gamma=1.5
 Passes=1
 LCurve={DenoiseLCurve}
 CCCurve={DenoiseCCCurve}

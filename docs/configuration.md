@@ -191,7 +191,7 @@ Creates an S-cruve around the middle grey point with the given strength.
 
 Average sRGB value of 18% grey value.
 
-`gamma`
+`slope`
 |               |             |
 | ---           | ---         |
 | Type          | float       |
@@ -201,32 +201,26 @@ Average sRGB value of 18% grey value.
 Amount of contrast. 1.0 will produce a linear tone curve.
 For portraits use 1.3-1.5, and landscapes around 1.7-2.0.
 
-`highlight_protection`
-|               |             |
-| ---           | ---         |
-| Type          | boolean     |
-| Value range   | true, false |
-| Default value | false       |
-
-Use a milder curve for the brighter tones.
-
-`exposure_compensation`
+`brightness`
 |               |            |
 | ---           | ---        |
 | Type          | float      |
 | Value range   | -2.0 - 2.0 |
 | Default value | 0.0        |
 
-Middle grey adjustment via expsure values.
+Brighten or darken the image by given exposure value.
+Supposed to keep more highlight detail compared to
+regular exposure compensation.
 
-`matte_effect`
-|               |             |
-| ---           | ---         |
-| Type          | boolean     |
-| Value range   | true, false |
-| Default value | false       |
+`highlight`
+|               |              |
+| ---           | ---          |
+| Type          | string       |
+| Value range   | soft, strong |
+| Default value | soft         |
 
-Brings up and softens the shadows of the photo to simulate faded look.
+Adjustment for highlight tones.
+
 
 
 ## Detials
@@ -245,12 +239,14 @@ Enhance image details via caputre sharpening.
 
 **Parameters**
 
-`enabled`
-|               |             |
-| ---           | ---         |
-| Type          | boolean     |
-| Value range   | true, false |
-| Default value | false       |
+`radius`
+|               |           |
+| ---           | ---       |
+| Type          | float     |
+| Value range   | 0.0 - 2.0 |
+| Default value | 0.0       |
+
+Capture sharpening strength.
 
 #### Output
 

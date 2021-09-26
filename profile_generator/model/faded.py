@@ -10,8 +10,6 @@ def curve(offset: float, slope: float) -> Curve:
     c = slope
     d = offset
 
-    print(fade_end)
-
     def _curve(x: float) -> float:
         if x < fade_end:
             return a * math.pow(x, 3) + b * math.pow(x, 2) + c * x + d
