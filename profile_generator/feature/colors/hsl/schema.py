@@ -6,13 +6,11 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of
 from profile_generator.unit import Point
 
-_LAB_ENABLED = "LabEnabled"
 _HH_CURVE = "HhCurve"
 _CH_CURVE = "ChCurve"
 _LH_CURVE = "LhCurve"
 
 DEFAULT = {
-    _LAB_ENABLED: "false",
     _HH_CURVE: raw_therapee.CurveType.LINEAR,
     _CH_CURVE: raw_therapee.CurveType.LINEAR,
     _LH_CURVE: raw_therapee.CurveType.LINEAR,
@@ -61,8 +59,6 @@ def process(data: Any) -> Mapping[str, str]:
     result |= _get_eq_curve(data, "hue", 0.25, _HH_CURVE)
     result |= _get_eq_curve(data, "saturation", 0.3, _CH_CURVE)
     result |= _get_eq_curve(data, "luminance", 0.07, _LH_CURVE)
-    if len(result) > 0:
-        result[_LAB_ENABLED] = "true"
     return DEFAULT | result
 
 
