@@ -1,23 +1,21 @@
 from collections.abc import Mapping
 from typing import Any
 
+from profile_generator.model.view import raw_therapee
 from profile_generator.schema import composite_process, object_of, range_of
+from profile_generator.unit import Point
 
 from .hsl import schema as hsl
 from .profile import schema as profile
 from .white_balance import schema as white_balance
 
-_CT_ENABLED = "CTEnabled"
-_CT_SATURATION = "CTLabRegionSaturation"
-_CT_POWER = "CTLabRegionPower"
+_HSV_ENABLED = "HSVEnabled"
+_HSV_SCURVE = "HSVSCurve"
+_CHROMATICITY = "Chromaticity"
 
-_DEFAULT = {
-    _CT_ENABLED: "false",
-    _CT_SATURATION: "0",
-    _CT_POWER: "1",
-}
+_DEFAULT = {_HSV_ENABLED: "false", _HSV_SCURVE: "0;", _CHROMATICITY: "0"}
 
-_DEFAULT_VIBRANCE: int = 0
+_DEFAULT_VIBRANCE = 0
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -27,18 +25,17 @@ def _process(data: Any) -> Mapping[str, str]:
 
 def _get_vibrance(data: Any) -> Mapping[str, str]:
     vibrance = data.get("vibrance", _DEFAULT_VIBRANCE)
-    saturation = 0
-    power = 1
     if vibrance > 0:
-        saturation = 5 * vibrance
-        power = 1 + 0.05 * vibrance
+        strength = 0.05 * vibrance
+        return {
+            _HSV_ENABLED: "true",
+            _HSV_SCURVE: raw_therapee.CurveType.STANDARD
+            + raw_therapee.present_equalizer(
+                (Point(15 / 360, strength / 2 + 0.5), Point(195 / 360, strength + 0.5))
+            ),
+        }
     else:
-        saturation = 10 * vibrance
-    return {
-        _CT_ENABLED: str(vibrance != 0).lower(),
-        _CT_SATURATION: str(saturation),
-        _CT_POWER: str(round(power, 3)),
-    }
+        return {_CHROMATICITY: str(round(vibrance * 10))}
 
 
 SCHEMA = object_of(
