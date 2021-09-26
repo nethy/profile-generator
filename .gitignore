@@ -13,3 +13,5 @@ venv/
 .env
 
 *.prof
+
+generate_and_install_profiles.sh

@@ -97,7 +97,7 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled={LabEnabled}
+Enabled=enabled
 Brightness=0
 Contrast=0
 Chromaticity=0
@@ -107,7 +107,7 @@ LCredsk=true
 LCurve=0;
 aCurve=0;
 bCurve=0;
-ccCurve=0;
+ccCurve=1;0;0;0.1333333;0.1333333;0.2705882;0.2660543;0.4549020;0.4004575;1;0.6
 chCurve={ChCurve}
 lhCurve={LhCurve}
 hhCurve={HhCurve}

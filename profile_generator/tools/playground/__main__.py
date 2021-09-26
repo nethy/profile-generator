@@ -10,7 +10,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import faded, gamma, linalg, sigmoid, spline
+from profile_generator.model import gamma, limiter, linalg, sigmoid, spline
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
@@ -66,4 +66,6 @@ if __name__ == "__main__":
     # print()
     # for x, y in spline.fit(power_brightness(gx, gy)):
     #     print(f"{x:.6f} {y:.6f}")
-    print(constants.MIDDLE_GREY_LUMINANCE_SRGB)
+
+    for x, y in spline.fit(limiter.curve(0.2, 0.6)):
+        print(f"{x:.7f} {y:.7f}")
