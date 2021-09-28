@@ -3,14 +3,13 @@
 
 import math
 
-from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _BRIGHTNESS,
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import gamma, limiter, linalg, sigmoid, spline
+from profile_generator.model import brightness, gamma, limited, linalg, sigmoid, spline
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
@@ -55,8 +54,8 @@ if __name__ == "__main__":
     #     print(f"{x:.6f} {y:.6f}")
     # print()
     # for x, y in contrast_sigmoid.calculate(87.975, 1.75):
-    # for x, y in contrast_sigmoid.calculate(82.365, 1.75, 1):
-    #     print(f"{x:.6f} {y:.6f}")
+    for x, y in contrast_sigmoid.calculate(82.365, 1.6):
+        print(f"{x:.6f} {y:.6f}")
 
     # gx = 0.25
     # gy = 0.5
@@ -67,5 +66,9 @@ if __name__ == "__main__":
     # for x, y in spline.fit(power_brightness(gx, gy)):
     #     print(f"{x:.6f} {y:.6f}")
 
-    for x, y in spline.fit(limiter.curve(0.2, 0.6)):
-        print(f"{x:.7f} {y:.7f}")
+    # c, d = gamma.linear(0.25, 0.5)
+    # print(d)
+    # c, d = brightness.curve(0.25, 0.5)
+    # print(d)
+    # for x, y in spline.fit(c):
+    #     print(f"{x:.5f} {y:.5f}")

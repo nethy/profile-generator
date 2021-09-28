@@ -17,18 +17,6 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_valid({"templates": []})
         self.validator.assert_valid({"defaults": {}, "templates": []})
 
-    def test_validate_tone_curve_bezier(self) -> None:
-        self.validator.assert_valid(
-            {
-                "defaults": {"tone": {"curve": {"bezier": {}}}},
-                "templates": [
-                    {
-                        "settings": {"T": {"tone": {"curve": {"bezier": {}}}}},
-                    }
-                ],
-            }
-        )
-
     def test_validate_tone_curve_sigmoid(self) -> None:
         self.validator.assert_valid(
             {

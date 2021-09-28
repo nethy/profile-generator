@@ -1,14 +1,16 @@
 import bisect
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 
+from .type import Curve
+
 EPSILON = 1 / 512
 
 
-def fit(fn: Callable[[float], float]) -> Sequence[tuple[float, float]]:
+def fit(fn: Curve) -> Sequence[tuple[float, float]]:
     references = [(i / 255, fn(i / 255)) for i in range(1, 255)]
     knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
     for _ in range(3, 24 + 1):
@@ -23,12 +25,12 @@ def fit(fn: Callable[[float], float]) -> Sequence[tuple[float, float]]:
 
 
 def _find_max_diff(
-    references: list[tuple[float, float]], spline: Callable[[float], float]
+    references: list[tuple[float, float]], spline: Curve
 ) -> tuple[float, int]:
     return max((abs(y - spline(x)), i) for i, (x, y) in enumerate(references))
 
 
-def interpolate(points: Sequence[tuple[float, float]]) -> Callable[[float], float]:
+def interpolate(points: Sequence[tuple[float, float]]) -> Curve:
     if len(points) == 0:
         return lambda x: 0.0
     elif len(points) == 1:
@@ -108,14 +110,16 @@ def _boundaries(coefficients: Matrix, xs: Vector) -> None:
 
 
 def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
-    y = 0.0
+    a, b, c, d = _find_coeffs(x, knots, coefficients)
+    return a * math.pow(x, 3) + b * math.pow(x, 2) + c * x + d
+
+
+def _find_coeffs(x: float, knots: Vector, coefficients: Vector) -> Sequence[float]:
     for i in range(len(knots) - 1):
         if (
             knots[i] < x < knots[i + 1]
             or math.isclose(x, knots[i])
             or math.isclose(x, knots[i + 1])
         ):
-            a, b, c, d = coefficients[i * 4 : (i + 1) * 4]
-            y = a * math.pow(x, 3) + b * math.pow(x, 2) + c * x + d
-            break
-    return y
+            return coefficients[i * 4 : (i + 1) * 4]
+    return [0.0, 0.0, 0.0, 0.0]
