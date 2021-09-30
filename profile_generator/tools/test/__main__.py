@@ -1,7 +1,6 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
-from profile_generator.feature.tone.contrast.bezier import contrast_bezier
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _BRIGHTNESS,
@@ -41,18 +40,4 @@ if __name__ == "__main__":
         _GREY18,
         _SLOPE,
         _BRIGHTNESS,
-    )
-    print_calculation(
-        "test_calculate_when_strength_is_less_than_1",
-        contrast_bezier.calculate,
-        Point(87 / 255, 119 / 255),
-        Strength(0.2),
-        (2, 1),
-    )
-    print_calculation(
-        "test_calculate_when_strength_is_1",
-        contrast_bezier.calculate,
-        Point(0.5, 0.5),
-        Strength(1),
-        (2, 1),
     )

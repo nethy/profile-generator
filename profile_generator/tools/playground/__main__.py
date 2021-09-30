@@ -9,7 +9,7 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import brightness, gamma, limited, linalg, sigmoid, spline
+from profile_generator.model import gamma, limited, linalg, sigmoid, spline
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart

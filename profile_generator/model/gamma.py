@@ -12,28 +12,17 @@ def linear(x: float, y: float) -> tuple[Curve, float]:
     """
     g = _coeff_of_linear(x, y)
     gradient = _gradient_linear(g, x)
-    return (power_roll_off(x, y, _linear(g)), gradient)
+    return (_linear(g), gradient)
 
 
-def power(x: float, y: float) -> Curve:
+def power(x: float, y: float) -> tuple[Curve, float]:
     """
     y = x^g
     """
     g = math.log(y) / math.log(x)
-    return lambda val: math.pow(val, g)
-
-
-def power_roll_off(x: float, y: float, curve: Curve) -> Curve:
-    roll_off = power(x, y)
-
-    def _curve(val: float) -> float:
-        if val <= x:
-            return curve(val)
-        else:
-            weight = (val - x) / (1 - x)
-            return (1 - weight) * curve(val) + weight * roll_off(val)
-
-    return _curve
+    curve = lambda val: math.pow(val, g)
+    gradient = g * math.pow(x, g - 1)
+    return (curve, gradient)
 
 
 def _linear(g: float) -> Curve:
@@ -51,7 +40,7 @@ def _coeff_of_linear(x: float, y: float) -> float:
 def inverse_linear(x: float, y: float) -> tuple[Curve, float]:
     g = _coeff_of_inverse_linear(x, y)
     gradient = _gradient_inverse_linear(g, x)
-    return (power_roll_off(x, y, _inverse_linear(g)), gradient)
+    return (_inverse_linear(g), gradient)
 
 
 def _inverse_linear(g: float) -> Curve:
