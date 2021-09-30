@@ -5,7 +5,6 @@ from profile_generator.schema import (
     InvalidRangeError,
     SchemaValidator,
 )
-from profile_generator.schema.options_schema import InvalidOptionError
 
 from .schema import SCHEMA
 
@@ -42,10 +41,4 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             {"brightness": False},
             InvalidObjectError({"brightness": InvalidRangeError(-2.0, 2.0)}),
-        )
-
-    def test_validate_invalid_highlight(self) -> None:
-        self.validator.assert_error(
-            {"highlight": "not_available"},
-            InvalidObjectError({"highlight": InvalidOptionError(("soft", "strong"))}),
         )
