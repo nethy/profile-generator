@@ -1,10 +1,10 @@
 from profile_generator.feature import camera, colors, raw
 from profile_generator.feature.details import noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
-from profile_generator.feature.tone.contrast import bezier, local, sigmoid
+from profile_generator.feature.tone.contrast import local, sigmoid
 from profile_generator.schema import list_of, map_of, object_of, type_of
 
-_CURVE_SCHEMA = object_of({"bezier": bezier.SCHEMA, "sigmoid": sigmoid.SCHEMA})
+_CURVE_SCHEMA = object_of({"sigmoid": sigmoid.SCHEMA})
 _TONE_SCHEMA = object_of({"curve": _CURVE_SCHEMA, "contrast": local.SCHEMA})
 
 _SHARPENING_SCHEMA = object_of(

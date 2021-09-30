@@ -12,9 +12,9 @@ from .schema import SCHEMA
 from .white_balance import schema_test as wb_schema_test
 
 _DEFAULT = {
-    "CTEnabled": "false",
-    "CTLabRegionSaturation": "0",
-    "CTLabRegionPower": "1",
+    "HSVEnabled": "false",
+    "HSVSCurve": "0;",
+    "Chromaticity": "0",
     **wb_schema_test.DEFAULT,
     **hsl_schema_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -47,18 +47,13 @@ class SchemaTest(TestCase):
             {"vibrance": 5},
             {
                 **_DEFAULT,
-                "CTEnabled": "true",
-                "CTLabRegionSaturation": "25",
-                "CTLabRegionPower": "1.25",
+                "HSVEnabled": "true",
+                "HSVSCurve": "1;0.041667;0.625000;0.25;0.25;"
+                + "0.541667;0.750000;0.25;0.25;",
             },
         )
 
         self.validator.assert_process(
             {"vibrance": -5},
-            {
-                **_DEFAULT,
-                "CTEnabled": "true",
-                "CTLabRegionSaturation": "-50",
-                "CTLabRegionPower": "1",
-            },
+            {**_DEFAULT, "Chromaticity": "-50"},
         )
