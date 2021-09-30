@@ -521,7 +521,7 @@ gCurve=0;
 bCurve=0;
 
 [ColorToning]
-Enabled=false
+Enabled={CTEnabled}
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
