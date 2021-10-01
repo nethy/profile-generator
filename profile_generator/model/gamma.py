@@ -108,13 +108,9 @@ def _gradient_exp(g: float, x: float) -> float:
     if math.isclose(g, 0):
         return 1
     else:
-        return (
-            2
-            * g
-            * (math.exp(g) + 1)
-            * math.exp(g * x)
-            / ((math.exp(g) - 1) * math.pow(math.exp(g * x) + 1, 2))
-        )
+        acc_g = math.exp(g)
+        acc_gx = math.exp(g * x)
+        return 2 * g * (acc_g + 1) * acc_gx / ((acc_g - 1) * math.pow(acc_gx + 1, 2))
 
 
 def _coeff_of_exp(x: float, y: float) -> float:
