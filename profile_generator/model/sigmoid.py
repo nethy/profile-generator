@@ -19,15 +19,17 @@ def contrast_curve_exp(gradient: float) -> Curve:
         return lambda x: x
     else:
         c = _contrast_of_gradient_exp(gradient)
-        return lambda x: (
-            1 / (1 + math.exp(c / 2 - c * x)) - 1 / (1 + math.exp(c / 2))
-        ) / (1 / (1 + math.exp(-c / 2)) - 1 / (1 + math.exp(c / 2)))
+        acc = math.exp(c * 0.5)
+        offset = 1 / (1 + acc)
+        scale = 1 / (1 + 1 / acc) - offset
+        return lambda x: (1 / (1 + math.exp(c * (0.5 - x))) - offset) / scale
 
 
 def _gradient_of_contrast_exp(c: float) -> float:
     if math.isclose(c, 0):
         return 1
-    return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+    acc = math.exp(c / 2)
+    return (c * (acc + 1)) / (4 * (acc - 1))
 
 
 def _contrast_of_gradient_exp(gradient: float) -> float:
