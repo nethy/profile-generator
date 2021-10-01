@@ -10,16 +10,16 @@ class SigmoidTest(TestCase):
         _curve = tone_curve_exp(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1496112)
+        self.assertAlmostEqual(_curve(0.2), 0.1515006)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9816715)
+        self.assertAlmostEqual(_curve(0.8), 0.9772645)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_sqrt(self) -> None:
         _curve = tone_curve_sqrt(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1595593)
+        self.assertAlmostEqual(_curve(0.2), 0.1590238)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9682817)
+        self.assertAlmostEqual(_curve(0.8), 0.96897062)
         self.assertAlmostEqual(_curve(1), 1)

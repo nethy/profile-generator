@@ -19,15 +19,17 @@ def contrast_curve_exp(gradient: float) -> Curve:
         return lambda x: x
     else:
         c = _contrast_of_gradient_exp(gradient)
-        return lambda x: (
-            1 / (1 + math.exp(c / 2 - c * x)) - 1 / (1 + math.exp(c / 2))
-        ) / (1 / (1 + math.exp(-c / 2)) - 1 / (1 + math.exp(c / 2)))
+        acc = math.exp(c * 0.5)
+        offset = 1 / (1 + acc)
+        scale = 1 / (1 + 1 / acc) - offset
+        return lambda x: (1 / (1 + math.exp(c * (0.5 - x))) - offset) / scale
 
 
 def _gradient_of_contrast_exp(c: float) -> float:
     if math.isclose(c, 0):
         return 1
-    return (c * (math.exp(c / 2) + 1)) / (4 * (math.exp(c / 2) - 1))
+    acc = math.exp(c / 2)
+    return (c * (acc + 1)) / (4 * (acc - 1))
 
 
 def _contrast_of_gradient_exp(gradient: float) -> float:
@@ -79,8 +81,8 @@ def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma.power(middle.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma.power(0.5, middle.y)
+    gamma_x_curve, gamma_x_gradient = gamma.exp(middle.x, 0.5)
+    gamma_y_curve, gamma_y_gradient = gamma.inverse_exp(0.5, middle.y)
     gamma_gradient = gamma_x_gradient * gamma_y_gradient
 
     contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
@@ -123,13 +125,10 @@ def _get_contrast_gradient(
     ) / gamma_gradient
 
 
-_SHADOW_CONTRAST_FACTOR = 1.189207115  # sqrt(sqrt(2))
-
-
 def contrast_curve_filmic(gradient: float) -> Curve:
-    factor = min(gradient, _SHADOW_CONTRAST_FACTOR)
-    adjustment = (gradient - 1) * factor / 2
-    highlights = contrast_curve_exp(gradient - adjustment)
-    shadows = contrast_curve_exp(gradient + adjustment)
+    shadows = contrast_curve_exp(gradient)
+    highlights = contrast_curve_abs(gradient)
 
-    return lambda x: (1 - x) * shadows(x) + x * highlights(x)
+    weight = contrast_curve_exp(4)
+
+    return lambda x: (1 - weight(x)) * shadows(x) + weight(x) * highlights(x)
