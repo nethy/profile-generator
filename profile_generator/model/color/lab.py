@@ -1,33 +1,38 @@
 import math
-from typing import Optional
 
+from profile_generator.model import linalg
+from profile_generator.model.color.xyz import (
+    D50_TO_D65_ADAPTATION,
+    D65_TO_D50_ADAPTATION,
+)
 from profile_generator.model.linalg import Vector
 
-from .white_point import D65_XYZ
+from .white_point import D50_XYZ
 
 LAB_F_SIGMA = 6 / 29
 LAB_F_SIGMA_2 = 36 / 841
 LAB_F_SIGMA_3 = 216 / 24389
 
 
-def from_xyz(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
-    white_point = white_point or D65_XYZ
-    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz, white_point)]
+def from_xyz(xyz_d65: Vector) -> Vector:
+    xyz_d50 = linalg.multiply_matrix_vector(D65_TO_D50_ADAPTATION, xyz_d65)
+    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz_d50, D50_XYZ)]
     l = 116 * lab_f(y_ratio) - 16
     a = 500 * (lab_f(x_ratio) - lab_f(y_ratio))
     b = 200 * (lab_f(y_ratio) - lab_f(z_ratio))
     return [l, a, b]
 
 
-def to_xyz(lab: Vector, white_point: Optional[Vector] = None) -> Vector:
-    white_point = white_point or D65_XYZ
+def to_xyz(lab: Vector) -> Vector:
     l, a, b = lab
-    x_ref, y_ref, z_ref = white_point
+    x_ref, y_ref, z_ref = D50_XYZ
     l_ref = (l + 16) / 116
     x = x_ref * lab_f_inverse(l_ref + a / 500)
     y = y_ref * lab_f_inverse(l_ref)
     z = z_ref * lab_f_inverse(l_ref - b / 200)
-    return [x, y, z]
+    xyz_d50 = [x, y, z]
+    xyz_d65 = linalg.multiply_matrix_vector(D50_TO_D65_ADAPTATION, xyz_d50)
+    return xyz_d65
 
 
 def to_lch(lab: Vector) -> Vector:
