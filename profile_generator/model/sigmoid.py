@@ -165,7 +165,7 @@ def contrast_curve_filmic(gradient: float) -> Curve:
 def deepen(curve: Curve, gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadows = contrast_curve_exp(math.pow(gradient, 0.333333333))
+    shadows = contrast_curve_exp(math.pow(gradient, 0.333333333333))
 
     def _curve(x: float) -> float:
         if x < 0.5:
