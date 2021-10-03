@@ -9,9 +9,11 @@ class LabTest(LinalgTestCase):
     def test_from_xyz(self) -> None:
         srgb_to_lab = lambda color: from_xyz(xyz.from_rgb(color, SRGB))
         self.assert_vector_equal([0.0, 0.0, 0.0], srgb_to_lab([0.0, 0.0, 0.0]))
-        self.assert_vector_equal([100.0, 0.0, 0.0], srgb_to_lab([1.0, 1.0, 1.0]))
         self.assert_vector_equal(
-            [52.2522841, 2.7790458, -46.2895491],
+            [100.0000014, -7.8e-06, 6.8e-06], srgb_to_lab([1.0, 1.0, 1.0])
+        )
+        self.assert_vector_equal(
+            [51.5430656, -3.6629291, -47.2441356],
             srgb_to_lab([0.2, 0.5, 0.8]),
         )
 
@@ -19,12 +21,12 @@ class LabTest(LinalgTestCase):
         lab_to_srgb = lambda color: xyz.to_rgb(to_xyz(color), SRGB)
         self.assert_vector_equal([0.0, 0.0, 0.0], lab_to_srgb([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
-            [1.0, 0.5746288, 0.1939663], lab_to_srgb([100.0, 100.0, 100.0])
+            [1.0, 0.5737799, 0.2085584], lab_to_srgb([100.0, 100.0, 100.0])
         )
         self.assert_vector_equal(
-            [0.5739409, 0.4558792, 0.0], lab_to_srgb([50.0, 0.0, 100.0])
+            [0.5491071, 0.4599878, 0.0], lab_to_srgb([50.0, 0.0, 100.0])
         )
-        self.assert_vector_equal([1.0, 0.0, 0.4828316], lab_to_srgb([50.0, 100.0, 0.0]))
+        self.assert_vector_equal([1.0, 0.0, 0.4878331], lab_to_srgb([50.0, 100.0, 0.0]))
 
     def test_to_lch(self) -> None:
         self.assert_vector_equal([0.0, 0.0, 0.0], to_lch([0.0, 0.0, 0.0]))

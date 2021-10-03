@@ -1,5 +1,4 @@
 import math
-from typing import Optional
 
 from profile_generator.model import linalg
 from profile_generator.model.color.xyz import (
