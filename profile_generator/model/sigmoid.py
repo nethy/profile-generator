@@ -152,10 +152,25 @@ def _get_contrast_gradient(
     ) / gamma_gradient
 
 
+_WEIGHT = contrast_curve_exp(4)
+
+
 def contrast_curve_filmic(gradient: float) -> Curve:
     shadows = contrast_curve_exp(gradient)
     highlights = contrast_curve_abs(gradient)
+    curve = lambda x: (1 - _WEIGHT(x)) * shadows(x) + _WEIGHT(x) * highlights(x)
+    return deepen(curve, gradient)
 
-    weight = contrast_curve_exp(4)
 
-    return lambda x: (1 - weight(x)) * shadows(x) + weight(x) * highlights(x)
+def deepen(curve: Curve, gradient: float) -> Curve:
+    if math.isclose(gradient, 1):
+        return lambda x: x
+    shadows = contrast_curve_exp(math.pow(gradient, 0.333333333))
+
+    def _curve(x: float) -> float:
+        if x < 0.5:
+            return (1 - 2 * _WEIGHT(x)) * shadows(x) + 2 * _WEIGHT(x) * x
+        else:
+            return x
+
+    return lambda x: _curve(curve(x))
