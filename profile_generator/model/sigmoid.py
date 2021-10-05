@@ -108,12 +108,10 @@ def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    gamma_x_curve, gamma_x_gradient = gamma.exp(middle.x, 0.5)
-    gamma_y_curve, gamma_y_gradient = gamma.inverse_exp(0.5, middle.y)
-    gamma_gradient = gamma_x_gradient * gamma_y_gradient
+    gamma_x_curve, _ = gamma.exp(middle.x, 0.5)
+    gamma_y_curve, _ = gamma.inverse_exp(0.5, middle.y)
 
-    contrast_gradient = _get_contrast_gradient(middle, gradient, gamma_gradient)
-    _curve = contrast_curve(contrast_gradient)
+    _curve = contrast_curve(gradient)
 
     return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
 
@@ -156,6 +154,8 @@ _WEIGHT = contrast_curve_exp(2)
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:
+    if math.isclose(gradient, 0):
+        return lambda x: x
     adjustment = abs(gradient - 1) * 0.5
     shadows = contrast_curve_exp(gradient + adjustment)
     highlights = contrast_curve_exp(gradient - adjustment)
