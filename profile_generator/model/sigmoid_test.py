@@ -16,18 +16,18 @@ class SigmoidTest(TestCase):
         _curve = tone_curve_exp(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1515006)
+        self.assertAlmostEqual(_curve(0.2), 0.1572680)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.9772645)
+        self.assertAlmostEqual(_curve(0.8), 0.9752451)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_tone_curve_sqrt(self) -> None:
         _curve = tone_curve_sqrt(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1590238)
+        self.assertAlmostEqual(_curve(0.2), 0.16408222)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.96897062)
+        self.assertAlmostEqual(_curve(0.8), 0.96726954)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_gradient_of_inverse_contrast_exp(self) -> None:

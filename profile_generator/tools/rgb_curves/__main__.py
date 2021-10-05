@@ -9,8 +9,8 @@ from profile_generator.unit import Point
 
 
 def main() -> None:
-    shadow = normalize([1, -2], 5)
-    highlight = normalize([-1, 2], 5)
+    shadow = normalize([0, -1], 7)
+    highlight = normalize([0, 1], 7)
     print(shadow, highlight)
     for name, value in zip(
         ("rCurve", "gCurve", "bCurve"), rgb_curves(shadow, highlight)
