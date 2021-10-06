@@ -14,16 +14,20 @@ _CHROME = "chrome"
 
 _HSV_ENABLED = "HSVEnabled"
 _HSV_SCURVE = "HSVSCurve"
+_LC_ENABLED = "LCEnabled"
 _CHROMATICITY = "Chromaticity"
 _CT_ENABLED = "CTEnabled"
 _CT_POWER = "CTLabRegionPower"
+_CT_SATURATION = "CTLabRegionSaturation"
 
 _DEFAULT = {
     _HSV_ENABLED: "false",
     _HSV_SCURVE: "0;",
+    _LC_ENABLED: "false",
     _CHROMATICITY: "0",
     _CT_ENABLED: "false",
     _CT_POWER: "1",
+    _CT_SATURATION: "0",
 }
 
 
@@ -45,14 +49,20 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
             ),
         }
     else:
-        return {_CHROMATICITY: str(round(vibrance * 10))}
+        is_enabled = str(vibrance < 0).lower()
+        return {_LC_ENABLED: is_enabled, _CHROMATICITY: str(round(vibrance * 10))}
 
 
 def _get_chrome(data: Any) -> Mapping[str, str]:
     chrome = data.get(_CHROME, 0)
     if chrome >= 0.01:
         power = 1 + chrome * 0.1
-        return {_CT_ENABLED: "true", _CT_POWER: str(round(power, 3))}
+        saturation = 1 / ((power + 1) * 0.5) - 1
+        return {
+            _CT_ENABLED: "true",
+            _CT_POWER: str(round(power, 3)),
+            _CT_SATURATION: str(round(saturation * 100)),
+        }
     else:
         return {}
 

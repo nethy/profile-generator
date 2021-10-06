@@ -7,6 +7,7 @@ from profile_generator.schema.type_schema import InvalidTypeError
 from .schema import _STEPS, SCHEMA, process
 
 DEFAULT = {
+    "LCEnabled": "false",
     "HhCurve": "0;",
     "ChCurve": "0;",
     "LhCurve": "0;",
@@ -100,6 +101,7 @@ class SchemaTest(TestCase):
             process(data),
             {
                 **DEFAULT,
+                "LCEnabled": "true",
                 "HhCurve": "1;0.000000;0.500000;0;0;"
                 + "0.166667;0.321429;0;0;"
                 + "0.333333;0.678571;0;0;"
@@ -120,6 +122,7 @@ class SchemaTest(TestCase):
             process(data),
             {
                 **DEFAULT,
+                "LCEnabled": "true",
                 "ChCurve": "1;0.000000;0.714286;0;0;"
                 + "0.166667;0.500000;0;0;"
                 + "0.333333;0.500000;0;0;"
@@ -140,6 +143,7 @@ class SchemaTest(TestCase):
             process(data),
             {
                 **DEFAULT,
+                "LCEnabled": "true",
                 "LhCurve": "1;0.000000;0.550000;0;0;"
                 + "0.166667;0.500000;0;0;"
                 + "0.333333;0.500000;0;0;"
