@@ -156,7 +156,6 @@ _WEIGHT = contrast_curve_exp(2)
 def contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 0):
         return lambda x: x
-    adjustment = abs(gradient - 1) * 0.5
-    shadows = contrast_curve_exp(gradient + adjustment)
-    highlights = contrast_curve_exp(gradient - adjustment)
+    shadows = contrast_curve_exp(1.333333333333 * gradient - 0.333333333333)
+    highlights = contrast_curve_exp(0.666666666667 * gradient + 0.333333333333)
     return lambda x: (1 - _WEIGHT(x)) * shadows(x) + _WEIGHT(x) * highlights(x)

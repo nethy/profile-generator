@@ -25,8 +25,8 @@ def normalize(point: Point) -> Point:
 
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    # for x, y in contrast_sigmoid.calculate(87.975, 1.6):
-    for x, y in contrast_sigmoid.calculate(82.365, 1.6):
+    for x, y in contrast_sigmoid.calculate(87.975, 1.9):
+        # for x, y in contrast_sigmoid.calculate(82.365, 1.6):
         print(f"{x:.6f} {y:.6f}")
 
     # shadow, midtone, highlight = 0, 2, -1
