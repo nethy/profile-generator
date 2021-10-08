@@ -16,7 +16,7 @@ def calculate(
     brightness: float = 0.0,
 ) -> Sequence[Point]:
     middle = _get_middle(grey18)
-    brightness_curve, _ = gamma.linear(
+    brightness_curve, _ = gamma.exp(
         rgb.normalize_value(grey18),
         _adjust_ev(rgb.normalize_value(grey18), brightness),
     )

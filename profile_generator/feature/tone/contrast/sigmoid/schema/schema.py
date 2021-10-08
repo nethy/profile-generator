@@ -17,7 +17,7 @@ SCHEMA = object_of(
     {
         "grey18": range_of(16.0, 240.0),
         "slope": range_of(1.0, 5.0),
-        "brightness": range_of(-2.0, 2.0),
+        "brightness": range_of(-3.0, 3.0),
     },
     _process,
 )
