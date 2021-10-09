@@ -1,10 +1,13 @@
 from unittest import TestCase
 
 from .raw_therapee import (
+    EqPoint,
+    LeftLinearEqPoint,
+    LinearEqPoint,
     Point,
+    RightLinearEqPoint,
     present_curve,
     present_equalizer,
-    present_linear_equalizer,
 )
 
 
@@ -21,12 +24,16 @@ class TestRawTherapee(TestCase):
         self.assertEqual(present_equalizer([]), "")
 
         self.assertEqual(
-            present_equalizer([Point(0, 0), Point(1, 1)]),
-            "0.000000;0.000000;0.25;0.25;1.000000;1.000000;0.25;0.25;",
-        )
-
-    def test_present_linear_equalizer(self) -> None:
-        self.assertEqual(
-            present_linear_equalizer([Point(0, 0), Point(1, 1)]),
-            "0.000000;0.000000;0;0;1.000000;1.000000;0;0;",
+            present_equalizer(
+                [
+                    EqPoint(0, 0),
+                    LeftLinearEqPoint(0.4, 0.4),
+                    RightLinearEqPoint(0.6, 0.6),
+                    LinearEqPoint(1, 1),
+                ]
+            ),
+            "0.000000;0.000000;0.333333;0.333333;"
+            + "0.400000;0.400000;0.000000;0.333333;"
+            + "0.600000;0.600000;0.333333;0.000000;"
+            + "1.000000;1.000000;0.000000;0.000000;",
         )

@@ -2,8 +2,8 @@ from collections.abc import Mapping
 from typing import Any
 
 from profile_generator.model.view import raw_therapee
+from profile_generator.model.view.raw_therapee import EqPoint
 from profile_generator.schema import composite_process, object_of, range_of
-from profile_generator.unit import Point
 
 from .hsl import schema as hsl
 from .profile import schema as profile
@@ -45,7 +45,10 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
             _HSV_ENABLED: "true",
             _HSV_SCURVE: raw_therapee.CurveType.STANDARD
             + raw_therapee.present_equalizer(
-                (Point(15 / 360, strength / 2 + 0.5), Point(195 / 360, strength + 0.5))
+                (
+                    EqPoint(15 / 360, strength / 2 + 0.5),
+                    EqPoint(195 / 360, strength + 0.5),
+                )
             ),
         }
     else:

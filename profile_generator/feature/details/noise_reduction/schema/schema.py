@@ -2,8 +2,13 @@ from collections.abc import Mapping
 from typing import Any
 
 from profile_generator.model.view import raw_therapee
+from profile_generator.model.view.raw_therapee import (
+    LeftLinearEqPoint,
+    LinearEqPoint,
+    RightLinearEqPoint,
+)
 from profile_generator.schema import object_of, options_of, range_of
-from profile_generator.unit import Line, Point
+from profile_generator.unit import Line
 
 _MODES = {"Aggressive": "shalbi", "Conservative": "shal"}
 _IMPULSE_DENOISE_ENABLED = {"Aggressive": "true", "Conservative": "false"}
@@ -27,16 +32,19 @@ def _process(data: Any) -> Mapping[str, str]:
 
 def _get_luminance_curve(luminance: int) -> str:
     if luminance > 0:
-        luminance_eq = [Point(0, luminance / 100), Point(1, 0)]
-        return "1;" + raw_therapee.present_equalizer(luminance_eq)
+        luma_eq = [LeftLinearEqPoint(0, luminance / 100), LinearEqPoint(1, 0)]
+        return "1;" + raw_therapee.present_equalizer(luma_eq)
     else:
         return "0;"
 
 
 def _get_chrominance_curve(chrominance: int) -> str:
     if chrominance > 0:
-        chrome_line = Line(-2, chrominance / 100)
-        chroma_eq = [Point(0, chrome_line.get_y(0)), Point(chrome_line.get_x(0), 0)]
+        chroma_line = Line(-2, chrominance / 100)
+        chroma_eq = [
+            LinearEqPoint(0, chroma_line.get_y(0)),
+            RightLinearEqPoint(chroma_line.get_x(0), 0),
+        ]
         return "1;" + raw_therapee.present_equalizer(chroma_eq)
     else:
         return "0;"
