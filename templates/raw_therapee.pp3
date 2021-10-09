@@ -226,7 +226,7 @@ Enabled={DenoiseEnabled}
 Enhance=false
 Median=false
 Luma=0
-Ldetail=50
+Ldetail=80
 Chroma=15
 Method=RGB
 LMethod=CUR
@@ -343,7 +343,7 @@ AllowUpscaling=false
 
 [PostDemosaicSharpening]
 Enabled={PDSEnabled}
-Contrast=15
+Contrast={PDSContrast}
 AutoContrast=false
 AutoRadius=false
 DeconvRadius={PDSDeconvRadius}
@@ -485,12 +485,12 @@ HueRange=-260;-250;-130;-140;
 Contrast=0
 
 [Directional Pyramid Equalizer]
-Enabled=false
+Enabled={DPEEnabled}
 Gamutlab=false
 cbdlMethod=bef
 Mult0=1
-Mult1=1
-Mult2=1
+Mult1={DPEMult1}
+Mult2={DPEMult2}
 Mult3=1
 Mult4=1
 Mult5=1
@@ -587,7 +587,7 @@ PreExposure=1
 Method={BayerMethod}
 Border=4
 ImageNum=1
-CcSteps=1
+CcSteps=0
 PreBlack0=0
 PreBlack1=0
 PreBlack2=0

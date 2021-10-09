@@ -3,8 +3,8 @@ from typing import Any
 
 from profile_generator.feature.colors.white_balance.schema import DEFAULT
 from profile_generator.model.view import raw_therapee
+from profile_generator.model.view.raw_therapee import EqPoint, LinearEqPoint
 from profile_generator.schema import object_of, range_of
-from profile_generator.unit import Point
 
 _LC_ENABLED = "LCEnabled"
 _HH_CURVE = "HhCurve"
@@ -72,15 +72,17 @@ def _get_eq_curve(
         return {
             _LC_ENABLED: "true",
             template_name: raw_therapee.CurveType.STANDARD
-            + raw_therapee.present_linear_equalizer(equalizer),
+            + raw_therapee.present_equalizer(equalizer),
         }
     else:
         return {}
 
 
-def _get_equalizer(config: Mapping[str, int], max_adjustment: float) -> Iterable[Point]:
+def _get_equalizer(
+    config: Mapping[str, int], max_adjustment: float
+) -> Iterable[EqPoint]:
     return [
-        Point(HUES[color], _get_value(config, color, max_adjustment))
+        LinearEqPoint(HUES[color], _get_value(config, color, max_adjustment))
         for color in _COLORS
     ]
 

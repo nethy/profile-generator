@@ -2,8 +2,8 @@ from collections.abc import Mapping
 from typing import Any
 
 from profile_generator.model.view import raw_therapee
+from profile_generator.model.view.raw_therapee import EqPoint
 from profile_generator.schema import composite_process, object_of, range_of
-from profile_generator.unit import Point
 
 from .hsl import schema as hsl
 from .profile import schema as profile
@@ -45,7 +45,10 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
             _HSV_ENABLED: "true",
             _HSV_SCURVE: raw_therapee.CurveType.STANDARD
             + raw_therapee.present_equalizer(
-                (Point(15 / 360, strength / 2 + 0.5), Point(195 / 360, strength + 0.5))
+                (
+                    EqPoint(15 / 360, strength / 2 + 0.5),
+                    EqPoint(195 / 360, strength + 0.5),
+                )
             ),
         }
     else:
@@ -57,7 +60,7 @@ def _get_chrome(data: Any) -> Mapping[str, str]:
     chrome = data.get(_CHROME, 0)
     if chrome >= 0.01:
         power = 1 + chrome * 0.1
-        saturation = 1 / ((power + 1) * 0.5) - 1
+        saturation = 1 / ((power + 1) * 0.5) - 1  # ratio of integrates x and x^power
         return {
             _CT_ENABLED: "true",
             _CT_POWER: str(round(power, 3)),

@@ -15,6 +15,9 @@ _DEFAULT = {
     "DenoiseLCurve": "0;",
     "DenoiseCCCurve": "0;",
     "ImpulseDenoiseEnabled": "false",
+    "DPEEnabled": "false",
+    "DPEMult1": "1.0",
+    "DPEMult2": "1.0",
 }
 
 
@@ -59,23 +62,28 @@ class SchemaTest(unittest.TestCase):
     def test_luminance(self) -> None:
         self.validator.assert_process(
             {"luminance": 40},
-            {
-                **_DEFAULT,
+            _DEFAULT
+            | {
                 "DenoiseEnabled": "true",
                 "DenoiseLCurve": (
-                    "1;0.000000;0.400000;0.25;0.25;" + "1.000000;0.000000;0.25;0.25;"
+                    "1;0.000000;0.400000;0.000000;0.333333;"
+                    + "1.000000;0.000000;0.000000;0.000000;"
                 ),
+                "DPEEnabled": "true",
+                "DPEMult1": "1.8",
+                "DPEMult2": "1.4",
             },
         )
 
     def test_chrominance(self) -> None:
         self.validator.assert_process(
             {"chrominance": 40},
-            {
-                **_DEFAULT,
+            _DEFAULT
+            | {
                 "DenoiseEnabled": "true",
                 "DenoiseCCCurve": (
-                    "1;0.000000;0.400000;0.25;0.25;" + "0.200000;0.000000;0.25;0.25;"
+                    "1;0.000000;0.400000;0.000000;0.000000;"
+                    + "0.200000;0.000000;0.333333;0.000000;"
                 ),
             },
         )

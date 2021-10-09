@@ -1,12 +1,8 @@
-from collections.abc import Callable, Iterable
-from typing import TypeVar
+from collections.abc import Iterable
 
 from profile_generator.unit import DECIMALS, Point
 
-_T = TypeVar("_T")
-_Presenter = Callable[[_T], str]
-
-_EQ_STRENGTH = "0.25"
+_EQ_STRENGTH = 1 / 3
 
 
 class CurveType:
@@ -21,32 +17,39 @@ class WbSetting:
     CUSTOM = "Custom"
 
 
-def _present_point(point: Point) -> str:
-    return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
+class EqPoint(Point):
+    def present(self) -> str:
+        return self._present(_EQ_STRENGTH, _EQ_STRENGTH)
+
+    def _present(self, left: float, right: float) -> str:
+        return (
+            f"{self.x:.{DECIMALS}f};{self.y:.{DECIMALS}f};"
+            + f"{left:.{DECIMALS}f};{right:.{DECIMALS}f};"
+        )
+
+
+class LinearEqPoint(EqPoint):
+    def present(self) -> str:
+        return self._present(0, 0)
+
+
+class LeftLinearEqPoint(EqPoint):
+    def present(self) -> str:
+        return self._present(0, _EQ_STRENGTH)
+
+
+class RightLinearEqPoint(EqPoint):
+    def present(self) -> str:
+        return self._present(_EQ_STRENGTH, 0)
 
 
 def present_curve(points: Iterable[Point]) -> str:
     return "".join((_present_point(p) for p in points))
 
 
-def _present_eq_point(point: Point) -> str:
-    return (
-        f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
-        + f"{_EQ_STRENGTH};{_EQ_STRENGTH};"
-    )
+def _present_point(point: Point) -> str:
+    return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
 
 
-def _present_linear_eq_point(point: Point) -> str:
-    return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};0;0;"
-
-
-def present_equalizer(points: Iterable[Point]) -> str:
-    return _present(_present_eq_point, points)
-
-
-def present_linear_equalizer(points: Iterable[Point]) -> str:
-    return _present(_present_linear_eq_point, points)
-
-
-def _present(presenter: _Presenter, items: Iterable[_T]) -> str:
-    return "".join((presenter(i) for i in items))
+def present_equalizer(points: Iterable[EqPoint]) -> str:
+    return "".join(p.present() for p in points)
