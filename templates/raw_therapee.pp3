@@ -343,7 +343,7 @@ AllowUpscaling=false
 
 [PostDemosaicSharpening]
 Enabled={PDSEnabled}
-Contrast=15
+Contrast={PDSContrast}
 AutoContrast=false
 AutoRadius=false
 DeconvRadius={PDSDeconvRadius}
