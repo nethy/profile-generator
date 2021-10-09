@@ -21,12 +21,18 @@ def _process(data: Any) -> Mapping[str, str]:
     chrominance = data.get("chrominance", 0)
     chrominance_curve = _get_chrominance_curve(chrominance)
     denoise_enabled = luminance > 0 or chrominance > 0
+    details_level1 = 1 + 2 * luminance / 100
+    details_level2 = 1 + luminance / 100
+    details_enabled = luminance > 0
     return {
         "DenoiseEnabled": str(denoise_enabled).lower(),
         "DenoiseSMethod": _MODES[mode],
         "DenoiseLCurve": luminance_curve,
         "DenoiseCCCurve": chrominance_curve,
         "ImpulseDenoiseEnabled": _IMPULSE_DENOISE_ENABLED[mode],
+        "DPEEnabled": str(details_enabled).lower(),
+        "DPEMult1": str(round(details_level1, 2)),
+        "DPEMult2": str(round(details_level2, 2)),
     }
 
 
