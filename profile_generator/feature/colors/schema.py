@@ -57,7 +57,7 @@ def _get_chrome(data: Any) -> Mapping[str, str]:
     chrome = data.get(_CHROME, 0)
     if chrome >= 0.01:
         power = 1 + chrome * 0.1
-        saturation = 1 / ((power + 1) * 0.5) - 1
+        saturation = 1 / ((power + 1) * 0.5) - 1  # ratio of integrates x and x^power
         return {
             _CT_ENABLED: "true",
             _CT_POWER: str(round(power, 3)),
