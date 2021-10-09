@@ -40,5 +40,5 @@ class SchemaTest(unittest.TestCase):
     def test_validate_invalid_brightness(self) -> None:
         self.validator.assert_error(
             {"brightness": False},
-            InvalidObjectError({"brightness": InvalidRangeError(-2.0, 2.0)}),
+            InvalidObjectError({"brightness": InvalidRangeError(-3.0, 3.0)}),
         )

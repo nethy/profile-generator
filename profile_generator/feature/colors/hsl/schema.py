@@ -6,6 +6,7 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of
 from profile_generator.unit import Point
 
+_LC_ENABLED = "LCEnabled"
 _HH_CURVE = "HhCurve"
 _CH_CURVE = "ChCurve"
 _LH_CURVE = "LhCurve"
@@ -69,8 +70,9 @@ def _get_eq_curve(
     equalizer = _get_equalizer(config, max_adjustment)
     if any(p.y != _BASE_VALUE for p in equalizer):
         return {
+            _LC_ENABLED: "true",
             template_name: raw_therapee.CurveType.STANDARD
-            + raw_therapee.present_linear_equalizer(equalizer)
+            + raw_therapee.present_linear_equalizer(equalizer),
         }
     else:
         return {}
