@@ -66,7 +66,7 @@ class SchemaTest(unittest.TestCase):
             | {
                 "DenoiseEnabled": "true",
                 "DenoiseLCurve": (
-                    "1;0.000000;0.400000;0.000000;0.333333;"
+                    "1;0.000000;0.400000;0.000000;0.500000;"
                     + "1.000000;0.000000;0.000000;0.000000;"
                 ),
                 "DPEEnabled": "true",
@@ -83,7 +83,7 @@ class SchemaTest(unittest.TestCase):
                 "DenoiseEnabled": "true",
                 "DenoiseCCCurve": (
                     "1;0.000000;0.400000;0.000000;0.000000;"
-                    + "0.200000;0.000000;0.333333;0.000000;"
+                    + "0.200000;0.000000;0.500000;0.000000;"
                 ),
             },
         )

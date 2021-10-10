@@ -54,17 +54,17 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"vibrance": 5},
-            {
-                **_DEFAULT,
+            _DEFAULT
+            | {
                 "HSVEnabled": "true",
-                "HSVSCurve": "1;0.041667;0.625000;0.333333;0.333333;"
-                + "0.541667;0.750000;0.333333;0.333333;",
+                "HSVSCurve": "1;0.041667;0.625000;0.250000;0.250000;"
+                + "0.541667;0.750000;0.250000;0.250000;",
             },
         )
 
         self.validator.assert_process(
             {"vibrance": -5},
-            {**_DEFAULT, "LCEnabled": "true", "Chromaticity": "-50"},
+            _DEFAULT | {"LCEnabled": "true", "Chromaticity": "-50"},
         )
 
     def test_process_chrome(self) -> None:
