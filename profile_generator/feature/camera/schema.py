@@ -9,7 +9,7 @@ _DEFAULT_RESOLUTION_MP = 16
 
 def _process(data: Any) -> Mapping[str, str]:
     image_size = data.get("resolution_mp", _DEFAULT_RESOLUTION_MP)
-    radius = max(1, min(100, 10 * math.sqrt(image_size)))
+    radius = max(1, min(100, 15 * math.sqrt(image_size)))
     value = str(round(radius))
     return {"SHRadius": value, "LCRadius": value}
 

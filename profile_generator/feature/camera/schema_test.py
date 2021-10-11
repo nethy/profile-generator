@@ -26,9 +26,9 @@ class SchemaTest(TestCase):
         )
 
     def test_process_defaults(self) -> None:
-        self.validator.assert_process({}, {"SHRadius": "40", "LCRadius": "40"})
+        self.validator.assert_process({}, {"SHRadius": "60", "LCRadius": "60"})
 
     def test_process_image_size(self) -> None:
         self.validator.assert_process(
-            {"resolution_mp": 49}, {"SHRadius": "70", "LCRadius": "70"}
+            {"resolution_mp": 36}, {"SHRadius": "90", "LCRadius": "90"}
         )
