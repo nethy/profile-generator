@@ -2,7 +2,8 @@ from collections.abc import Iterable
 
 from profile_generator.unit import DECIMALS, Point
 
-_EQ_STRENGTH = 1 / 3
+_EQ_STRENGTH = 0.25
+_ONE_SIDE_EQ_STRENGTH = 0.5
 
 
 class CurveType:
@@ -35,12 +36,12 @@ class LinearEqPoint(EqPoint):
 
 class LeftLinearEqPoint(EqPoint):
     def present(self) -> str:
-        return self._present(0, _EQ_STRENGTH)
+        return self._present(0, _ONE_SIDE_EQ_STRENGTH)
 
 
 class RightLinearEqPoint(EqPoint):
     def present(self) -> str:
-        return self._present(_EQ_STRENGTH, 0)
+        return self._present(_ONE_SIDE_EQ_STRENGTH, 0)
 
 
 def present_curve(points: Iterable[Point]) -> str:
