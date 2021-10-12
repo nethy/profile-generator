@@ -6,23 +6,21 @@ from profile_generator.util.search import jump_search
 from .type import Curve
 
 
-def linear(x: float, y: float) -> tuple[Curve, float]:
+def linear(x: float, y: float) -> Curve:
     """
     y = (gx/(1+gx))/(g/(1+g))
     """
     g = _coeff_of_linear(x, y)
-    gradient = _gradient_linear(g, x)
-    return (_linear(g), gradient)
+    return _linear(g)
 
 
-def power(x: float, y: float) -> tuple[Curve, float]:
+def power(x: float, y: float) -> Curve:
     """
     y = x^g
     """
     g = math.log(y) / math.log(x)
     curve = lambda val: math.pow(val, g)
-    gradient = g * math.pow(x, g - 1)
-    return (curve, gradient)
+    return curve
 
 
 def _linear(g: float) -> Curve:
@@ -37,10 +35,9 @@ def _coeff_of_linear(x: float, y: float) -> float:
     return (y - x) / (x * (1 - y))
 
 
-def inverse_linear(x: float, y: float) -> tuple[Curve, float]:
+def inverse_linear(x: float, y: float) -> Curve:
     g = _coeff_of_inverse_linear(x, y)
-    gradient = _gradient_inverse_linear(g, x)
-    return (_inverse_linear(g), gradient)
+    return _inverse_linear(g)
 
 
 def _inverse_linear(g: float) -> Curve:
@@ -55,13 +52,12 @@ def _coeff_of_inverse_linear(x: float, y: float) -> float:
     return (x - y) / (y * (1 - x))
 
 
-def sqrt(x: float, y: float) -> tuple[Curve, float]:
+def sqrt(x: float, y: float) -> Curve:
     """
     y = x/sqrt(x^2+1), as bounded y = (x*sqrt(g+1))/sqrt(gx^2+1)
     """
     g = _coeff_of_sqrt(x, y)
-    gradient = _gradient_sqrt(g, x)
-    return (_sqrt(g), gradient)
+    return _sqrt(g)
 
 
 def _sqrt(g: float) -> Curve:
@@ -76,10 +72,9 @@ def _coeff_of_sqrt(x: float, y: float) -> float:
     return (math.pow(y / x, 2) - 1) / (1 - math.pow(y, 2))
 
 
-def inverse_sqrt(x: float, y: float) -> tuple[Curve, float]:
+def inverse_sqrt(x: float, y: float) -> Curve:
     g = _coeff_of_inverse_sqrt(x, y)
-    gradient = _gradient_inverse_sqrt(g, x)
-    return (_inverse_sqrt(g), gradient)
+    return _inverse_sqrt(g)
 
 
 def _inverse_sqrt(g: float) -> Curve:
@@ -95,10 +90,9 @@ def _coeff_of_inverse_sqrt(x: float, y: float) -> float:
 
 
 @cache
-def exp(x: float, y: float) -> tuple[Curve, float]:
+def exp(x: float, y: float) -> Curve:
     g = _coeff_of_exp(x, y)
-    gradient = _gradient_exp(g, x)
-    return (_exp(g), gradient)
+    return _exp(g)
 
 
 def _gradient_exp(g: float, x: float) -> float:
@@ -130,10 +124,9 @@ def _exp(g: float) -> Curve:
 
 
 @cache
-def inverse_exp(x: float, y: float) -> tuple[Curve, float]:
+def inverse_exp(x: float, y: float) -> Curve:
     g = _coeff_of_inverse_exp(x, y)
-    gradient = _gradient_inverse_exp(g, x)
-    return (_inverse_exp(g), gradient)
+    return _inverse_exp(g)
 
 
 def _gradient_inverse_exp(g: float, x: float) -> float:
