@@ -42,7 +42,7 @@ def tone_curve_exp(middle: Point, gradient: float) -> Curve:
     return _tone_curve(middle, gradient, sigmoid.exp)
 
 
-_WEIGHT = sigmoid.exp(2)
+_WEIGHT = sigmoid.exp(4)
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:

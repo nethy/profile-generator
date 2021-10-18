@@ -17,7 +17,6 @@ _DEFAULT = {
     "ImpulseDenoiseEnabled": "false",
     "DPEEnabled": "false",
     "DPEMult1": "1.0",
-    "DPEMult2": "1.0",
 }
 
 
@@ -71,7 +70,6 @@ class SchemaTest(unittest.TestCase):
                 ),
                 "DPEEnabled": "true",
                 "DPEMult1": "1.8",
-                "DPEMult2": "1.4",
             },
         )
 
@@ -83,7 +81,7 @@ class SchemaTest(unittest.TestCase):
                 "DenoiseEnabled": "true",
                 "DenoiseCCCurve": (
                     "1;0.000000;0.400000;0.000000;0.000000;"
-                    + "0.200000;0.000000;0.500000;0.000000;"
+                    + "0.333333;0.000000;0.500000;0.000000;"
                 ),
             },
         )
