@@ -3,7 +3,7 @@ from functools import cache
 
 from profile_generator.util.search import jump_search
 
-from .gamma import Curve
+from .type import Curve
 
 
 @cache
