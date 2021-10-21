@@ -31,7 +31,7 @@ def _tone_curve(
 
 
 def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, shadow_heavy)
+    return _tone_curve(middle, gradient, contrast_curve_filmic)
 
 
 def tone_curve_abs(middle: Point, gradient: float) -> Curve:
@@ -42,14 +42,14 @@ def tone_curve_exp(middle: Point, gradient: float) -> Curve:
     return _tone_curve(middle, gradient, sigmoid.exp)
 
 
-_CONTRAST_WEIGHT = sigmoid.exp(3)
+_CONTRAST_WEIGHT = sigmoid.exp(2)
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 0):
         return lambda x: x
-    shadows = sigmoid.exp(4 / 3 * gradient - 1 / 3)
-    highlights = sigmoid.exp(2 / 3 * gradient + 1 / 3)
+    shadows = sigmoid.exp(3 / 2.5 * gradient - 0.2)
+    highlights = sigmoid.exp(2 / 2.5 * gradient + 0.2)
     return lambda x: (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(
         x
     ) * highlights(x)
