@@ -58,7 +58,7 @@ def contrast_curve_filmic(gradient: float) -> Curve:
 def shadow_heavy(gradient: float) -> Curve:
     if math.isclose(gradient, 0):
         return lambda x: x
-    shadows = sigmoid.exp(1 + (gradient - 1) * 1.414213562373)
+    shadows = sigmoid.exp(1 + (gradient - 1) * 1.5)
     highlights = sigmoid.exp(gradient)
     return lambda x: (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(
         x
