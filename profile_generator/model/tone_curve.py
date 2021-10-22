@@ -48,21 +48,11 @@ _CONTRAST_WEIGHT = sigmoid.exp(2)
 def contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 0):
         return lambda x: x
-    shadows = sigmoid.exp(3 / 2.5 * gradient - 0.2)
-    highlights = sigmoid.exp(2 / 2.5 * gradient + 0.2)
-    return lambda x: (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(
-        x
-    ) * highlights(x)
-
-
-def shadow_heavy(gradient: float) -> Curve:
-    if math.isclose(gradient, 0):
-        return lambda x: x
-    shadows = sigmoid.exp(1 + (gradient - 1) * 1.5)
-    highlights = sigmoid.exp(gradient)
-    return lambda x: (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(
-        x
-    ) * highlights(x)
+    shadows = sigmoid.exp((4 * gradient - 1) / 3)
+    highlights = sigmoid.exp((2 * gradient + 1) / 3)
+    return lambda x: (
+        (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(x) * highlights(x)
+    )
 
 
 _GAMMA_WEIGHT = sigmoid.exp(2)
@@ -73,7 +63,7 @@ def hybrid_gamma(x: float, y: float) -> Curve:
     weight = lambda val: _GAMMA_WEIGHT(weight_gamma(val))
 
     shadows = gamma.exp(x, y)
-    highlights = gamma.power(x, y)
+    highlights = gamma.log(x, y)
     return lambda val: (1 - weight(val)) * shadows(val) + weight(val) * highlights(val)
 
 
@@ -82,5 +72,5 @@ def hybrid_inverse_gamma(x: float, y: float) -> Curve:
     weight = lambda val: weight_gamma(_GAMMA_WEIGHT(val))
 
     shadows = gamma.inverse_exp(x, y)
-    highlights = gamma.power(x, y)
+    highlights = gamma.inverse_log(x, y)
     return lambda val: (1 - weight(val)) * shadows(val) + weight(val) * highlights(val)
