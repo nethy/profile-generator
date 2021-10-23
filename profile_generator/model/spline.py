@@ -7,7 +7,7 @@ from profile_generator.model.linalg import Matrix, Vector
 
 from .type import Curve
 
-EPSILON = 1 / 1024
+EPSILON = 1 / 512
 SAMPLES_COUNT = 127
 
 

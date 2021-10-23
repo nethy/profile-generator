@@ -24,7 +24,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
     return _tone_curve(middle, gradient, contrast_curve_filmic)
 
 
-_CONTRAST_WEIGHT = sigmoid.exp(5)
+_CONTRAST_WEIGHT = sigmoid.exp(2)
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:
@@ -37,7 +37,7 @@ def contrast_curve_filmic(gradient: float) -> Curve:
     )
 
 
-_GAMMA_WEIGHT = sigmoid.exp(2.5)
+_GAMMA_WEIGHT = sigmoid.exp(1.414213562373095)
 
 
 def hybrid_gamma(x: float, y: float) -> Curve:
