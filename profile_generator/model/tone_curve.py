@@ -7,55 +7,37 @@ from . import gamma, sigmoid
 from .type import Curve
 
 
-def tone_curve_sqrt(middle: Point, gradient: float) -> Curve:
-    """
-    h(f(g(grey.x)))' = h'(f(g(grey.x))) * f(g(grey.x))' =
-                       h'(f(g(grey.x))) * f'(g(grey.x)) * g'(grey.x)
-    x = grey.x
-    g(grey.x) = 0.5
-    f(0.5) = 0.5
-    h(0.5) = grey.y
-    """
-    return _tone_curve(middle, gradient, sigmoid.sqrt)
-
-
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    gamma_x_curve = hybrid_gamma(middle.x, 0.5)
-    gamma_y_curve = hybrid_inverse_gamma(0.5, middle.y)
+    brightness = hybrid_gamma(*middle)
 
-    _curve = contrast_curve(gradient)
+    shift_x = gamma.power(middle.y, 0.5)
+    shift_y = gamma.power(0.5, middle.y)
+    _contrast = contrast_curve(gradient)
+    _shifted_contrast = lambda x: shift_y(_contrast(shift_x(x)))
 
-    return lambda x: gamma_y_curve(_curve(gamma_x_curve(x)))
+    return lambda x: _shifted_contrast(brightness(x))
 
 
 def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
     return _tone_curve(middle, gradient, contrast_curve_filmic)
 
 
-def tone_curve_abs(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, sigmoid.linear)
-
-
-def tone_curve_exp(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, sigmoid.exp)
-
-
-_CONTRAST_WEIGHT = sigmoid.exp(2)
+_CONTRAST_WEIGHT = sigmoid.exp(5)
 
 
 def contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 0):
         return lambda x: x
-    shadows = sigmoid.exp((4 * gradient - 1) / 3)
-    highlights = sigmoid.exp((2 * gradient + 1) / 3)
+    shadows = sigmoid.exp((3 * gradient - 0.5) / 2.5)
+    highlights = sigmoid.exp((2 * gradient + 0.5) / 2.5)
     return lambda x: (
         (1 - _CONTRAST_WEIGHT(x)) * shadows(x) + _CONTRAST_WEIGHT(x) * highlights(x)
     )
 
 
-_GAMMA_WEIGHT = sigmoid.exp(2)
+_GAMMA_WEIGHT = sigmoid.exp(2.5)
 
 
 def hybrid_gamma(x: float, y: float) -> Curve:

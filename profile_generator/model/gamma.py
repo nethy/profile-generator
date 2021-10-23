@@ -131,6 +131,7 @@ def _inverse_exp(g: float) -> Curve:
         return lambda x: -math.log(1 / (x / (1 + math.exp(-g)) - x / 2 + 0.5) - 1) / g
 
 
+@cache
 def log(x: float, y: float) -> Curve:
     g = jump_search(-0.999999999999, 100, lambda g: _log(g)(x), y)
     return _log(g)
@@ -143,6 +144,7 @@ def _log(g: float) -> Curve:
         return lambda x: math.log(g * x + 1) / math.log(g + 1)
 
 
+@cache
 def inverse_log(x: float, y: float) -> Curve:
     g = jump_search(-100, 0.999999999999, lambda g: _inverse_log(g)(x), y)
     return _inverse_log(g)
