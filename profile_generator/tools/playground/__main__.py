@@ -9,7 +9,15 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import gamma, limited, linalg, sigmoid, spline, tone_curve
+from profile_generator.model import (
+    bezier,
+    gamma,
+    limited,
+    linalg,
+    sigmoid,
+    spline,
+    tone_curve,
+)
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
@@ -29,7 +37,12 @@ if __name__ == "__main__":
     # for x, y in contrast_sigmoid.calculate(87.975, 1.6, 2.5):
     # for x, y in contrast_sigmoid.calculate(82.365, 1.75):
     # print(f"{x:.6f} {y:.6f}")
-    for x, y in spline.fit(tone_curve.hybrid_gamma(0.125, 0.5)):
+    # for x, y in spline.fit(tone_curve.hybrid_gamma(0.125, 0.5)):
+    #     print(f"{x:.6f} {y:.6f}")
+
+    points = [(Point(0, 0), 1), (Point(0.25, 0.5), 2), (Point(1, 1), 1)]
+    curve = lambda x: bezier.get_point_at(points, x)
+    for x, y in (bezier.get_point_at(points, i / 14) for i in range(15)):
         print(f"{x:.6f} {y:.6f}")
 
     # shadow, midtone, highlight = 0, 2, -1

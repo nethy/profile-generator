@@ -25,14 +25,35 @@ class SchemaTest(TestCase):
         )
 
     def test_process_default(self) -> None:
-        self.validator.assert_process({}, {"LCEnabled": "false", "LCAmount": "0.0"})
+        self.validator.assert_process(
+            {},
+            {
+                "WaveletEnabled": "false",
+                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
+                + "0.250000;0.500000;0.250000;0.250000;"
+                + "0.750000;0.500000;0.250000;0.250000;"
+                + "1.000000;0.500000;0.250000;0.250000;",
+            },
+        )
 
     def test_process_local(self) -> None:
         self.validator.assert_process(
             {"local": 1},
-            {"LCEnabled": "true", "LCAmount": "0.05"},
+            {
+                "WaveletEnabled": "true",
+                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
+                + "0.250000;0.550000;0.250000;0.250000;"
+                + "0.750000;0.550000;0.250000;0.250000;"
+                + "1.000000;0.500000;0.250000;0.250000;",
+            },
         )
         self.validator.assert_process(
             {"local": 10},
-            {"LCEnabled": "true", "LCAmount": "0.5"},
+            {
+                "WaveletEnabled": "true",
+                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
+                + "0.250000;1.000000;0.250000;0.250000;"
+                + "0.750000;1.000000;0.250000;0.250000;"
+                + "1.000000;0.500000;0.250000;0.250000;",
+            },
         )

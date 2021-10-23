@@ -1,16 +1,17 @@
 import math
 from collections.abc import Callable
+from functools import cache
 
 from profile_generator.unit import Point
 
-from . import gamma, sigmoid
+from . import bezier, gamma, sigmoid, spline
 from .type import Curve
 
 
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = hybrid_gamma(*middle)
+    brightness = bezier_gamma(*middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -37,22 +38,12 @@ def contrast_curve_filmic(gradient: float) -> Curve:
     )
 
 
-_GAMMA_WEIGHT = sigmoid.exp(1.414213562373095)
-
-
-def hybrid_gamma(x: float, y: float) -> Curve:
-    weight_gamma = gamma.exp(x, 0.5)
-    weight = lambda val: _GAMMA_WEIGHT(weight_gamma(val))
-
-    shadows = gamma.exp(x, y)
-    highlights = gamma.log(x, y)
-    return lambda val: (1 - weight(val)) * shadows(val) + weight(val) * highlights(val)
-
-
-def hybrid_inverse_gamma(x: float, y: float) -> Curve:
-    weight_gamma = gamma.inverse_exp(0.5, y)
-    weight = lambda val: weight_gamma(_GAMMA_WEIGHT(val))
-
-    shadows = gamma.inverse_exp(x, y)
-    highlights = gamma.inverse_log(x, y)
-    return lambda val: (1 - weight(val)) * shadows(val) + weight(val) * highlights(val)
+@cache
+def bezier_gamma(x: float, y: float) -> Curve:
+    points = [(Point(0, 0), 1), (Point(x, y), 3), (Point(1, 1), 1)]
+    refs = [
+        (p.x, p.y) for p in (bezier.get_point_at(points, i / 24) for i in range(25))
+    ]
+    base = spline.interpolate(refs)
+    corrector = gamma.linear(base(x), y) if x >= y else gamma.inverse_linear(base(x), y)
+    return lambda val: corrector(base(val))
