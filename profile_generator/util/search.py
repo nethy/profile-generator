@@ -1,9 +1,7 @@
 import math
 from collections.abc import Callable
-from typing import MutableMapping
 
 Function = Callable[[float], float]
-LUT = MutableMapping[float, float]
 
 
 def jump_search(

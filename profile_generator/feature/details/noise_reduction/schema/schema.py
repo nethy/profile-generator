@@ -8,7 +8,6 @@ from profile_generator.model.view.raw_therapee import (
     RightLinearEqPoint,
 )
 from profile_generator.schema import object_of, options_of, range_of
-from profile_generator.unit import Line
 
 _MODES = {"Aggressive": "shalbi", "Conservative": "shal"}
 _IMPULSE_DENOISE_ENABLED = {"Aggressive": "true", "Conservative": "false"}
@@ -22,7 +21,6 @@ def _process(data: Any) -> Mapping[str, str]:
     chrominance_curve = _get_chrominance_curve(chrominance)
     denoise_enabled = luminance > 0 or chrominance > 0
     details_level1 = 1 + 2 * luminance / 100
-    details_level2 = 1 + luminance / 100
     details_enabled = luminance > 0
     return {
         "DenoiseEnabled": str(denoise_enabled).lower(),
@@ -32,7 +30,6 @@ def _process(data: Any) -> Mapping[str, str]:
         "ImpulseDenoiseEnabled": _IMPULSE_DENOISE_ENABLED[mode],
         "DPEEnabled": str(details_enabled).lower(),
         "DPEMult1": str(round(details_level1, 2)),
-        "DPEMult2": str(round(details_level2, 2)),
     }
 
 
@@ -46,10 +43,9 @@ def _get_luminance_curve(luminance: int) -> str:
 
 def _get_chrominance_curve(chrominance: int) -> str:
     if chrominance > 0:
-        chroma_line = Line(-2, chrominance / 100)
         chroma_eq = [
-            LinearEqPoint(0, chroma_line.get_y(0)),
-            RightLinearEqPoint(chroma_line.get_x(0), 0),
+            LinearEqPoint(0, chrominance / 100),
+            RightLinearEqPoint(1 / 3, 0),
         ]
         return "1;" + raw_therapee.present_equalizer(chroma_eq)
     else:

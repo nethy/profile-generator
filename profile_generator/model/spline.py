@@ -8,10 +8,12 @@ from profile_generator.model.linalg import Matrix, Vector
 from .type import Curve
 
 EPSILON = 1 / 512
+SAMPLES_COUNT = 127
 
 
 def fit(fn: Curve) -> Sequence[tuple[float, float]]:
-    references = [(i / 255, fn(i / 255)) for i in range(1, 255)]
+    range_end = SAMPLES_COUNT - 1
+    references = [(i / range_end, fn(i / range_end)) for i in range(1, range_end)]
     knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
     for _ in range(3, 24 + 1):
         spline = interpolate(knots)

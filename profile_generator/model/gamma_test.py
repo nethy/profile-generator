@@ -30,16 +30,14 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(1, inverse(gamma(1)))
 
     def test_gamma_of_linear(self) -> None:
-        gamma, gradient = linear(_GREY.x, 0.5)
+        gamma = linear(_GREY.x, 0.5)
 
         self.assertAlmostEqual(gamma(_GREY.x), 0.5)
-        self.assertAlmostEqual(gradient, 1.1122229)
 
     def test_gamma_of_inverse_linear(self) -> None:
-        gamma_inverse, gradient = inverse_linear(0.5, _GREY.y)
+        gamma_inverse = inverse_linear(0.5, _GREY.y)
 
         self.assertAlmostEqual(gamma_inverse(0.5), _GREY.y)
-        self.assertAlmostEqual(gradient, 0.9955556)
 
     def test_gamma_sqrt(self) -> None:
         gamma = _sqrt(2)
@@ -50,16 +48,14 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(1, inverse(gamma(1)))
 
     def test_gamma_of_sqrt(self) -> None:
-        gamma, gradient = sqrt(_GREY.x, 0.5)
+        gamma = sqrt(_GREY.x, 0.5)
 
         self.assertAlmostEqual(gamma(_GREY.x), 0.5)
-        self.assertAlmostEqual(gradient, 1.2439335)
 
     def test_gamma_of_inverse_sqrt(self) -> None:
-        gamma_inverse, gradient = inverse_sqrt(0.5, _GREY.y)
+        gamma_inverse = inverse_sqrt(0.5, _GREY.y)
 
         self.assertAlmostEqual(gamma_inverse(0.5), _GREY.y)
-        self.assertAlmostEqual(gradient, 0.9734321)
 
     def test_gamma_exp(self) -> None:
         gamma = _exp(2)
@@ -70,13 +66,11 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(1, inverse(gamma(1)))
 
     def test_gamma_of_exp(self) -> None:
-        gamma, gradient = exp(_GREY.x, 0.5)
+        gamma = exp(_GREY.x, 0.5)
 
         self.assertAlmostEqual(gamma(_GREY.x), 0.5)
-        self.assertAlmostEqual(gradient, 1.2668930)
 
     def test_gamma_of_inverse_exp(self) -> None:
-        gamma_inverse, gradient = inverse_exp(0.5, _GREY.y)
+        gamma_inverse = inverse_exp(0.5, _GREY.y)
 
         self.assertAlmostEqual(gamma_inverse(0.5), _GREY.y)
-        self.assertAlmostEqual(gradient, 0.9725837)
