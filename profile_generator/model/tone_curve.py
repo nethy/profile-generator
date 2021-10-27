@@ -2,10 +2,9 @@ import math
 from collections.abc import Callable
 from functools import cache
 
-from profile_generator.unit import Point
+from profile_generator.unit import Curve, Point
 
-from . import bezier, gamma, sigmoid, spline
-from .type import Curve
+from . import bezier, gamma, sigmoid
 
 
 def _tone_curve(
@@ -41,9 +40,6 @@ def contrast_curve_filmic(gradient: float) -> Curve:
 @cache
 def bezier_gamma(x: float, y: float) -> Curve:
     points = [(Point(0, 0), 1), (Point(x, y), 3), (Point(1, 1), 1)]
-    refs = [
-        (p.x, p.y) for p in (bezier.get_point_at(points, i / 24) for i in range(25))
-    ]
-    base = spline.interpolate(refs)
+    base = bezier.curve(points)
     corrector = gamma.linear(base(x), y) if x >= y else gamma.inverse_linear(base(x), y)
     return lambda val: corrector(base(val))

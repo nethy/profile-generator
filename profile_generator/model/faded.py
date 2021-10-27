@@ -1,6 +1,6 @@
 import math
 
-from .type import Curve
+from profile_generator.unit import Curve
 
 
 def curve(offset: float, slope: float) -> Curve:
