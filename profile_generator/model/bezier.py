@@ -1,9 +1,20 @@
 import math
 from collections.abc import Sequence
+from functools import cache
 
-from profile_generator.unit import Point
+from profile_generator.unit import Curve, Point
+from profile_generator.util import search
 
 WeightedPoints = Sequence[tuple[Point, float]]
+
+
+def curve(control_points: WeightedPoints) -> Curve:
+    @cache
+    def _curve(x: float) -> float:
+        t = search.jump_search(0.0, 1.0, lambda t: get_point_at(control_points, t).x, x)
+        return get_point_at(control_points, t).y
+
+    return _curve
 
 
 def get_point_at(control_points: WeightedPoints, t: float) -> Point:
