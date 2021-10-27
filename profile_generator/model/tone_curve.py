@@ -2,10 +2,9 @@ import math
 from collections.abc import Callable
 from functools import cache
 
-from profile_generator.unit import Point
+from profile_generator.unit import Curve, Point
 
 from . import bezier, gamma, sigmoid
-from .type import Curve
 
 
 def _tone_curve(

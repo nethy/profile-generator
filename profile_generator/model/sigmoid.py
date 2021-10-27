@@ -1,9 +1,8 @@
 import math
 from functools import cache
 
+from profile_generator.unit import Curve
 from profile_generator.util.search import jump_search
-
-from .type import Curve
 
 
 @cache

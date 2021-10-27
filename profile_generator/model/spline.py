@@ -4,8 +4,7 @@ from collections.abc import Sequence
 
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
-
-from .type import Curve
+from profile_generator.unit import Curve
 
 EPSILON = 1 / 512
 SAMPLES_COUNT = 127

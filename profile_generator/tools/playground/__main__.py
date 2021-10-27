@@ -21,9 +21,8 @@ from profile_generator.model import (
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
-from profile_generator.model.type import Curve
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Point, Strength
+from profile_generator.unit import Curve, Point, Strength
 
 
 def normalize(point: Point) -> Point:
