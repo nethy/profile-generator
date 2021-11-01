@@ -66,7 +66,7 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(1, inverse(gamma(1)))
 
     def test_gamma_of_exp(self) -> None:
-        gamma = exp(_GREY.x, 0.5)
+        gamma = exp(_GREY.x, 0.5)[0]
 
         self.assertAlmostEqual(gamma(_GREY.x), 0.5)
 

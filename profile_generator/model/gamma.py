@@ -1,5 +1,5 @@
 import math
-from functools import cache
+from functools import cache, partial
 
 from profile_generator.unit import Curve
 from profile_generator.util.search import jump_search
@@ -73,9 +73,9 @@ def _gradient_inverse_sqrt(g: float, x: float) -> float:
 
 
 @cache
-def exp(x: float, y: float) -> Curve:
+def exp(x: float, y: float) -> tuple[Curve, Curve]:
     g = jump_search(-100, 100, lambda g: _exp(g)(x), y)
-    return _exp(g)
+    return (_exp(g), partial(_gradient_exp, g))
 
 
 def _gradient_exp(g: float, x: float) -> float:

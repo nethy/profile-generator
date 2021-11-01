@@ -34,7 +34,7 @@ if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
     # for x, y in contrast_sigmoid.calculate(87.975, 1.6, 2.5):
-    for x, y in contrast_sigmoid.calculate(82.365, 1.6):
+    for x, y in contrast_sigmoid.calculate(82.365, 1.75):
         print(f"{x:.6f} {y:.6f}")
     # for x, y in spline.fit(tone_curve.hybrid_gamma(0.125, 0.5)):
     #     print(f"{x:.6f} {y:.6f}")
