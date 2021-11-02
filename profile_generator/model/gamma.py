@@ -5,12 +5,12 @@ from profile_generator.unit import Curve
 from profile_generator.util.search import jump_search
 
 
-def linear(x: float, y: float) -> Curve:
+def linear(x: float, y: float) -> tuple[Curve, Curve]:
     """
     y = (gx/(1+gx))/(g/(1+g))
     """
     g = (y - x) / (x * (1 - y))
-    return _linear(g)
+    return (_linear(g), partial(_gradient_linear, g))
 
 
 def power(x: float, y: float) -> Curve:
@@ -30,9 +30,9 @@ def _gradient_linear(g: float, x: float) -> float:
     return (g + 1) / math.pow(g * x + 1, 2)
 
 
-def inverse_linear(x: float, y: float) -> Curve:
+def inverse_linear(x: float, y: float) -> tuple[Curve, Curve]:
     g = (x - y) / (y * (1 - x))
-    return _inverse_linear(g)
+    return (_inverse_linear(g), partial(_gradient_inverse_linear, g))
 
 
 def _inverse_linear(g: float) -> Curve:
@@ -103,9 +103,9 @@ def _exp(g: float) -> Curve:
 
 
 @cache
-def inverse_exp(x: float, y: float) -> Curve:
+def inverse_exp(x: float, y: float) -> tuple[Curve, Curve]:
     g = jump_search(-100, 100, lambda g: _inverse_exp(g)(x), y)
-    return _inverse_exp(g)
+    return (_inverse_exp(g), partial(_gradient_inverse_exp, g))
 
 
 def _gradient_inverse_exp(g: float, x: float) -> float:
