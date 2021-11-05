@@ -7,6 +7,10 @@ from profile_generator.unit import Curve, Point
 from . import bezier, gamma, sigmoid
 
 
+def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
+    return _tone_curve(middle, gradient, _contrast_curve_filmic)
+
+
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
@@ -20,21 +24,17 @@ def _tone_curve(
     return lambda x: _shifted_contrast(brightness(x))
 
 
-def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
-    return _tone_curve(middle, gradient, contrast_curve_filmic)
-
-
-def contrast_curve_filmic(gradient: float) -> Curve:
+def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
     shadows = sigmoid.exp(gradient)
     highlights = sigmoid.linear(gradient)
-    return lambda x: shadows(x) if x < 0.5 else (shadows(x) + 2 * highlights(x)) / 3
+    return lambda x: shadows(x) if x < 0.5 else (shadows(x) + 3 * highlights(x)) / 4
 
 
 @cache
 def bezier_gamma(x: float, y: float) -> tuple[Curve, float]:
-    points = [(Point(0, 0), 1), (Point(x, y), 3), (Point(1, 1), 1)]
+    points = [(Point(0, 0), 1), (Point(x, y), 2), (Point(1, 1), 1)]
     base = bezier.curve(points)
     corrector, gradient = (
         gamma.exp(base(x), y) if y >= x else gamma.inverse_exp(base(x), y)
