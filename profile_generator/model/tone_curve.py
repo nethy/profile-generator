@@ -25,6 +25,7 @@ def _tone_curve(
     return lambda x: _shifted_contrast(brightness(x))
 
 
+@cache
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
@@ -35,10 +36,12 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
 
 @cache
 def flat_gamma(x: float, y: float) -> Curve:
+    if math.isclose(x, y):
+        return lambda val: val
     shadow = Line.from_points(Point(0, 0), Point(x, y))
     highlight = Line.from_points(Point(x, y), Point(1, 1))
-    weight_correction, _ = gamma.linear(x, y)
-    weight_curve = sigmoid.linear(4)
+    weight_correction, _ = gamma.exp(x, 0.5)
+    weight_curve = sigmoid.linear(2)
     weight = lambda val: weight_curve(weight_correction(val))
     curve = lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
         val
