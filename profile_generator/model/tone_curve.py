@@ -29,12 +29,12 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
         return lambda x: x
     shadows = sigmoid.exp(gradient)
     highlights = sigmoid.linear(gradient)
-    return lambda x: shadows(x) if x < 0.5 else (shadows(x) + 3 * highlights(x)) / 4
+    return lambda x: shadows(x) if x < 0.5 else highlights(x)
 
 
 @cache
-def bezier_gamma(x: float, y: float) -> tuple[Curve, float]:
-    points = [(Point(0, 0), 1), (Point(x, y), 2), (Point(1, 1), 1)]
+def bezier_gamma(x: float, y: float) -> tuple[Curve]:
+    points = [(Point(0, 0), 1), (Point(x, y), 1), (Point(1, 1), 1)]
     base = bezier.curve(points)
     corrector, gradient = (
         gamma.exp(base(x), y) if y >= x else gamma.inverse_exp(base(x), y)
