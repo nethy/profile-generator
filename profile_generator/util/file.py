@@ -24,7 +24,7 @@ def create_dir(*paths: str) -> str:
 
 def read_file(*paths: str) -> str:
     path = os.path.join(*paths)
-    with open(path, "rt") as reader:
+    with open(path, "rt", encoding="utf-8") as reader:
         return reader.read()
 
 
@@ -32,5 +32,5 @@ def write_file(content: str, *paths: str) -> None:
     path = os.path.join(*paths)
     path = os.path.normpath(path)
     create_dir(os.path.dirname(path))
-    with open(path, "wt") as writer:
+    with open(path, "wt", encoding="utf-8") as writer:
         writer.write(content)

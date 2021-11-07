@@ -91,7 +91,7 @@ class SchemaTest(unittest.TestCase):
 
     def test_process_completeness(self) -> None:
         template_path = file.get_full_path("templates", "raw_therapee.pp3")
-        with open(template_path, "rt") as reader:
+        with open(template_path, "rt", encoding="utf-8") as reader:
             template = reader.read()
         placeholders = re.findall(r"\{(\w+)\}", template)
 

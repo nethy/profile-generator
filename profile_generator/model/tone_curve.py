@@ -47,4 +47,8 @@ def flat_gamma(x: float, y: float) -> Curve:
         val
     ) * highlight.get_y(val)
 
-    return curve
+    return (
+        lambda val: curve(val)
+        if val > x
+        else (1 - val / x) * shadow.get_y(val) + val / x * curve(val)
+    )
