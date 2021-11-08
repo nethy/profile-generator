@@ -41,7 +41,6 @@ def flat_gamma(x: float, y: float) -> Curve:
     shadow = Line.from_points(Point(0, 0), Point(x, y))
     highlight = Line.from_points(Point(x, y), Point(1, 1))
     weight_correction, _ = gamma.exp(x, 0.5)
-    weight_curve = sigmoid.linear(2)
     weight = lambda val: weight_curve(weight_correction(val))
     curve = lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
         val
@@ -52,3 +51,11 @@ def flat_gamma(x: float, y: float) -> Curve:
         if val > x
         else (1 - val / x) * shadow.get_y(val) + val / x * curve(val)
     )
+
+
+WEIGHT_EXP = sigmoid.exp(1.414213562373095)
+WEIGHT_LINEAR = sigmoid.linear(1.414213562373095)
+
+
+def weight_curve(x: float) -> float:
+    return WEIGHT_EXP(WEIGHT_LINEAR(x))
