@@ -2,7 +2,7 @@ import math
 from collections.abc import Callable
 from functools import cache
 
-from profile_generator.unit import Curve, Line, Point
+from profile_generator.unit import Curve, Point
 
 from . import gamma, sigmoid
 
@@ -31,31 +31,15 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
         return lambda x: x
     base = sigmoid.exp(gradient)
     protector = sigmoid.linear(gradient)
-    return lambda x: base(x) if x < 0.5 else (2 * base(x) + protector(x)) / 3
+    return lambda x: base(x) if x < 0.5 else (base(x) + 3 * protector(x)) / 4
 
 
 @cache
 def flat_gamma(x: float, y: float) -> Curve:
-    if math.isclose(x, y):
-        return lambda val: val
-    shadow = Line.from_points(Point(0, 0), Point(x, y))
-    highlight = Line.from_points(Point(x, y), Point(1, 1))
-    weight_correction, _ = gamma.exp(x, 0.5)
-    weight = lambda val: weight_curve(weight_correction(val))
-    curve = lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
-        val
-    ) * highlight.get_y(val)
-
+    g = y / x / (1 - y) - 1 / (1 - x)
+    highlight = lambda x: (x + g * x) / (1 + g * x)
     return (
-        lambda val: curve(val)
-        if val > x
-        else (1 - val / x) * shadow.get_y(val) + val / x * curve(val)
+        lambda val: y / x * val
+        if val < x
+        else highlight(val - x) / (1 / (1 - y)) / highlight(1 - x) + y
     )
-
-
-WEIGHT_EXP = sigmoid.exp(1.414213562373095)
-WEIGHT_LINEAR = sigmoid.linear(1.414213562373095)
-
-
-def weight_curve(x: float) -> float:
-    return WEIGHT_EXP(WEIGHT_LINEAR(x))
