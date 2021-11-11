@@ -5,7 +5,11 @@ from functools import cache
 from profile_generator.model import spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
-from profile_generator.model.tone_curve import linear_gamma, tone_curve_filmic
+from profile_generator.model.tone_curve import (
+    hybrid_gamma,
+    linear_gamma,
+    tone_curve_filmic,
+)
 from profile_generator.unit import Point
 
 
@@ -16,7 +20,7 @@ def calculate(
     brightness: float = 0.0,
 ) -> Sequence[Point]:
     middle = _get_middle(grey18)
-    brightness_curve = linear_gamma(
+    brightness_curve = hybrid_gamma(
         rgb.normalize_value(grey18),
         _adjust_ev(rgb.normalize_value(grey18), brightness),
     )

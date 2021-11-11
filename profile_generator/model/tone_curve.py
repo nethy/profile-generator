@@ -2,6 +2,7 @@ import math
 from collections.abc import Callable
 from functools import cache
 
+from profile_generator.model import bezier
 from profile_generator.unit import Curve, Line, Point
 
 from . import gamma, sigmoid
@@ -15,7 +16,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = linear_gamma(*middle)
+    brightness = hybrid_gamma(*middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -29,9 +30,11 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    base = sigmoid.exp(gradient)
-    protector = sigmoid.linear(gradient)
-    return lambda x: base(x) if x < 0.5 else (base(x) + 2 * protector(x)) / 3
+    shadow = sigmoid.exp(gradient)
+    highlight = sigmoid.linear(gradient)
+    return (
+        lambda val: shadow(val) if val < 0.5 else (shadow(val) + 2 * highlight(val)) / 3
+    )
 
 
 @cache
@@ -45,24 +48,23 @@ def linear_gamma(x: float, y: float) -> Curve:
     )
 
 
+@cache
 def flat_gamma(x: float, y: float) -> Curve:
     shadow = Line.from_points(Point(0, 0), Point(x, y))
     highlight = Line.from_points(Point(x, y), Point(1, 1))
-    weight = _get_weight_curve(x)
+    weight = bezier_weight(x)
     return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
         val
     ) * highlight.get_y(val)
 
 
+@cache
 def hybrid_gamma(x: float, y: float) -> Curve:
     linear = linear_gamma(x, y)
     flat = flat_gamma(x, y)
-    return lambda val: (linear(val) + flat(val)) / 2
+    return lambda val: (2*linear(val) + flat(val)) / 3
 
 
-_WEIGHT_CONTRAST = sigmoid.linear(4)
-
-
-def _get_weight_curve(x: float) -> Curve:
-    weight_shift = linear_gamma(x, 0.5)
-    return lambda val: _WEIGHT_CONTRAST(weight_shift(val))
+def bezier_weight(x: float) -> Curve:
+    points = [(Point(0, 0), 1), (Point(x, 0), 1), (Point(x, 1), 1), (Point(1, 1), 1)]
+    return bezier.curve(points)
