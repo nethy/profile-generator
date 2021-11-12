@@ -29,11 +29,10 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.exp(gradient)
-    highlight = sigmoid.linear(gradient)
-    return (
-        lambda val: shadow(val) if val < 0.5 else (shadow(val) + 2 * highlight(val)) / 3
-    )
+    shadow = sigmoid.exp((3 * gradient - 0.5) / 2.5)
+    highlight = sigmoid.exp((2 * gradient + 0.5) / 2.5)
+    weight = sigmoid.exp(2)
+    return lambda val: (1 - weight(val)) * shadow(val) + weight(val) * highlight(val)
 
 
 @cache
@@ -76,5 +75,4 @@ def hybrid_gamma(x: float, y: float) -> Curve:
     shift = shadow_linear_gamma(x, 0.5)
     contrast = sigmoid.linear(2)
     weight = lambda val: contrast(shift(val))
-    # return lambda val: 2 / (1 / shadow(val) + 1 / highlight(val))
     return lambda val: (1 - weight(val)) * shadow(val) + weight(val) * highlight(val)
