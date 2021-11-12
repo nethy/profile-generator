@@ -1,6 +1,11 @@
 from unittest import TestCase
 
-from .tone_curve import Point, flat_gamma, linear_gamma, tone_curve_filmic
+from .tone_curve import (
+    Point,
+    interpolated_gamma,
+    shadow_linear_gamma,
+    tone_curve_filmic,
+)
 
 _GREY = Point(87 / 255, 119 / 255)
 
@@ -16,7 +21,7 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_linear_gamma(self) -> None:
-        _gamma = linear_gamma(0.25, 0.5)
+        _gamma = shadow_linear_gamma(0.25, 0.5)
 
         self.assertAlmostEqual(_gamma(0), 0)
         self.assertAlmostEqual(_gamma(0.2), 0.4)
@@ -26,7 +31,7 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(_gamma(1), 1)
 
     def test_flat_gamma(self) -> None:
-        _gamma = flat_gamma(0.25, 0.5)
+        _gamma = interpolated_gamma(0.25, 0.5)
 
         self.assertAlmostEqual(_gamma(0), 0)
         self.assertAlmostEqual(_gamma(0.2), 0.4167208)

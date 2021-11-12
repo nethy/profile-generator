@@ -7,7 +7,8 @@ from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.tone_curve import (
     hybrid_gamma,
-    linear_gamma,
+    interpolated_gamma,
+    shadow_linear_gamma,
     tone_curve_filmic,
 )
 from profile_generator.unit import Point

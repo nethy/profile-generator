@@ -2,7 +2,6 @@ import math
 from collections.abc import Callable
 from functools import cache
 
-from profile_generator.model import bezier
 from profile_generator.unit import Curve, Line, Point
 
 from . import gamma, sigmoid
@@ -38,7 +37,7 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
 
 
 @cache
-def linear_gamma(x: float, y: float) -> Curve:
+def shadow_linear_gamma(x: float, y: float) -> Curve:
     g = y / x / (1 - y) - 1 / (1 - x)
     highlight = lambda x: (x + g * x) / (1 + g * x)
     return (
@@ -49,22 +48,33 @@ def linear_gamma(x: float, y: float) -> Curve:
 
 
 @cache
-def flat_gamma(x: float, y: float) -> Curve:
+def interpolated_gamma(x: float, y: float) -> Curve:
     shadow = Line.from_points(Point(0, 0), Point(x, y))
     highlight = Line.from_points(Point(x, y), Point(1, 1))
-    weight = bezier_weight(x)
+    shift, _ = gamma.linear(x, 0.5)
+    contrast = sigmoid.linear(2)
+    weight = lambda val: contrast(shift(val))
     return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
         val
     ) * highlight.get_y(val)
 
 
 @cache
+def highlight_linear_gamma(x: float, y: float) -> Curve:
+    shadow, _ = gamma.linear(x, y)
+    return (
+        lambda val: shadow((1 / x) * val) / (1 / y)
+        if val < x
+        else (1 - y) / (1 - x) * val + 1 - (1 - y) / (1 - x)
+    )
+
+
+@cache
 def hybrid_gamma(x: float, y: float) -> Curve:
-    linear = linear_gamma(x, y)
-    flat = flat_gamma(x, y)
-    return lambda val: (2*linear(val) + flat(val)) / 3
-
-
-def bezier_weight(x: float) -> Curve:
-    points = [(Point(0, 0), 1), (Point(x, 0), 1), (Point(x, 1), 1), (Point(1, 1), 1)]
-    return bezier.curve(points)
+    shadow = shadow_linear_gamma(x, y)
+    highlight, _ = gamma.linear(x, y)
+    shift = shadow_linear_gamma(x, 0.5)
+    contrast = sigmoid.linear(2)
+    weight = lambda val: contrast(shift(val))
+    # return lambda val: 2 / (1 / shadow(val) + 1 / highlight(val))
+    return lambda val: (1 - weight(val)) * shadow(val) + weight(val) * highlight(val)

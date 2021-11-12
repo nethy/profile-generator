@@ -58,5 +58,11 @@ if __name__ == "__main__":
     #     else:
     #         return x
 
+    for x, y in spline.fit(gamma.linear(0.25, 0.5)[0]):
+        print(f"{x:.6f} {y:.6f}")
+    print()
+    for x, y in spline.fit(tone_curve.interpolated_gamma(0.25, 0.5)):
+        print(f"{x:.6f} {y:.6f}")
+    print()
     for x, y in spline.fit(tone_curve.hybrid_gamma(0.25, 0.5)):
         print(f"{x:.6f} {y:.6f}")
