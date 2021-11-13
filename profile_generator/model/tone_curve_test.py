@@ -15,9 +15,9 @@ class TestToneCurve(TestCase):
         _curve = tone_curve_filmic(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.151408605)
+        self.assertAlmostEqual(_curve(0.2), 0.132829671)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.938595549)
+        self.assertAlmostEqual(_curve(0.8), 0.962589278)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_linear_gamma(self) -> None:
@@ -30,12 +30,12 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(_gamma(0.8), 0.9459459)
         self.assertAlmostEqual(_gamma(1), 1)
 
-    def test_flat_gamma(self) -> None:
+    def test_interpolated_gamma(self) -> None:
         _gamma = interpolated_gamma(0.25, 0.5)
 
         self.assertAlmostEqual(_gamma(0), 0)
-        self.assertAlmostEqual(_gamma(0.2), 0.4167208)
+        self.assertAlmostEqual(_gamma(0.2), 0.4)
         self.assertAlmostEqual(_gamma(0.25), 0.5)
-        self.assertAlmostEqual(_gamma(0.3), 0.5683608)
-        self.assertAlmostEqual(_gamma(0.8), 0.8864506)
+        self.assertAlmostEqual(_gamma(0.3), 0.5882353)
+        self.assertAlmostEqual(_gamma(0.8), 0.9459459)
         self.assertAlmostEqual(_gamma(1), 1)
