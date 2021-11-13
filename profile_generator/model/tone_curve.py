@@ -13,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = interpolated_gamma(*middle)
+    brightness = flat_gamma(*middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -61,3 +61,14 @@ def highlight_linear_gamma(x: float, y: float) -> Curve:
         if val < x
         else (1 - y) / (1 - x) * val + 1 - (1 - y) / (1 - x)
     )
+
+
+def flat_gamma(x: float, y: float) -> Curve:
+    shadow = Line.from_points(Point(0, 0), Point(x, y))
+    highlight = Line.from_points(Point(x, y), Point(1, 1))
+    shift, _ = gamma.linear(x, 0.5)
+    contrast = sigmoid.linear(4)
+    weight = lambda val: contrast(shift(val))
+    return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
+        val
+    ) * highlight.get_y(val)
