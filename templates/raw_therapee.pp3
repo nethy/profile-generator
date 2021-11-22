@@ -149,10 +149,10 @@ Strength=50
 ThreeChannels=false
 
 [SharpenMicro]
-Enabled=false
+Enabled={SMEnabled}
 Matrix=false
-Strength=20
-Contrast=20
+Strength={SMStrength}
+Contrast={SharpeningContrast}
 Uniformity=5
 
 [White Balance]
@@ -226,7 +226,7 @@ Enabled={DenoiseEnabled}
 Enhance=false
 Median=false
 Luma=0
-Ldetail=80
+Ldetail=75
 Chroma=15
 Method=RGB
 LMethod=CUR
@@ -238,7 +238,7 @@ RGBMethod=soft
 MethodMed=none
 Redchro=0
 Bluechro=0
-Gamma=1.5
+Gamma=1.7
 Passes=1
 LCurve={DenoiseLCurve}
 CCCurve={DenoiseCCCurve}
@@ -485,11 +485,11 @@ HueRange=-260;-250;-130;-140;
 Contrast=0
 
 [Directional Pyramid Equalizer]
-Enabled={DPEEnabled}
+Enabled=false
 Gamutlab=false
 cbdlMethod=bef
 Mult0=1
-Mult1={DPEMult1}
+Mult1=1
 Mult2=1
 Mult3=1
 Mult4=1

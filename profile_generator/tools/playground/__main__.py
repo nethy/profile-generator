@@ -58,5 +58,5 @@ if __name__ == "__main__":
     #     else:
     #         return x
 
-    for x, y in spline.fit(tone_curve.flat_gamma(0.1, 0.47)):
+    for x, y in spline.fit(tone_curve.hybrid_gamma(0.25, 0.5)):
         print(f"{x:.6f} {y:.6f}")

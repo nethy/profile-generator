@@ -15,8 +15,8 @@ _DEFAULT = {
     "DenoiseLCurve": "0;",
     "DenoiseCCCurve": "0;",
     "ImpulseDenoiseEnabled": "false",
-    "DPEEnabled": "false",
-    "DPEMult1": "1.0",
+    "SMEnabled": "false",
+    "SMStrength": "0",
 }
 
 
@@ -65,11 +65,11 @@ class SchemaTest(unittest.TestCase):
             | {
                 "DenoiseEnabled": "true",
                 "DenoiseLCurve": (
-                    "1;0.000000;0.400000;0.000000;0.500000;"
-                    + "1.000000;0.000000;0.000000;0.000000;"
+                    "1;0.250000;0.400000;0.250000;0.250000;"
+                    + "1.000000;0.000000;0.250000;0.250000;"
                 ),
-                "DPEEnabled": "true",
-                "DPEMult1": "1.8",
+                "SMEnabled": "true",
+                "SMStrength": "20",
             },
         )
 
