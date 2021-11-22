@@ -3,7 +3,7 @@ from typing import Any
 
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import (
-    LeftLinearEqPoint,
+    EqPoint,
     LinearEqPoint,
     RightLinearEqPoint,
 )
@@ -20,22 +20,22 @@ def _process(data: Any) -> Mapping[str, str]:
     chrominance = data.get("chrominance", 0)
     chrominance_curve = _get_chrominance_curve(chrominance)
     denoise_enabled = luminance > 0 or chrominance > 0
-    details_level1 = 1 + 2 * luminance / 100
-    details_enabled = luminance > 0
+    micro_sharpening_strength = round(luminance / 2)
+    micro_sharpening_enabled = micro_sharpening_strength > 0
     return {
         "DenoiseEnabled": str(denoise_enabled).lower(),
         "DenoiseSMethod": _MODES[mode],
         "DenoiseLCurve": luminance_curve,
         "DenoiseCCCurve": chrominance_curve,
         "ImpulseDenoiseEnabled": _IMPULSE_DENOISE_ENABLED[mode],
-        "DPEEnabled": str(details_enabled).lower(),
-        "DPEMult1": str(round(details_level1, 2)),
+        "SMEnabled": str(micro_sharpening_enabled).lower(),
+        "SMStrength": str(micro_sharpening_strength),
     }
 
 
 def _get_luminance_curve(luminance: int) -> str:
     if luminance > 0:
-        luma_eq = [LeftLinearEqPoint(0, luminance / 100), LinearEqPoint(1, 0)]
+        luma_eq = [EqPoint(0.25, luminance / 100), EqPoint(1, 0)]
         return "1;" + raw_therapee.present_equalizer(luma_eq)
     else:
         return "0;"

@@ -46,12 +46,11 @@ def interpolated_gamma(x: float, y: float) -> Curve:
     shadow = Line.from_points(Point(0, 0), Point(x, y))
     highlight = Line.from_points(Point(x, y), Point(1, 1))
     shift, _ = gamma.linear(x, 0.5)
-    weight = lambda val: shift((val - x) / (1 - x))
-    return (
-        lambda val: shadow.get_y(val)
-        if val < x
-        else (1 - weight(val)) * shadow.get_y(val) + weight(val) * highlight.get_y(val)
-    )
+    contrast = sigmoid.linear(2)
+    weight = lambda val: contrast(shift(val))
+    return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
+        val
+    ) * highlight.get_y(val)
 
 
 def highlight_linear_gamma(x: float, y: float) -> Curve:
@@ -95,7 +94,7 @@ def bezier_gamma(x: float, y: float) -> Curve:
     ) * highlight.get_y(val)
 
 
-def hybrid_linear(x: float, y: float) -> Curve:
-    base = gradient_matching_linear(x, y)
-    correction = shadow_linear_gamma(base(x), y)
-    return lambda val: correction(base(val))
+def hybrid_gamma(x: float, y: float) -> Curve:
+    base = interpolated_gamma(x, y)
+    correction = shadow_linear_gamma(x, y)
+    return lambda val: (base(val) + correction(val)) / 2

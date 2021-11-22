@@ -34,8 +34,8 @@ class TestToneCurve(TestCase):
         _gamma = interpolated_gamma(0.25, 0.5)
 
         self.assertAlmostEqual(_gamma(0), 0)
-        self.assertAlmostEqual(_gamma(0.2), 0.4)
+        self.assertAlmostEqual(_gamma(0.2), 0.425)
         self.assertAlmostEqual(_gamma(0.25), 0.5)
-        self.assertAlmostEqual(_gamma(0.3), 0.5882353)
-        self.assertAlmostEqual(_gamma(0.8), 0.9459459)
+        self.assertAlmostEqual(_gamma(0.3), 0.5592593)
+        self.assertAlmostEqual(_gamma(0.8), 0.8972222)
         self.assertAlmostEqual(_gamma(1), 1)
