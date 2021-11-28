@@ -16,12 +16,15 @@ def _tone_curve(
 ) -> Curve:
     brightness = shadow_linear_gamma(*middle)
 
+    corrected_gradient = math.pow(gradient, 2 / 3)
+    shadow = deepend_shadow(math.sqrt(corrected_gradient), middle.y)
+
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
-    _contrast = contrast_curve(gradient)
+    _contrast = contrast_curve(corrected_gradient)
     _shifted_contrast = lambda x: shift_y(_contrast(shift_x(x)))
 
-    return lambda x: _shifted_contrast(brightness(x))
+    return lambda x: _shifted_contrast(shadow(brightness(x)))
 
 
 def _contrast_curve_filmic(gradient: float) -> Curve:
@@ -31,6 +34,19 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
     sqrt = sigmoid.sqrt(gradient)
     lin = sigmoid.linear(gradient)
     return lambda x: exp(x) if x < 0.5 else (sqrt(x) + lin(x)) / 2
+
+
+def deepend_shadow(strength: float, cross_point: float) -> Curve:
+    sqrt = sigmoid.sqrt(strength)
+    shift_x = gamma.power(cross_point, 0.5)
+    shift_y = gamma.power(0.5, cross_point)
+    _contrast = lambda x: shift_y(sqrt(shift_x(x)))
+    weight = lambda x: 1 / cross_point * x
+    return (
+        lambda x: (1 - weight(x)) * _contrast(x) + weight(x) * x
+        if x < cross_point
+        else x
+    )
 
 
 def shadow_linear_gamma(x: float, y: float) -> Curve:
