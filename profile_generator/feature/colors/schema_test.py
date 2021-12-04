@@ -15,7 +15,6 @@ _DEFAULT = {
     "HSVEnabled": "false",
     "HSVSCurve": "0;",
     "LCEnabled": "false",
-    "Chromaticity": "0",
     "CTEnabled": "false",
     "CTLabRegionPower": "1",
     "CTLabRegionSaturation": "0",
@@ -38,7 +37,7 @@ class SchemaTest(TestCase):
     def test_validate_invalid_vibrance(self) -> None:
         self.validator.assert_error(
             {"vibrance": False},
-            InvalidObjectError({"vibrance": InvalidRangeError(-10, 10)}),
+            InvalidObjectError({"vibrance": InvalidRangeError(0, 10)}),
         )
 
     def test_validate_invalid_chrome(self) -> None:
@@ -60,11 +59,6 @@ class SchemaTest(TestCase):
                 "HSVSCurve": "1;0.041667;0.625000;0.250000;0.250000;"
                 + "0.541667;0.750000;0.250000;0.250000;",
             },
-        )
-
-        self.validator.assert_process(
-            {"vibrance": -5},
-            _DEFAULT | {"LCEnabled": "true", "Chromaticity": "-50"},
         )
 
     def test_process_chrome(self) -> None:

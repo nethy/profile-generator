@@ -14,8 +14,6 @@ _CHROME = "chrome"
 
 _HSV_ENABLED = "HSVEnabled"
 _HSV_SCURVE = "HSVSCurve"
-_LC_ENABLED = "LCEnabled"
-_CHROMATICITY = "Chromaticity"
 _CT_ENABLED = "CTEnabled"
 _CT_POWER = "CTLabRegionPower"
 _CT_SATURATION = "CTLabRegionSaturation"
@@ -23,8 +21,6 @@ _CT_SATURATION = "CTLabRegionSaturation"
 _DEFAULT = {
     _HSV_ENABLED: "false",
     _HSV_SCURVE: "0;",
-    _LC_ENABLED: "false",
-    _CHROMATICITY: "0",
     _CT_ENABLED: "false",
     _CT_POWER: "1",
     _CT_SATURATION: "0",
@@ -52,8 +48,7 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
             ),
         }
     else:
-        is_enabled = str(vibrance < 0).lower()
-        return {_LC_ENABLED: is_enabled, _CHROMATICITY: str(round(vibrance * 10))}
+        return {_HSV_ENABLED: "false", _HSV_SCURVE: "0;"}
 
 
 def _get_chrome(data: Any) -> Mapping[str, str]:
@@ -72,7 +67,7 @@ def _get_chrome(data: Any) -> Mapping[str, str]:
 
 SCHEMA = object_of(
     {
-        _VIBRANCE: range_of(-10, 10),
+        _VIBRANCE: range_of(0, 10),
         _CHROME: range_of(0, 10),
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,

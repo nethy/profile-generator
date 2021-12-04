@@ -1,3 +1,4 @@
+import math
 from collections.abc import Mapping, Sequence
 from typing import Any
 
@@ -9,6 +10,8 @@ _DEFAULT_SLOPE = 1.0
 _DEFAULT_EV_COMP = 0.0
 
 _CURVE = "Curve"
+_LC_ENABLED = "LCEnabled"
+_CHROMATICITY = "Chromaticity"
 
 
 def get_parameters(configuration: Mapping[str, Any]) -> tuple[float, float, float]:
@@ -18,8 +21,21 @@ def get_parameters(configuration: Mapping[str, Any]) -> tuple[float, float, floa
     return (grey18, slope, brightness)
 
 
-def marshal_curve(curve: Sequence[Point]) -> Mapping[str, str]:
-    value = raw_therapee.CurveType.LINEAR
+def marshal(slope: float, curve: Sequence[Point]) -> Mapping[str, str]:
+    curve_value = raw_therapee.CurveType.LINEAR
     if len(curve) > 0:
-        value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(curve)
-    return {_CURVE: value}
+        curve_value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(
+            curve
+        )
+    chromaticity_value = _get_chromacity_compensation(slope)
+    result = {
+        _CURVE: curve_value,
+        _CHROMATICITY: str(round(chromaticity_value)),
+    }
+    if chromaticity_value != 0:
+        result |= {_LC_ENABLED: "true"}
+    return result
+
+
+def _get_chromacity_compensation(slope: float) -> float:
+    return (math.pow(1 / slope, 0.25) - 1) * 100
