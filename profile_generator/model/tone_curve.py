@@ -28,8 +28,8 @@ def _contrast_curve_filmic(gradient: float) -> Curve:
         return lambda x: x
     shadow_gradient = (3 * gradient - 0.5) / 2.5
     highlight_gradient = (2 * gradient + 0.5) / 2.5
-    shadow_curve = sigmoid.sqrt(shadow_gradient)
-    highlight_curve = sigmoid.sqrt(highlight_gradient)
+    shadow_curve = sigmoid.algebraic(2.618033989, shadow_gradient)
+    highlight_curve = sigmoid.algebraic(1.618033989, highlight_gradient)
     weight = sigmoid.sqrt(4)
     return lambda x: (1 - weight(x)) * shadow_curve(x) + weight(x) * highlight_curve(x)
 
@@ -40,5 +40,5 @@ def shadow_linear_gamma(x: float, y: float) -> Curve:
     return (
         lambda val: y / x * val
         if val < x
-        else highlight(val - x) / (1 / (1 - y)) / highlight(1 - x) + y
+        else highlight(val - x) * (1 - y) / highlight(1 - x) + y
     )
