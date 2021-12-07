@@ -150,7 +150,7 @@ ThreeChannels=false
 
 [SharpenMicro]
 Enabled={SMEnabled}
-Matrix=false
+Matrix=true
 Strength={SMStrength}
 Contrast={SharpeningContrast}
 Uniformity=5

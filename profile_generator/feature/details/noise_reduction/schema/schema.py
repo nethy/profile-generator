@@ -20,7 +20,7 @@ def _process(data: Any) -> Mapping[str, str]:
     chrominance = data.get("chrominance", 0)
     chrominance_curve = _get_chrominance_curve(chrominance)
     denoise_enabled = luminance > 0 or chrominance > 0
-    micro_sharpening_strength = round(luminance / 2)
+    micro_sharpening_strength = round(luminance * 0.75)
     micro_sharpening_enabled = micro_sharpening_strength > 0
     return {
         "DenoiseEnabled": str(denoise_enabled).lower(),

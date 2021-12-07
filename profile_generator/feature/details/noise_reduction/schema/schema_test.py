@@ -69,7 +69,7 @@ class SchemaTest(unittest.TestCase):
                     + "1.000000;0.000000;0.250000;0.250000;"
                 ),
                 "SMEnabled": "true",
-                "SMStrength": "20",
+                "SMStrength": "30",
             },
         )
 
