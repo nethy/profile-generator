@@ -39,4 +39,4 @@ if __name__ == "__main__":
     # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
     # for x, y in contrast_sigmoid.calculate(87.975, 1.6, 2.5):
     for x, y in contrast_sigmoid.calculate(82.365, 1.6):
-        print(f"{x:.6f} {y:.6f}")
+        print_point(x, y)

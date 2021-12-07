@@ -108,12 +108,12 @@ def algebraic(grade: float, gradient: float) -> Curve:
         return lambda x: x
     else:
         c = _strength_of_algebraic(grade, gradient)
-        acc = c * 0.5 / math.pow(1 + c * math.pow(0.5, grade), 1 / grade)
+        acc = c * 0.5 / math.pow(1 + math.pow(c * 0.5, grade), 1 / grade)
         return lambda x: (
             (
                 c
                 * (x - 0.5)
-                / math.pow(1 + c * math.pow(abs(x - 0.5), grade), 1 / grade)
+                / math.pow(1 + math.pow(c * abs(x - 0.5), grade), 1 / grade)
                 + acc
             )
             / (2 * acc)
@@ -121,4 +121,4 @@ def algebraic(grade: float, gradient: float) -> Curve:
 
 
 def _strength_of_algebraic(grade: float, gradient: float) -> float:
-    return math.pow(2, grade) * (math.pow(gradient, grade) - 1)
+    return 2 * math.pow(math.pow(gradient, grade) - 1, 1 / grade)
