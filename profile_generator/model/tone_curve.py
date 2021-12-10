@@ -26,12 +26,9 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow_gradient = (3 * gradient - 0.5) / 2.5
-    highlight_gradient = (2 * gradient + 0.5) / 2.5
-    shadow_curve = sigmoid.algebraic(2.618033989, shadow_gradient)
-    highlight_curve = sigmoid.algebraic(1.618033989, highlight_gradient)
-    weight = sigmoid.sqrt(4)
-    return lambda x: (1 - weight(x)) * shadow_curve(x) + weight(x) * highlight_curve(x)
+    shadow_curve = sigmoid.algebraic(3, gradient)
+    highlight_curve = sigmoid.algebraic(1.5, gradient)
+    return lambda x: shadow_curve(x) if x < 0.5 else highlight_curve(x)
 
 
 def shadow_linear_gamma(x: float, y: float) -> Curve:
