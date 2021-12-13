@@ -40,3 +40,6 @@ if __name__ == "__main__":
     # for x, y in contrast_sigmoid.calculate(87.975, 1.6, 2.5):
     for x, y in contrast_sigmoid.calculate(82.365, 1.6):
         print_point(x, y)
+
+    # for x, y in spline.fit(sigmoid.algebraic(4, 3)):
+    #     print_point(x, y)
