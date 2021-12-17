@@ -10,9 +10,9 @@ class TestToneCurve(TestCase):
         _curve = tone_curve_filmic(_GREY, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.132602915)
+        self.assertAlmostEqual(_curve(0.2), 0.129625172)
         self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.965058220)
+        self.assertAlmostEqual(_curve(0.8), 0.953957128)
         self.assertAlmostEqual(_curve(1), 1)
 
     def test_linear_gamma(self) -> None:
