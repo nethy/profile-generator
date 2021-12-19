@@ -65,11 +65,11 @@ class SchemaTest(unittest.TestCase):
             | {
                 "DenoiseEnabled": "true",
                 "DenoiseLCurve": (
-                    "1;0.250000;0.400000;0.250000;0.250000;"
+                    "1;0.000000;0.400000;0.000000;0.000000;"
                     + "1.000000;0.000000;0.250000;0.250000;"
                 ),
                 "SMEnabled": "true",
-                "SMStrength": "30",
+                "SMStrength": "20",
             },
         )
 
@@ -93,6 +93,17 @@ class SchemaTest(unittest.TestCase):
         )
 
         self.validator.assert_process(
-            {"mode": "Aggressive"},
-            {**_DEFAULT, "DenoiseSMethod": "shalbi", "ImpulseDenoiseEnabled": "true"},
+            {"mode": "Aggressive", "luminance": 20},
+            {
+                **_DEFAULT,
+                "DenoiseSMethod": "shalbi",
+                "ImpulseDenoiseEnabled": "true",
+                "DenoiseEnabled": "true",
+                "DenoiseLCurve": (
+                    "1;0.000000;0.200000;0.000000;0.000000;"
+                    + "1.000000;0.000000;0.250000;0.250000;"
+                ),
+                "SMEnabled": "true",
+                "SMStrength": "40",
+            },
         )

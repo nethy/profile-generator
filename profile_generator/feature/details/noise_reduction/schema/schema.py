@@ -9,18 +9,20 @@ from profile_generator.model.view.raw_therapee import (
 )
 from profile_generator.schema import object_of, options_of, range_of
 
-_MODES = {"Aggressive": "shalbi", "Conservative": "shal"}
-_IMPULSE_DENOISE_ENABLED = {"Aggressive": "true", "Conservative": "false"}
+_AGGRESSIVE = "Aggressive"
+_CONSERVATIVE = "Conservative"
+_MODES = {_AGGRESSIVE: "shalbi", _CONSERVATIVE: "shal"}
+_IMPULSE_DENOISE_ENABLED = {_AGGRESSIVE: "true", _CONSERVATIVE: "false"}
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    mode = data.get("mode", "Conservative")
+    mode = data.get("mode", _CONSERVATIVE)
     luminance = data.get("luminance", 0)
     luminance_curve = _get_luminance_curve(luminance)
     chrominance = data.get("chrominance", 0)
     chrominance_curve = _get_chrominance_curve(chrominance)
     denoise_enabled = luminance > 0 or chrominance > 0
-    micro_sharpening_strength = round(luminance * 0.75)
+    micro_sharpening_strength = _get_micro_sharpening(mode, luminance)
     micro_sharpening_enabled = micro_sharpening_strength > 0
     return {
         "DenoiseEnabled": str(denoise_enabled).lower(),
@@ -35,7 +37,7 @@ def _process(data: Any) -> Mapping[str, str]:
 
 def _get_luminance_curve(luminance: int) -> str:
     if luminance > 0:
-        luma_eq = [EqPoint(0.25, luminance / 100), EqPoint(1, 0)]
+        luma_eq = [LinearEqPoint(0, luminance / 100), EqPoint(1, 0)]
         return "1;" + raw_therapee.present_equalizer(luma_eq)
     else:
         return "0;"
@@ -52,9 +54,16 @@ def _get_chrominance_curve(chrominance: int) -> str:
         return "0;"
 
 
+def _get_micro_sharpening(mode: str, luminance: float) -> int:
+    multiplier = 0.5
+    if mode == _AGGRESSIVE:
+        multiplier = 2.0
+    return min(round(luminance * multiplier), 100)
+
+
 SCHEMA = object_of(
     {
-        "mode": options_of("Conservative", "Aggressive"),
+        "mode": options_of(_CONSERVATIVE, _AGGRESSIVE),
         "luminance": range_of(0, 100),
         "chrominance": range_of(0, 100),
     },
