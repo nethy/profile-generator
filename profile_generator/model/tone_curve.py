@@ -13,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = shadow_linear_gamma(*middle)
+    brightness = algebraic_gamma(2/3, *middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -26,7 +26,9 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow_curve = sigmoid.algebraic(3, gradient)
+    shadow_deep = sigmoid.algebraic(2, 1.25 * gradient)
+    shadow_base = sigmoid.algebraic(2, gradient)
+    shadow_curve = lambda x: 2 * x * shadow_base(x) + (1 - 2 * x) * shadow_deep(x)
     highlight_curve = sigmoid.algebraic(1.5, gradient)
     return lambda x: shadow_curve(x) if x < 0.5 else highlight_curve(x)
 
@@ -50,20 +52,11 @@ def _split_gradient(gradient: float, ratio: float) -> tuple[float, float]:
     return (shadow, highlight)
 
 
-def shadow_linear_gamma(x: float, y: float) -> Curve:
-    g = y / x / (1 - y) - 1 / (1 - x)
-    highlight = lambda x: (x + g * x) / (1 + g * x)
-    return (
-        lambda val: y / x * val
-        if val < x
-        else highlight(val - x) * (1 - y) / highlight(1 - x) + y
-    )
-
-
 def algebraic_gamma(grade: float, x: float, y: float) -> Curve:
-    g = math.sqrt(
+    g = math.pow(
         math.pow(y, grade) / math.pow(x, grade) / math.pow(1 - y, grade)
-        - 1 / math.pow(1 - x, grade)
+        - 1 / math.pow(1 - x, grade),
+        1 / grade,
     )
     highlight = lambda x: math.pow(
         (math.pow(x, grade) + math.pow(g * x, grade)) / (1 + math.pow(g * x, grade)),
@@ -74,7 +67,3 @@ def algebraic_gamma(grade: float, x: float, y: float) -> Curve:
         if val < x
         else highlight(val - x) * (1 - y) / highlight(1 - x) + y
     )
-
-
-def hybrid_gamma(x: float, y: float) -> Curve:
-    return algebraic_gamma(1.5, x, y)
