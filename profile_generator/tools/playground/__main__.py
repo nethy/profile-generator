@@ -36,7 +36,7 @@ def print_point(x, y):
 
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    for x, y in contrast_sigmoid.calculate(106.845, 1.6, 0.5):
-        # for x, y in contrast_sigmoid.calculate(87.975, 1.9):
-        # for x, y in contrast_sigmoid.calculate(82.365, 1.6):
+    # for x, y in contrast_sigmoid.calculate(106.845, 1.6, 0.5):
+    # for x, y in contrast_sigmoid.calculate(87.975, 1.6):
+    for x, y in contrast_sigmoid.calculate(82.365, 1.6):
         print_point(x, y)

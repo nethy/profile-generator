@@ -13,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = algebraic_gamma(2/3, *middle)
+    brightness = algebraic_gamma(2 / 3, *middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -26,9 +26,7 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow_deep = sigmoid.algebraic(2, 1.25 * gradient)
-    shadow_base = sigmoid.algebraic(2, gradient)
-    shadow_curve = lambda x: 2 * x * shadow_base(x) + (1 - 2 * x) * shadow_deep(x)
+    shadow_curve = sigmoid.algebraic(3, gradient)
     highlight_curve = sigmoid.algebraic(1.5, gradient)
     return lambda x: shadow_curve(x) if x < 0.5 else highlight_curve(x)
 
