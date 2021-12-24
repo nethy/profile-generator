@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .shim import Point, get_parameters, marshal_curve
+from .shim import Point, get_parameters, marshal
 
 _DEFAULT_GREY18 = 90.0
 _DEFAULT_SLOPE = 1.0
@@ -27,11 +27,20 @@ class ShimTest(TestCase):
         _, _, brightness = get_parameters({"brightness": -1})
         self.assertEqual(brightness, -1)
 
-    def test_marshal_curve(self) -> None:
-        self.assertEqual(marshal_curve([]), {"Curve": "0;"})
+    def test_marshal(self) -> None:
+        self.assertEqual(marshal(1, []), {"Curve": "0;", "Chromaticity": "0"})
         self.assertEqual(
-            marshal_curve([Point(0, 0), Point(1, 1)]),
+            marshal(1, [Point(0, 0), Point(1, 1)]),
             {
                 "Curve": "1;0.000000;0.000000;1.000000;1.000000;",
+                "Chromaticity": "0",
+            },
+        )
+        self.assertEqual(
+            marshal(2, [Point(0, 0), Point(1, 1)]),
+            {
+                "Curve": "1;0.000000;0.000000;1.000000;1.000000;",
+                "LCEnabled": "true",
+                "Chromaticity": "-16",
             },
         )

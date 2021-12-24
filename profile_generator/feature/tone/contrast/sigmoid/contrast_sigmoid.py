@@ -5,7 +5,7 @@ from functools import cache
 from profile_generator.model import spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
-from profile_generator.model.tone_curve import shadow_linear_gamma, tone_curve_filmic
+from profile_generator.model.tone_curve import algebraic_gamma, tone_curve_filmic
 from profile_generator.unit import Point
 
 
@@ -15,20 +15,29 @@ def calculate(
     slope: float,
     brightness: float = 0.0,
 ) -> Sequence[Point]:
-    middle = _get_middle(grey18)
-    brightness_curve = shadow_linear_gamma(
-        rgb.normalize_value(grey18),
-        _adjust_ev(rgb.normalize_value(grey18), brightness),
+    normalized_grey18 = rgb.normalize_value(grey18)
+    output = _adjust_ev(normalized_grey18, brightness)
+    middle = _get_middle(normalized_grey18)
+    brightness_curve = algebraic_gamma(
+        1,
+        normalized_grey18,
+        output,
     )
-    curve = tone_curve_filmic(middle, slope)
+    corrected_slope = _corrected_slope(middle, slope)
+    curve = tone_curve_filmic(middle, corrected_slope)
     return [Point(x, y) for x, y in spline.fit(lambda x: curve(brightness_curve(x)))]
 
 
-def _get_middle(grey18: float) -> Point:
-    in_lum = rgb.normalize_value(grey18)
+def _get_middle(in_lum: float) -> Point:
     out_lum = constants.MIDDLE_GREY_LUMINANCE_SRGB
     return Point(in_lum, out_lum)
 
 
 def _adjust_ev(value: float, ev: float) -> float:
     return SRGB.gamma(SRGB.inverse_gamma(value) * math.pow(2, ev))
+
+
+def _corrected_slope(middle: Point, slope: float) -> float:
+    return (
+        (slope - 1) * math.sqrt(middle.gradient) + middle.gradient
+    ) / middle.gradient

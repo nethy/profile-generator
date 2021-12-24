@@ -1,8 +1,7 @@
 import math
 from collections.abc import Callable
 
-from profile_generator.model import bezier
-from profile_generator.unit import Curve, Line, Point
+from profile_generator.unit import Curve, Point
 
 from . import gamma, sigmoid
 
@@ -14,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = shadow_linear_gamma(*middle)
+    brightness = algebraic_gamma(1, *middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -27,78 +26,43 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow_gradient = (3 * gradient - 0.5) / 2.5
-    highlight_gradient = (2 * gradient + 0.5) / 2.5
-    exp = sigmoid.exp(shadow_gradient)
-    sqrt = sigmoid.sqrt(highlight_gradient)
-    lin = sigmoid.linear(highlight_gradient)
-    weight = sigmoid.exp(4)
-    return lambda x: (1 - weight(x)) * exp(x) + weight(x) * (sqrt(x) + lin(x)) / 2
+    shadow_curve = sigmoid.algebraic(3, gradient)
+    highlight_curve = sigmoid.algebraic(1.5, gradient)
+    return lambda x: shadow_curve(x) if x < 0.5 else highlight_curve(x)
 
 
-def shadow_linear_gamma(x: float, y: float) -> Curve:
-    g = y / x / (1 - y) - 1 / (1 - x)
-    highlight = lambda x: (x + g * x) / (1 + g * x)
+def _split_gradient(gradient: float, ratio: float) -> tuple[float, float]:
+    """
+    (s+h)/2 = c
+    s = 2c-h
+    ---
+    s-1 = r*(h-1)
+    s-1 = rh-r
+    s = rh-r+1
+    ---
+    2c-h = rh-r+1
+    h(r+1) = 2c+r-1
+    h = (2c+r-1)/(r+1)
+    s = 2c-(2c+r-1)/(r+1) = (2cr+r-1)/(r+1)
+    """
+    highlight = (2 * gradient + ratio - 1) / (ratio + 1)
+    shadow = 2 * gradient - highlight
+    return (shadow, highlight)
+
+
+def algebraic_gamma(exponent: float, x: float, y: float) -> Curve:
+    g = math.pow(
+        math.pow(y, exponent) / math.pow(x, exponent) / math.pow(1 - y, exponent)
+        - 1 / math.pow(1 - x, exponent),
+        1 / exponent,
+    )
+    roll_off = lambda x: math.pow(
+        (math.pow(x, exponent) + math.pow(g * x, exponent))
+        / (1 + math.pow(g * x, exponent)),
+        1 / exponent,
+    )
     return (
         lambda val: y / x * val
         if val < x
-        else highlight(val - x) / (1 / (1 - y)) / highlight(1 - x) + y
+        else roll_off(val - x) * (1 - y) / roll_off(1 - x) + y
     )
-
-
-def interpolated_gamma(x: float, y: float) -> Curve:
-    shadow = Line.from_points(Point(0, 0), Point(x, y))
-    highlight = Line.from_points(Point(x, y), Point(1, 1))
-    shift, _ = gamma.linear(x, 0.5)
-    contrast = sigmoid.linear(2)
-    weight = lambda val: contrast(shift(val))
-    return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
-        val
-    ) * highlight.get_y(val)
-
-
-def highlight_linear_gamma(x: float, y: float) -> Curve:
-    shadow, _ = gamma.linear(x, y)
-    return (
-        lambda val: shadow((1 / x) * val) / (1 / y)
-        if val < x
-        else (1 - y) / (1 - x) * val + 1 - (1 - y) / (1 - x)
-    )
-
-
-def flat_gamma(x: float, y: float) -> Curve:
-    shadow = Line.from_points(Point(0, 0), Point(x, y))
-    highlight = Line.from_points(Point(x, y), Point(1, 1))
-    shift, gradient = gamma.linear(x, 0.5)
-    contrast = sigmoid.linear(4 / gradient(x))
-    weight = lambda val: contrast(shift(val))
-    return lambda val: (1 - weight(val)) * shadow.get_y(val) + weight(
-        val
-    ) * highlight.get_y(val)
-
-
-def gradient_matching_linear(x: float, y: float) -> Curve:
-    g = y / x - 1
-    return lambda x: (x + g * x) / (1 + g * x)
-
-
-def bezier_gamma(x: float, y: float) -> Curve:
-    shadow = Line.from_points(Point(0, 0), Point(x, y))
-    highlight = Line.from_points(Point(x, y), Point(1, 1))
-    weight = bezier.curve(
-        [
-            (Point(0, 1), 1),
-            (Point(x, 1), 1),
-            (Point(x, x), 1),
-            (Point(1, 0), 1),
-        ]
-    )
-    return lambda val: weight(val) * shadow.get_y(val) + (
-        1 - weight(val)
-    ) * highlight.get_y(val)
-
-
-def hybrid_gamma(x: float, y: float) -> Curve:
-    base = interpolated_gamma(x, y)
-    correction = shadow_linear_gamma(x, y)
-    return lambda val: (base(val) + correction(val)) / 2

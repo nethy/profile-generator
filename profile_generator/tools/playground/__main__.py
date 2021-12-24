@@ -22,7 +22,8 @@ from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Curve, Point, Strength
+from profile_generator.unit import Curve, Line, Point, Strength
+from profile_generator.util import search
 
 
 def normalize(point: Point) -> Point:
@@ -30,30 +31,20 @@ def normalize(point: Point) -> Point:
     return Point(point.x - diff, point.y - diff)
 
 
+def print_point(x, y):
+    print(f"{x:.6f} {y:.6f}")
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
-    # for x, y in contrast_sigmoid.calculate(87.975, 1.6, 2.5):
-    for x, y in contrast_sigmoid.calculate(82.365, 1.9):
-        print(f"{x:.6f} {y:.6f}")
-    # for x, y in spline.fit(tone_curve.hybrid_gamma(0.125, 0.5)):
-    #     print(f"{x:.6f} {y:.6f}")
+    # for x, y in contrast_sigmoid.calculate(106.845, 1.6, 0.5):
+    # for x, y in contrast_sigmoid.calculate(87.975, 1.6):
+    # for x, y in contrast_sigmoid.calculate(82.365, 1.6):
+    # print_point(x, y)
 
-    # shadow, midtone, highlight = 0, 2, -1
-    # adjustments = [shadow + midtone * 0.5, midtone, highlight + midtone * 0.5]
-    # refs = (0.25, 0.50, 0.75)
-    # points = (
-    #     Point(ref, ref + 0.01 * adjustment)
-    #     for adjustment, ref in zip(adjustments, refs)
-    # )
-    # points = (normalize(p) for p in points)
-    # print("0;0;" + raw_therapee.present_curve(points) + "1;1;")
-
-    # base = sigmoid.contrast_curve_exp(1.5)
-    # weight = sigmoid.contrast_curve_exp(2)
-
-    # def _curve(x: float) -> float:
-    #     if x < 0.5:
-    #         return (1 - 2 * weight(x)) * base(x) + 2 * weight(x) * x
-    #     else:
-    #         return x
+    line = Line(0.5 / 0.125, 0)
+    # curve = lambda x: tone_curve.algebraic_gamma(x, line.get_x(0.5), 0.5)(line.get_x(1))
+    # exponent = search.jump_search(0.1, 100, curve, 0.8)
+    # print(exponent, curve(exponent))
+    for x, y in spline.fit(tone_curve.algebraic_gamma(1, line.get_x(0.5), 0.5)):
+        print_point(x, y)

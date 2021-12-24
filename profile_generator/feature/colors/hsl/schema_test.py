@@ -87,6 +87,9 @@ class SchemaTest(TestCase):
             ),
         )
 
+    def test_process_default(self) -> None:
+        self.assertEqual(process({}), DEFAULT)
+
     def test_process_hue(self) -> None:
         data = {
             "hue": {
