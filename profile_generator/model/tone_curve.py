@@ -13,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = algebraic_gamma(2 / 3, *middle)
+    brightness = algebraic_gamma(1, *middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -50,18 +50,19 @@ def _split_gradient(gradient: float, ratio: float) -> tuple[float, float]:
     return (shadow, highlight)
 
 
-def algebraic_gamma(grade: float, x: float, y: float) -> Curve:
+def algebraic_gamma(exponent: float, x: float, y: float) -> Curve:
     g = math.pow(
-        math.pow(y, grade) / math.pow(x, grade) / math.pow(1 - y, grade)
-        - 1 / math.pow(1 - x, grade),
-        1 / grade,
+        math.pow(y, exponent) / math.pow(x, exponent) / math.pow(1 - y, exponent)
+        - 1 / math.pow(1 - x, exponent),
+        1 / exponent,
     )
-    highlight = lambda x: math.pow(
-        (math.pow(x, grade) + math.pow(g * x, grade)) / (1 + math.pow(g * x, grade)),
-        1 / grade,
+    roll_off = lambda x: math.pow(
+        (math.pow(x, exponent) + math.pow(g * x, exponent))
+        / (1 + math.pow(g * x, exponent)),
+        1 / exponent,
     )
     return (
         lambda val: y / x * val
         if val < x
-        else highlight(val - x) * (1 - y) / highlight(1 - x) + y
+        else roll_off(val - x) * (1 - y) / roll_off(1 - x) + y
     )

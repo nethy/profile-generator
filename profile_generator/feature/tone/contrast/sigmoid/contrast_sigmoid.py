@@ -19,7 +19,7 @@ def calculate(
     output = _adjust_ev(normalized_grey18, brightness)
     middle = _get_middle(normalized_grey18)
     brightness_curve = algebraic_gamma(
-        2 / 3,
+        1,
         normalized_grey18,
         output,
     )
