@@ -6,7 +6,7 @@ from profile_generator.model import spline
 from profile_generator.model.color import constants, rgb
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.tone_curve import algebraic_gamma, tone_curve_filmic
-from profile_generator.unit import Point
+from profile_generator.unit import Line, Point
 
 
 @cache
@@ -17,20 +17,16 @@ def calculate(
 ) -> Sequence[Point]:
     normalized_grey18 = rgb.normalize_value(grey18)
     output = _adjust_ev(normalized_grey18, brightness)
-    middle = _get_middle(normalized_grey18)
+    middle = Point(normalized_grey18, constants.LUMINANCE_50_SRGB)
+    base_line = Line(output / normalized_grey18, 0)
     brightness_curve = algebraic_gamma(
         1,
-        normalized_grey18,
-        output,
+        base_line.get_x(constants.LUMINANCE_50_SRGB),
+        constants.LUMINANCE_50_SRGB,
     )
     corrected_slope = _corrected_slope(middle, slope)
     curve = tone_curve_filmic(middle, corrected_slope)
     return [Point(x, y) for x, y in spline.fit(lambda x: curve(brightness_curve(x)))]
-
-
-def _get_middle(in_lum: float) -> Point:
-    out_lum = constants.MIDDLE_GREY_LUMINANCE_SRGB
-    return Point(in_lum, out_lum)
 
 
 def _adjust_ev(value: float, ev: float) -> float:
