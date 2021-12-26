@@ -1,7 +1,7 @@
 import math
 from collections.abc import Callable
 
-from profile_generator.unit import Curve, Point
+from profile_generator.unit import Curve, Line, Point
 
 from . import gamma, sigmoid
 
@@ -13,7 +13,7 @@ def tone_curve_filmic(middle: Point, gradient: float) -> Curve:
 def _tone_curve(
     middle: Point, gradient: float, contrast_curve: Callable[[float], Curve]
 ) -> Curve:
-    brightness = algebraic_gamma(1, *middle)
+    brightness = damped_gamma(*middle)
 
     shift_x = gamma.power(middle.y, 0.5)
     shift_y = gamma.power(0.5, middle.y)
@@ -26,8 +26,8 @@ def _tone_curve(
 def _contrast_curve_filmic(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow_curve = sigmoid.algebraic(3, gradient)
-    highlight_curve = sigmoid.algebraic(1.5, gradient)
+    shadow_curve = sigmoid.algebraic(3.5, gradient)
+    highlight_curve = sigmoid.algebraic(1.75, gradient)
     return lambda x: shadow_curve(x) if x < 0.5 else highlight_curve(x)
 
 
@@ -65,4 +65,20 @@ def algebraic_gamma(exponent: float, x: float, y: float) -> Curve:
         lambda val: y / x * val
         if val < x
         else roll_off(val - x) * (1 - y) / roll_off(1 - x) + y
+    )
+
+
+def damped_gamma(x: float, y: float) -> Curve:
+    highlight_line = Line.from_points(Point(x, y), Point(1, 1))
+    g = (2 * y / x - (1 - y) / (1 - x)) / (1 - y) - 1 / (1 - x)
+    roll_off = lambda x: (x + g * x) / (1 + g * x)
+    return (
+        lambda val: y / x * val
+        if val < x
+        else (
+            roll_off(val - x) * (1 - y) / roll_off(1 - x)
+            + y
+            + highlight_line.get_y(val)
+        )
+        / 2
     )
