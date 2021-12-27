@@ -89,7 +89,7 @@ _SHADOW_Y = constants.LUMINANCE_20_SRGB
 _HIGHLIGHT_Y = constants.LUMINANCE_60_SRGB
 
 
-def curve(middle: Point, gradient: float) -> Curve:
+def filmic(middle: Point, gradient: float) -> Curve:
     shadow_line = Line.from_points(Point(0, 0), middle)
     highlight_line = Line.from_points(middle, Point(1, 1))
     corected_gradient = (
@@ -100,27 +100,48 @@ def curve(middle: Point, gradient: float) -> Curve:
     base_line = Line.at_point(corected_gradient, middle)
     shadow_x = base_line.get_x(_SHADOW_Y)
     shadow_y = _SHADOW_Y
-    shadow_g = _shadow_coefficient(shadow_x, shadow_y, corected_gradient)
     highlight_x = base_line.get_x(_HIGHLIGHT_Y)
     highlight_y = _HIGHLIGHT_Y
-    highlight_g = _highlight_coefficient(highlight_x, highlight_y, corected_gradient)
-    shadow_curve = lambda x: x / (shadow_g - shadow_g * x + 1)
-    highlight_curve = lambda x: (highlight_g * x + x) / (highlight_g * x + 1)
+    shadow_curve = _shadow_curve(shadow_x, shadow_y, corected_gradient, 0.5)
+    highlight_curve = _highlight_curve(highlight_x, highlight_y, corected_gradient)
     return (
-        lambda val: shadow_curve(val / shadow_x) * shadow_y
+        lambda val: shadow_curve(val)
         if val < shadow_x
         else base_line.get_y(val)
         if val < highlight_x
-        else highlight_curve(val - highlight_x)
-        / highlight_curve(1 - highlight_x)
-        * (1 - highlight_y)
-        + highlight_y
+        else highlight_curve(val)
     )
 
 
-def _shadow_coefficient(x: float, y: float, gradient: float) -> float:
-    return gradient * x / y - 1
+def _shadow_curve(x: float, y: float, gradient: float, exponent: float = 1.0) -> Curve:
+    g = _shadow_coefficient(x, y, gradient, exponent)
+    curve = lambda x: math.pow(
+        math.pow(x, exponent) / (math.pow(g, exponent) - math.pow(g * x, exponent) + 1),
+        1 / exponent,
+    )
+    return lambda val: curve(val / x) * y
 
 
-def _highlight_coefficient(x: float, y: float, gradient: float) -> float:
-    return gradient / (1 - y) - 1 / (1 - x)
+def _shadow_coefficient(x: float, y: float, gradient: float, exponent: float) -> float:
+    return math.pow(gradient * x / y - 1, 1 / exponent)
+
+
+def _highlight_curve(
+    x: float, y: float, gradient: float, exponent: float = 1.0
+) -> Curve:
+    g = _highlight_coefficient(x, y, gradient, exponent)
+    curve = lambda x: math.pow(
+        (math.pow(x, exponent) + math.pow(g * x, exponent))
+        / (math.pow(g * x, exponent) + 1),
+        1 / exponent,
+    )
+    return lambda val: curve(val - x) / curve(1 - x) * (1 - y) + y
+
+
+def _highlight_coefficient(
+    x: float, y: float, gradient: float, exponent: float
+) -> float:
+    return math.pow(
+        math.pow(gradient / (1 - y), exponent) - 1 / math.pow(1 - x, exponent),
+        1 / exponent,
+    )
