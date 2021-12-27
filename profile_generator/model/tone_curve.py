@@ -1,6 +1,7 @@
 import math
 from collections.abc import Callable
 
+from profile_generator.model.color import constants
 from profile_generator.unit import Curve, Line, Point
 
 from . import gamma, sigmoid
@@ -82,3 +83,44 @@ def damped_gamma(x: float, y: float) -> Curve:
         )
         / 2
     )
+
+
+_SHADOW_Y = constants.LUMINANCE_20_SRGB
+_HIGHLIGHT_Y = constants.LUMINANCE_60_SRGB
+
+
+def curve(middle: Point, gradient: float) -> Curve:
+    shadow_line = Line.from_points(Point(0, 0), middle)
+    highlight_line = Line.from_points(middle, Point(1, 1))
+    corected_gradient = (
+        (shadow_line.gradient + highlight_line.gradient) / 2 * gradient
+        + middle.gradient
+        - (shadow_line.gradient + highlight_line.gradient) / 2
+    )
+    base_line = Line.at_point(corected_gradient, middle)
+    shadow_x = base_line.get_x(_SHADOW_Y)
+    shadow_y = _SHADOW_Y
+    shadow_g = _shadow_coefficient(shadow_x, shadow_y, corected_gradient)
+    highlight_x = base_line.get_x(_HIGHLIGHT_Y)
+    highlight_y = _HIGHLIGHT_Y
+    highlight_g = _highlight_coefficient(highlight_x, highlight_y, corected_gradient)
+    shadow_curve = lambda x: x / (shadow_g - shadow_g * x + 1)
+    highlight_curve = lambda x: (highlight_g * x + x) / (highlight_g * x + 1)
+    return (
+        lambda val: shadow_curve(val / shadow_x) * shadow_y
+        if val < shadow_x
+        else base_line.get_y(val)
+        if val < highlight_x
+        else highlight_curve(val - highlight_x)
+        / highlight_curve(1 - highlight_x)
+        * (1 - highlight_y)
+        + highlight_y
+    )
+
+
+def _shadow_coefficient(x: float, y: float, gradient: float) -> float:
+    return gradient * x / y - 1
+
+
+def _highlight_coefficient(x: float, y: float, gradient: float) -> float:
+    return gradient / (1 - y) - 1 / (1 - x)
