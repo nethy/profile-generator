@@ -20,7 +20,7 @@ def calculate(
     brightness_curve = filmic(Point(normalized_grey18, brightness_output), 1)
     middle = Point(normalized_grey18, constants.LUMINANCE_50_SRGB)
     _curve = filmic(middle, slope)
-    return [Point(x, y) for x, y in spline.fit(lambda x: _curve(brightness_curve(x)))]
+    return spline.fit(lambda x: _curve(brightness_curve(x)))
 
 
 def _adjust_ev(value: float, ev: float) -> float:

@@ -5,7 +5,6 @@ from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.model.linalg import Vector
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Point
 
 
 def main() -> None:
@@ -40,10 +39,7 @@ def rgb_curves(shadow_tint: list[float], highlight_tint: list[float]) -> list[st
         )
         for s, h in zip(shadow_curves, highlight_curves)
     ]
-    return [
-        raw_therapee.present_curve((Point(x, y) for x, y in points))
-        for points in rgb_points
-    ]
+    return [raw_therapee.present_curve(points) for points in rgb_points]
 
 
 def lab_to_rgb(color: Vector) -> Vector:
