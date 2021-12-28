@@ -4,7 +4,7 @@ from profile_generator.model.color import constants
 from profile_generator.unit import Curve, Line, Point
 
 _SHADOW_Y = constants.LUMINANCE_20_SRGB
-_HIGHLIGHT_Y = constants.LUMINANCE_60_SRGB
+_HIGHLIGHT_Y = constants.LUMINANCE_50_SRGB
 
 
 def filmic(middle: Point, gradient: float) -> Curve:
