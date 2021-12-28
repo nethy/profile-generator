@@ -30,13 +30,13 @@ def rgb_curves(shadow_tint: list[float], highlight_tint: list[float]) -> list[st
     highlight_rgb = lab_to_rgb(highlight)
     shadow_ratios = [1 / a for a in ratios(shadow_rgb)]
     highlight_ratios = ratios(highlight_rgb)
-    shadow_curves = [sigmoid.exp(g) for g in shadow_ratios]
-    highlight_curves = [sigmoid.exp(g) for g in highlight_ratios]
-    weight = sigmoid.exp(8)
+    shadow_curves = [sigmoid.algebraic(gradient, 2) for gradient in shadow_ratios]
+    highlight_curves = [sigmoid.algebraic(gradient, 2) for gradient in highlight_ratios]
+    mask = sigmoid.algebraic(8, 2)
     rgb_points = [
         spline.fit(
-            lambda x: (1 - weight(x)) * s(x)  # pylint: disable=cell-var-from-loop
-            + weight(x) * h(x)  # pylint: disable=cell-var-from-loop
+            lambda x: (1 - mask(x)) * s(x)  # pylint: disable=cell-var-from-loop
+            + mask(x) * h(x)  # pylint: disable=cell-var-from-loop
         )
         for s, h in zip(shadow_curves, highlight_curves)
     ]
