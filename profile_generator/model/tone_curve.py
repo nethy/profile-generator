@@ -3,17 +3,19 @@ import math
 from profile_generator.model.color import constants
 from profile_generator.unit import Curve, Line, Point
 
-_SHADOW_Y = constants.LUMINANCE_20_SRGB
+_SHADOW_Y = constants.LUMINANCE_22_SRGB
 _HIGHLIGHT_Y = constants.LUMINANCE_50_SRGB
+_GREY_18_Y = constants.LUMINANCE_50_SRGB
 
 
-def filmic(middle: Point, gradient: float) -> Curve:
+def filmic(grey18: float, gradient: float) -> Curve:
+    middle = Point(grey18, _GREY_18_Y)
     shadow_line = Line.from_points(Point(0, 0), middle)
     highlight_line = Line.from_points(middle, Point(1, 1))
     corected_gradient = _corrected_gradient(
         middle, gradient, shadow_line, highlight_line
     )
-    base_line = Line.at_point(corected_gradient, middle)
+    base_line = Line.at_point(middle, corected_gradient)
     shadow_latitude = (base_line.get_x(_SHADOW_Y), _SHADOW_Y)
     highlight_latitude = (base_line.get_x(_HIGHLIGHT_Y), _HIGHLIGHT_Y)
     shadow_curve = _shadow_curve(*shadow_latitude, corected_gradient, 0.5)

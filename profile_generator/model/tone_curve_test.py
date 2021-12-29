@@ -1,16 +1,18 @@
 from unittest import TestCase
 
-from .tone_curve import Point, filmic
+from profile_generator.model.color import constants
 
-_GREY = Point(87 / 255, 119 / 255)
+from .tone_curve import filmic
+
+_GREY_18 = 87 / 255
 
 
 class TestToneCurve(TestCase):
     def test_filmic(self) -> None:
-        _curve = filmic(_GREY, 2)
+        _curve = filmic(_GREY_18, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.130953249)
-        self.assertAlmostEqual(_curve(_GREY.x), _GREY.y)
-        self.assertAlmostEqual(_curve(0.8), 0.947980155)
+        self.assertAlmostEqual(_curve(0.2), 0.1348885)
+        self.assertAlmostEqual(_curve(_GREY_18), constants.LUMINANCE_50_SRGB)
+        self.assertAlmostEqual(_curve(0.8), 0.9329010)
         self.assertAlmostEqual(_curve(1), 1)

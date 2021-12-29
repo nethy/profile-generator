@@ -16,10 +16,9 @@ def calculate(
     brightness: float = 0.0,
 ) -> Sequence[Point]:
     normalized_grey18 = rgb.normalize_value(grey18)
-    brightness_output = _adjust_ev(normalized_grey18, brightness)
-    brightness_curve = filmic(Point(normalized_grey18, brightness_output), 1)
-    middle = Point(normalized_grey18, constants.LUMINANCE_50_SRGB)
-    _curve = filmic(middle, slope)
+    brightness_grey18 = _adjust_ev(constants.LUMINANCE_50_SRGB, -brightness)
+    brightness_curve = filmic(brightness_grey18, 1)
+    _curve = filmic(normalized_grey18, slope)
     return spline.fit(lambda x: _curve(brightness_curve(x)))
 
 

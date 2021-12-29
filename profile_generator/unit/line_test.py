@@ -19,7 +19,7 @@ class LineTest(unittest.TestCase):
         )
 
     def test_at(self) -> None:
-        self.assertEqual(Line(0.5, 0.25), Line.at_point(0.5, Point(0.5, 0.5)))
-        self.assertEqual(Line(0.5, 0.75), Line.at_point(0.5, Point(-0.5, 0.5)))
-        self.assertEqual(Line(0.5, -0.25), Line.at_point(0.5, Point(-0.5, -0.5)))
-        self.assertEqual(Line(0.5, -0.75), Line.at_point(0.5, Point(0.5, -0.5)))
+        self.assertEqual(Line(0.5, 0.25), Line.at_point(Point(0.5, 0.5), 0.5))
+        self.assertEqual(Line(0.5, 0.75), Line.at_point(Point(-0.5, 0.5), 0.5))
+        self.assertEqual(Line(0.5, -0.25), Line.at_point(Point(-0.5, -0.5), 0.5))
+        self.assertEqual(Line(0.5, -0.75), Line.at_point(Point(0.5, -0.5), 0.5))
