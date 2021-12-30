@@ -1,8 +1,6 @@
 from collections.abc import Mapping
 from typing import Any
 
-from profile_generator.model.view import raw_therapee
-from profile_generator.model.view.raw_therapee import LinearEqPoint
 from profile_generator.schema import object_of, range_of
 
 _DPE_ENABLED = "DPEEnabled"

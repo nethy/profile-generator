@@ -6,13 +6,13 @@ from profile_generator.unit import Curve, Line, Point
 
 _SHADOW_Y = constants.LUMINANCE_25_SRGB
 _HIGHLIGHT_Y = constants.LUMINANCE_50_SRGB
-_GREY_18_Y = constants.LUMINANCE_50_SRGB
+_MIDDLE_GREY = constants.LUMINANCE_50_SRGB
 
 
 def filmic(grey18: float, gradient: float) -> Curve:
-    middle = Point(grey18, _GREY_18_Y)
+    middle = Point(grey18, _MIDDLE_GREY)
     base = _base(middle)
-    contrast = _filmic(gradient)
+    contrast = _contrast(gradient)
     return lambda x: contrast(base(x))
 
 
@@ -32,16 +32,25 @@ def _base(middle: Point) -> Curve:
     f'(gx) = 1
     """
     x, y = middle
-    f1_a = (x - y) / math.pow(x, 2)
-    f1_b = 2 * y / x - 1
+    a = (x - y) / math.pow(x, 2)
+    b = 2 * y / x - 1
 
     highlight = gamma.power_at(middle)
 
-    return lambda x: f1_a * math.pow(x, 2) + f1_b * x if x < middle.x else highlight(x)
+    return lambda x: a * math.pow(x, 2) + b * x if x < middle.x else highlight(x)
+
+
+def _contrast(gradient: float) -> Curve:
+    shadow = sigmoid.algebraic(gradient, 3)
+    highlight = sigmoid.algebraic(gradient, 1.5)
+    curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
+    shift_x = gamma.power_at(Point(_MIDDLE_GREY, 0.5))
+    shift_y = gamma.power_at(Point(0.5, _MIDDLE_GREY))
+    return lambda x: shift_y(curve(shift_x(x)))
 
 
 def _filmic(gradient: float) -> Curve:
-    middle = Point(_GREY_18_Y, _GREY_18_Y)
+    middle = Point(_MIDDLE_GREY, _MIDDLE_GREY)
     shadow_line = Line.from_points(Point(0, 0), middle)
     highlight_line = Line.from_points(middle, Point(1, 1))
     corected_gradient = _corrected_gradient(
@@ -63,8 +72,8 @@ def _filmic(gradient: float) -> Curve:
 
 def brightness(ref: Point) -> Curve:
     base_line = Line(ref.gradient, 0)
-    threshold = base_line.get_x(_GREY_18_Y)
-    highlight = _highlight_curve(threshold, _GREY_18_Y, base_line.gradient, 1)
+    threshold = base_line.get_x(_MIDDLE_GREY)
+    highlight = _highlight_curve(threshold, _MIDDLE_GREY, base_line.gradient, 1)
     return lambda x: base_line.get_y(x) if x < threshold else highlight(x)
 
 

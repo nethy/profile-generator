@@ -3,7 +3,7 @@ from collections.abc import Sequence
 from functools import cache
 
 from profile_generator.model import spline, tone_curve
-from profile_generator.model.color import constants, rgb
+from profile_generator.model.color import rgb
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Point
 
