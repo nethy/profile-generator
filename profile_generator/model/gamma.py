@@ -3,6 +3,11 @@ import math
 from profile_generator.unit import Curve, Point
 
 
+def power_at(ref: Point) -> Curve:
+    g = math.log(ref.y) / math.log(ref.x)
+    return lambda x: math.pow(x, g)
+
+
 def algebraic_at(ref: Point, exponent: float) -> Curve:
     if ref.gradient < 1:
         return inverse_algebraic_at(ref, exponent)

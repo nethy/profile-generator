@@ -1,15 +1,49 @@
 import math
 
+from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants
 from profile_generator.unit import Curve, Line, Point
 
-_SHADOW_Y = constants.LUMINANCE_22_SRGB
+_SHADOW_Y = constants.LUMINANCE_25_SRGB
 _HIGHLIGHT_Y = constants.LUMINANCE_50_SRGB
 _GREY_18_Y = constants.LUMINANCE_50_SRGB
 
 
 def filmic(grey18: float, gradient: float) -> Curve:
     middle = Point(grey18, _GREY_18_Y)
+    base = _base(middle)
+    contrast = _filmic(gradient)
+    return lambda x: contrast(base(x))
+
+
+def _base(middle: Point) -> Curve:
+    """
+    0 0
+    gx gy
+    1 1
+
+    f: [0, gx]
+
+    f = a*x^2 + b*x + c
+    f'= 2a*x + b
+
+    f(0)   = 0
+    f(gx)  = gy
+    f'(gx) = 1
+    """
+    x, y = middle
+    f1_a = (x - y) / math.pow(x, 2)
+    f1_b = 2 * y / x - 1
+
+    highlight = gamma.power_at(middle)
+
+    return lambda x: f1_a * math.pow(x, 2) + f1_b * x if x < middle.x else highlight(x)
+
+
+def _filmic(gradient: float) -> Curve:
+    if math.isclose(gradient, 1):
+        return lambda x: x
+    middle = Point(_GREY_18_Y, _GREY_18_Y)
     shadow_line = Line.from_points(Point(0, 0), middle)
     highlight_line = Line.from_points(middle, Point(1, 1))
     corected_gradient = _corrected_gradient(
@@ -19,7 +53,7 @@ def filmic(grey18: float, gradient: float) -> Curve:
     shadow_latitude = (base_line.get_x(_SHADOW_Y), _SHADOW_Y)
     highlight_latitude = (base_line.get_x(_HIGHLIGHT_Y), _HIGHLIGHT_Y)
     shadow_curve = _shadow_curve(*shadow_latitude, corected_gradient, 0.5)
-    highlight_curve = _highlight_curve(*highlight_latitude, corected_gradient)
+    highlight_curve = _highlight_curve(*highlight_latitude, corected_gradient, 2)
     return (
         lambda val: shadow_curve(val)
         if val < shadow_latitude[0]
