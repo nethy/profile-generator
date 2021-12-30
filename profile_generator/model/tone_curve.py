@@ -41,8 +41,6 @@ def _base(middle: Point) -> Curve:
 
 
 def _filmic(gradient: float) -> Curve:
-    if math.isclose(gradient, 1):
-        return lambda x: x
     middle = Point(_GREY_18_Y, _GREY_18_Y)
     shadow_line = Line.from_points(Point(0, 0), middle)
     highlight_line = Line.from_points(middle, Point(1, 1))
@@ -52,8 +50,8 @@ def _filmic(gradient: float) -> Curve:
     base_line = Line.at_point(middle, corected_gradient)
     shadow_latitude = (base_line.get_x(_SHADOW_Y), _SHADOW_Y)
     highlight_latitude = (base_line.get_x(_HIGHLIGHT_Y), _HIGHLIGHT_Y)
-    shadow_curve = _shadow_curve(*shadow_latitude, corected_gradient, 0.5)
-    highlight_curve = _highlight_curve(*highlight_latitude, corected_gradient, 2)
+    shadow_curve = _shadow_curve(*shadow_latitude, corected_gradient, 1 / 2.2)
+    highlight_curve = _highlight_curve(*highlight_latitude, corected_gradient, 1.8)
     return (
         lambda val: shadow_curve(val)
         if val < shadow_latitude[0]
@@ -61,6 +59,13 @@ def _filmic(gradient: float) -> Curve:
         if val < highlight_latitude[0]
         else highlight_curve(val)
     )
+
+
+def brightness(ref: Point) -> Curve:
+    base_line = Line(ref.gradient, 0)
+    threshold = base_line.get_x(_GREY_18_Y)
+    highlight = _highlight_curve(threshold, _GREY_18_Y, base_line.gradient, 1)
+    return lambda x: base_line.get_y(x) if x < threshold else highlight(x)
 
 
 def _corrected_gradient(
@@ -74,6 +79,8 @@ def _corrected_gradient(
 
 
 def _shadow_curve(x: float, y: float, gradient: float, exponent: float = 1.0) -> Curve:
+    if math.isclose(gradient, 1) and math.isclose(x, y):
+        return lambda x: x
     g = _shadow_coefficient(x, y, gradient, exponent)
     curve = lambda x: math.pow(
         math.pow(x, exponent) / (math.pow(g, exponent) - math.pow(g * x, exponent) + 1),
@@ -89,6 +96,8 @@ def _shadow_coefficient(x: float, y: float, gradient: float, exponent: float) ->
 def _highlight_curve(
     x: float, y: float, gradient: float, exponent: float = 1.0
 ) -> Curve:
+    if math.isclose(gradient, 1) and math.isclose(x, y):
+        return lambda x: x
     g = _highlight_coefficient(x, y, gradient, exponent)
     curve = lambda x: math.pow(
         (math.pow(x, exponent) + math.pow(g * x, exponent))
