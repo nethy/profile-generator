@@ -6,7 +6,7 @@ from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 from profile_generator.unit import Curve, Point
 
-EPSILON = 0.0025
+EPSILON = 0.001
 SAMPLES_COUNT = 127
 
 
