@@ -16,7 +16,7 @@ class Line:
         return Line(gradient, offset)
 
     @staticmethod
-    def at_point(gradient: float, point: Point) -> Line:
+    def at_point(point: Point, gradient: float) -> Line:
         return Line(gradient, point.y - point.x * gradient)
 
     def __repr__(self) -> str:

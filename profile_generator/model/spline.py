@@ -4,22 +4,22 @@ from collections.abc import Sequence
 
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
-from profile_generator.unit import Curve
+from profile_generator.unit import Curve, Point
 
-EPSILON = 1 / 1024
+EPSILON = 0.002
 SAMPLES_COUNT = 127
 
 
-def fit(fn: Curve) -> Sequence[tuple[float, float]]:
+def fit(fn: Curve) -> Sequence[Point]:
     range_end = SAMPLES_COUNT - 1
     references = [(i / range_end, fn(i / range_end)) for i in range(1, range_end)]
-    knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
+    knots = [Point(0.0, fn(0.0)), Point(1.0, fn(1.0))]
     for _ in range(3, 24 + 1):
         spline = interpolate(knots)
         max_diff, i = _find_max_diff(references, spline)
         if max_diff > EPSILON:
-            knot = references.pop(i)
-            bisect.insort(knots, knot)
+            x, y = references.pop(i)
+            bisect.insort(knots, Point(x, y))
         else:
             break
     return knots
@@ -31,11 +31,11 @@ def _find_max_diff(
     return max((abs(y - spline(x)), i) for i, (x, y) in enumerate(references))
 
 
-def interpolate(points: Sequence[tuple[float, float]]) -> Curve:
+def interpolate(points: Sequence[Point]) -> Curve:
     if len(points) == 0:
         return lambda x: 0.0
     elif len(points) == 1:
-        return lambda x: points[0][1]
+        return lambda x: points[0].y
     xs, ys = [x for x, _ in points], [y for _, y in points]
     system = _equations(xs, ys)
     coefficients = linalg.solve(system)

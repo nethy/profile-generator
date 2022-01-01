@@ -28,11 +28,11 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {},
             {
-                "WaveletEnabled": "false",
-                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
-                + "0.250000;0.500000;0.250000;0.250000;"
-                + "0.750000;0.500000;0.250000;0.250000;"
-                + "1.000000;0.500000;0.250000;0.250000;",
+                "DPEEnabled": "false",
+                "DPEMult2": "1.0",
+                "DPEMult3": "1.0",
+                "DPEMult4": "1.0",
+                "DPEMult5": "1.0",
             },
         )
 
@@ -40,20 +40,20 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"local": 1},
             {
-                "WaveletEnabled": "true",
-                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
-                + "0.250000;0.550000;0.250000;0.250000;"
-                + "0.750000;0.550000;0.250000;0.250000;"
-                + "1.000000;0.500000;0.250000;0.250000;",
+                "DPEEnabled": "true",
+                "DPEMult2": "1.05",
+                "DPEMult3": "1.1",
+                "DPEMult4": "1.1",
+                "DPEMult5": "1.05",
             },
         )
         self.validator.assert_process(
             {"local": 10},
             {
-                "WaveletEnabled": "true",
-                "WaveletOpacityCurveWL": "1;0.000000;0.500000;0.250000;0.250000;"
-                + "0.250000;1.000000;0.250000;0.250000;"
-                + "0.750000;1.000000;0.250000;0.250000;"
-                + "1.000000;0.500000;0.250000;0.250000;",
+                "DPEEnabled": "true",
+                "DPEMult2": "1.5",
+                "DPEMult3": "2.0",
+                "DPEMult4": "2.0",
+                "DPEMult5": "1.5",
             },
         )

@@ -18,7 +18,12 @@ class Point:
 
     @property
     def gradient(self) -> float:
-        return self.y / self.x if not math.isclose(self.x, 0) else math.inf
+        if math.isclose(self.x, self.y):
+            return 1
+        elif math.isclose(self.x, 0):
+            return math.inf
+        else:
+            return self.y / self.x
 
     def __repr__(self) -> str:
         return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
