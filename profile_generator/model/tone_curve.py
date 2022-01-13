@@ -13,9 +13,9 @@ def filmic(grey18: float, gradient: float) -> Curve:
 
 
 def _flat(middle: Point) -> Curve:
-    power = gamma.power_at(middle)
-    algebraic = gamma.algebraic_at(middle, 2)
-    return lambda x: algebraic(x) * power(x) + (1 - algebraic(x)) * algebraic(x)
+    highlight = gamma.power_at(middle)
+    shadow = gamma.algebraic_at(middle, 1)
+    return lambda x: (1 - shadow(x)) * shadow(x) + shadow(x) * highlight(x)
 
 
 def _contrast(gradient: float) -> Curve:
