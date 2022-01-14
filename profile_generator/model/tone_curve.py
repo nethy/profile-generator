@@ -7,7 +7,7 @@ _MIDDLE_GREY = constants.LUMINANCE_50_SRGB
 
 def filmic(grey18: float, gradient: float) -> Curve:
     middle = Point(grey18, _MIDDLE_GREY)
-    flat = _flat(middle)
+    flat = gamma.log_at(middle)
     contrast = _contrast(gradient)
     return lambda x: contrast(flat(x))
 
