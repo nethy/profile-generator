@@ -7,31 +7,15 @@ _MIDDLE_GREY = constants.LUMINANCE_50_SRGB
 
 def filmic(grey18: float, gradient: float) -> Curve:
     middle = Point(grey18, _MIDDLE_GREY)
-    base = _base_hermite(middle)
+    flat = gamma.log_at(middle)
     contrast = _contrast(gradient)
-    return lambda x: contrast(base(x))
+    return lambda x: contrast(flat(x))
 
 
-def _base_hermite(middle: Point) -> Curve:
-    xs = [0, middle.x, 1]
-    ys = [0, middle.y, 1]
-    ms = [middle.gradient, 1, (1 - middle.y) / (1 - middle.x)]
-    hs = [0.0] * 2
-    ss = [0.0] * 2
-    cs = [0.0] * 2
-    ds = [0.0] * 2
-    for i in range(2):
-        hs[i] = xs[i + 1] - xs[i]
-        ss[i] = (ys[i + 1] - ys[i]) / hs[i]
-        cs[i] = (3 * ss[i] - 2 * ms[i] - ms[i + 1]) / hs[i]
-        ds[i] = (ms[i] + ms[i + 1] - 2 * ss[i]) / (hs[i] * hs[i])
-
-    def interpolate(x: float) -> float:
-        i = 0 if x < middle.x else 1
-        dx = x - xs[i]
-        return ys[i] + ms[i] * dx + cs[i] * dx * dx + ds[i] * dx * dx * dx
-
-    return interpolate
+def _flat(middle: Point) -> Curve:
+    highlight = gamma.power_at(middle)
+    shadow = gamma.algebraic_at(middle, 1)
+    return lambda x: (1 - shadow(x)) * shadow(x) + shadow(x) * highlight(x)
 
 
 def _contrast(gradient: float) -> Curve:
