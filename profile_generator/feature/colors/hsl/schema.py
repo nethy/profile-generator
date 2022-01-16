@@ -12,7 +12,7 @@ _CH_CURVE = "ChCurve"
 _LH_CURVE = "LhCurve"
 
 DEFAULT = {
-    _LC_ENABLED: "enabled",
+    _LC_ENABLED: "true",
     _HH_CURVE: raw_therapee.CurveType.LINEAR,
     _CH_CURVE: raw_therapee.CurveType.LINEAR,
     _LH_CURVE: raw_therapee.CurveType.LINEAR,
