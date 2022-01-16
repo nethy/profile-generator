@@ -8,7 +8,7 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
-from .schema import SCHEMA
+from .schema import SCHEMA, process
 
 DEFAULT = {
     "BayerMethod": "amaze",
@@ -58,27 +58,28 @@ class SchemaTest(unittest.TestCase):
         )
 
     def test_process_default(self) -> None:
-        self.validator.assert_process({}, DEFAULT)
+        self.assertEqual(process({}), DEFAULT)
 
     def test_process_algorithm(self) -> None:
-        self.validator.assert_process(
-            {"algorithm": "RCD+VNG4"}, DEFAULT | {"BayerMethod": "rcdvng4"}
+        self.assertEqual(
+            process({"algorithm": "RCD+VNG4"}), DEFAULT | {"BayerMethod": "rcdvng4"}
         )
 
-        self.validator.assert_process(
-            {"algorithm": "rcd+vng4"}, DEFAULT | {"BayerMethod": "rcdvng4"}
+        self.assertEqual(
+            process({"algorithm": "rcd+vng4"}), DEFAULT | {"BayerMethod": "rcdvng4"}
         )
 
-        self.validator.assert_process(
-            {"algorithm": "LMMSE"}, DEFAULT | {"BayerMethod": "lmmse"}
+        self.assertEqual(
+            process({"algorithm": "LMMSE"}), DEFAULT | {"BayerMethod": "lmmse"}
         )
 
     def test_process_auto_threshold(self) -> None:
-        self.validator.assert_process(
-            {"auto_threshold": False}, DEFAULT | {"BayerDDAutoContrast": "false"}
+        self.assertEqual(
+            process({"auto_threshold": False}),
+            DEFAULT | {"BayerDDAutoContrast": "false"},
         )
 
     def test_process_threshold(self) -> None:
-        self.validator.assert_process(
-            {"threshold": 50}, DEFAULT | {"BayerDDContrast": "50"}
+        self.assertEqual(
+            process({"threshold": 50}), DEFAULT | {"BayerDDContrast": "50"}
         )

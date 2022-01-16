@@ -36,6 +36,5 @@ SCHEMA = object_of(
         _ALGORITHM: options_of("AMaZE", "AMaZE+VNG4", "DCB+VNG4", "RCD+VNG4", "LMMSE"),
         _THRESHOLD: range_of(0, 100),
         _AUTO_THRESHOLD: type_of(bool),
-    },
-    process,
+    }
 )
