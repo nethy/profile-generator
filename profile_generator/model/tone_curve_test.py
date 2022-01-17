@@ -12,7 +12,7 @@ class TestToneCurve(TestCase):
         _curve = filmic(_GREY_18, 2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1716669)
+        self.assertAlmostEqual(_curve(0.2), 0.1679638)
         self.assertAlmostEqual(_curve(_GREY_18), constants.LUMINANCE_50_SRGB)
-        self.assertAlmostEqual(_curve(0.8), 0.9549321)
+        self.assertAlmostEqual(_curve(0.8), 0.9478869)
         self.assertAlmostEqual(_curve(1), 1)
