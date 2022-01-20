@@ -19,8 +19,8 @@ def _flat(middle: Point) -> Curve:
 
 
 def _contrast(gradient: float) -> Curve:
-    shadow = sigmoid.algebraic(gradient, 2.75)
-    highlight = sigmoid.algebraic(gradient, 1.75)
+    shadow = sigmoid.algebraic(gradient, 3)
+    highlight = sigmoid.algebraic(gradient, 2)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
     shift_x = gamma.power_at(Point(_MIDDLE_GREY, 0.5))
     shift_y = gamma.power_at(Point(0.5, _MIDDLE_GREY))
