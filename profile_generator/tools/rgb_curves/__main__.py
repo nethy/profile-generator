@@ -11,9 +11,9 @@ _WHITE = Point(1, 1)
 
 
 def main() -> None:
-    shadow = normalize([0, -1], 2)
-    midtone = normalize([1, -1], 5)
-    highlight = normalize([0, 1], 2)
+    shadow = normalize([0, -1], 5)
+    midtone = normalize([0, 0], 5)
+    highlight = normalize([0, 1], 5)
     for name, value in zip(
         ("rCurve", "gCurve", "bCurve"), rgb_curves(shadow, midtone, highlight)
     ):

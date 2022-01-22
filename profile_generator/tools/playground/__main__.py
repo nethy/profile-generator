@@ -5,7 +5,6 @@ import math
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
-    _BRIGHTNESS,
     _GREY18,
     _SLOPE,
 )
@@ -38,7 +37,10 @@ def print_point(x, y):
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
-    for x, y in contrast_sigmoid.calculate(87.975, 1.7):
-        # for x, y in contrast_sigmoid.calculate(82.365, 1.7):
-        # for x, y in contrast_sigmoid.calculate(64.515, 1.7):
+    # for x, y in contrast_sigmoid.calculate(87.975, 1.7):
+    # for x, y in contrast_sigmoid.calculate(82.365, 1.7):
+    for x, y in contrast_sigmoid.calculate(64.515, 1.7):
         print_point(x, y)
+
+    # for x, y in spline.fit(tone_curve._corrected_flat(Point(0.125, 0.5))):
+    #     print_point(x, y)

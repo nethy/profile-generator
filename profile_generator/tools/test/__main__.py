@@ -3,7 +3,6 @@
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
-    _BRIGHTNESS,
     _GREY18,
     _SLOPE,
 )
@@ -33,11 +32,4 @@ if __name__ == "__main__":
         contrast_sigmoid.calculate,
         _GREY18,
         _SLOPE,
-    )
-    print_calculation(
-        "test_base_controls_brightness",
-        contrast_sigmoid.calculate,
-        _GREY18,
-        _SLOPE,
-        _BRIGHTNESS,
     )
