@@ -12,14 +12,10 @@ from profile_generator.unit import Point
 def calculate(
     grey18: float,
     slope: float,
-    brightness: float = 0.0,
 ) -> Sequence[Point]:
     normalized_grey18 = rgb.normalize_value(grey18)
-    brightness_curve = tone_curve.brightness(
-        Point(normalized_grey18, _adjust_ev(normalized_grey18, brightness))
-    )
     _curve = tone_curve.filmic(normalized_grey18, slope)
-    return spline.fit(lambda x: _curve(brightness_curve(x)))
+    return spline.fit(_curve)
 
 
 def _adjust_ev(value: float, ev: float) -> float:

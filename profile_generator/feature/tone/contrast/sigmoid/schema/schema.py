@@ -8,8 +8,8 @@ from . import shim
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    grey, slope, brightness = shim.get_parameters(data)
-    curve = contrast_sigmoid.calculate(grey, slope, brightness)
+    grey, slope = shim.get_parameters(data)
+    curve = contrast_sigmoid.calculate(grey, slope)
     return shim.marshal(slope, curve)
 
 

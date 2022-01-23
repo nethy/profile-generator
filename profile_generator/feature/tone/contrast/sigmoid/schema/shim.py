@@ -7,18 +7,16 @@ from profile_generator.unit import Point
 
 _DEFAULT_GREY18 = 90.0
 _DEFAULT_SLOPE = 1.0
-_DEFAULT_EV_COMP = 0.0
 
 _CURVE = "Curve"
 _LC_ENABLED = "LCEnabled"
 _CHROMATICITY = "Chromaticity"
 
 
-def get_parameters(configuration: Mapping[str, Any]) -> tuple[float, float, float]:
+def get_parameters(configuration: Mapping[str, Any]) -> tuple[float, float]:
     grey18 = configuration.get("grey18", _DEFAULT_GREY18)
     slope = configuration.get("slope", _DEFAULT_SLOPE)
-    brightness = configuration.get("brightness", _DEFAULT_EV_COMP)
-    return (grey18, slope, brightness)
+    return (grey18, slope)
 
 
 def marshal(slope: float, curve: Sequence[Point]) -> Mapping[str, str]:

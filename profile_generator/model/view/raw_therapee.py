@@ -1,4 +1,5 @@
 from collections.abc import Iterable
+from typing import Final
 
 from profile_generator.unit import DECIMALS, Point
 
@@ -7,15 +8,15 @@ _ONE_SIDE_EQ_STRENGTH = 0.5
 
 
 class CurveType:
-    LINEAR = "0;"
-    STANDARD = "1;"
-    CONTROL_CAGE = "3;"
-    FLEXIBLE = "4;"
+    LINEAR: Final = "0;"
+    STANDARD: Final = "1;"
+    CONTROL_CAGE: Final = "3;"
+    FLEXIBLE: Final = "4;"
 
 
 class WbSetting:
-    CAMERA = "Camera"
-    CUSTOM = "Custom"
+    CAMERA: Final = "Camera"
+    CUSTOM: Final = "Custom"
 
 
 class EqPoint(Point):

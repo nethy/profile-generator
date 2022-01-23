@@ -7,7 +7,7 @@ from profile_generator.schema.type_schema import InvalidTypeError
 from .schema import _STEPS, SCHEMA, process
 
 DEFAULT = {
-    "LCEnabled": "false",
+    "LCEnabled": "true",
     "HhCurve": "0;",
     "ChCurve": "0;",
     "LhCurve": "0;",
