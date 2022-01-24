@@ -1,4 +1,5 @@
 import math
+from typing import Sequence
 
 from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space import SRGB
@@ -11,43 +12,46 @@ _WHITE = Point(1, 1)
 
 
 def main() -> None:
-    shadow = normalize([0, -1], 5)
-    midtone = normalize([0, 0], 5)
-    highlight = normalize([0, 1], 5)
+    shadow = color_vector(270, 3)
+    midtone = color_vector(0, 0)
+    highlight = color_vector(90, 6)
     for name, value in zip(
         ("rCurve", "gCurve", "bCurve"), rgb_curves(shadow, midtone, highlight)
     ):
         print(f"{name}=1;{value}")
 
 
-def normalize(tint: list[float], base: float) -> list[float]:
-    correction = math.sqrt(math.pow(tint[0], 2) + math.pow(tint[1], 2)) / base
-    return [i / correction for i in tint] if not math.isclose(correction, 0) else tint
+def color_vector(degree: float, length: float) -> list[float]:
+    radians = math.radians(degree)
+    return [math.cos(radians) * length, math.sin(radians) * length]
 
 
 def rgb_curves(
     shadow_tint: list[float], midtone_tint: list[float], highlight_tint: list[float]
 ) -> list[str]:
+    black = [0, 0, 0]
     shadow = [25.0] + shadow_tint
     midtone = [50.0] + midtone_tint
     highlight = [75.0] + highlight_tint
-    shadow_rgb = lab_to_rgb(shadow)
-    grey_rgb = lab_to_rgb(midtone)
-    highlight_rgb = lab_to_rgb(highlight)
-    shadow_ref, grey_ref, highlight_ref = (
-        srgb_luminance(i) for i in (25.0, 50.0, 75.0)
-    )
+    white = [100, 0, 0]
+    tones = interpolate([black, shadow, midtone, highlight, white])
+    rgbs = [lab_to_rgb(tone) for tone in tones]
+    refs = [srgb_luminance(tone[0]) for tone in tones]
     rgb_points = [
-        [
-            _BLACK,
-            Point(shadow_ref, s),
-            Point(grey_ref, g),
-            Point(highlight_ref, h),
-            _WHITE,
-        ]
-        for s, g, h in zip(shadow_rgb, grey_rgb, highlight_rgb)
+        [Point(*ref_rgb_value) for ref_rgb_value in zip(refs, rgb_values)]
+        for rgb_values in zip(*rgbs)
     ]
     return [raw_therapee.present_curve(points) for points in rgb_points]
+
+
+def interpolate(items: Sequence[Sequence[float]]) -> Sequence[Sequence[float]]:
+    result: list[list[float]] = []
+    for i in range(len(items)):
+        result.append(items[i])
+        if i + 1 < len(items):
+            interpolated = [(a + b) / 2 for a, b in zip(items[i], items[i + 1])]
+            result.append(interpolated)
+    return result
 
 
 def lab_to_rgb(color: Vector) -> Vector:
