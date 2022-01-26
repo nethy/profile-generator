@@ -1,5 +1,4 @@
 import math
-from typing import Sequence
 
 from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space import SRGB
@@ -29,11 +28,11 @@ def color_vector(degree: float, length: float) -> list[float]:
 def rgb_curves(
     shadow_tint: list[float], midtone_tint: list[float], highlight_tint: list[float]
 ) -> list[str]:
-    black = [0, 0, 0]
+    black = [0.0, 0.0, 0.0]
     shadow = [25.0] + shadow_tint
     midtone = [50.0] + midtone_tint
     highlight = [75.0] + highlight_tint
-    white = [100, 0, 0]
+    white = [100.0, 0.0, 0.0]
     tones = interpolate([black, shadow, midtone, highlight, white])
     rgbs = [lab_to_rgb(tone) for tone in tones]
     refs = [srgb_luminance(tone[0]) for tone in tones]
@@ -44,10 +43,10 @@ def rgb_curves(
     return [raw_therapee.present_curve(points) for points in rgb_points]
 
 
-def interpolate(items: Sequence[Sequence[float]]) -> Sequence[Sequence[float]]:
+def interpolate(items: list[Vector]) -> list[Vector]:
     result: list[list[float]] = []
-    for i in range(len(items)):
-        result.append(items[i])
+    for i, item in enumerate(items):
+        result.append(item)
         if i + 1 < len(items):
             interpolated = [(a + b) / 2 for a, b in zip(items[i], items[i + 1])]
             result.append(interpolated)

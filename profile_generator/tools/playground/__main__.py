@@ -19,6 +19,7 @@ from profile_generator.model import (
 )
 from profile_generator.model.color import constants, lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
+from profile_generator.model.color.space.prophoto import PROPHOTO
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Curve, Line, Point, Strength
@@ -39,8 +40,6 @@ if __name__ == "__main__":
     # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
     # for x, y in contrast_sigmoid.calculate(87.975, 1.7):
     # for x, y in contrast_sigmoid.calculate(82.365, 1.7):
-    for x, y in contrast_sigmoid.calculate(64.515, 1.7):
-        print_point(x, y)
-
-    # for x, y in spline.fit(tone_curve._corrected_flat(Point(0.125, 0.5))):
+    # for x, y in contrast_sigmoid.calculate(64.515, 1.7):
     #     print_point(x, y)
+

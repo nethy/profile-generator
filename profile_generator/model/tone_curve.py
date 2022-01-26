@@ -13,7 +13,7 @@ def filmic(grey18: float, gradient: float) -> Curve:
 
 
 def _contrast(gradient: float) -> Curve:
-    shadow = sigmoid.algebraic(gradient, 3.6)
+    shadow = sigmoid.algebraic(gradient, 3)
     highlight = sigmoid.algebraic(gradient, 2.4)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
     shift_x = gamma.power_at(Point(_MIDDLE_GREY, 0.5))
