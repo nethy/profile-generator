@@ -18,7 +18,7 @@ DEFAULT = {
     _LH_CURVE: raw_therapee.CurveType.LINEAR,
 }
 
-_STEPS = 7.0
+_STEPS = 10.0
 
 _COLORS_SCHEMA = object_of(
     {
