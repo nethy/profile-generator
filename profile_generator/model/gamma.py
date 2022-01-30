@@ -10,11 +10,11 @@ def power_at(point: Point) -> Curve:
     return lambda x: math.pow(x, g)
 
 
-def algebraic_at(p: Point, exponent: float) -> Curve:
-    if p.gradient < 1:
-        return inverse_algebraic_at(p, exponent)
+def algebraic_at(point: Point, exponent: float) -> Curve:
+    if point.gradient < 1:
+        return inverse_algebraic_at(point, exponent)
     g = math.pow(
-        (math.pow(p.y / p.x, exponent) - 1) / (1 - math.pow(p.y, exponent)),
+        (math.pow(point.y / point.x, exponent) - 1) / (1 - math.pow(point.y, exponent)),
         1 / exponent,
     )
     return algebraic(g, exponent)
@@ -44,9 +44,9 @@ def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -
     return lambda x: curve(x - point.x) / curve(1 - point.x) * (1 - point.y) + point.y
 
 
-def inverse_algebraic_at(p: Point, exponent: float) -> Curve:
+def inverse_algebraic_at(point: Point, exponent: float) -> Curve:
     g = math.pow(
-        (math.pow(p.x / p.y, exponent) - 1) / (1 - math.pow(p.x, exponent)),
+        (math.pow(point.x / point.y, exponent) - 1) / (1 - math.pow(point.x, exponent)),
         1 / exponent,
     )
     return inverse_algebraic(g, exponent)
@@ -74,8 +74,8 @@ def partial_inverse_algebraic_at(
 
 
 @cache
-def log_at(middle: Point) -> Curve:
-    g = search.jump_search(1e-12, 1e3, lambda x: log(x)(middle.x), middle.y)
+def log_at(point: Point) -> Curve:
+    g = search.jump_search(1e-12, 1e3, lambda c: log(c)(point.x), point.y)
     return log(g)
 
 

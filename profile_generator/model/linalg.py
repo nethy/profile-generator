@@ -1,7 +1,10 @@
 import math
 
-Matrix = list[list[float]]
-Vector = list[float]
+from profile_generator.unit import Matrix, Vector
+
+
+def vector_length(vector: Vector) -> float:
+    return math.sqrt(sum((math.pow(i, 2) for i in vector)))
 
 
 def solve(system: Matrix) -> Vector:

@@ -1,8 +1,11 @@
 from unittest import TestCase
 
-from profile_generator.schema import InvalidObjectError, SchemaValidator
-from profile_generator.schema.range_schema import InvalidRangeError
-from profile_generator.schema.type_schema import InvalidTypeError
+from profile_generator.schema import (
+    InvalidObjectError,
+    InvalidRangeError,
+    InvalidTypeError,
+    SchemaValidator,
+)
 
 from .schema import _STEPS, SCHEMA, process
 
@@ -22,28 +25,28 @@ class SchemaTest(TestCase):
         self.validator.assert_valid(
             {
                 "hue": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
                 "saturation": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
                 "luminance": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
             }
         )

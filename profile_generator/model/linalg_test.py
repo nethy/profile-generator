@@ -1,6 +1,14 @@
 from unittest import TestCase
 
-from .linalg import Matrix, Vector, inverse, multiply_vector_vector, scale_matrix, solve
+from .linalg import (
+    Matrix,
+    Vector,
+    inverse,
+    multiply_vector_vector,
+    scale_matrix,
+    solve,
+    vector_length,
+)
 
 
 class LinalgTestCase(TestCase):
@@ -41,6 +49,11 @@ class LinalgTestCase(TestCase):
 
 
 class LinalgTest(LinalgTestCase):
+    def test_vector_length(self) -> None:
+        self.assertAlmostEqual(vector_length([]), 0.0)
+        self.assertAlmostEqual(vector_length([1.0]), 1.0)
+        self.assertAlmostEqual(vector_length([3.0, 4.0]), 5.0)
+
     def test_solve_should_solve_nothing(self) -> None:
         self.assertEqual([], solve([]))
 

@@ -22,9 +22,7 @@ def get_parameters(configuration: Mapping[str, Any]) -> tuple[float, float]:
 def marshal(slope: float, curve: Sequence[Point]) -> Mapping[str, str]:
     curve_value = raw_therapee.CurveType.LINEAR
     if len(curve) > 0:
-        curve_value = raw_therapee.CurveType.STANDARD + raw_therapee.present_curve(
-            curve
-        )
+        curve_value = raw_therapee.present_curve(raw_therapee.CurveType.STANDARD, curve)
     chromaticity_value = _get_chromacity_compensation(slope)
     result = {
         _CURVE: curve_value,

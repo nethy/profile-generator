@@ -6,10 +6,11 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
-from .hsl import schema_test as hsl_schema_test
+from .grading import schema_test as grading_test
+from .hsl import schema_test as hsl_test
 from .profile import schema_test as profile_test
 from .schema import SCHEMA
-from .white_balance import schema_test as wb_schema_test
+from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
     "HSVEnabled": "false",
@@ -18,9 +19,10 @@ _DEFAULT = {
     "CTEnabled": "false",
     "CTLabRegionPower": "1",
     "CTLabRegionSaturation": "0",
-    **wb_schema_test.DEFAULT,
-    **hsl_schema_test.DEFAULT,
+    **wb_test.DEFAULT,
+    **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
+    **grading_test.DEFAULT,
 }
 
 

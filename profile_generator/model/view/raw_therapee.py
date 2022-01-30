@@ -45,8 +45,8 @@ class RightLinearEqPoint(EqPoint):
         return self._present(_ONE_SIDE_EQ_STRENGTH, 0)
 
 
-def present_curve(points: Iterable[Point]) -> str:
-    return "".join((_present_point(p) for p in points))
+def present_curve(curve_type: str, points: Iterable[Point]) -> str:
+    return curve_type + "".join((_present_point(p) for p in points))
 
 
 def _present_point(point: Point) -> str:

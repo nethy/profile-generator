@@ -6,3 +6,5 @@ from .precision import *
 from .strength import Strength
 
 Curve = Callable[[float], float]
+Vector = list[float]
+Matrix = list[list[float]]

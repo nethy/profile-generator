@@ -514,11 +514,11 @@ ClutFilename=
 Strength=100
 
 [RGB Curves]
-Enabled=false
+Enabled={RGBCurvesEnabled}
 LumaMode=false
-rCurve=0;
-gCurve=0;
-bCurve=0;
+rCurve={RGBCurvesRCurve}
+gCurve={RGBCurvesGCurve}
+bCurve={RGBCurvesBCurve}
 
 [ColorToning]
 Enabled={CTEnabled}
