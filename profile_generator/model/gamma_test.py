@@ -47,3 +47,11 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(gamma(0.25), 0.5)
         self.assertAlmostEqual(gamma(0.5), 0.7324868)
         self.assertAlmostEqual(gamma(1), 1)
+
+    def test_log_at_inverse(self) -> None:
+        gamma = log_at(Point(0.5, 0.25))
+
+        self.assertAlmostEqual(gamma(0), 0)
+        self.assertAlmostEqual(gamma(0.5), 0.25)
+        self.assertAlmostEqual(gamma(0.732486760), 0.5)
+        self.assertAlmostEqual(gamma(1), 1)

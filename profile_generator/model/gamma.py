@@ -75,9 +75,22 @@ def partial_inverse_algebraic_at(
 
 @cache
 def log_at(point: Point) -> Curve:
+    if math.isclose(point.x, point.y):
+        return lambda x: x
+    elif point.y < point.x:
+        return inverse_log_at(point)
     g = search.jump_search(1e-12, 1e3, lambda c: log(c)(point.x), point.y)
     return log(g)
 
 
 def log(coefficient: float) -> Curve:
     return lambda x: math.log(coefficient * x + 1) / math.log(coefficient + 1)
+
+
+def inverse_log_at(point: Point) -> Curve:
+    g = search.jump_search(-1e3, -1e-12, lambda c: inverse_log(-c)(point.x), point.y)
+    return inverse_log(-g)
+
+
+def inverse_log(coefficient: float) -> Curve:
+    return lambda x: (math.pow(coefficient + 1, x) - 1) / coefficient
