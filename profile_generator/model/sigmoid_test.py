@@ -27,8 +27,8 @@ class SigmoidTest(TestCase):
 
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(0.2), 0)
-        self.assertAlmostEqual(curve(0.3), 0.13166491925514737)
+        self.assertAlmostEqual(curve(0.3), 0.0072643)
         self.assertAlmostEqual(curve(0.4), 0.5)
-        self.assertAlmostEqual(curve(0.5), 0.8683350807448527)
+        self.assertAlmostEqual(curve(0.5), 0.9927357)
         self.assertAlmostEqual(curve(0.6), 1)
         self.assertAlmostEqual(curve(1), 1)

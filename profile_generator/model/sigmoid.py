@@ -22,7 +22,9 @@ def mask(begin: float, end: float) -> Curve:
     if math.isclose(begin, end) or end < begin:
         return lambda x: x
 
-    mask_curve = _generic_algebraic(8, 2, begin, end)
+    exponent = 2
+    coeffient = 8 / math.pow(end - begin, exponent)
+    mask_curve = _generic_algebraic(coeffient, exponent, begin, end)
 
     def _curve(x: float) -> float:
         if x < begin:
