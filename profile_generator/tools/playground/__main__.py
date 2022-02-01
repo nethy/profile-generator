@@ -26,7 +26,7 @@ from profile_generator.unit import Curve, Line, Point, Strength
 from profile_generator.util import search
 
 
-def normalize(point: Point) -> Point:
+def normalize(point):
     diff = (point.y - point.x) * 0.5
     return Point(point.x - diff, point.y - diff)
 
@@ -35,10 +35,18 @@ def print_point(x, y):
     print(f"{x:.6f} {y:.6f}")
 
 
+def find_x(fn, y):
+    return search.jump_search(0, 1, fn, y)
+
+
+def fn_diff(a, b):
+    return sum((a(i) - b(i) for i in (0.5 + 0.5 * i / 100 for i in range(101))))
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
     # for x, y in contrast_sigmoid.calculate(87.975, 1.7):
     # for x, y in contrast_sigmoid.calculate(82.365, 1.7):
-    for x, y in contrast_sigmoid.calculate(64.515, 1.7):
+    for x, y in contrast_sigmoid.calculate(64.515, 2):
         print_point(x, y)

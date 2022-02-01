@@ -16,6 +16,6 @@ def _contrast(gradient: float) -> Curve:
     shadow = sigmoid.algebraic(gradient, 3)
     highlight = sigmoid.algebraic(gradient, 2)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
-    shift_x = gamma.power_at(Point(_MIDDLE_GREY, 0.5))
-    shift_y = gamma.power_at(Point(0.5, _MIDDLE_GREY))
+    shift_x = gamma.algebraic_at(Point(_MIDDLE_GREY, 0.5), 1)
+    shift_y = gamma.algebraic_at(Point(0.5, _MIDDLE_GREY), 1)
     return lambda x: shift_y(curve(shift_x(x)))
