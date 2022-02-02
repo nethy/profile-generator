@@ -2,6 +2,8 @@
 # pylint: skip-file
 
 import math
+from cmath import exp
+from functools import partial
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
@@ -31,6 +33,11 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
+def print_points(points):
+    for x, y in points:
+        print_point(x, y)
+
+
 def print_point(x, y):
     print(f"{x:.6f} {y:.6f}")
 
@@ -43,10 +50,28 @@ def fn_diff(a, b):
     return sum((a(i) - b(i) for i in (0.5 + 0.5 * i / 100 for i in range(101))))
 
 
+def naive_flat(midtone):
+    shadow = Line.from_points(Point(0, 0), midtone)
+    highlight = Line.from_points(midtone, Point(1, 1))
+    return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
+
+
+def density_to_srgb(d):
+    l = 1 / math.pow(10, d)
+    return SRGB.gamma(l)
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    # for x, y in contrast_sigmoid.calculate(106.845, 1.6):
-    # for x, y in contrast_sigmoid.calculate(87.975, 1.7):
-    # for x, y in contrast_sigmoid.calculate(82.365, 1.7):
-    for x, y in contrast_sigmoid.calculate(64.515, 2):
-        print_point(x, y)
+    # print_points(contrast_sigmoid.calculate(106.845, 1.85))
+    # print_points(contrast_sigmoid.calculate(87.975, 1.85))
+    # print_points(contrast_sigmoid.calculate(82.365, 1.7))
+    # print_points(contrast_sigmoid.calculate(64.515, 2))
+
+    # degree = search.jump_search(
+    #     100, 0.1, lambda k: sigmoid._algebraic_derivate(2, k)(0), 0.1
+    # )
+    # print(degree)
+    c = gamma.log_coefficient(Point(0.25, 0.5))
+    derivative = gamma.log_derivative(c)
+    print(derivative(0), derivative(1))

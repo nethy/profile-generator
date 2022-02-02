@@ -26,10 +26,7 @@ def marshal(slope: float, curve: Sequence[Point]) -> Mapping[str, str]:
     chromaticity_value = _get_chromacity_compensation(slope)
     result = {
         _CURVE: curve_value,
-        _CHROMATICITY: str(round(chromaticity_value)),
     }
-    if chromaticity_value != 0:
-        result |= {_LC_ENABLED: "true"}
     return result
 
 
