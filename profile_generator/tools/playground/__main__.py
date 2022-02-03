@@ -68,10 +68,4 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.calculate(82.365, 1.7))
     # print_points(contrast_sigmoid.calculate(64.515, 2))
 
-    # degree = search.jump_search(
-    #     100, 0.1, lambda k: sigmoid._algebraic_derivate(2, k)(0), 0.1
-    # )
-    # print(degree)
-    c = gamma.log_coefficient(Point(0.25, 0.5))
-    derivative = gamma.log_derivative(c)
-    print(derivative(0), derivative(1))
+    print_points(spline.fit(tone_curve._flat(Point(0.125, 0.5))))
