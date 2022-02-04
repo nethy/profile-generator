@@ -22,19 +22,8 @@ class ShimTest(TestCase):
         self.assertEqual(slope, 2.0)
 
     def test_marshal(self) -> None:
-        self.assertEqual(marshal(1, []), {"Curve": "0;", "Chromaticity": "0"})
+        self.assertEqual(marshal([]), {"Curve": "0;"})
         self.assertEqual(
-            marshal(1, [Point(0, 0), Point(1, 1)]),
-            {
-                "Curve": "1;0.000000;0.000000;1.000000;1.000000;",
-                "Chromaticity": "0",
-            },
-        )
-        self.assertEqual(
-            marshal(2, [Point(0, 0), Point(1, 1)]),
-            {
-                "Curve": "1;0.000000;0.000000;1.000000;1.000000;",
-                "LCEnabled": "true",
-                "Chromaticity": "-16",
-            },
+            marshal([Point(0, 0), Point(1, 1)]),
+            {"Curve": "1;0.000000;0.000000;1.000000;1.000000;"},
         )
