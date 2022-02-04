@@ -1,5 +1,6 @@
+import math
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Final
 
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import LinearEqPoint
@@ -10,21 +11,26 @@ from .hsl import schema as hsl
 from .profile import schema as profile
 from .white_balance import schema as white_balance
 
-_VIBRANCE = "vibrance"
-_CHROME = "chrome"
 
-_HSV_ENABLED = "HSVEnabled"
-_HSV_SCURVE = "HSVSCurve"
-_CT_ENABLED = "CTEnabled"
-_CT_POWER = "CTLabRegionPower"
-_CT_SATURATION = "CTLabRegionSaturation"
+class Field:
+    VIBRANCE: Final = "vibrance"
+    CHROME: Final = "chrome"
+
+
+class Template:
+    HSV_ENABLED: Final = "HSVEnabled"
+    HSV_SCURVE: Final = "HSVSCurve"
+    COLOR_TONING_ENABLED: Final = "CTEnabled"
+    COLOR_TONING_POWER: Final = "CTLabRegionPower"
+    COLOR_TONING_SLOPE: Final = "CTLabRegionSlope"
+
 
 _DEFAULT = {
-    _HSV_ENABLED: "false",
-    _HSV_SCURVE: "0;",
-    _CT_ENABLED: "false",
-    _CT_POWER: "1",
-    _CT_SATURATION: "0",
+    Template.HSV_ENABLED: "false",
+    Template.HSV_SCURVE: "0;",
+    Template.COLOR_TONING_ENABLED: "false",
+    Template.COLOR_TONING_POWER: "1",
+    Template.COLOR_TONING_SLOPE: "1",
 }
 
 
@@ -35,43 +41,43 @@ def _process(data: Any) -> Mapping[str, str]:
 
 
 def _get_vibrance(data: Any) -> Mapping[str, str]:
-    vibrance = data.get(_VIBRANCE, 0)
-    if vibrance > 0:
-        strength = 0.05 * vibrance
-        return {
-            _HSV_ENABLED: "true",
-            _HSV_SCURVE: raw_therapee.CurveType.STANDARD
-            + raw_therapee.present_equalizer(
-                (
-                    LinearEqPoint(30 / 360, strength / 2 + 0.5),
-                    LinearEqPoint(90 / 360, strength + 0.5),
-                    LinearEqPoint(270 / 360, strength + 0.5),
-                    LinearEqPoint(330 / 360, strength / 2 + 0.5),
-                )
-            ),
-        }
-    else:
-        return {_HSV_ENABLED: "false", _HSV_SCURVE: "0;"}
+    vibrance = data.get(Field.VIBRANCE, 0)
+    if math.isclose(vibrance, 0):
+        return {Template.HSV_ENABLED: "false", Template.HSV_SCURVE: "0;"}
+
+    strength = 0.05 * vibrance
+    return {
+        Template.HSV_ENABLED: "true",
+        Template.HSV_SCURVE: raw_therapee.CurveType.STANDARD
+        + raw_therapee.present_equalizer(
+            (
+                LinearEqPoint(30 / 360, strength / 2 + 0.5),
+                LinearEqPoint(90 / 360, strength + 0.5),
+                LinearEqPoint(270 / 360, strength + 0.5),
+                LinearEqPoint(330 / 360, strength / 2 + 0.5),
+            )
+        ),
+    }
 
 
 def _get_chrome(data: Any) -> Mapping[str, str]:
-    chrome = data.get(_CHROME, 0)
-    if chrome >= 0.01:
-        power = 1 + chrome * 0.1
-        saturation = 1 / ((power + 1) * 0.5) - 1  # ratio of integrates x and x^power
-        return {
-            _CT_ENABLED: "true",
-            _CT_POWER: str(round(power, 3)),
-            _CT_SATURATION: str(round(saturation * 100)),
-        }
-    else:
+    chrome = data.get(Field.CHROME, 0)
+    if chrome < 0.01:
         return {}
+
+    slope = 1 - 0.05 * chrome
+    power = 1 / slope
+    return {
+        Template.COLOR_TONING_ENABLED: "true",
+        Template.COLOR_TONING_SLOPE: str(round(slope, 3)),
+        Template.COLOR_TONING_POWER: str(round(power, 3)),
+    }
 
 
 SCHEMA = object_of(
     {
-        _VIBRANCE: range_of(0, 10),
-        _CHROME: range_of(0, 10),
+        Field.VIBRANCE: range_of(0, 10),
+        Field.CHROME: range_of(0, 10),
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,
         "profile": profile.SCHEMA,

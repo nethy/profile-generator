@@ -18,7 +18,7 @@ _DEFAULT = {
     "LCEnabled": "false",
     "CTEnabled": "false",
     "CTLabRegionPower": "1",
-    "CTLabRegionSaturation": "0",
+    "CTLabRegionSlope": "1",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -73,7 +73,7 @@ class SchemaTest(TestCase):
             _DEFAULT
             | {
                 "CTEnabled": "true",
+                "CTLabRegionSlope": "0.5",
                 "CTLabRegionPower": "2.0",
-                "CTLabRegionSaturation": "-33",
             },
         )
