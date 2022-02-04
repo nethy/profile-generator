@@ -100,7 +100,7 @@ AfterCurve=0;
 Enabled={LCEnabled}
 Brightness=0
 Contrast=0
-Chromaticity={Chromaticity}
+Chromaticity=0
 AvoidColorShift=true
 RedAndSkinTonesProtection=0
 LCredsk=true
@@ -514,11 +514,11 @@ ClutFilename=
 Strength=100
 
 [RGB Curves]
-Enabled=false
+Enabled={RGBCurvesEnabled}
 LumaMode=false
-rCurve=0;
-gCurve=0;
-bCurve=0;
+rCurve={RGBCurvesRCurve}
+gCurve={RGBCurvesGCurve}
+bCurve={RGBCurvesBCurve}
 
 [ColorToning]
 Enabled={CTEnabled}

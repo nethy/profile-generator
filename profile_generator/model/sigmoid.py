@@ -1,6 +1,7 @@
 import math
 
 from profile_generator.unit import Curve
+from profile_generator.util import validation
 
 
 def algebraic(gradient: float, exponent: float) -> Curve:
@@ -10,14 +11,38 @@ def algebraic(gradient: float, exponent: float) -> Curve:
         raise ValueError(
             f"Gradient must be greater than equal to 1. Actual value is {gradient}"
         )
+
     c = 2 * math.pow(math.pow(gradient, exponent) - 1, 1 / exponent)
-    acc = c * 0.5 / math.pow(1 + math.pow(c * 0.5, exponent), 1 / exponent)
+    return _generic_algebraic(c, exponent, 0, 1)
+
+
+def mask(begin: float, end: float) -> Curve:
+    validation.is_in_closed_interval(begin, 0, 1)
+    validation.is_in_closed_interval(end, 0, 1)
+    if math.isclose(begin, end) or end < begin:
+        return lambda x: x
+
+    exponent = 2
+    coeffient = 8 / math.pow(end - begin, exponent)
+    mask_curve = _generic_algebraic(coeffient, exponent, begin, end)
+
+    def _curve(x: float) -> float:
+        if x < begin:
+            return 0
+        elif x < end:
+            return mask_curve(x)
+        else:
+            return 1
+
+    return _curve
+
+
+def _generic_algebraic(c: float, k: float, a: float, b: float) -> Curve:
+    if math.isclose(c, 0):
+        return lambda x: x
+    o = (a + b) / 2
+    offset = c * (a - o) / math.pow(1 + math.pow(c * abs(a - o), k), 1 / k)
     return lambda x: (
-        (
-            c
-            * (x - 0.5)
-            / math.pow(1 + math.pow(c * abs(x - 0.5), exponent), 1 / exponent)
-            + acc
-        )
-        / (2 * acc)
+        (c * (x - o) / math.pow(1 + math.pow(c * abs(x - o), k), 1 / k) - offset)
+        / (c * (b - o) / math.pow(1 + math.pow(c * abs(b - o), k), 1 / k) - offset)
     )

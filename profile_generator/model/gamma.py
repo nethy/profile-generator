@@ -10,11 +10,11 @@ def power_at(point: Point) -> Curve:
     return lambda x: math.pow(x, g)
 
 
-def algebraic_at(p: Point, exponent: float) -> Curve:
-    if p.gradient < 1:
-        return inverse_algebraic_at(p, exponent)
+def algebraic_at(point: Point, exponent: float) -> Curve:
+    if point.gradient < 1:
+        return inverse_algebraic_at(point, exponent)
     g = math.pow(
-        (math.pow(p.y / p.x, exponent) - 1) / (1 - math.pow(p.y, exponent)),
+        (math.pow(point.y / point.x, exponent) - 1) / (1 - math.pow(point.y, exponent)),
         1 / exponent,
     )
     return algebraic(g, exponent)
@@ -44,9 +44,9 @@ def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -
     return lambda x: curve(x - point.x) / curve(1 - point.x) * (1 - point.y) + point.y
 
 
-def inverse_algebraic_at(p: Point, exponent: float) -> Curve:
+def inverse_algebraic_at(point: Point, exponent: float) -> Curve:
     g = math.pow(
-        (math.pow(p.x / p.y, exponent) - 1) / (1 - math.pow(p.x, exponent)),
+        (math.pow(point.x / point.y, exponent) - 1) / (1 - math.pow(point.x, exponent)),
         1 / exponent,
     )
     return inverse_algebraic(g, exponent)
@@ -73,11 +73,39 @@ def partial_inverse_algebraic_at(
     return lambda x: curve(x / p.x) * p.y
 
 
-@cache
-def log_at(middle: Point) -> Curve:
-    g = search.jump_search(1e-12, 1e3, lambda x: log(x)(middle.x), middle.y)
+def log_at(point: Point) -> Curve:
+    if math.isclose(point.x, point.y):
+        return lambda x: x
+    elif point.y < point.x:
+        return inverse_log_at(point)
+    g = log_coefficient(point)
     return log(g)
 
 
+@cache
+def log_coefficient(point: Point) -> float:
+    if math.isclose(point.x, point.y):
+        return 0
+    return search.jump_search(1e-12, 1e3, lambda c: log(c)(point.x), point.y)
+
+
 def log(coefficient: float) -> Curve:
+    if math.isclose(coefficient, 0):
+        return lambda x: x
     return lambda x: math.log(coefficient * x + 1) / math.log(coefficient + 1)
+
+
+def log_derivative(coefficient: float) -> Curve:
+    if math.isclose(coefficient, 0):
+        return lambda x: 1
+    return lambda x: coefficient / (coefficient * x + 1) / math.log(coefficient + 1)
+
+
+@cache
+def inverse_log_at(point: Point) -> Curve:
+    g = search.jump_search(-1e3, -1e-12, lambda c: inverse_log(-c)(point.x), point.y)
+    return inverse_log(-g)
+
+
+def inverse_log(coefficient: float) -> Curve:
+    return lambda x: (math.pow(coefficient + 1, x) - 1) / coefficient

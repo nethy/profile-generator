@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .sigmoid import algebraic
+from .sigmoid import algebraic, mask
 
 
 class SigmoidTest(TestCase):
@@ -21,3 +21,14 @@ class SigmoidTest(TestCase):
         self.assertAlmostEqual(_curve(0.5), 0.5)
         self.assertAlmostEqual(_curve(0.8), 0.9160251)
         self.assertAlmostEqual(_curve(1), 1)
+
+    def test_mask(self) -> None:
+        curve = mask(0.2, 0.6)
+
+        self.assertAlmostEqual(curve(0), 0)
+        self.assertAlmostEqual(curve(0.2), 0)
+        self.assertAlmostEqual(curve(0.3), 0.0072643)
+        self.assertAlmostEqual(curve(0.4), 0.5)
+        self.assertAlmostEqual(curve(0.5), 0.9927357)
+        self.assertAlmostEqual(curve(0.6), 1)
+        self.assertAlmostEqual(curve(1), 1)

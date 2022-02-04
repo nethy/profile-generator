@@ -1,8 +1,11 @@
 from unittest import TestCase
 
-from profile_generator.schema import InvalidObjectError, SchemaValidator
-from profile_generator.schema.range_schema import InvalidRangeError
-from profile_generator.schema.type_schema import InvalidTypeError
+from profile_generator.schema import (
+    InvalidObjectError,
+    InvalidRangeError,
+    InvalidTypeError,
+    SchemaValidator,
+)
 
 from .schema import _STEPS, SCHEMA, process
 
@@ -22,28 +25,28 @@ class SchemaTest(TestCase):
         self.validator.assert_valid(
             {
                 "hue": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
                 "saturation": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
                 "luminance": {
-                    "magenta": -6,
                     "red": -2,
                     "yellow": 0,
                     "green": 1,
                     "cyan": 2,
                     "blue": 6,
+                    "magenta": -6,
                 },
             }
         )
@@ -67,7 +70,7 @@ class SchemaTest(TestCase):
 
     def test_validate_invalid_color_value(self) -> None:
         self.validator.assert_error(
-            {"hue": {"blue": -8}},
+            {"hue": {"blue": -11}},
             InvalidObjectError(
                 {
                     "hue": InvalidObjectError(
@@ -106,11 +109,11 @@ class SchemaTest(TestCase):
             | {
                 "LCEnabled": "true",
                 "HhCurve": "1;0.000000;0.500000;0.000000;0.000000;"
-                + "0.166667;0.321429;0.000000;0.000000;"
-                + "0.333333;0.678571;0.000000;0.000000;"
+                + "0.166667;0.375000;0.000000;0.000000;"
+                + "0.333333;0.625000;0.000000;0.000000;"
                 + "0.500000;0.500000;0.000000;0.000000;"
-                + "0.666667;0.678571;0.000000;0.000000;"
-                + "0.833333;0.321429;0.000000;0.000000;",
+                + "0.666667;0.625000;0.000000;0.000000;"
+                + "0.833333;0.375000;0.000000;0.000000;",
             },
         )
 
@@ -126,12 +129,12 @@ class SchemaTest(TestCase):
             DEFAULT
             | {
                 "LCEnabled": "true",
-                "ChCurve": "1;0.000000;0.714286;0.000000;0.000000;"
+                "ChCurve": "1;0.000000;0.650000;0.000000;0.000000;"
                 + "0.166667;0.500000;0.000000;0.000000;"
                 + "0.333333;0.500000;0.000000;0.000000;"
                 + "0.500000;0.500000;0.000000;0.000000;"
                 + "0.666667;0.500000;0.000000;0.000000;"
-                + "0.833333;0.285714;0.000000;0.000000;",
+                + "0.833333;0.350000;0.000000;0.000000;",
             },
         )
 
@@ -147,11 +150,11 @@ class SchemaTest(TestCase):
             DEFAULT
             | {
                 "LCEnabled": "true",
-                "LhCurve": "1;0.000000;0.550000;0.000000;0.000000;"
+                "LhCurve": "1;0.000000;0.535000;0.000000;0.000000;"
                 + "0.166667;0.500000;0.000000;0.000000;"
                 + "0.333333;0.500000;0.000000;0.000000;"
                 + "0.500000;0.500000;0.000000;0.000000;"
                 + "0.666667;0.500000;0.000000;0.000000;"
-                + "0.833333;0.450000;0.000000;0.000000;",
+                + "0.833333;0.465000;0.000000;0.000000;",
             },
         )
