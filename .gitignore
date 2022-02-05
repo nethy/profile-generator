@@ -15,3 +15,4 @@ venv/
 *.prof
 
 generate_and_install_profiles.sh
+generate_rgb_curves.sh

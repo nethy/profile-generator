@@ -87,3 +87,7 @@ def multiply_matrix_matrix(left: Matrix, right: Matrix) -> Matrix:
 
 def scale_matrix(scale: Vector, matrix: Matrix) -> Matrix:
     return [[a * x for x in row] for a, row in zip(scale, matrix)]
+
+
+def add_vector(a: Vector, b: Vector) -> Vector:
+    return [a_value + b_value for a_value, b_value in zip(a, b)]
