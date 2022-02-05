@@ -12,10 +12,16 @@ from profile_generator.schema import (
 from .schema import SCHEMA, process
 
 DEFAULT = {
-    "RGBCurvesEnabled": "false",
-    "RGBCurvesRCurve": "0;",
-    "RGBCurvesGCurve": "0;",
-    "RGBCurvesBCurve": "0;",
+    "RGBCurvesEnabled": "true",
+    "RGBCurvesRCurve": "1;0.000000;0.000000;0.127489;0.127489;0.232515;0.232515;"
+    + "0.345980;0.345980;0.466327;0.466327;0.592541;0.592541;0.723900;0.723900;"
+    + "0.859862;0.859862;1.000000;1.000000;",
+    "RGBCurvesGCurve": "1;0.000000;0.000000;0.127489;0.127489;0.232515;0.232515;"
+    + "0.345980;0.345980;0.466327;0.466327;0.592541;0.592541;0.723900;0.723900;"
+    + "0.859862;0.859862;1.000000;1.000000;",
+    "RGBCurvesBCurve": "1;0.000000;0.000000;0.127489;0.127489;0.232515;0.232515;"
+    + "0.345980;0.345980;0.466327;0.466327;0.592541;0.592541;0.723900;0.723900;"
+    + "0.859862;0.859862;1.000000;1.000000;",
 }
 
 
@@ -25,7 +31,7 @@ class SchemaTest(TestCase):
 
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
-            {"shadow": [-5, 30, 5], "midtone": [0, 120, 2], "highlight": [5, 320, 8]}
+            {"shadow": [30, 5, -5], "midtone": [120, 2, 0], "highlight": [320, 8, 5]}
         )
 
     def test_validate_invalid_shadow(self) -> None:
@@ -59,7 +65,7 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"shadow": [False, 0, 0]},
             InvalidObjectError(
-                {"shadow": InvalidListError({1: InvalidRangeError(-10.0, 10.0)})}
+                {"shadow": InvalidListError({1: InvalidRangeError(0.0, 360.0)})}
             ),
         )
 
@@ -70,9 +76,9 @@ class SchemaTest(TestCase):
         self.assertEqual(
             process(
                 {
-                    "shadow": [-5, 30, 5],
-                    "midtone": [0, 120, 2],
-                    "highlight": [5, 320, 8],
+                    "shadow": [30, 5, -5],
+                    "midtone": [120, 2, 0],
+                    "highlight": [320, 8, 5],
                 }
             ),
             {
