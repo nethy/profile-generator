@@ -33,8 +33,11 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
-def print_points(points):
-    for x, y in points:
+def print_points(flat, contrast):
+    for x, y in flat:
+        print_point(x, y)
+    print()
+    for x, y in contrast:
         print_point(x, y)
 
 
@@ -56,16 +59,9 @@ def naive_flat(midtone):
     return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
 
 
-def density_to_srgb(d):
-    l = 1 / math.pow(10, d)
-    return SRGB.gamma(l)
-
-
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.calculate(106.845, 1.85))
-    # print_points(contrast_sigmoid.calculate(87.975, 1.85))
+    print_points(*contrast_sigmoid.calculate(87.465, 1.85, 2.0))
     # print_points(contrast_sigmoid.calculate(82.365, 1.7))
-    # print_points(contrast_sigmoid.calculate(64.515, 2))
-
-    print_points(spline.fit(tone_curve._flat(Point(0.125, 0.5))))
+    # print_points(contrast_sigmoid.calculate(64.515, 1))

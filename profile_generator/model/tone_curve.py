@@ -7,15 +7,14 @@ from profile_generator.unit import Curve, Point
 _MIDDLE_GREY = constants.LUMINANCE_50_SRGB
 
 
-def filmic(grey18: float, gradient: float) -> Curve:
+def filmic(grey18: float, gradient: float) -> tuple[Curve, ...]:
     midtone = Point(grey18, _MIDDLE_GREY)
     coefficient = gamma.log_coefficient(midtone)
     flat = gamma.log(coefficient)
     derivative = gamma.log_derivative(coefficient)
     corrected_gradient = gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
-    corrected_gradient = gradient
     contrast = _contrast(corrected_gradient, derivative)
-    return lambda x: contrast(flat(x))
+    return (flat, contrast)
 
 
 def _contrast(gradient: float, derivative: Curve) -> Curve:

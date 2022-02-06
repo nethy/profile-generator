@@ -16,10 +16,10 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=false
-CurveMode=FilmLike
-CurveMode2=FilmLike
+CurveMode=Luminance
+CurveMode2=WeightedStd
 Curve={Curve}
-Curve2=3;0;0;0.4663266;0.4663266;1;1;
+Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true

@@ -86,7 +86,7 @@ def log_at(point: Point) -> Curve:
 def log_coefficient(point: Point) -> float:
     if math.isclose(point.x, point.y):
         return 0
-    return search.jump_search(1e-12, 1e3, lambda c: log(c)(point.x), point.y)
+    return search.jump_search(1e-9, 1e3, lambda c: log(c)(point.x), point.y)
 
 
 def log(coefficient: float) -> Curve:

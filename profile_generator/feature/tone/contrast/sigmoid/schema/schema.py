@@ -8,9 +8,9 @@ from . import shim
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    grey, slope = shim.get_parameters(data)
-    curve = contrast_sigmoid.calculate(grey, slope)
-    return shim.marshal(curve)
+    parameters = shim.get_parameters(data)
+    tone_curve = contrast_sigmoid.calculate(*parameters)
+    return shim.marshal(*tone_curve)
 
 
 SCHEMA = object_of(
