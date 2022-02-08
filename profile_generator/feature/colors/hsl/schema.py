@@ -1,21 +1,36 @@
 from collections.abc import Iterable, Mapping
-from typing import Any
+from typing import Any, Final
 
 from profile_generator.feature.colors.white_balance.schema import DEFAULT
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import EqPoint, LinearEqPoint
 from profile_generator.schema import object_of, range_of
 
-_LC_ENABLED = "LCEnabled"
-_HH_CURVE = "HhCurve"
-_CH_CURVE = "ChCurve"
-_LH_CURVE = "LhCurve"
+
+class Field:
+    HUE: Final = "hue"
+    SATURATION: Final = "saturation"
+    LUMINANCE: Final = "luminance"
+    RED: Final = "red"
+    YELLOW: Final = "yellow"
+    GREEN: Final = "green"
+    CYAN: Final = "cyan"
+    BLUE: Final = "blue"
+    MAGENTA: Final = "magenta"
+
+
+class Template:
+    LC_ENABLED: Final = "LCEnabled"
+    HH_CURVE: Final = "HhCurve"
+    CH_CURVE: Final = "ChCurve"
+    LH_CURVE: Final = "LhCurve"
+
 
 DEFAULT = {
-    _LC_ENABLED: "true",
-    _HH_CURVE: raw_therapee.CurveType.LINEAR,
-    _CH_CURVE: raw_therapee.CurveType.LINEAR,
-    _LH_CURVE: raw_therapee.CurveType.LINEAR,
+    Template.LC_ENABLED: "false",
+    Template.HH_CURVE: raw_therapee.CurveType.LINEAR,
+    Template.CH_CURVE: raw_therapee.CurveType.LINEAR,
+    Template.LH_CURVE: raw_therapee.CurveType.LINEAR,
 }
 
 _STEPS = 10.0
@@ -32,35 +47,31 @@ _COLORS_SCHEMA = object_of(
 )
 
 SCHEMA = object_of(
-    {"hue": _COLORS_SCHEMA, "saturation": _COLORS_SCHEMA, "luminance": _COLORS_SCHEMA}
+    {
+        Field.HUE: _COLORS_SCHEMA,
+        Field.SATURATION: _COLORS_SCHEMA,
+        Field.LUMINANCE: _COLORS_SCHEMA,
+    }
 )
 
 _BASE_VALUE = 0.5
 
-_COLORS = [
-    "red",
-    "yellow",
-    "green",
-    "cyan",
-    "blue",
-    "magenta",
-]
 
 HUES = {
-    "red": 0 / 360,
-    "yellow": 60 / 360,
-    "green": 120 / 360,
-    "cyan": 180 / 360,
-    "blue": 240 / 360,
-    "magenta": 300 / 360,
+    Field.RED: 0 / 360,
+    Field.YELLOW: 60 / 360,
+    Field.GREEN: 120 / 360,
+    Field.CYAN: 180 / 360,
+    Field.BLUE: 240 / 360,
+    Field.MAGENTA: 300 / 360,
 }
 
 
 def process(data: Any) -> Mapping[str, str]:
     result: dict[str, str] = {}
-    result |= _get_eq_curve(data, "hue", 0.25, _HH_CURVE)
-    result |= _get_eq_curve(data, "saturation", 0.3, _CH_CURVE)
-    result |= _get_eq_curve(data, "luminance", 0.07, _LH_CURVE)
+    result |= _get_eq_curve(data, Field.HUE, 0.25, Template.HH_CURVE)
+    result |= _get_eq_curve(data, Field.SATURATION, 0.3, Template.CH_CURVE)
+    result |= _get_eq_curve(data, Field.LUMINANCE, 0.07, Template.LH_CURVE)
     return DEFAULT | result
 
 
@@ -71,7 +82,7 @@ def _get_eq_curve(
     equalizer = _get_equalizer(config, max_adjustment)
     if any(p.y != _BASE_VALUE for p in equalizer):
         return {
-            _LC_ENABLED: "true",
+            Template.LC_ENABLED: "true",
             template_name: raw_therapee.CurveType.STANDARD
             + raw_therapee.present_equalizer(equalizer),
         }
@@ -84,7 +95,14 @@ def _get_equalizer(
 ) -> Iterable[EqPoint]:
     return [
         LinearEqPoint(HUES[color], _get_value(config, color, max_adjustment))
-        for color in _COLORS
+        for color in (
+            Field.RED,
+            Field.YELLOW,
+            Field.GREEN,
+            Field.CYAN,
+            Field.BLUE,
+            Field.MAGENTA,
+        )
     ]
 
 

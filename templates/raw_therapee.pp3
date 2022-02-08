@@ -17,7 +17,7 @@ HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=false
 CurveMode=Luminance
-CurveMode2=WeightedStd
+CurveMode2=FilmLike
 Curve={Curve}
 Curve2={Curve2}
 
@@ -558,7 +558,7 @@ LabRegionSlope_1={CTLabRegionSlope}
 LabRegionOffset_1=0
 LabRegionPower_1={CTLabRegionPower}
 LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0.5;0;0;0.5;1;1;0;0;
+LabRegionChromaticityMask_1=1;0.25;0;0;0.33333333333333333;1;1;0;0;
 LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1

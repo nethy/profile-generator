@@ -10,7 +10,7 @@ from profile_generator.schema import (
 from .schema import _STEPS, SCHEMA, process
 
 DEFAULT = {
-    "LCEnabled": "true",
+    "LCEnabled": "false",
     "HhCurve": "0;",
     "ChCurve": "0;",
     "LhCurve": "0;",

@@ -1,7 +1,6 @@
 import math
 from collections.abc import Iterable
 
-from profile_generator.model import linalg
 from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Point, Vector
@@ -10,9 +9,11 @@ from profile_generator.unit import Point, Vector
 def rgb_curves(
     global_hcl: Vector, shadow_hcl: Vector, midtone_hcl: Vector, highlight_hcl: Vector
 ) -> list[list[Point]]:
-    grades = _get_grades(global_hcl, shadow_hcl, midtone_hcl, highlight_hcl)
-    tones = _get_tones(*grades)
-    tones = _interpolate(tones)
+    args = (global_hcl, shadow_hcl, midtone_hcl, highlight_hcl)
+    if all(math.isclose(lum, 0) for _, _, lum in args):
+        return []
+    grades = _get_grades(*args)
+    tones = _interpolate(_get_tones(*grades))
     rgbs = [_lab_to_rgb(tone) for tone in tones]
     refs = [_srgb_luminance(tone[0]) for tone in tones]
     return [
@@ -24,13 +25,20 @@ def rgb_curves(
 def _get_grades(
     global_hcl: Vector, shadow_hcl: Vector, midtone_hcl: Vector, highlight_hcl: Vector
 ) -> Iterable[Vector]:
-    global_grade, shadow_grade, midtone_grade, highlight_grade = map(
-        _as_lab, (global_hcl, shadow_hcl, midtone_hcl, highlight_hcl)
+    return (
+        _as_lab(_mix_hcl(color, global_hcl))
+        for color in (shadow_hcl, midtone_hcl, highlight_hcl)
     )
-    return map(
-        lambda grade: linalg.add_vector(grade, global_grade),
-        (shadow_grade, midtone_grade, highlight_grade),
-    )
+
+
+def _mix_hcl(a: Vector, b: Vector) -> Vector:
+    hues, chrs, lums = zip(a, b)
+    chrs_sum = sum(chrs)
+    return [
+        chrs[0] / chrs_sum * hues[0] + chrs[1] / chrs_sum * hues[1],
+        chrs_sum,
+        sum(lums),
+    ]
 
 
 def _as_lab(hcl: Vector) -> Vector:
