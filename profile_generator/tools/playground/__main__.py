@@ -1,8 +1,10 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
+import json
 import math
 from cmath import exp
+from colorsys import rgb_to_hsv
 from functools import partial
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
@@ -59,9 +61,32 @@ def naive_flat(midtone):
     return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
 
 
+def lum_to_srgb(luminance):
+    return SRGB.gamma(lab.to_xyz([luminance, 0, 0])[1])
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.calculate(106.845, 1.85))
-    print_points(*contrast_sigmoid.calculate(87.465, 1.85, 2.0))
+    # print_points(*contrast_sigmoid.calculate(87.21, 1.85))
     # print_points(contrast_sigmoid.calculate(82.365, 1.7))
     # print_points(contrast_sigmoid.calculate(64.515, 1))
+
+    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.BLUE))[1] * 100, 1))
+    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.GREEN))[1] * 100, 1))
+    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.RED))[1] * 100, 1))
+    middle_grey = lum_to_srgb(26.9)
+    print(middle_grey * 255)
+    curve = [
+        [x * 255, y * 255]
+        for x, y in spline.fit(
+            gamma.log_at(Point(middle_grey, constants.LUMINANCE_50_SRGB))
+        )
+    ]
+    output = {
+        "CurveType": "Spline",
+        "CurveHandles": curve,
+        "CurveMax": 255,
+        "CurveGamma": "sRGB",
+    }
+    print(json.dumps(output))
