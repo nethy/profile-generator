@@ -97,7 +97,7 @@ def log(coefficient: float) -> Curve:
 
 def log_derivative(coefficient: float) -> Curve:
     if math.isclose(coefficient, 0):
-        return lambda x: 1
+        return lambda _: 1
     return lambda x: coefficient / (coefficient * x + 1) / math.log(coefficient + 1)
 
 

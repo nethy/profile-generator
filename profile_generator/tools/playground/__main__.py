@@ -35,11 +35,8 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
-def print_points(flat, contrast):
-    for x, y in flat:
-        print_point(x, y)
-    print()
-    for x, y in contrast:
+def print_points(curve):
+    for x, y in curve:
         print_point(x, y)
 
 
@@ -65,17 +62,8 @@ def lum_to_srgb(luminance):
     return SRGB.gamma(lab.to_xyz([luminance, 0, 0])[1])
 
 
-if __name__ == "__main__":
-    # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    # print_points(contrast_sigmoid.calculate(106.845, 1.85))
-    # print_points(*contrast_sigmoid.calculate(87.21, 1.85))
-    # print_points(contrast_sigmoid.calculate(82.365, 1.7))
-    # print_points(contrast_sigmoid.calculate(64.515, 1))
-
-    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.BLUE))[1] * 100, 1))
-    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.GREEN))[1] * 100, 1))
-    # print(round(rgb.to_hsv(rgb.normalize(ColorChart.RED))[1] * 100, 1))
-    middle_grey = lum_to_srgb(26.9)
+def dcamprof_tone_curve(grey18_lum):
+    middle_grey = lum_to_srgb(grey18_lum)
     print(middle_grey * 255)
     curve = [
         [x * 255, y * 255]
@@ -90,3 +78,12 @@ if __name__ == "__main__":
         "CurveGamma": "sRGB",
     }
     print(json.dumps(output))
+
+
+if __name__ == "__main__":
+    # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
+    # print_points(contrast_sigmoid.calculate(106.845, 1.85))
+    # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
+    print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
+    print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
+    # print_points(contrast_sigmoid.calculate(64.515, 1))

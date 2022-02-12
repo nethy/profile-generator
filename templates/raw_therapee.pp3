@@ -17,7 +17,7 @@ HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=false
 CurveMode=Luminance
-CurveMode2=FilmLike
+CurveMode2=Standard
 Curve={Curve}
 Curve2={Curve2}
 
@@ -370,8 +370,8 @@ DeconvIterations=100
 
 [Color Management]
 InputProfile=(cameraICC)
-ToneCurve=false
-ApplyLookTable=false
+ToneCurve={CMToneCurve}
+ApplyLookTable={CMApplyLookTable}
 ApplyBaselineExposureOffset=true
 ApplyHueSatMap=true
 DCPIlluminant=0

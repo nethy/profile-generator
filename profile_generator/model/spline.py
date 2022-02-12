@@ -6,8 +6,8 @@ from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 from profile_generator.unit import Curve, Point
 
-EPSILON = 1e-3
-SAMPLES_COUNT = 127
+EPSILON = 5e-4
+SAMPLES_COUNT = 256
 
 
 def fit(fn: Curve) -> Sequence[Point]:
@@ -33,9 +33,9 @@ def _find_max_diff(
 
 def interpolate(points: Sequence[Point]) -> Curve:
     if len(points) == 0:
-        return lambda x: 0.0
+        return lambda _: 0.0
     elif len(points) == 1:
-        return lambda x: points[0].y
+        return lambda _: points[0].y
     xs, ys = [x for x, _ in points], [y for _, y in points]
     system = _equations(xs, ys)
     coefficients = linalg.solve(system)

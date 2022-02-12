@@ -11,7 +11,7 @@ class XyzTest(LinalgTestCase):
         self.assert_vector_equal(from_rgb([1.0, 1.0, 1.0], SRGB), white_point.D65_XYZ)
         self.assert_vector_equal(
             from_rgb([0.02, 0.5, 0.8], SRGB),
-            [0.1861276, 0.1969824, 0.5993615],
+            [0.1861274, 0.1969824, 0.5993615],
         )
         self.assert_vector_equal(
             from_rgb([1.0, 1.0, 1.0], PROPHOTO), white_point.D50_XYZ
