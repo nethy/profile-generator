@@ -6,8 +6,17 @@ from profile_generator.util import search
 
 
 def power_at(point: Point) -> Curve:
-    g = math.log(point.y) / math.log(point.x)
+    g = power_exponent(point)
     return lambda x: math.pow(x, g)
+
+
+def power_derivative_at(point: Point) -> Curve:
+    g = power_exponent(point)
+    return lambda x: g * math.pow(x, g - 1)
+
+
+def power_exponent(point: Point) -> float:
+    return math.log(point.y) / math.log(point.x)
 
 
 def algebraic_at(point: Point, exponent: float) -> Curve:
@@ -80,6 +89,13 @@ def log_at(point: Point) -> Curve:
         return inverse_log_at(point)
     g = log_coefficient(point)
     return log(g)
+
+
+def log_derivative_at(point: Point) -> Curve:
+    if math.isclose(point.x, point.y):
+        return lambda _: 1
+    g = log_coefficient(point)
+    return log_derivative(g)
 
 
 @cache

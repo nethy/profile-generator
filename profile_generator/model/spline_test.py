@@ -47,6 +47,11 @@ class SplineTest(TestCase):
 
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         points = fit(fn)
+        print(points)
         spline = interpolate(points)
         for x in (i / 256 for i in range(257)):
-            self.assertAlmostEqual(spline(x), fn(x), 3)
+            try:
+                self.assertAlmostEqual(spline(x), fn(x), 3)
+            except AssertionError:
+                print(f"Failed x is {x}")
+                raise

@@ -7,28 +7,55 @@ from profile_generator.model.linalg import Matrix, Vector
 from profile_generator.unit import Curve, Point
 
 EPSILON = 5e-4
-SAMPLES_COUNT = 256
+BUFFER_SIZE = 8
+BUFFER_STEP = 43
+SAMPLES_COUNT = (BUFFER_SIZE - 1) * BUFFER_STEP
 
 
 def fit(fn: Curve) -> Sequence[Point]:
-    range_end = SAMPLES_COUNT - 1
-    references = [(i / range_end, fn(i / range_end)) for i in range(1, range_end)]
+    references = _generate_references(fn)
     knots = [Point(0.0, fn(0.0)), Point(1.0, fn(1.0))]
-    for _ in range(3, 24 + 1):
-        spline = interpolate(knots)
-        max_diff, i = _find_max_diff(references, spline)
-        if max_diff > EPSILON:
-            x, y = references.pop(i)
-            bisect.insort(knots, Point(x, y))
-        else:
-            break
+    max_diff, _ = _find_max_diff(references, knots)
+    if max_diff < EPSILON:
+        return knots
+    _buffer(references, knots)
+    _approximate(references, knots)
     return knots
 
 
-def _find_max_diff(
-    references: list[tuple[float, float]], spline: Curve
-) -> tuple[float, int]:
-    return max((abs(y - spline(x)), i) for i, (x, y) in enumerate(references))
+def _generate_references(fn: Curve) -> list[Point]:
+    return [
+        Point(i / SAMPLES_COUNT, fn(i / SAMPLES_COUNT))
+        for i in range(1, SAMPLES_COUNT - 1)
+    ]
+
+
+def _find_max_diff(references: list[Point], knots: list[Point]) -> tuple[float, int]:
+    spline = interpolate(knots)
+    return max((abs(p.y - spline(p.x)), i) for i, p in enumerate(references))
+
+
+def _buffer(references: list[Point], knots: list[Point]) -> None:
+    for i in range(
+        BUFFER_STEP - 1, SAMPLES_COUNT - 2 - BUFFER_SIZE + 1, BUFFER_STEP - 1
+    ):
+        _transfer_knot(i, references, knots)
+
+
+def _transfer_knot(
+    i: int,
+    references: list[Point],
+    knots: list[Point],
+) -> None:
+    bisect.insort(knots, references.pop(i))
+
+
+def _approximate(references: list[Point], knots: list[Point]) -> None:
+    for _ in range(BUFFER_SIZE + 1, 24 + 1):
+        max_diff, i = _find_max_diff(references, knots)
+        if max_diff < EPSILON:
+            break
+        _transfer_knot(i, references, knots)
 
 
 def interpolate(points: Sequence[Point]) -> Curve:

@@ -58,32 +58,16 @@ def naive_flat(midtone):
     return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
 
 
-def lum_to_srgb(luminance):
-    return SRGB.gamma(lab.to_xyz([luminance, 0, 0])[1])
-
-
-def dcamprof_tone_curve(grey18_lum):
-    middle_grey = lum_to_srgb(grey18_lum)
-    print(middle_grey * 255)
-    curve = [
-        [x * 255, y * 255]
-        for x, y in spline.fit(
-            gamma.log_at(Point(middle_grey, constants.LUMINANCE_50_SRGB))
-        )
-    ]
-    output = {
-        "CurveType": "Spline",
-        "CurveHandles": curve,
-        "CurveMax": 255,
-        "CurveGamma": "sRGB",
-    }
-    print(json.dumps(output))
-
-
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.calculate(106.845, 1.85))
     # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
-    print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
-    print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
+    # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
+    # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
     # print_points(contrast_sigmoid.calculate(64.515, 1))
+
+    print_points(
+        spline.fit(tone_curve._linear_log(Point(0.04, constants.GREY18_LINEAR))[0])
+    )
+    print()
+    print_points(spline.fit(tone_curve.flat(SRGB.gamma(0.04))))
