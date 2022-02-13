@@ -26,14 +26,14 @@ def _flat(grey18: float) -> tuple[Curve, Curve]:
 def contrast(grey18: float, gradient: float) -> Curve:
     _, derivative = _flat(grey18)
     corrected_gradient = gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
-    return _contrast(corrected_gradient, derivative)
+    return _contrast(corrected_gradient)
 
 
-def _contrast(gradient: float, derivative: Curve) -> Curve:
+def _contrast(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, 2 * math.sqrt(derivative(0)))
-    highlight = sigmoid.algebraic(gradient, 2 * math.sqrt(derivative(1)))
+    shadow = sigmoid.algebraic(gradient, 2.5)
+    highlight = sigmoid.algebraic(gradient, 2)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
     shift_x = gamma.power_at(Point(constants.GREY18_SRGB, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_SRGB))
