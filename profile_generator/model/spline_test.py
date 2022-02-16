@@ -43,7 +43,7 @@ class SplineTest(TestCase):
     def test_fit(self) -> None:
         self.assertEqual([Point(0, 1), Point(1, 1)], fit(lambda _: 1))
         self.assertEqual([Point(0, 0), Point(1, 1)], fit(lambda x: x))
-        self._assert_fit(lambda x: math.pow(x, 16))
+        self._assert_fit(lambda x: math.pow(x, 2))
 
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         points = fit(fn)

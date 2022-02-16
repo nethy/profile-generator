@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import math
+
 from .point import Point
-from .precision import DECIMALS, equals
+from .precision import DECIMALS
 
 
 class Line:
@@ -40,6 +42,6 @@ class Line:
         if not isinstance(other, Line):
             return NotImplemented
 
-        return equals(self.gradient, other.gradient) and equals(
+        return math.isclose(self.gradient, other.gradient) and math.isclose(
             self.offset, other.offset
         )

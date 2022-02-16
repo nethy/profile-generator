@@ -1,7 +1,7 @@
 import math
 
-DECIMALS = 6
-_PRECISION = 1e-6
+DECIMALS = 7
+_PRECISION = 1e-7
 
 
 def equals(a: float, b: float) -> bool:

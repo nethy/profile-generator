@@ -59,8 +59,8 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {},
             {
-                "Curve": "1;0.000000;0.000000;",
-                "Curve2": "1;1.000000;1.000000;",
+                "Curve": "1;0.0000000;0.0000000;",
+                "Curve2": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
                 "CMApplyLookTable": "false",
             },
@@ -79,8 +79,8 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"grey18": grey18, "slope": slope, "linear_profile": True},
             {
-                "Curve": "1;0.000000;0.000000;",
-                "Curve2": "1;1.000000;1.000000;",
+                "Curve": "1;0.0000000;0.0000000;",
+                "Curve2": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
                 "CMApplyLookTable": "false",
             },
@@ -100,7 +100,7 @@ class SchemaTest(TestCase):
             {"grey18": grey18, "slope": slope, "linear_profile": False},
             {
                 "Curve": "0;",
-                "Curve2": "1;1.000000;1.000000;",
+                "Curve2": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "true",
                 "CMApplyLookTable": "true",
             },

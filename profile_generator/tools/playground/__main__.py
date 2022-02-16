@@ -64,10 +64,4 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
     # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
     # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
-    # print_points(contrast_sigmoid.calculate(64.515, 1))
-
-    print_points(
-        spline.fit(tone_curve._linear_log(Point(0.04, constants.GREY18_LINEAR))[0])
-    )
-    print()
-    print_points(spline.fit(tone_curve.flat(SRGB.gamma(0.04))))
+    print_points(contrast_sigmoid.calculate(64.515, 1))

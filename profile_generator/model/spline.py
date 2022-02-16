@@ -6,7 +6,7 @@ from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 from profile_generator.unit import Curve, Point
 
-EPSILON = 5e-4
+EPSILON = 1e-4
 BUFFER_SIZE = 8
 BUFFER_STEP = 43
 SAMPLES_COUNT = (BUFFER_SIZE - 1) * BUFFER_STEP

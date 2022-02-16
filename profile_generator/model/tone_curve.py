@@ -7,33 +7,52 @@ from profile_generator.unit import Curve, Point
 
 
 def flat(grey18: float) -> Curve:
-    return _flat(grey18)[0]
+    return _srgb_flat(grey18)[0]
 
 
-def _flat(grey18: float) -> tuple[Curve, Curve]:
-    linear_midtone = Point(srgb.inverse_gamma(grey18), constants.GREY18_LINEAR)
-    log = gamma.log_at(linear_midtone)
-    log_derivative = gamma.log_derivative_at(linear_midtone)
-    power = gamma.power_at(linear_midtone)
-    power_derivative = gamma.power_derivative_at(linear_midtone)
-    weight = gamma.algebraic_at(linear_midtone, 1)
-    return _to_srgb_cruve(
-        lambda x: (1 - weight(x)) * log(x) + weight(x) * power(x),
-        lambda x: (1 - weight(x)) * log_derivative(x) + weight(x) * power_derivative(x),
+def linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
+    """
+    gx, gy
+
+    highlights:
+    f(x) = a(x-b)^0.5+c
+
+    f(1) = 1
+    f(gx) = gy
+    f'(gx) = gy/gx
+    """
+    midtone = Point(linear_grey18, constants.GREY18_LINEAR)
+    b = (
+        midtone.x
+        * (
+            midtone.x * math.pow(midtone.y - 1, 2) / (4 * math.pow(midtone.y, 2))
+            - midtone.x * (midtone.y - 1) / midtone.y
+            + midtone.x
+            - 1
+        )
+        / (2 * midtone.x - midtone.x * (midtone.y - 1) / midtone.y - 1 - midtone.x)
+    )
+    a = (midtone.y - 1) / (math.sqrt(midtone.x - b) - math.sqrt(1 - b))
+    c = 1 - a * math.sqrt(1 - b)
+    return (
+        lambda x: midtone.gradient * x if x < midtone.x else a * math.sqrt(x - b) + c,
+        lambda x: midtone.gradient if x < midtone.x else a * 0.5 / math.sqrt(x - b),
     )
 
 
-def _to_srgb_cruve(fn: Curve, derivative: Curve) -> tuple[Curve, Curve]:
+def _srgb_flat(grey18: float) -> tuple[Curve, Curve]:
+    linear_grey18 = srgb.inverse_gamma(grey18)
+    curve, derivative = linear_flat(linear_grey18)
     return (
-        lambda x: srgb.gamma(fn(srgb.inverse_gamma(x))),
-        lambda x: srgb.gamma_derivative(fn(srgb.inverse_gamma(x)))
+        lambda x: srgb.gamma(curve(srgb.inverse_gamma(x))),
+        lambda x: srgb.gamma_derivative(curve(srgb.inverse_gamma(x)))
         * derivative(srgb.inverse_gamma(x))
         * srgb.inverse_gamma_derivative(x),
     )
 
 
 def contrast(grey18: float, gradient: float) -> Curve:
-    _, derivative = _flat(grey18)
+    _, derivative = _srgb_flat(grey18)
     corrected_gradient = gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
     return _contrast(corrected_gradient)
 

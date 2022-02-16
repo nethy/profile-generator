@@ -44,7 +44,7 @@ class Point:
         if not isinstance(other, Point):
             return NotImplemented
 
-        return self.x < other.x or (math.isclose(self.x, other.x) and self.y < other.y)
+        return self.x < other.x or (equals(self.x, other.x) and self.y < other.y)
 
     def __add__(self, operand: Point) -> Point:
         return Point(self.x + operand.x, self.y + operand.y)

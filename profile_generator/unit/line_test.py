@@ -15,7 +15,7 @@ class LineTest(unittest.TestCase):
 
     def test_repr(self) -> None:
         self.assertEqual(
-            "Line(gradient=1.000000, offset=0.000000)", Line(1, 0).__repr__()
+            "Line(gradient=1.0000000, offset=0.0000000)", Line(1, 0).__repr__()
         )
 
     def test_at(self) -> None:

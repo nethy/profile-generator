@@ -8,7 +8,7 @@ class PointTest(unittest.TestCase):
     def test_repr(self) -> None:
         point = Point(0.1, 0.2)
 
-        self.assertEqual("Point(x=0.100000, y=0.200000)", str(point))
+        self.assertEqual("Point(x=0.1000000, y=0.2000000)", str(point))
 
     def test_distance(self) -> None:
         a = Point(1, 1)
