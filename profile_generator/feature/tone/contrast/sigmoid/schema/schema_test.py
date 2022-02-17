@@ -13,8 +13,10 @@ from profile_generator.unit import Point
 _CONTRAST_SIGMOID = (
     "profile_generator.feature.tone.contrast.sigmoid.schema.schema.contrast_sigmoid"
 )
-_CONTRAST_SIGMOID_FLAT = f"{_CONTRAST_SIGMOID}.flat"
-_CONTRAST_SIGMOID_CONTRAST = f"{_CONTRAST_SIGMOID}.contrast"
+_CONTRAST_SIGMOID_COMPENSATE_SLOPE = f"{_CONTRAST_SIGMOID}.compensate_slope"
+_CONTRAST_SIGMOID_GET_CONTRAST = f"{_CONTRAST_SIGMOID}.get_contrast"
+_CONTRAST_SIGMOID_GET_TONE_CURVE = f"{_CONTRAST_SIGMOID}.get_tone_curve"
+_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE = f"{_CONTRAST_SIGMOID}.get_chromaticity_curve"
 
 
 class SchemaTest(TestCase):
@@ -50,60 +52,75 @@ class SchemaTest(TestCase):
             InvalidObjectError({"linear_profile": InvalidTypeError(bool)}),
         )
 
-    @patch(_CONTRAST_SIGMOID_CONTRAST)
-    @patch(_CONTRAST_SIGMOID_FLAT)
-    def test_process_default(self, flat: Mock, contrast: Mock) -> None:
-        flat.return_value = [Point(0, 0)]
-        contrast.return_value = [Point(1, 1)]
+    @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
+    @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
+    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
+    def test_process_default(
+        self, compensate_slope: Mock, get_tone_curve: Mock, get_chromaticity_curve: Mock
+    ) -> None:
+        compensate_slope.return_value = 2
+        get_tone_curve.return_value = [Point(0, 0)]
+        get_chromaticity_curve.return_value = [Point(1, 1)]
 
         self.validator.assert_process(
             {},
             {
-                "Curve": "1;0.0000000;0.0000000;",
-                "Curve2": "1;1.0000000;1.0000000;",
+                "LCurve": "1;0.0000000;0.0000000;",
+                "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
                 "CMApplyLookTable": "false",
             },
         )
-        flat.assert_called_once_with(90.0 / 255)
-        contrast.assert_called_once_with(90.0 / 255, 1.7)
+        compensate_slope.assert_called_once_with(90.0 / 255, 1.6)
+        get_tone_curve.assert_called_once_with(90.0 / 255, 2)
+        get_chromaticity_curve.assert_called_once_with(2)
 
-    @patch(_CONTRAST_SIGMOID_CONTRAST)
-    @patch(_CONTRAST_SIGMOID_FLAT)
-    def test_process_linear_profile(self, flat: Mock, contrast: Mock) -> None:
+    @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
+    @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
+    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
+    def test_process_linear_profile(
+        self, compensate_slope: Mock, get_tone_curve: Mock, get_chromaticity_curve: Mock
+    ) -> None:
         grey18 = 87
         slope = 1.5
-        flat.return_value = [Point(0, 0)]
-        contrast.return_value = [Point(1, 1)]
+        compensate_slope.return_value = 2
+        get_tone_curve.return_value = [Point(0, 0)]
+        get_chromaticity_curve.return_value = [Point(1, 1)]
 
         self.validator.assert_process(
             {"grey18": grey18, "slope": slope, "linear_profile": True},
             {
-                "Curve": "1;0.0000000;0.0000000;",
-                "Curve2": "1;1.0000000;1.0000000;",
+                "LCurve": "1;0.0000000;0.0000000;",
+                "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
                 "CMApplyLookTable": "false",
             },
         )
-        flat.assert_called_once_with(grey18 / 255)
-        contrast.assert_called_once_with(grey18 / 255, slope)
+        compensate_slope.assert_called_once_with(grey18 / 255, slope)
+        get_tone_curve.assert_called_once_with(grey18 / 255, 2)
+        get_chromaticity_curve.assert_called_once_with(2)
 
-    @patch(_CONTRAST_SIGMOID_CONTRAST)
-    @patch(_CONTRAST_SIGMOID_FLAT)
-    def test_process_nonlinear_profile(self, flat: Mock, contrast: Mock) -> None:
+    @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
+    @patch(_CONTRAST_SIGMOID_GET_CONTRAST)
+    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
+    def test_process_nonlinear_profile(
+        self, compensate_slope: Mock, get_contrast: Mock, get_chromaticity_curve: Mock
+    ) -> None:
         grey18 = 87
         slope = 1.5
-        flat.return_value = [Point(0, 0)]
-        contrast.return_value = [Point(1, 1)]
+        compensate_slope.return_value = 2
+        get_contrast.return_value = [Point(0, 0)]
+        get_chromaticity_curve.return_value = [Point(1, 1)]
 
         self.validator.assert_process(
             {"grey18": grey18, "slope": slope, "linear_profile": False},
             {
-                "Curve": "0;",
-                "Curve2": "1;1.0000000;1.0000000;",
+                "LCurve": "1;0.0000000;0.0000000;",
+                "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "true",
                 "CMApplyLookTable": "true",
             },
         )
-        flat.assert_not_called()
-        contrast.assert_called_once_with(grey18 / 255, slope)
+        compensate_slope.assert_called_once_with(grey18 / 255, slope)
+        get_contrast.assert_called_once_with(2)
+        get_chromaticity_curve.assert_called_once_with(2)

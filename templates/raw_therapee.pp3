@@ -8,7 +8,7 @@ Clip=0.02
 Compensation=0
 Brightness=0
 Contrast=0
-Saturation=-9
+Saturation=0
 Black=0
 HighlightCompr=50
 HighlightComprThreshold=75
@@ -16,10 +16,10 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=false
-CurveMode=Luminance
+CurveMode=Standard
 CurveMode2=Standard
-Curve={Curve}
-Curve2={Curve2}
+Curve=0;
+Curve2=0;
 
 [HLRecovery]
 Enabled=true
@@ -97,16 +97,16 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled={LCEnabled}
+Enabled=true
 Brightness=0
 Contrast=0
 Chromaticity=0
 AvoidColorShift=true
 RedAndSkinTonesProtection=0
 LCredsk=true
-LCurve=0;
-aCurve=0;
-bCurve=0;
+LCurve={LCurve}
+aCurve={ABCurve}
+bCurve={ABCurve}
 ccCurve=0;
 chCurve={ChCurve}
 lhCurve={LhCurve}

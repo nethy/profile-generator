@@ -15,7 +15,6 @@ from .white_balance import schema_test as wb_test
 _DEFAULT = {
     "HSVEnabled": "false",
     "HSVSCurve": "0;",
-    "LCEnabled": "false",
     "CTEnabled": "false",
     "CTLabRegionPower": "1",
     "CTLabRegionSlope": "1",

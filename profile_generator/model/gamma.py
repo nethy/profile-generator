@@ -16,6 +16,10 @@ def power_derivative_at(point: Point) -> Curve:
 
 
 def power_exponent(point: Point) -> float:
+    if math.isclose(point.x, 0):
+        return 0
+    elif math.isclose(point.x, 1):
+        return math.inf
     return math.log(point.y) / math.log(point.x)
 
 

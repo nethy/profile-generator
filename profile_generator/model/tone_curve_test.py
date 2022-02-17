@@ -2,14 +2,14 @@ from unittest import TestCase
 
 from profile_generator.model.color import constants
 
-from .tone_curve import contrast, flat
+from .tone_curve import compensate_gradient, get_srgb_contrast, get_srgb_flat
 
 _GREY_18 = 87 / 255
 
 
 class TestToneCurve(TestCase):
     def test_flat(self) -> None:
-        curve = flat(_GREY_18)
+        curve = get_srgb_flat(_GREY_18)
 
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
@@ -18,7 +18,8 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(0.8), 0.8726233)
 
     def test_contrast(self) -> None:
-        curve = contrast(_GREY_18, 2)
+        compensated_slope = compensate_gradient(_GREY_18, 2)
+        curve = get_srgb_contrast(compensated_slope)
 
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)

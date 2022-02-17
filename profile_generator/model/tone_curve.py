@@ -1,16 +1,22 @@
 import math
 
 from profile_generator.model import gamma, sigmoid
-from profile_generator.model.color import constants
+from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
 from profile_generator.unit import Curve, Point
 
 
-def flat(grey18: float) -> Curve:
-    return _srgb_flat(grey18)[0]
+def get_srgb_flat(grey18: float) -> Curve:
+    return _get_srgb_flat(grey18)[0]
 
 
-def linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
+def get_lab_flat(grey18: float) -> Curve:
+    linear_grey18 = srgb.inverse_gamma(grey18)
+    curve, _ = get_linear_flat(linear_grey18)
+    return lambda x: lab.from_xyz_lum(curve(srgb.inverse_gamma(x))) / 100
+
+
+def get_linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
     """
     gx, gy
 
@@ -40,9 +46,9 @@ def linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
     )
 
 
-def _srgb_flat(grey18: float) -> tuple[Curve, Curve]:
+def _get_srgb_flat(grey18: float) -> tuple[Curve, Curve]:
     linear_grey18 = srgb.inverse_gamma(grey18)
-    curve, derivative = linear_flat(linear_grey18)
+    curve, derivative = get_linear_flat(linear_grey18)
     return (
         lambda x: srgb.gamma(curve(srgb.inverse_gamma(x))),
         lambda x: srgb.gamma_derivative(curve(srgb.inverse_gamma(x)))
@@ -51,18 +57,25 @@ def _srgb_flat(grey18: float) -> tuple[Curve, Curve]:
     )
 
 
-def contrast(grey18: float, gradient: float) -> Curve:
-    _, derivative = _srgb_flat(grey18)
-    corrected_gradient = gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
-    return _contrast(corrected_gradient)
+def compensate_gradient(grey18: float, gradient: float) -> float:
+    _, derivative = _get_srgb_flat(grey18)
+    return gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
 
 
-def _contrast(gradient: float) -> Curve:
+def get_srgb_contrast(gradient: float) -> Curve:
+    return _get_contrast(gradient, constants.GREY18_SRGB, 2.5)
+
+
+def get_lab_contrast(gradient: float) -> Curve:
+    return _get_contrast(gradient, constants.GREY18_LAB, 2.5)
+
+
+def _get_contrast(gradient: float, middle: float, shadow_exponent: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, 2.5)
+    shadow = sigmoid.algebraic(gradient, shadow_exponent)
     highlight = sigmoid.algebraic(gradient, 2)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
-    shift_x = gamma.power_at(Point(constants.GREY18_SRGB, 0.5))
-    shift_y = gamma.power_at(Point(0.5, constants.GREY18_SRGB))
+    shift_x = gamma.power_at(Point(middle, 0.5))
+    shift_y = gamma.power_at(Point(0.5, middle))
     return lambda x: shift_y(curve(shift_x(x)))

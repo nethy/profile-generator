@@ -10,7 +10,6 @@ from profile_generator.schema import (
 from .schema import _STEPS, SCHEMA, process
 
 DEFAULT = {
-    "LCEnabled": "false",
     "HhCurve": "0;",
     "ChCurve": "0;",
     "LhCurve": "0;",
@@ -107,7 +106,6 @@ class SchemaTest(TestCase):
             process(data),
             DEFAULT
             | {
-                "LCEnabled": "true",
                 "HhCurve": "1;0.0000000;0.5000000;0.0000000;0.0000000;"
                 + "0.1666667;0.3750000;0.0000000;0.0000000;"
                 + "0.3333333;0.6250000;0.0000000;0.0000000;"
@@ -128,7 +126,6 @@ class SchemaTest(TestCase):
             process(data),
             DEFAULT
             | {
-                "LCEnabled": "true",
                 "ChCurve": "1;0.0000000;0.6500000;0.0000000;0.0000000;"
                 + "0.1666667;0.5000000;0.0000000;0.0000000;"
                 + "0.3333333;0.5000000;0.0000000;0.0000000;"
@@ -149,7 +146,6 @@ class SchemaTest(TestCase):
             process(data),
             DEFAULT
             | {
-                "LCEnabled": "true",
                 "LhCurve": "1;0.0000000;0.5350000;0.0000000;0.0000000;"
                 + "0.1666667;0.5000000;0.0000000;0.0000000;"
                 + "0.3333333;0.5000000;0.0000000;0.0000000;"

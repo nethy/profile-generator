@@ -26,7 +26,7 @@ from profile_generator.model.color.space import SRGB
 from profile_generator.model.color.space.prophoto import PROPHOTO
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Curve, Line, Point, Strength
+from profile_generator.unit import Curve, Line, Point, Strength, curve
 from profile_generator.util import search
 
 
@@ -64,4 +64,12 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
     # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
     # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
-    print_points(contrast_sigmoid.calculate(64.515, 1))
+    # print_points(contrast_sigmoid.calculate(64.515, 1))
+
+    print_points(
+        curve.as_points(
+            tone_curve.get_srgb_contrast(
+                tone_curve.compensate_gradient(87.30522037562211 / 255, 2)
+            )
+        )
+    )

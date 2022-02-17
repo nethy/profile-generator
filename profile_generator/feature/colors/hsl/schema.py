@@ -20,14 +20,12 @@ class Field:
 
 
 class Template:
-    LC_ENABLED: Final = "LCEnabled"
     HH_CURVE: Final = "HhCurve"
     CH_CURVE: Final = "ChCurve"
     LH_CURVE: Final = "LhCurve"
 
 
 DEFAULT = {
-    Template.LC_ENABLED: "false",
     Template.HH_CURVE: raw_therapee.CurveType.LINEAR,
     Template.CH_CURVE: raw_therapee.CurveType.LINEAR,
     Template.LH_CURVE: raw_therapee.CurveType.LINEAR,
@@ -82,7 +80,6 @@ def _get_eq_curve(
     equalizer = _get_equalizer(config, max_adjustment)
     if any(p.y != _BASE_VALUE for p in equalizer):
         return {
-            Template.LC_ENABLED: "true",
             template_name: raw_therapee.CurveType.STANDARD
             + raw_therapee.present_equalizer(equalizer),
         }
