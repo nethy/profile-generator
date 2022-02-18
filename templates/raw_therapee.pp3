@@ -100,7 +100,7 @@ AfterCurve=0;
 Enabled=true
 Brightness=0
 Contrast=0
-Chromaticity=0
+Chromaticity={Chromaticity}
 AvoidColorShift=true
 RedAndSkinTonesProtection=50.0
 LCredsk=true
@@ -499,9 +499,9 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled={HSVEnabled}
+Enabled=false
 HCurve=0;
-SCurve={HSVSCurve}
+SCurve=0;
 VCurve=0;
 
 [SoftLight]
@@ -556,9 +556,9 @@ LabRegionB_1=0
 LabRegionSaturation_1=0
 LabRegionSlope_1={CTLabRegionSlope}
 LabRegionOffset_1=0
-LabRegionPower_1={CTLabRegionPower}
+LabRegionPower_1=1
 LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0.25;0;0;0.33333333333333333;1;1;0;0;
+LabRegionChromaticityMask_1=1;0.4;0;0;0;1;1;0;0;
 LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1

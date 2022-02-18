@@ -67,7 +67,7 @@ def get_srgb_contrast(gradient: float) -> Curve:
 
 
 def get_lab_contrast(gradient: float) -> Curve:
-    return _get_contrast(gradient, constants.GREY18_LAB, 2.5)
+    return _get_contrast(gradient, constants.GREY18_LAB, 3)
 
 
 def _get_contrast(gradient: float, middle: float, shadow_exponent: float) -> Curve:
