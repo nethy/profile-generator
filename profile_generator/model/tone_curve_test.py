@@ -14,8 +14,8 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
         self.assertAlmostEqual(curve(_GREY_18), constants.GREY18_SRGB)
-        self.assertAlmostEqual(curve(0.2), 0.2773539)
-        self.assertAlmostEqual(curve(0.8), 0.8726233)
+        self.assertAlmostEqual(curve(0.2), 0.2856687)
+        self.assertAlmostEqual(curve(0.8), 0.8685758)
 
     def test_contrast(self) -> None:
         compensated_slope = compensate_gradient(_GREY_18, 2)
@@ -24,5 +24,5 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
         self.assertAlmostEqual(curve(constants.GREY18_SRGB), constants.GREY18_SRGB)
-        self.assertAlmostEqual(curve(0.2), 0.0916031)
-        self.assertAlmostEqual(curve(0.8), 0.9031220)
+        self.assertAlmostEqual(curve(0.2), 0.0846313)
+        self.assertAlmostEqual(curve(0.8), 0.9093472)

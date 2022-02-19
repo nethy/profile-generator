@@ -16,9 +16,7 @@ class Field:
 
 class Template:
     CHROMATICITY: Final = "Chromaticity"
-    COLOR_TONING_ENABLED: Final = "CTEnabled"
     COLOR_TONING_POWER: Final = "CTLabRegionPower"
-    COLOR_TONING_SLOPE: Final = "CTLabRegionSlope"
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -35,11 +33,9 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
 
 def _get_chrome(data: Any) -> Mapping[str, str]:
     chrome = data.get(*Field.CHROME)
-    enabled = chrome > 0
-    slope = 1 - 0.05 * chrome
+    power = 1 + 0.1 * chrome
     return {
-        Template.COLOR_TONING_ENABLED: str(enabled).lower(),
-        Template.COLOR_TONING_SLOPE: str(round(slope, 3)),
+        Template.COLOR_TONING_POWER: str(round(power, 3)),
     }
 
 

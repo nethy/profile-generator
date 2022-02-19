@@ -1,4 +1,5 @@
 import math
+from typing import Callable
 
 from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants, lab
@@ -7,48 +8,66 @@ from profile_generator.unit import Curve, Point
 
 
 def get_srgb_flat(grey18: float) -> Curve:
-    return _get_srgb_flat(grey18)[0]
+    return _as_srgb(grey18, get_linear_flat_highlight_priority)[0]
 
 
 def get_lab_flat(grey18: float) -> Curve:
     linear_grey18 = srgb.inverse_gamma(grey18)
-    curve, _ = get_linear_flat(linear_grey18)
+    curve, _ = get_linear_flat_highlight_priority(linear_grey18)
     return lambda x: lab.from_xyz_lum(curve(srgb.inverse_gamma(x))) / 100
 
 
-def get_linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
+def get_linear_flat_highlight_priority(linear_grey18: float) -> tuple[Curve, Curve]:
     """
     gx, gy
+
+    shadows:
+    f(x) = a(x-b)^2+c
+
+    f(0) = 0
+    f(gx) = gy
+    f'(gx) = m
 
     highlights:
     f(x) = a(x-b)^0.5+c
 
     f(1) = 1
     f(gx) = gy
-    f'(gx) = gy/gx
+    f'(gx) = m
     """
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
-    b = (
-        midtone.x
-        * (
-            midtone.x * math.pow(midtone.y - 1, 2) / (4 * math.pow(midtone.y, 2))
-            - midtone.x * (midtone.y - 1) / midtone.y
-            + midtone.x
-            - 1
-        )
-        / (2 * midtone.x - midtone.x * (midtone.y - 1) / midtone.y - 1 - midtone.x)
-    )
-    a = (midtone.y - 1) / (math.sqrt(midtone.x - b) - math.sqrt(1 - b))
-    c = 1 - a * math.sqrt(1 - b)
+    gradient = midtone.y * (1 - midtone.y) / (midtone.x * (1 - midtone.x))
+    shadow, shadow_derivative = _get_shadow_curve(midtone, gradient)
+    highlight, highlight_derivative = _get_highlight_curve(midtone, gradient)
     return (
-        lambda x: midtone.gradient * x if x < midtone.x else a * math.sqrt(x - b) + c,
-        lambda x: midtone.gradient if x < midtone.x else a * 0.5 / math.sqrt(x - b),
+        lambda x: shadow(x) if x < midtone.x else highlight(x),
+        lambda x: shadow_derivative(x) if x < midtone.x else highlight_derivative(x),
     )
 
 
-def _get_srgb_flat(grey18: float) -> tuple[Curve, Curve]:
+def _get_shadow_curve(midtone: Point, gradient: float) -> tuple[Curve, Curve]:
+    a = (gradient - midtone.y / midtone.x) / midtone.x
+    b = midtone.x - 0.5 * gradient / a
+    c = -a * b * b
+
+    return (lambda x: a * (x - b) * (x - b) + c, lambda x: 2 * a * (x - b))
+
+
+def _get_highlight_curve(midtone: Point, gradient: float) -> tuple[Curve, Curve]:
+    b = (math.pow(midtone.x - 0.5 * (midtone.y - 1) / gradient, 2) - midtone.x) / (
+        midtone.x - (midtone.y - 1) / gradient - 1
+    )
+    a = 2 * gradient * math.sqrt(midtone.x - b)
+    c = 1 - a * math.sqrt(1 - b)
+
+    return (lambda x: a * math.sqrt(x - b) + c, lambda x: 0.5 * a / math.sqrt(x - b))
+
+
+def _as_srgb(
+    grey18: float, curve_supplier: Callable[[float], tuple[Curve, Curve]]
+) -> tuple[Curve, Curve]:
     linear_grey18 = srgb.inverse_gamma(grey18)
-    curve, derivative = get_linear_flat(linear_grey18)
+    curve, derivative = curve_supplier(linear_grey18)
     return (
         lambda x: srgb.gamma(curve(srgb.inverse_gamma(x))),
         lambda x: srgb.gamma_derivative(curve(srgb.inverse_gamma(x)))
@@ -58,7 +77,7 @@ def _get_srgb_flat(grey18: float) -> tuple[Curve, Curve]:
 
 
 def compensate_gradient(grey18: float, gradient: float) -> float:
-    _, derivative = _get_srgb_flat(grey18)
+    _, derivative = _as_srgb(grey18, get_linear_flat_highlight_priority)
     return gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
 
 

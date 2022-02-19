@@ -264,7 +264,7 @@ HighlightTonalWidth=75
 Shadows=0
 ShadowTonalWidth=25
 Radius={SHRadius}
-Lab=false
+Lab=true
 
 [Crop]
 Enabled=false
@@ -521,7 +521,7 @@ gCurve={RGBCurvesGCurve}
 bCurve={RGBCurvesBCurve}
 
 [ColorToning]
-Enabled={CTEnabled}
+Enabled=true
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
@@ -553,15 +553,26 @@ LabGridAHigh=0
 LabGridBHigh=0
 LabRegionA_1=0
 LabRegionB_1=0
-LabRegionSaturation_1=0
-LabRegionSlope_1={CTLabRegionSlope}
+LabRegionSaturation_1=-40
+LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
 LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0.4;0;0;0;1;1;0;0;
-LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionChromaticityMask_1=1;0.4;0;0;0;0.7;1;0;0;
+LabRegionLightnessMask_1=1;0;1;0;0;0.1;0;0;0;0.7;0;0;0;0.9;1;0;0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
+LabRegionA_2=0
+LabRegionB_2=0
+LabRegionSaturation_2=0
+LabRegionSlope_2=1
+LabRegionOffset_2=0
+LabRegionPower_2={CTLabRegionPower}
+LabRegionHueMask_2=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
+LabRegionChromaticityMask_2=1;0.4;0;0;0;1;1;0;0;
+LabRegionLightnessMask_2=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionMaskBlur_2=0
+LabRegionChannel_2=-1
 LabRegionsShowMask=-1
 
 [RAW]

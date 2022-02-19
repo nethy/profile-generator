@@ -35,13 +35,13 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
-def print_points(curve):
-    for x, y in curve:
+def print_points(fn):
+    for x, y in curve.as_points(fn):
         print_point(x, y)
 
 
 def print_point(x, y):
-    print(f"{x:.6f} {y:.6f}")
+    print(f"{x:.7f} {y:.7f}")
 
 
 def find_x(fn, y):
@@ -65,11 +65,4 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
     # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
     # print_points(contrast_sigmoid.calculate(64.515, 1))
-
-    print_points(
-        curve.as_points(
-            tone_curve.get_srgb_contrast(
-                tone_curve.compensate_gradient(87.30522037562211 / 255, 2)
-            )
-        )
-    )
+    pass

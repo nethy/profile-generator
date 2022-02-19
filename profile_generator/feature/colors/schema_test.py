@@ -14,8 +14,7 @@ from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
     "Chromaticity": "0",
-    "CTEnabled": "false",
-    "CTLabRegionSlope": "1.0",
+    "CTLabRegionPower": "1.0",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -60,9 +59,5 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"chrome": 10},
-            _DEFAULT
-            | {
-                "CTEnabled": "true",
-                "CTLabRegionSlope": "0.5",
-            },
+            _DEFAULT | {"CTLabRegionPower": "2.0"},
         )
