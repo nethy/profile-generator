@@ -12,8 +12,7 @@ def is_in_closed_interval(value: T, low: float, high: float) -> T:
 
 
 def is_positive(value: T) -> T:
-    v = _round(value)
-    if v <= 0:
+    if _round(value) <= 0:
         raise ValueError(f"value must be positive: {value}")
     return value
 
