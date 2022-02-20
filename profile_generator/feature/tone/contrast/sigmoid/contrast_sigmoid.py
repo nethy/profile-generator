@@ -32,5 +32,5 @@ def get_tone_curve(grey18: float, slope: float) -> Sequence[Point]:
 
 @cache
 def get_chromaticity_curve(slope: float) -> Sequence[Point]:
-    sigmoid_curve = sigmoid.algebraic(math.pow(slope, 0.75), 4 / 3)
+    sigmoid_curve = sigmoid.algebraic(math.pow(slope, 0.75), 1)
     return curve.as_points(sigmoid_curve)

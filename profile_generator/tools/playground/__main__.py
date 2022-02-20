@@ -65,4 +65,12 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
     # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
     # print_points(contrast_sigmoid.calculate(64.515, 1))
-    pass
+    # pass
+
+    contrast = sigmoid.algebraic(2, 2)
+    hl_ref = contrast(0.55)
+    print(hl_ref)
+    sh_ref = search.jump_search(
+        1e-3, 1e3, lambda c: sigmoid.algebraic(2, c)(0.75), 0.825
+    )
+    print(sh_ref)

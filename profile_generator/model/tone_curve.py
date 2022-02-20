@@ -8,16 +8,16 @@ from profile_generator.unit import Curve, Point
 
 
 def get_srgb_flat(grey18: float) -> Curve:
-    return _as_srgb(grey18, get_linear_flat_highlight_priority)[0]
+    return _as_srgb(grey18, get_linear_flat)[0]
 
 
 def get_lab_flat(grey18: float) -> Curve:
     linear_grey18 = srgb.inverse_gamma(grey18)
-    curve, _ = get_linear_flat_highlight_priority(linear_grey18)
+    curve, _ = get_linear_flat(linear_grey18)
     return lambda x: lab.from_xyz_lum(curve(srgb.inverse_gamma(x))) / 100
 
 
-def get_linear_flat_highlight_priority(linear_grey18: float) -> tuple[Curve, Curve]:
+def get_linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
     """
     gx, gy
 
@@ -77,23 +77,29 @@ def _as_srgb(
 
 
 def compensate_gradient(grey18: float, gradient: float) -> float:
-    _, derivative = _as_srgb(grey18, get_linear_flat_highlight_priority)
+    _, derivative = _as_srgb(grey18, get_linear_flat)
     return gradient / derivative(grey18) + 1 - 1 / derivative(grey18)
 
 
 def get_srgb_contrast(gradient: float) -> Curve:
-    return _get_contrast(gradient, constants.GREY18_SRGB, 2.5)
+    return _get_contrast(gradient, constants.GREY18_SRGB)
 
 
 def get_lab_contrast(gradient: float) -> Curve:
-    return _get_contrast(gradient, constants.GREY18_LAB, 3)
+    return _get_contrast(gradient, constants.GREY18_LAB)
 
 
-def _get_contrast(gradient: float, middle: float, shadow_exponent: float) -> Curve:
+# sigmoid(2, E)(0.75) = 0.9
+_SHADOW_EXPONENT = 2.7635296532940794
+# sigmoid(2, E)(0.75) = 0.875
+_HIGHLIGHT_EXPONENT = 1.9149842712929843
+
+
+def _get_contrast(gradient: float, middle: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, shadow_exponent)
-    highlight = sigmoid.algebraic(gradient, 2)
+    shadow = sigmoid.algebraic(gradient, _SHADOW_EXPONENT)
+    highlight = sigmoid.algebraic(gradient, _HIGHLIGHT_EXPONENT)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
     shift_x = gamma.power_at(Point(middle, 0.5))
     shift_y = gamma.power_at(Point(0.5, middle))

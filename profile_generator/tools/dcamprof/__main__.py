@@ -8,7 +8,7 @@ from profile_generator.unit import curve
 def dcamprof_tone_curve(camera_grey18_linear: float) -> None:
     grey18 = SRGB.gamma(camera_grey18_linear)
     print(round(grey18 * 255, 12))
-    flat_curve, _ = tone_curve.get_linear_flat_highlight_priority(camera_grey18_linear)
+    flat_curve, _ = tone_curve.get_linear_flat(camera_grey18_linear)
     handles = [[round(x, 7), round(y, 7)] for x, y in curve.as_points(flat_curve, 64)]
     output = {
         "CurveType": "Spline",
