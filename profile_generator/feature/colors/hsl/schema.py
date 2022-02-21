@@ -1,4 +1,4 @@
-from collections.abc import Iterable, Mapping
+from collections.abc import Mapping, Sequence
 from typing import Any, Final
 
 from profile_generator.feature.colors.white_balance.schema import DEFAULT
@@ -80,8 +80,7 @@ def _get_eq_curve(
     equalizer = _get_equalizer(config, max_adjustment)
     if any(p.y != _BASE_VALUE for p in equalizer):
         return {
-            template_name: raw_therapee.CurveType.STANDARD
-            + raw_therapee.present_equalizer(equalizer),
+            template_name: raw_therapee.present_equalizer(equalizer),
         }
     else:
         return {}
@@ -89,7 +88,7 @@ def _get_eq_curve(
 
 def _get_equalizer(
     config: Mapping[str, int], max_adjustment: float
-) -> Iterable[EqPoint]:
+) -> Sequence[EqPoint]:
     return [
         LinearEqPoint(HUES[color], _get_value(config, color, max_adjustment))
         for color in (

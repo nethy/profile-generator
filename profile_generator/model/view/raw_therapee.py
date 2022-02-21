@@ -1,5 +1,5 @@
-from collections.abc import Iterable
-from typing import Final
+from collections.abc import Sequence
+from typing import Final, Optional
 
 from profile_generator.unit import DECIMALS, Point
 
@@ -45,7 +45,9 @@ class RightLinearEqPoint(EqPoint):
         return self._present(_ONE_SIDE_EQ_STRENGTH, 0)
 
 
-def present_curve(curve_type: str, points: Iterable[Point]) -> str:
+def present_curve(curve_type: str, points: Sequence[Point]) -> str:
+    if len(points) == 0:
+        return CurveType.LINEAR
     return curve_type + "".join((_present_point(p) for p in points))
 
 
@@ -53,5 +55,7 @@ def _present_point(point: Point) -> str:
     return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
 
 
-def present_equalizer(points: Iterable[EqPoint]) -> str:
-    return "".join(p.present() for p in points)
+def present_equalizer(points: Optional[Sequence[EqPoint]]) -> str:
+    if points is None or len(points) == 0:
+        return CurveType.LINEAR
+    return CurveType.STANDARD + "".join(p.present() for p in points)

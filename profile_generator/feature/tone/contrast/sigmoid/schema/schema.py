@@ -1,10 +1,9 @@
-from collections.abc import Mapping, Sequence
-from typing import Any, Final, Optional
+from collections.abc import Mapping
+from typing import Any, Final
 
-from profile_generator.model.color import rgb
+from profile_generator.model.color import constants, rgb
 from profile_generator.model.view import raw_therapee
 from profile_generator.schema import SchemaField, object_of, range_of, type_of
-from profile_generator.unit import Point
 
 from .. import contrast_sigmoid
 
@@ -16,17 +15,11 @@ class Field:
 
 
 class Template:
+    CURVE: Final = "Curve"
     L_CURVE: Final = "LCurve"
     AB_CURVE: Final = "ABCurve"
     CAMERA_PROFILE_TONE_CURVE: Final = "CMToneCurve"
     CAMERA_PROFILE_LOOK_TABLE: Final = "CMApplyLookTable"
-
-
-def _marshal_curve(curve: Optional[Sequence[Point]]) -> str:
-    if curve is not None and len(curve) > 0:
-        return raw_therapee.present_curve(raw_therapee.CurveType.STANDARD, curve)
-    else:
-        return raw_therapee.CurveType.LINEAR
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -40,11 +33,33 @@ def _process(data: Any) -> Mapping[str, str]:
         luminance_curve = contrast_sigmoid.get_contrast(corrected_slope)
     chromaticity_curve = contrast_sigmoid.get_chromaticity_curve(corrected_slope)
     return {
-        Template.L_CURVE: _marshal_curve(luminance_curve),
-        Template.AB_CURVE: _marshal_curve(chromaticity_curve),
+        Template.CURVE: _get_correction_params(grey18, linear_profile),
+        Template.L_CURVE: raw_therapee.present_curve(
+            raw_therapee.CurveType.STANDARD, luminance_curve
+        ),
+        Template.AB_CURVE: raw_therapee.present_curve(
+            raw_therapee.CurveType.STANDARD, chromaticity_curve
+        ),
         Template.CAMERA_PROFILE_TONE_CURVE: str(not linear_profile).lower(),
         Template.CAMERA_PROFILE_LOOK_TABLE: str(not linear_profile).lower(),
     }
+
+
+def _get_correction_params(grey18: float, linear_profile: bool) -> str:
+    midtone = constants.GREY18_SRGB
+    if linear_profile:
+        midtone = grey18
+
+    return (
+        "2;"
+        + ";".join(
+            (
+                str(round(i, 9))
+                for i in ([midtone / 2, midtone, (midtone + 1) / 2] + [0] * 4)
+            )
+        )
+        + ";"
+    )
 
 
 SCHEMA = object_of(

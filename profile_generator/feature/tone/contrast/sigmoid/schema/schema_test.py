@@ -65,6 +65,7 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {},
             {
+                "Curve": "2;0.176470588;0.352941176;0.676470588;0;0;0;0;",
                 "LCurve": "1;0.0000000;0.0000000;",
                 "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
@@ -90,6 +91,7 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"grey18": grey18, "slope": slope, "linear_profile": True},
             {
+                "Curve": "2;0.170588235;0.341176471;0.670588235;0;0;0;0;",
                 "LCurve": "1;0.0000000;0.0000000;",
                 "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "false",
@@ -115,6 +117,7 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"grey18": grey18, "slope": slope, "linear_profile": False},
             {
+                "Curve": "2;0.230678065;0.46135613;0.730678065;0;0;0;0;",
                 "LCurve": "1;0.0000000;0.0000000;",
                 "ABCurve": "1;1.0000000;1.0000000;",
                 "CMToneCurve": "true",
