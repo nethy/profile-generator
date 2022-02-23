@@ -1,8 +1,10 @@
 # mypy: ignore-errors
 # pylint: skip-file
 
+import json
 import math
 from cmath import exp
+from colorsys import rgb_to_hsv
 from functools import partial
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
@@ -24,7 +26,7 @@ from profile_generator.model.color.space import SRGB
 from profile_generator.model.color.space.prophoto import PROPHOTO
 from profile_generator.model.color_chart import ColorChart
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Curve, Line, Point, Strength
+from profile_generator.unit import Curve, Line, Point, Strength, curve
 from profile_generator.util import search
 
 
@@ -33,13 +35,13 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
-def print_points(points):
-    for x, y in points:
+def print_points(fn):
+    for x, y in curve.as_points(fn):
         print_point(x, y)
 
 
 def print_point(x, y):
-    print(f"{x:.6f} {y:.6f}")
+    print(f"{x:.7f} {y:.7f}")
 
 
 def find_x(fn, y):
@@ -56,16 +58,19 @@ def naive_flat(midtone):
     return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
 
 
-def density_to_srgb(d):
-    l = 1 / math.pow(10, d)
-    return SRGB.gamma(l)
-
-
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.calculate(106.845, 1.85))
-    # print_points(contrast_sigmoid.calculate(87.975, 1.85))
-    # print_points(contrast_sigmoid.calculate(82.365, 1.7))
-    # print_points(contrast_sigmoid.calculate(64.515, 2))
+    # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
+    # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
+    # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 1.85))
+    # print_points(contrast_sigmoid.calculate(64.515, 1))
+    # pass
 
-    print_points(spline.fit(tone_curve._flat(Point(0.125, 0.5))))
+    contrast = sigmoid.algebraic(2, 2)
+    hl_ref = contrast(0.55)
+    print(hl_ref)
+    sh_ref = search.jump_search(
+        1e-3, 1e3, lambda c: sigmoid.algebraic(2, c)(0.75), 0.825
+    )
+    print(sh_ref)

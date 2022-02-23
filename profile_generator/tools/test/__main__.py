@@ -28,8 +28,8 @@ def print_calculation(name, fn, *args, **kwargs):
 
 if __name__ == "__main__":
     print_calculation(
-        "test_calculate",
-        contrast_sigmoid.calculate,
+        "test_flat",
+        contrast_sigmoid.get_flat,
         _GREY18,
-        _SLOPE,
     )
+    print_calculation("test_contrast", contrast_sigmoid.get_contrast, _SLOPE)

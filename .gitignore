@@ -16,3 +16,5 @@ venv/
 
 generate_and_install_profiles.sh
 generate_rgb_curves.sh
+install_profiles.sh
+install_rgb_curves.sh

@@ -13,12 +13,8 @@ from .schema import SCHEMA
 from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
-    "HSVEnabled": "false",
-    "HSVSCurve": "0;",
-    "LCEnabled": "false",
-    "CTEnabled": "false",
-    "CTLabRegionPower": "1",
-    "CTLabRegionSlope": "1",
+    "Chromaticity": "0",
+    "CTLabRegionPower": "1.0",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -55,14 +51,7 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"vibrance": 5},
-            _DEFAULT
-            | {
-                "HSVEnabled": "true",
-                "HSVSCurve": "1;0.083333;0.625000;0.000000;0.000000;"
-                + "0.250000;0.750000;0.000000;0.000000;"
-                + "0.750000;0.750000;0.000000;0.000000;"
-                + "0.916667;0.625000;0.000000;0.000000;",
-            },
+            _DEFAULT | {"Chromaticity": "25"},
         )
 
     def test_process_chrome(self) -> None:
@@ -70,10 +59,5 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"chrome": 10},
-            _DEFAULT
-            | {
-                "CTEnabled": "true",
-                "CTLabRegionSlope": "0.5",
-                "CTLabRegionPower": "2.0",
-            },
+            _DEFAULT | {"CTLabRegionPower": "2.0"},
         )

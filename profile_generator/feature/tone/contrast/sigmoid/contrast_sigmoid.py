@@ -2,21 +2,35 @@ import math
 from collections.abc import Sequence
 from functools import cache
 
-from profile_generator.model import spline, tone_curve
-from profile_generator.model.color import rgb
-from profile_generator.model.color.space import SRGB
-from profile_generator.unit import Point
+from profile_generator.model import sigmoid, tone_curve
+from profile_generator.unit import Point, curve
 
 
 @cache
-def calculate(
-    grey18: float,
-    slope: float,
-) -> Sequence[Point]:
-    normalized_grey18 = rgb.normalize_value(grey18)
-    _curve = tone_curve.filmic(normalized_grey18, slope)
-    return spline.fit(_curve)
+def get_flat(grey18: float) -> Sequence[Point]:
+    flat = tone_curve.get_lab_flat(grey18)
+    return curve.as_points(flat)
 
 
-def _adjust_ev(value: float, ev: float) -> float:
-    return SRGB.gamma(SRGB.inverse_gamma(value) * math.pow(2, ev))
+@cache
+def compensate_slope(grey18: float, slope: float) -> float:
+    return tone_curve.compensate_gradient(grey18, slope)
+
+
+@cache
+def get_contrast(slope: float) -> Sequence[Point]:
+    contrast = tone_curve.get_lab_contrast(slope)
+    return curve.as_points(contrast)
+
+
+@cache
+def get_tone_curve(grey18: float, slope: float) -> Sequence[Point]:
+    flat = tone_curve.get_lab_flat(grey18)
+    contrast = tone_curve.get_lab_contrast(slope)
+    return curve.as_points(lambda x: contrast(flat(x)))
+
+
+@cache
+def get_chromaticity_curve(slope: float) -> Sequence[Point]:
+    sigmoid_curve = sigmoid.algebraic(math.pow(slope, 0.75), 1)
+    return curve.as_points(sigmoid_curve)

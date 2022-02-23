@@ -36,22 +36,20 @@ def _process(data: Any) -> Mapping[str, str]:
 
 
 def _get_luminance_curve(luminance: int) -> str:
+    luma_eq = None
     if luminance > 0:
         luma_eq = [LinearEqPoint(0, luminance / 100), EqPoint(1, 0)]
-        return "1;" + raw_therapee.present_equalizer(luma_eq)
-    else:
-        return "0;"
+    return raw_therapee.present_equalizer(luma_eq)
 
 
 def _get_chrominance_curve(chrominance: int) -> str:
+    chroma_eq = None
     if chrominance > 0:
         chroma_eq = [
             LinearEqPoint(0, chrominance / 100),
             RightLinearEqPoint(1 / 3, 0),
         ]
-        return "1;" + raw_therapee.present_equalizer(chroma_eq)
-    else:
-        return "0;"
+    return raw_therapee.present_equalizer(chroma_eq)
 
 
 def _get_micro_sharpening(mode: str, luminance: float) -> int:

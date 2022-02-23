@@ -1,3 +1,4 @@
+from profile_generator.model.color import lab
 from profile_generator.model.color.space import SRGB
 
 from . import lab
@@ -10,3 +11,7 @@ LUMINANCE_80_SRGB = SRGB.gamma(lab.to_xyz([80, 0, 0])[1])
 LUMINANCE_85_SRGB = SRGB.gamma(lab.to_xyz([85, 0, 0])[1])
 LUMINANCE_90_SRGB = SRGB.gamma(lab.to_xyz([90, 0, 0])[1])
 LUMINANCE_95_SRGB = SRGB.gamma(lab.to_xyz([95, 0, 0])[1])
+
+GREY18_LINEAR = 0.18
+GREY18_SRGB = SRGB.gamma(GREY18_LINEAR)
+GREY18_LAB = lab.from_xyz_lum(GREY18_LINEAR) / 100

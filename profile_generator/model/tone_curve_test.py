@@ -2,17 +2,27 @@ from unittest import TestCase
 
 from profile_generator.model.color import constants
 
-from .tone_curve import filmic
+from .tone_curve import compensate_gradient, get_srgb_contrast, get_srgb_flat
 
 _GREY_18 = 87 / 255
 
 
 class TestToneCurve(TestCase):
-    def test_filmic(self) -> None:
-        _curve = filmic(_GREY_18, 2)
+    def test_flat(self) -> None:
+        curve = get_srgb_flat(_GREY_18)
 
-        self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.1690233)
-        self.assertAlmostEqual(_curve(_GREY_18), constants.LUMINANCE_50_SRGB)
-        self.assertAlmostEqual(_curve(0.8), 0.9439182)
-        self.assertAlmostEqual(_curve(1), 1)
+        self.assertAlmostEqual(curve(0), 0)
+        self.assertAlmostEqual(curve(1), 1)
+        self.assertAlmostEqual(curve(_GREY_18), constants.GREY18_SRGB)
+        self.assertAlmostEqual(curve(0.2), 0.2856687)
+        self.assertAlmostEqual(curve(0.8), 0.8685758)
+
+    def test_contrast(self) -> None:
+        compensated_slope = compensate_gradient(_GREY_18, 2)
+        curve = get_srgb_contrast(compensated_slope)
+
+        self.assertAlmostEqual(curve(0), 0)
+        self.assertAlmostEqual(curve(1), 1)
+        self.assertAlmostEqual(curve(constants.GREY18_SRGB), constants.GREY18_SRGB)
+        self.assertAlmostEqual(curve(0.2), 0.0792614)
+        self.assertAlmostEqual(curve(0.8), 0.9066490)

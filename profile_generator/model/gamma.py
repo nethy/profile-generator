@@ -6,8 +6,21 @@ from profile_generator.util import search
 
 
 def power_at(point: Point) -> Curve:
-    g = math.log(point.y) / math.log(point.x)
+    g = power_exponent(point)
     return lambda x: math.pow(x, g)
+
+
+def power_derivative_at(point: Point) -> Curve:
+    g = power_exponent(point)
+    return lambda x: g * math.pow(x, g - 1)
+
+
+def power_exponent(point: Point) -> float:
+    if math.isclose(point.x, 0):
+        return 0
+    elif math.isclose(point.x, 1):
+        return math.inf
+    return math.log(point.y) / math.log(point.x)
 
 
 def algebraic_at(point: Point, exponent: float) -> Curve:
@@ -82,11 +95,18 @@ def log_at(point: Point) -> Curve:
     return log(g)
 
 
+def log_derivative_at(point: Point) -> Curve:
+    if math.isclose(point.x, point.y):
+        return lambda _: 1
+    g = log_coefficient(point)
+    return log_derivative(g)
+
+
 @cache
 def log_coefficient(point: Point) -> float:
     if math.isclose(point.x, point.y):
         return 0
-    return search.jump_search(1e-12, 1e3, lambda c: log(c)(point.x), point.y)
+    return search.jump_search(1e-9, 1e3, lambda c: log(c)(point.x), point.y)
 
 
 def log(coefficient: float) -> Curve:
@@ -97,7 +117,7 @@ def log(coefficient: float) -> Curve:
 
 def log_derivative(coefficient: float) -> Curve:
     if math.isclose(coefficient, 0):
-        return lambda x: 1
+        return lambda _: 1
     return lambda x: coefficient / (coefficient * x + 1) / math.log(coefficient + 1)
 
 

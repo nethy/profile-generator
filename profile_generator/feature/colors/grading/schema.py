@@ -43,9 +43,19 @@ def process(data: Any) -> Mapping[str, str]:
     rgb_curve_points = grading.rgb_curves(
         global_hcl, shadow_hcl, midtone_hcl, highlight_hcl
     )
-    return {Template.ENABLED: "true"} | {
-        template: raw_therapee.present_curve(raw_therapee.CurveType.STANDARD, points)
-        for template, points in zip(
-            [Template.R_CURVE, Template.G_CURVE, Template.B_CURVE], rgb_curve_points
-        )
-    }
+    if len(rgb_curve_points) > 0:
+        return {Template.ENABLED: "true"} | {
+            template: raw_therapee.present_curve(
+                raw_therapee.CurveType.STANDARD, points
+            )
+            for template, points in zip(
+                [Template.R_CURVE, Template.G_CURVE, Template.B_CURVE], rgb_curve_points
+            )
+        }
+    else:
+        return {
+            Template.ENABLED: "false",
+            Template.R_CURVE: raw_therapee.CurveType.LINEAR,
+            Template.G_CURVE: raw_therapee.CurveType.LINEAR,
+            Template.B_CURVE: raw_therapee.CurveType.LINEAR,
+        }

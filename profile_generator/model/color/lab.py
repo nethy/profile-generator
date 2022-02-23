@@ -17,9 +17,9 @@ LAB_F_SIGMA_3 = 216 / 24389
 def from_xyz(xyz_d65: Vector) -> Vector:
     xyz_d50 = linalg.multiply_matrix_vector(D65_TO_D50_ADAPTATION, xyz_d65)
     x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz_d50, D50_XYZ)]
-    l = 116 * lab_f(y_ratio) - 16
-    a = 500 * (lab_f(x_ratio) - lab_f(y_ratio))
-    b = 200 * (lab_f(y_ratio) - lab_f(z_ratio))
+    l = 116 * _lab_f(y_ratio) - 16
+    a = 500 * (_lab_f(x_ratio) - _lab_f(y_ratio))
+    b = 200 * (_lab_f(y_ratio) - _lab_f(z_ratio))
     return [l, a, b]
 
 
@@ -27,9 +27,9 @@ def to_xyz(lab: Vector) -> Vector:
     l, a, b = lab
     x_ref, y_ref, z_ref = D50_XYZ
     l_ref = (l + 16) / 116
-    x = x_ref * lab_f_inverse(l_ref + a / 500)
-    y = y_ref * lab_f_inverse(l_ref)
-    z = z_ref * lab_f_inverse(l_ref - b / 200)
+    x = x_ref * _lab_f_inverse(l_ref + a / 500)
+    y = y_ref * _lab_f_inverse(l_ref)
+    z = z_ref * _lab_f_inverse(l_ref - b / 200)
     xyz_d50 = [x, y, z]
     xyz_d65 = linalg.multiply_matrix_vector(D50_TO_D65_ADAPTATION, xyz_d50)
     return xyz_d65
@@ -51,14 +51,20 @@ def from_lch(lch: Vector) -> Vector:
     return [l, a, b]
 
 
-def lab_f(x: float) -> float:
+def from_xyz_lum(y_d65: float) -> float:
+    y_d50 = sum((y_d65 * D65_TO_D50_ADAPTATION[i][1] for i in range(3)))
+    y_ratio = y_d50 / D50_XYZ[1]
+    return 116 * _lab_f(y_ratio) - 16
+
+
+def _lab_f(x: float) -> float:
     if x > LAB_F_SIGMA_3:
         return math.pow(x, 1 / 3)
     else:
         return x / (3 * LAB_F_SIGMA_2) + 4 / 29
 
 
-def lab_f_inverse(x: float) -> float:
+def _lab_f_inverse(x: float) -> float:
     if x > LAB_F_SIGMA:
         return math.pow(x, 3)
     else:
