@@ -47,7 +47,6 @@ class SplineTest(TestCase):
 
     def _assert_fit(self, fn: Callable[[float], float]) -> None:
         points = fit(fn)
-        print(points)
         spline = interpolate(points)
         for x in (i / 256 for i in range(257)):
             try:
