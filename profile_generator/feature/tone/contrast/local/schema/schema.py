@@ -26,4 +26,4 @@ def _process(data: Any) -> Mapping[str, str]:
     }
 
 
-SCHEMA = object_of({"local": range_of(0, 10)}, _process)
+SCHEMA = object_of({"local": range_of(0.0, 10.0)}, _process)

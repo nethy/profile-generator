@@ -5,11 +5,19 @@ from typing import Any
 from .object_schema import (
     InvalidObjectError,
     InvalidTypeError,
+    ProfileInput,
     UnkownMemberError,
     object_of,
 )
 from .schema_validator import SchemaValidator
 from .type_schema import type_of
+
+
+def _test_parse(data: Any, profile_input: ProfileInput) -> None:
+    profile_input.camera.resolution = data["test"]
+
+
+_PARSE_SCHEMA = object_of({"test": type_of(int)}, parser=_test_parse)
 
 
 class ObjectSchemaTest(unittest.TestCase):
@@ -65,3 +73,22 @@ class ObjectSchemaTest(unittest.TestCase):
     @staticmethod
     def _to_string(data: Any) -> Mapping[str, str]:
         return {key: str(value) for key, value in data.items()} | {"default": "_"}
+
+    def test_parse_with_parser(self) -> None:
+        profile_input = ProfileInput()
+
+        _PARSE_SCHEMA.parse({"test": 2}, profile_input)
+
+        self.assertEqual(profile_input.camera.resolution, 2)
+
+    def test_parse_object_without_parser(self) -> None:
+        schema = object_of({"a": _PARSE_SCHEMA})
+        profile_input = ProfileInput()
+
+        schema.parse({"a": {"test": 2}}, profile_input)
+
+        self.assertEqual(profile_input.camera.resolution, 2)
+
+    @staticmethod
+    def _test_parse(data: Any, profile_input: ProfileInput) -> None:
+        profile_input.camera.resolution = data["test"]

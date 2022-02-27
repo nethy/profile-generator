@@ -2,18 +2,25 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from profile_generator.profile_input import ProfileInput
+
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
 
 Processor = Callable[[Any], Mapping[str, str]]
+Parser = Callable[[Any, ProfileInput], None]
 
 
 class ObjectSchema(Schema):
     def __init__(
-        self, object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
+        self,
+        object_schema: Mapping[str, Schema],
+        processor: Optional[Processor] = None,
+        parser: Optional[Parser] = None,
     ):
         self._object_schema = object_schema
         self._processor = processor
+        self._parser = parser
 
     def validate(self, data: Any) -> Optional[SchemaError]:
         if not isinstance(data, dict):
@@ -55,6 +62,16 @@ class ObjectSchema(Schema):
                 result.update(partial_result)
             return result
 
+    def parse(self, data: Any, profile_input: ProfileInput) -> None:
+        if self._parser is not None:
+            return self._parser(data, profile_input)
+        else:
+            for member, member_data in data.items():
+                member_schema = self._object_schema.get(member)
+                if member_schema is None:
+                    continue
+                member_schema.parse(member_data, profile_input)
+
 
 class AnySchema(Schema):
     def validate(self, data: Any) -> Optional[SchemaError]:
@@ -75,6 +92,8 @@ class UnkownMemberError(SchemaError):
 
 
 def object_of(
-    object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
+    object_schema: Mapping[str, Schema],
+    processor: Optional[Processor] = None,
+    parser: Optional[Parser] = None,
 ) -> Schema:
-    return ObjectSchema(object_schema, processor)
+    return ObjectSchema(object_schema, processor, parser)

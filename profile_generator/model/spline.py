@@ -8,7 +8,7 @@ from profile_generator.unit import Curve, Point
 
 EPSILON = 1e-4
 BUFFER_SIZE = 8
-BUFFER_STEP = 43
+BUFFER_STEP = 33
 SAMPLES_COUNT = (BUFFER_SIZE - 1) * BUFFER_STEP
 
 
@@ -51,7 +51,7 @@ def _transfer_knot(
 
 
 def _approximate(references: list[Point], knots: list[Point]) -> None:
-    for _ in range(BUFFER_SIZE + 1, 24 + 1):
+    for _ in range(BUFFER_SIZE + 1, 32 + 1):
         max_diff, i = _find_max_diff(references, knots)
         if max_diff < EPSILON:
             break

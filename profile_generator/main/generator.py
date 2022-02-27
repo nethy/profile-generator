@@ -86,10 +86,10 @@ class ProfileWriteError(Exception):
 
 def create_profile_content(
     template: str,
-    cfg: Mapping[str, Any],
-    marshall: Callable[[Any], Mapping[str, str]],
+    config: Mapping[str, Any],
+    marshaller: Callable[[Any], Mapping[str, str]],
 ) -> str:
-    template_args = marshall(cfg)
+    template_args = marshaller(config)
     return template.format(**template_args)
 
 
