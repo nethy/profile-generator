@@ -64,7 +64,7 @@ class ObjectSchema(Schema):
 
     def parse(self, data: Any, profile_input: ProfileInput) -> None:
         if self._parser is not None:
-            return self._parser(data, profile_input)
+            self._parser(data, profile_input)
         else:
             for member, member_data in data.items():
                 member_schema = self._object_schema.get(member)

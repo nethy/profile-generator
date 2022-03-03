@@ -13,7 +13,6 @@ from profile_generator.unit import Point
 _CONTRAST_SIGMOID = (
     "profile_generator.feature.tone.contrast.sigmoid.schema.schema.contrast_sigmoid"
 )
-_CONTRAST_SIGMOID_COMPENSATE_SLOPE = f"{_CONTRAST_SIGMOID}.compensate_slope"
 _CONTRAST_SIGMOID_GET_CONTRAST = f"{_CONTRAST_SIGMOID}.get_contrast"
 _CONTRAST_SIGMOID_GET_TONE_CURVE = f"{_CONTRAST_SIGMOID}.get_tone_curve"
 _CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE = f"{_CONTRAST_SIGMOID}.get_chromaticity_curve"
@@ -54,11 +53,9 @@ class SchemaTest(TestCase):
 
     @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
     @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
-    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
     def test_process_default(
-        self, compensate_slope: Mock, get_tone_curve: Mock, get_chromaticity_curve: Mock
+        self, get_tone_curve: Mock, get_chromaticity_curve: Mock
     ) -> None:
-        compensate_slope.return_value = 2
         get_tone_curve.return_value = [Point(0, 0)]
         get_chromaticity_curve.return_value = [Point(1, 1)]
 
@@ -72,19 +69,16 @@ class SchemaTest(TestCase):
                 "CMApplyLookTable": "false",
             },
         )
-        compensate_slope.assert_called_once_with(90.0 / 255, 1.6)
-        get_tone_curve.assert_called_once_with(90.0 / 255, 2)
-        get_chromaticity_curve.assert_called_once_with(2)
+        get_tone_curve.assert_called_once_with(90.0 / 255, 1.6)
+        get_chromaticity_curve.assert_called_once_with(1.6)
 
     @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
     @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
-    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
     def test_process_linear_profile(
-        self, compensate_slope: Mock, get_tone_curve: Mock, get_chromaticity_curve: Mock
+        self, get_tone_curve: Mock, get_chromaticity_curve: Mock
     ) -> None:
         grey18 = 87
         slope = 1.5
-        compensate_slope.return_value = 2
         get_tone_curve.return_value = [Point(0, 0)]
         get_chromaticity_curve.return_value = [Point(1, 1)]
 
@@ -98,19 +92,16 @@ class SchemaTest(TestCase):
                 "CMApplyLookTable": "false",
             },
         )
-        compensate_slope.assert_called_once_with(grey18 / 255, slope)
-        get_tone_curve.assert_called_once_with(grey18 / 255, 2)
-        get_chromaticity_curve.assert_called_once_with(2)
+        get_tone_curve.assert_called_once_with(grey18 / 255, slope)
+        get_chromaticity_curve.assert_called_once_with(slope)
 
     @patch(_CONTRAST_SIGMOID_GET_CHROMATICITY_CURVE)
     @patch(_CONTRAST_SIGMOID_GET_CONTRAST)
-    @patch(_CONTRAST_SIGMOID_COMPENSATE_SLOPE)
     def test_process_nonlinear_profile(
-        self, compensate_slope: Mock, get_contrast: Mock, get_chromaticity_curve: Mock
+        self, get_contrast: Mock, get_chromaticity_curve: Mock
     ) -> None:
         grey18 = 87
         slope = 1.5
-        compensate_slope.return_value = 2
         get_contrast.return_value = [Point(0, 0)]
         get_chromaticity_curve.return_value = [Point(1, 1)]
 
@@ -124,6 +115,5 @@ class SchemaTest(TestCase):
                 "CMApplyLookTable": "true",
             },
         )
-        compensate_slope.assert_called_once_with(grey18 / 255, slope)
-        get_contrast.assert_called_once_with(2)
-        get_chromaticity_curve.assert_called_once_with(2)
+        get_contrast.assert_called_once_with(slope)
+        get_chromaticity_curve.assert_called_once_with(slope)

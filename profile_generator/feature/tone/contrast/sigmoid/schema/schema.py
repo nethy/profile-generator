@@ -26,12 +26,11 @@ def _process(data: Any) -> Mapping[str, str]:
     grey18 = rgb.normalize_value(data.get(*Field.GREY18))
     slope = data.get(*Field.SLOPE)
     linear_profile = data.get(*Field.LINEAR_PROFILE)
-    corrected_slope = contrast_sigmoid.compensate_slope(grey18, slope)
     if linear_profile:
-        luminance_curve = contrast_sigmoid.get_tone_curve(grey18, corrected_slope)
+        luminance_curve = contrast_sigmoid.get_tone_curve(grey18, slope)
     else:
-        luminance_curve = contrast_sigmoid.get_contrast(corrected_slope)
-    chromaticity_curve = contrast_sigmoid.get_chromaticity_curve(corrected_slope)
+        luminance_curve = contrast_sigmoid.get_contrast(slope)
+    chromaticity_curve = contrast_sigmoid.get_chromaticity_curve(slope)
     return {
         Template.CURVE: _get_correction_params(grey18, linear_profile),
         Template.L_CURVE: raw_therapee.present_curve(

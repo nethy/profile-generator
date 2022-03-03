@@ -17,11 +17,6 @@ def get_flat(grey18: float) -> Sequence[Point]:
 
 
 @cache
-def compensate_slope(grey18: float, slope: float) -> float:
-    return tone_curve.compensate_gradient(grey18, slope)
-
-
-@cache
 def get_contrast(slope: float) -> Sequence[Point]:
     if math.isclose(slope, 1):
         return []

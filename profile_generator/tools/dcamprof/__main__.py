@@ -24,8 +24,8 @@ def main() -> None:
     # dcamprof_tone_curve(0.136)  # D40
     # dcamprof_tone_curve(0.096)  # D7000
     # dcamprof_tone_curve(0.050)  # G9
-    # dcamprof_tone_curve(0.082)  # G8x
-    pass
+    dcamprof_tone_curve(0.082)  # G8x
+    # pass
 
 
 if __name__ == "__main__":
