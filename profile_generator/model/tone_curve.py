@@ -36,9 +36,8 @@ def get_linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
     f'(gx) = m
     """
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
-    gradient = midtone.y / midtone.x * (1 - midtone.y) / (1 - midtone.x)
-    shadow, shadow_derivative = _get_shadow_curve(midtone, gradient)
-    highlight, highlight_derivative = _get_highlight_curve(midtone, gradient)
+    shadow, shadow_derivative = _get_shadow_curve(midtone, midtone.gradient)
+    highlight, highlight_derivative = _get_highlight_curve(midtone, midtone.gradient)
     return (
         lambda x: shadow(x) if x < midtone.x else highlight(x),
         lambda x: shadow_derivative(x) if x < midtone.x else highlight_derivative(x),
@@ -62,23 +61,7 @@ def _get_highlight_curve(midtone: Point, gradient: float) -> tuple[Curve, Curve]
     a = 2 * gradient * math.sqrt(midtone.x - b)
     c = 1 - a * math.sqrt(1 - b)
 
-    protection_base = (
-        lambda x: (1 - midtone.y) / (1 - midtone.x) * x
-        + 1
-        - (1 - midtone.y) / (1 - midtone.x)
-    )
-    protection_mask = lambda x: (x - midtone.x) / (1 - midtone.x)
-    curve, derivative = (
-        lambda x: a * math.sqrt(x - b) + c,
-        lambda x: 0.5 * a / math.sqrt(x - b),
-    )
-
-    return (
-        lambda x: (1 - protection_mask(x)) * curve(x)
-        + protection_mask(x) * protection_base(x),
-        lambda x: (1 - protection_mask(x)) * derivative(x)
-        + protection_mask(x) * (1 - midtone.y) / (1 - midtone.x),
-    )
+    return (lambda x: a * math.sqrt(x - b) + c, lambda x: 0.5 * a / math.sqrt(x - b))
 
 
 def _as_srgb(
@@ -95,25 +78,16 @@ def _as_srgb(
 
 
 def get_srgb_contrast(gradient: float) -> Curve:
-    return _get_contrast(gradient, constants.GREY18_SRGB)
+    contrast = _get_linear_contrast(gradient)
+    return lambda x: srgb.gamma(contrast(srgb.inverse_gamma(x)))
 
 
-def get_lab_contrast(gradient: float) -> Curve:
-    return _get_contrast(gradient, constants.GREY18_LAB)
-
-
-# sigmoid(2, E)(0.75) = 0.9
-# _SHADOW_EXPONENT = 2.7635296532940794
-# sigmoid(2, E)(0.75) = 0.875
-# _HIGHLIGHT_EXPONENT = 1.9149842712929843
-
-
-def _get_contrast(gradient: float, middle: float) -> Curve:
+def _get_linear_contrast(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, 2)
-    highlight = sigmoid.algebraic(gradient, 2)
+    shadow = sigmoid.algebraic(gradient, 1.8)
+    highlight = sigmoid.algebraic(gradient, 1.8)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
-    shift_x = gamma.power_at(Point(middle, 0.5))
-    shift_y = gamma.power_at(Point(0.5, middle))
+    shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
+    shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
     return lambda x: shift_y(curve(shift_x(x)))

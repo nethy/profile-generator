@@ -4,7 +4,7 @@ from enum import Enum, unique
 
 @dataclass
 class Camera:
-    resolution: float = 16.0
+    resolution_mp: float = 16.0
 
 
 @dataclass

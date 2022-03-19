@@ -57,6 +57,11 @@ def from_xyz_lum(y_d65: float) -> float:
     return 116 * _lab_f(y_ratio) - 16
 
 
+def to_xyz_lum(lum: float) -> float:
+    y_d50 = D50_XYZ[1] * _lab_f_inverse((lum + 16) / 116)
+    return sum((y_d50 * D50_TO_D65_ADAPTATION[i][1] for i in range(3)))
+
+
 def _lab_f(x: float) -> float:
     if x > LAB_F_SIGMA_3:
         return math.pow(x, 1 / 3)

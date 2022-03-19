@@ -5,43 +5,35 @@ from .color_space import ColorSpace
 
 SRGB_XY = [[0.64, 0.33], [0.3, 0.6], [0.15, 0.06]]
 
-_A = 0.055
-_G = 2.4
-
-_X = _A / (_G - 1)
-_PHI = (math.pow(1 + _A, _G) * math.pow(_G - 1, _G - 1)) / (
-    math.pow(_A, _G - 1) * math.pow(_G, _G)
-)
-
-_X_PHI = _X / _PHI
-
 
 def gamma(x: float) -> float:
-    if x <= _X_PHI:
-        return max(0.0, _PHI * x)
+    if x <= 0.003040:
+        return 12.92310 * x
     else:
-        return min(1.0, (1 + _A) * math.pow(x, 1 / _G) - _A)
+        return 1.055 * math.exp(math.log(x) / 2.4) - 0.055
 
 
 def gamma_derivative(x: float) -> float:
-    if x <= _X_PHI:
-        return _PHI
+    if x <= 0.003040:
+        return 12.92310
     else:
-        return (1 + _A) / _G * math.pow(x, 1 / _G - 1)
+        return 1.055 * math.exp(math.log(x) / 2.4) / x / 2.4
 
 
 def inverse_gamma(x: float) -> float:
-    if x <= _X:
-        return max(0.0, x / _PHI)
+    if x <= 0.039286:
+        return x / 12.92310
     else:
-        return min(1.0, math.pow((x + _A) / (1 + _A), _G))
+        return math.exp(math.log((x + 0.055) / 1.055) * 2.4)
 
 
 def inverse_gamma_derivative(x: float) -> float:
-    if x <= _X:
-        return 1 / _PHI
+    if x <= 0.039286:
+        return 1 / 12.92310
     else:
-        return _G * math.pow((x + _A) / (1 + _A), _G - 1) / (1 + _A)
+        return math.exp(math.log((x + 0.055) / 1.055) * 2.4) * (
+            2.4 / ((x + 0.055) / 1.055) / 1.055
+        )
 
 
 SRGB = ColorSpace(

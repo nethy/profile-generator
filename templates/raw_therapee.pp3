@@ -16,10 +16,10 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=false
-CurveMode=Luminance
+CurveMode=FilmLike
 CurveMode2=Luminance
 Curve={Curve}
-Curve2=0;
+Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true
@@ -104,7 +104,7 @@ Chromaticity={Chromaticity}
 AvoidColorShift=true
 RedAndSkinTonesProtection=50.0
 LCredsk=true
-LCurve={LCurve}
+LCurve=0;
 aCurve={ABCurve}
 bCurve={ABCurve}
 ccCurve=0;
@@ -370,9 +370,9 @@ DeconvIterations=100
 
 [Color Management]
 InputProfile=(cameraICC)
-ToneCurve={CMToneCurve}
-ApplyLookTable={CMApplyLookTable}
-ApplyBaselineExposureOffset=true
+ToneCurve=false
+ApplyLookTable=false
+ApplyBaselineExposureOffset=false
 ApplyHueSatMap=true
 DCPIlluminant=0
 WorkingProfile={CMWorkingProfile}
@@ -556,23 +556,12 @@ LabRegionB_1=0
 LabRegionSaturation_1=0
 LabRegionSlope_1=1
 LabRegionOffset_1=0
-LabRegionPower_1=1.23446525364
+LabRegionPower_1={CTLabRegionPower}
 LabRegionHueMask_1=0;
-LabRegionChromaticityMask_1=0;
-LabRegionLightnessMask_1=1;0;1;0;0;0.1;0;0;0;1;0;0;0;
+LabRegionChromaticityMask_1=1;0.4;0;0;0;1;1;0;0;
+LabRegionLightnessMask_1=0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
-LabRegionA_2=0
-LabRegionB_2=0
-LabRegionSaturation_2=0
-LabRegionSlope_2=1
-LabRegionOffset_2=0
-LabRegionPower_2={CTLabRegionPower}
-LabRegionHueMask_2=0;
-LabRegionChromaticityMask_2=1;0.4;0;0;0;1;1;0;0;
-LabRegionLightnessMask_2=0;
-LabRegionMaskBlur_2=0
-LabRegionChannel_2=-1
 LabRegionsShowMask=-1
 
 [RAW]
