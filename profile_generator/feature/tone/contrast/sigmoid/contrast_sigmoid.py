@@ -27,4 +27,4 @@ def get_contrast(slope: float) -> Sequence[Point]:
 def get_chromaticity_curve(slope: float) -> Sequence[Point]:
     if math.isclose(slope, 1):
         return []
-    return curve.as_points(sigmoid.algebraic(slope, 1.8))
+    return curve.as_points(sigmoid.algebraic(slope, 1))

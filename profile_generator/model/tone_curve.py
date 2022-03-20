@@ -14,7 +14,7 @@ def get_srgb_flat(grey18: float) -> Curve:
 def get_lab_flat(grey18: float) -> Curve:
     linear_grey18 = srgb.inverse_gamma(grey18)
     curve, _ = get_linear_flat(linear_grey18)
-    return lambda x: lab.from_xyz_lum(curve(srgb.inverse_gamma(x))) / 100
+    return lambda x: lab.from_xyz_lum(curve(lab.to_xyz_lum(x * 100))) / 100
 
 
 def get_linear_flat(linear_grey18: float) -> tuple[Curve, Curve]:
@@ -80,6 +80,11 @@ def _as_srgb(
 def get_srgb_contrast(gradient: float) -> Curve:
     contrast = _get_linear_contrast(gradient)
     return lambda x: srgb.gamma(contrast(srgb.inverse_gamma(x)))
+
+
+def get_lab_contrast(gradient: float) -> Curve:
+    contrast = _get_linear_contrast(gradient)
+    return lambda x: lab.from_xyz_lum(contrast(lab.to_xyz_lum(x * 100))) / 100
 
 
 def _get_linear_contrast(gradient: float) -> Curve:

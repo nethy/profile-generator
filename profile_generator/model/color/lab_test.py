@@ -57,5 +57,5 @@ class LabTest(LinalgTestCase):
 
     def test_from_to_xyz_lum(self) -> None:
         self.assertEqual(from_xyz_lum(to_xyz_lum(0)), 0)
-        self.assertAlmostEqual(from_xyz_lum(to_xyz_lum(50)), 49.8650745)
-        self.assertAlmostEqual(from_xyz_lum(to_xyz_lum(100)), 99.7628582)
+        self.assertEqual(from_xyz_lum(to_xyz_lum(50)), 50)
+        self.assertEqual(from_xyz_lum(to_xyz_lum(100)), 100)

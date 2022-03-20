@@ -69,5 +69,4 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.calculate(64.515, 1))
     # pass
 
-    grey = 80.86382712430665 / 255
     print_points(tone_curve.get_lab_contrast(1.85))

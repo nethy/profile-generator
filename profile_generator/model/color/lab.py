@@ -7,11 +7,7 @@ from profile_generator.model.color.xyz import (
 )
 from profile_generator.model.linalg import Vector
 
-from .white_point import D50_XYZ
-
-LAB_F_SIGMA = 6 / 29
-LAB_F_SIGMA_2 = 36 / 841
-LAB_F_SIGMA_3 = 216 / 24389
+from .white_point import D50_XYZ, D65_XYZ
 
 
 def from_xyz(xyz_d65: Vector) -> Vector:
@@ -52,25 +48,27 @@ def from_lch(lch: Vector) -> Vector:
 
 
 def from_xyz_lum(y_d65: float) -> float:
-    y_d50 = sum((y_d65 * D65_TO_D50_ADAPTATION[i][1] for i in range(3)))
-    y_ratio = y_d50 / D50_XYZ[1]
-    return 116 * _lab_f(y_ratio) - 16
+    return 116 * _lab_f(y_d65 / D65_XYZ[1]) - 16
 
 
 def to_xyz_lum(lum: float) -> float:
-    y_d50 = D50_XYZ[1] * _lab_f_inverse((lum + 16) / 116)
-    return sum((y_d50 * D50_TO_D65_ADAPTATION[i][1] for i in range(3)))
+    return D65_XYZ[1] * _lab_f_inverse((lum + 16) / 116)
+
+
+SIGMA = 6.0 / 29.0
+SIGMA_2 = 36.0 / 841.0
+SIGMA_3 = 216.0 / 24389.0
 
 
 def _lab_f(x: float) -> float:
-    if x > LAB_F_SIGMA_3:
+    if x > SIGMA_3:
         return math.pow(x, 1 / 3)
     else:
-        return x / (3 * LAB_F_SIGMA_2) + 4 / 29
+        return x / (3 * SIGMA_2) + 4 / 29
 
 
 def _lab_f_inverse(x: float) -> float:
-    if x > LAB_F_SIGMA:
+    if x > SIGMA:
         return math.pow(x, 3)
     else:
-        return 3 * LAB_F_SIGMA_2 * (x - 4 / 29)
+        return 3 * SIGMA_2 * (x - 4 / 29)
