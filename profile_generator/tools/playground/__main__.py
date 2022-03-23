@@ -69,4 +69,4 @@ if __name__ == "__main__":
     # print_points(contrast_sigmoid.calculate(64.515, 1))
     # pass
 
-    print_points(tone_curve.get_lab_contrast(1.85))
+    print_points(tone_curve._get_linear_contrast(2))
