@@ -53,6 +53,28 @@ def to_hsv(rgb: Vector) -> Vector:
     return [hue, saturation, max_value]
 
 
+def from_hsv(hsv: Vector) -> Vector:
+    h, s, v = hsv
+    chroma = s * v
+    hue_phase = h * 360 / 60
+    secondary = chroma * (1 - abs(hue_phase % 2 - 1))
+    intermediate: Vector = []
+    if 0 <= hue_phase < 1:
+        intermediate = [chroma, secondary, 0]
+    elif 1 <= hue_phase < 2:
+        intermediate = [secondary, chroma, 0]
+    elif 2 <= hue_phase < 3:
+        intermediate = [0, chroma, secondary]
+    elif 3 <= hue_phase < 4:
+        intermediate = [0, secondary, chroma]
+    elif 4 <= hue_phase < 5:
+        intermediate = [secondary, 0, chroma]
+    elif 5 <= hue_phase < 6:
+        intermediate = [chroma, 0, secondary]
+    modifier = v - chroma
+    return [x + modifier for x in intermediate]
+
+
 def luminance(linear_rgb: Vector, color_space: ColorSpace) -> float:
     coeffs = color_space.xyz_matrix[1]
     return linalg.multiply_vector_vector(coeffs, linear_rgb)
