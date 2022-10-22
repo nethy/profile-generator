@@ -70,7 +70,9 @@ def _get_highlight_coefficients(
 def _get_algebraic(linear_grey18: float) -> Curve:
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
     highlight = gamma.partial_algebraic_at(
-        midtone, midtone.gradient, (math.sqrt(5) - 1) / 2
+        midtone,
+        midtone.gradient,
+        0.75,
     )
     return lambda x: midtone.gradient * x if x < midtone.x else highlight(x)
 
@@ -94,8 +96,8 @@ def get_lab_contrast(gradient: float) -> Curve:
 def _get_linear_contrast(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, 2)
-    highlight = sigmoid.algebraic(gradient, 1.25)
+    shadow = sigmoid.algebraic(gradient, 1.8)
+    highlight = sigmoid.algebraic(gradient, 1.4)
     curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
