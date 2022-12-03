@@ -4,38 +4,47 @@ from collections.abc import Sequence
 
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
-from profile_generator.unit import Curve, Point
+from profile_generator.unit import Curve
 
-EPSILON = 1e-4
 BUFFER_SIZE = 8
 BUFFER_STEP = 33
 SAMPLES_COUNT = (BUFFER_SIZE - 1) * BUFFER_STEP
 
+Points = list[tuple[float, float]]
 
-def fit(fn: Curve) -> Sequence[Point]:
-    references = _generate_references(fn)
-    knots = [Point(0.0, fn(0.0)), Point(1.0, fn(1.0))]
+
+def fit(
+    fn: Curve, start: float = 0.0, end: float = 1.0, epsilon: float = 1e-4
+) -> Points:
+    if start > end:
+        raise ValueError(f"Start {start} must be smaller than end {end}")
+    if math.isclose(start, end):
+        return [(start, fn(start))]
+
+    references = _generate_references(fn, start, end)
+    knots = [(start, fn(start)), (end, fn(end))]
     max_diff, _ = _find_max_diff(references, knots)
-    if max_diff < EPSILON:
+    if max_diff < epsilon:
         return knots
     _buffer(references, knots)
-    _approximate(references, knots)
+    _approximate(references, knots, epsilon)
     return knots
 
 
-def _generate_references(fn: Curve) -> list[Point]:
+def _generate_references(fn: Curve, start: float, end: float) -> Points:
+    length = end - start
     return [
-        Point(i / SAMPLES_COUNT, fn(i / SAMPLES_COUNT))
+        (start + length * i / SAMPLES_COUNT, fn(start + length * i / SAMPLES_COUNT))
         for i in range(1, SAMPLES_COUNT - 1)
     ]
 
 
-def _find_max_diff(references: list[Point], knots: list[Point]) -> tuple[float, int]:
+def _find_max_diff(references: Points, knots: Points) -> tuple[float, int]:
     spline = interpolate(knots)
-    return max((abs(p.y - spline(p.x)), i) for i, p in enumerate(references))
+    return max((abs(p[1] - spline(p[0])), i) for i, p in enumerate(references))
 
 
-def _buffer(references: list[Point], knots: list[Point]) -> None:
+def _buffer(references: Points, knots: Points) -> None:
     for i in range(
         BUFFER_STEP - 1, SAMPLES_COUNT - 2 - BUFFER_SIZE + 1, BUFFER_STEP - 1
     ):
@@ -44,25 +53,25 @@ def _buffer(references: list[Point], knots: list[Point]) -> None:
 
 def _transfer_knot(
     i: int,
-    references: list[Point],
-    knots: list[Point],
+    references: Points,
+    knots: Points,
 ) -> None:
     bisect.insort(knots, references.pop(i))
 
 
-def _approximate(references: list[Point], knots: list[Point]) -> None:
+def _approximate(references: Points, knots: Points, epsilon: float) -> None:
     for _ in range(BUFFER_SIZE + 1, 32 + 1):
         max_diff, i = _find_max_diff(references, knots)
-        if max_diff < EPSILON:
+        if max_diff < epsilon:
             break
         _transfer_knot(i, references, knots)
 
 
-def interpolate(points: Sequence[Point]) -> Curve:
+def interpolate(points: Points) -> Curve:
     if len(points) == 0:
         return lambda _: 0.0
     elif len(points) == 1:
-        return lambda _: points[0].y
+        return lambda _: points[0][1]
     xs, ys = [x for x, _ in points], [y for _, y in points]
     system = _equations(xs, ys)
     coefficients = linalg.solve(system)

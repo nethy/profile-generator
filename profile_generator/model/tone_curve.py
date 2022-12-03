@@ -1,7 +1,7 @@
 import math
 from collections.abc import Callable
 
-from profile_generator.model import gamma, sigmoid
+from profile_generator.model import bezier, gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
 from profile_generator.unit import Curve, Point
@@ -18,7 +18,7 @@ def get_lab_flat(grey18: float) -> Curve:
 
 
 def get_linear_flat(linear_grey18: float) -> Curve:
-    return _get_algebraic(linear_grey18)
+    return _get_algebraic_flat(linear_grey18)
 
 
 def _get_shadow_curve(midtone: Point, gradient: float) -> tuple[Curve, Curve]:
@@ -67,14 +67,10 @@ def _get_highlight_coefficients(
     return (a, b, c)
 
 
-def _get_algebraic(linear_grey18: float) -> Curve:
+def _get_algebraic_flat(linear_grey18: float) -> Curve:
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
-    highlight = gamma.partial_algebraic_at(
-        midtone,
-        midtone.gradient,
-        0.75,
-    )
-    return lambda x: midtone.gradient * x if x < midtone.x else highlight(x)
+    exponent = math.sqrt(1 / midtone.gradient)
+    return gamma.algebraic_at(midtone, exponent)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
@@ -93,12 +89,32 @@ def get_lab_contrast(gradient: float) -> Curve:
     return lambda x: lab.from_xyz_lum(contrast(lab.to_xyz_lum(x * 100))) / 100
 
 
+_MASK = bezier.curve(
+    [
+        (p, 1)
+        for p in (
+            Point(0.5, 0),
+            Point(0.5 + (1 - 0.5) * 0.25, 0),
+            Point(0.5 + (1 - 0.5) * 0.75, 1),
+            Point(1, 1),
+        )
+    ]
+)
+
+
 def _get_linear_contrast(gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
-    shadow = sigmoid.algebraic(gradient, 1.8)
-    highlight = sigmoid.algebraic(gradient, 1.4)
-    curve = lambda x: shadow(x) if x < 0.5 else highlight(x)
+    shadow = sigmoid.exponential(gradient)
+    highlight = sigmoid.exponential(1 + (gradient - 1) / 2)
+
+    def _curve(x: float) -> float:
+        if x < 0.5:
+            return shadow(x)
+        else:
+            ratio = _MASK(x)
+            return (1 - ratio) * shadow(x) + ratio * highlight(x)
+
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
-    return lambda x: shift_y(curve(shift_x(x)))
+    return lambda x: shift_y(_curve(shift_x(x)))

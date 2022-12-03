@@ -19,10 +19,14 @@ def curve(control_points: WeightedPoints) -> Curve:
 
 def get_point_at(control_points: WeightedPoints, t: float) -> Point:
     n = len(control_points) - 1
-    b = lambda i, t: math.comb(n, i) * math.pow(t, i) * math.pow((1 - t), n - i)
+
+    def _get_coeffient(i: int, t: float) -> float:
+        return math.comb(n, i) * math.pow(t, i) * math.pow((1 - t), n - i)
+
     weight = 0.0
     result = Point(0, 0)
     for i, (p, w) in enumerate(control_points):
-        weight += b(i, t) * w
-        result += b(i, t) * p * w
+        b = _get_coeffient(i, t)
+        weight += b * w
+        result += b * p * w
     return result / weight

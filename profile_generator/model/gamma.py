@@ -38,11 +38,12 @@ def algebraic(coefficient: float, exponent: float) -> Curve:
     y  = ((x^k+(ax)^k)/(1+(ax)^k))^(1/k)
     y' = ((x^k+(ax)^k)/(1+(ax)^k))^(1/k)/(x(ax)^k+x)
     """
-    return lambda x: math.pow(
-        (math.pow(x, exponent) + math.pow(coefficient * x, exponent))
-        / (1 + math.pow(coefficient * x, exponent)),
-        1 / exponent,
-    )
+
+    def _curve(x: float) -> float:
+        acc = math.pow(coefficient * x, exponent)
+        return math.pow((math.pow(x, exponent) + acc) / (1 + acc), 1 / exponent)
+
+    return _curve
 
 
 def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -> Curve:

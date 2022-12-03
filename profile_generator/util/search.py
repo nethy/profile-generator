@@ -25,11 +25,11 @@ def jump_search(
             left, mid, value, fn, target
         )
 
-    return _binary_search(left, left_value, right, right_value, fn, target)
+    return _alternating_search(left, left_value, right, right_value, fn, target)
 
 
 _JUMPS = 5
-_JUMP_PART = 2 ** _JUMPS
+_JUMP_PART = 2**_JUMPS
 
 
 def _jump_forward_until(
@@ -75,7 +75,7 @@ def _jump_backward_until(
 _ITERATION_LIMIT = 100
 
 
-def _binary_search(
+def _alternating_search(
     lower_bound: float,
     lower_bound_value: float,
     upper_bound: float,
