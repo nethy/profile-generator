@@ -23,7 +23,7 @@ class Grading:
 
 
 @dataclass
-class HueInput:
+class HueParams:
     red: float = 0.0
     yellow: float = 0.0
     green: float = 0.0
@@ -34,9 +34,9 @@ class HueInput:
 
 @dataclass
 class HSL:
-    hue: HueInput = HueInput()
-    saturation: HueInput = HueInput()
-    luminance: HueInput = HueInput()
+    hue: HueParams = HueParams()
+    saturation: HueParams = HueParams()
+    luminance: HueParams = HueParams()
 
 
 @unique
@@ -116,9 +116,10 @@ class Contrast:
 
 
 @dataclass
-class ProfileInput:
+class ProfileParams:
     camera: Camera = Camera()
     color: Color = Color()
     noise_reduction: NoiseReduction = NoiseReduction()
+    sharpening: Sharpening = Sharpening()
     demosaic: Demosaic = Demosaic()
     contrast: Contrast = Contrast()

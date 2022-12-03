@@ -2,13 +2,13 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from profile_generator.profile_input import ProfileInput
+from profile_generator.profile_params import ProfileParams
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
 
 Processor = Callable[[Any], Mapping[str, str]]
-Parser = Callable[[Any, ProfileInput], None]
+Parser = Callable[[Any, ProfileParams], None]
 
 
 class ObjectSchema(Schema):
@@ -62,7 +62,7 @@ class ObjectSchema(Schema):
                 result.update(partial_result)
             return result
 
-    def parse(self, data: Any, profile_input: ProfileInput) -> None:
+    def parse(self, data: Any, profile_input: ProfileParams) -> None:
         if self._parser is not None:
             self._parser(data, profile_input)
         else:

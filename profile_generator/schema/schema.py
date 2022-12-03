@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from collections.abc import Mapping
 from typing import Any, NamedTuple, Optional
 
-from profile_generator.profile_input import ProfileInput
+from profile_generator.profile_params import ProfileParams
 
 
 class SchemaError(Exception, metaclass=ABCMeta):
@@ -20,7 +20,7 @@ class Schema(metaclass=ABCMeta):
         return {}
 
     def parse(  # pylint: disable=no-self-use
-        self, data: Any, profile_input: ProfileInput  # pylint: disable=unused-argument
+        self, data: Any, profile_input: ProfileParams  # pylint: disable=unused-argument
     ) -> None:
         pass
 
