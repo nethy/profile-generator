@@ -62,15 +62,14 @@ class ObjectSchema(Schema):
                 result.update(partial_result)
             return result
 
-    def parse(self, data: Any, profile_input: ProfileParams) -> None:
+    def parse(self, data: Any, profile_params: ProfileParams) -> None:
         if self._parser is not None:
-            self._parser(data, profile_input)
+            self._parser(data, profile_params)
         else:
             for member, member_data in data.items():
                 member_schema = self._object_schema.get(member)
-                if member_schema is None:
-                    continue
-                member_schema.parse(member_data, profile_input)
+                if member_schema is not None:
+                    member_schema.parse(member_data, profile_params)
 
 
 class AnySchema(Schema):

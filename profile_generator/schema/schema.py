@@ -20,7 +20,9 @@ class Schema(metaclass=ABCMeta):
         return {}
 
     def parse(  # pylint: disable=no-self-use
-        self, data: Any, profile_input: ProfileParams  # pylint: disable=unused-argument
+        self,
+        data: Any,  # pylint: disable=unused-argument
+        profile_params: ProfileParams,  # pylint: disable=unused-argument
     ) -> None:
         pass
 

@@ -1,14 +1,22 @@
+from abc import ABC
 from dataclasses import dataclass
 from enum import Enum, unique
+from typing import Any
+
+
+class NoneSafe(ABC):
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        if __value is not None:
+            super().__setattr__(__name, __value)
 
 
 @dataclass
-class Camera:
+class Camera(NoneSafe):
     resolution_mp: float = 16.0
 
 
 @dataclass
-class HCL:
+class Hcl(NoneSafe):
     hue: float = 0.0
     chromacity: float = 0.0
     luminance: float = 0.0
@@ -16,14 +24,14 @@ class HCL:
 
 @dataclass
 class Grading:
-    base: HCL = HCL()
-    shadow: HCL = HCL()
-    midtone: HCL = HCL()
-    highlight: HCL = HCL()
+    base: Hcl = Hcl()
+    shadow: Hcl = Hcl()
+    midtone: Hcl = Hcl()
+    highlight: Hcl = Hcl()
 
 
 @dataclass
-class HueParams:
+class HueParams(NoneSafe):
     red: float = 0.0
     yellow: float = 0.0
     green: float = 0.0
@@ -33,7 +41,7 @@ class HueParams:
 
 
 @dataclass
-class HSL:
+class Hsl:
     hue: HueParams = HueParams()
     saturation: HueParams = HueParams()
     luminance: HueParams = HueParams()
@@ -49,11 +57,11 @@ class ColorProfile(Enum):
 
 
 @dataclass
-class Color:
+class Color(NoneSafe):
     vibrance: float = 0.0
     chrome: float = 0.0
     grading: Grading = Grading()
-    hsl: HSL = HSL()
+    hsl: Hsl = Hsl()
     profile: ColorProfile = ColorProfile.PRO_PHOTO
 
 
@@ -64,20 +72,20 @@ class NoiseReductionMode(Enum):
 
 
 @dataclass
-class NoiseReduction:
+class NoiseReduction(NoneSafe):
     mode: NoiseReductionMode = NoiseReductionMode.CONSERVATIVE
     luminance: float = 0.0
     chrominance: float = 0.0
 
 
 @dataclass
-class CaptureSharpening:
+class CaptureSharpening(NoneSafe):
     radius: float = 0.0
     threshold: int = 10
 
 
 @dataclass
-class OutputSharpening:
+class OutputSharpening(NoneSafe):
     radius: float = 0.75
     threshold: int = 20
     amount: int = 100
@@ -101,14 +109,14 @@ class DemosaicMethod(Enum):
 
 
 @dataclass
-class Demosaic:
+class Demosaic(NoneSafe):
     method: DemosaicMethod = DemosaicMethod.AMAZE
     auto_threshold: bool = True
     threshold: int = 20
 
 
 @dataclass
-class Contrast:
+class Contrast(NoneSafe):
     grey18: float = 90.0
     strength: float = 1.6
     linear_profile: bool = True

@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from profile_generator.profile_params import HueParams, ProfileParams
 from profile_generator.schema import (
     InvalidObjectError,
     InvalidRangeError,
@@ -7,7 +8,7 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
-from .schema import _STEPS, SCHEMA, process
+from .schema import _STEPS, SCHEMA, _parse, process
 
 DEFAULT = {
     "HhCurve": "0;",
@@ -154,3 +155,41 @@ class SchemaTest(TestCase):
                 + "0.8333333;0.4650000;0.0000000;0.0000000;",
             },
         )
+
+    def test_parse(self) -> None:
+        profile_params = ProfileParams()
+
+        _parse(
+            {
+                "hue": {
+                    "red": 1,
+                    "yellow": 2,
+                    "green": 3,
+                    "cyan": 4,
+                    "blue": 5,
+                    "magenta": 6,
+                },
+                "saturation": {
+                    "red": 1,
+                    "yellow": 2,
+                    "green": 3,
+                    "cyan": 4,
+                    "blue": 5,
+                    "magenta": 6,
+                },
+                "luminance": {
+                    "red": 1,
+                    "yellow": 2,
+                    "green": 3,
+                    "cyan": 4,
+                    "blue": 5,
+                    "magenta": 6,
+                },
+            },
+            profile_params,
+        )
+
+        expected_hue_params = HueParams(1, 2, 3, 4, 5, 6)
+        self.assertEqual(profile_params.color.hsl.hue, expected_hue_params)
+        self.assertEqual(profile_params.color.hsl.saturation, expected_hue_params)
+        self.assertEqual(profile_params.color.hsl.luminance, expected_hue_params)

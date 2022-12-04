@@ -1,8 +1,10 @@
 from collections.abc import Mapping
 from typing import Any, Final
 
+from profile_generator import Hcl, ProfileParams
 from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of, tuple_of
+from profile_generator.unit import Vector
 
 from . import grading
 
@@ -59,3 +61,14 @@ def process(data: Any) -> Mapping[str, str]:
             Template.G_CURVE: raw_therapee.CurveType.LINEAR,
             Template.B_CURVE: raw_therapee.CurveType.LINEAR,
         }
+
+
+def _parse(data: Any, profile_params: ProfileParams) -> None:
+    _hcl_parse(profile_params.color.grading.base, data.get(Field.GLOBAL))
+    _hcl_parse(profile_params.color.grading.shadow, data.get(Field.SHADOW))
+    _hcl_parse(profile_params.color.grading.midtone, data.get(Field.MIDTONE))
+    _hcl_parse(profile_params.color.grading.highlight, data.get(Field.HIGHLIGHT))
+
+
+def _hcl_parse(hcl: Hcl, data: Vector) -> None:
+    hcl.hue, hcl.chromacity, hcl.luminance = data
