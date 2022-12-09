@@ -69,7 +69,7 @@ def _get_highlight_coefficients(
 
 def _get_algebraic_flat(linear_grey18: float) -> Curve:
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
-    exponent = math.sqrt(1 / midtone.gradient)
+    exponent = 1 / math.pow(midtone.gradient, 1 / math.e)
     return gamma.algebraic_at(midtone, exponent)
 
 
