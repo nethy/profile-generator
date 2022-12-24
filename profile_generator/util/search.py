@@ -65,7 +65,7 @@ def jump_search(
             left, mid, value, fn, target
         )
 
-    return float(_alternating_search(left, left_value, right, right_value, fn, target))
+    return _alternating_search(left, left_value, right, right_value, fn, target)
 
 
 def _get_table_keys(
@@ -108,7 +108,7 @@ def _jump_backward_until(
     left: float,
     right: float,
     origo_value: float,
-    fn: Callable[[float], float],
+    fn: Function,
     target: float,
 ) -> tuple[float, float, float, float]:
     jump = (right - left) / _JUMP_PART
@@ -157,7 +157,7 @@ def _alternating_search(
         is_binary = not is_binary
         value = fn(guess)
 
-        if value == target:
+        if math.isclose(value, target):
             break
 
         if value < target:

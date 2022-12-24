@@ -37,7 +37,7 @@ def brightness_curve(b: float) -> Curve:
 
 def brightness_gradient(b: float) -> Curve:
     if math.isclose(b, 0):
-        return lambda x: 1
+        return lambda _: 1
     else:
         return lambda x: b * math.exp(b - b * x) / (math.exp(b) - 1)
 
@@ -71,7 +71,7 @@ def contrast_gradient(c: float) -> float:
         return 1 / gradient
 
 
-_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 20, 32, contrast_gradient)
+_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 20, 16, contrast_gradient)
 
 
 @cache

@@ -80,7 +80,7 @@ def bench(*fns):
         if len(name) > width:
             width = len(name)
     print("  Report")
-    for name, time in sorted(report.items(), key=lambda x: x[1], reverse=True):
+    for name, time in sorted(report.items(), key=lambda x: x[1]):
         print("{}{: 6.0f}ms".format(name.ljust(width), time * 1000))
 
 

@@ -49,35 +49,40 @@ class Value(Generic[B], ProfileParamParser):
 
 
 class Camera:
-    RESOLUTION_MP: Final = Value[float](16)
+    def __init__(self) -> None:
+        self.resolution_mp: Final = Value[float](16)
 
 
 class Hcl:
-    HUE: Final = Value[float](0)
-    CHROMACITY: Final = Value[float](0)
-    LUMINANCE: Final = Value[float](0)
+    def __init__(self) -> None:
+        self.hue: Final = Value[float](0)
+        self.chromacity: Final = Value[float](0)
+        self.luminance: Final = Value[float](0)
 
 
 class Grading:
-    BASE: Final = Hcl()
-    SHADOW: Final = Hcl()
-    MIDTONE: Final = Hcl()
-    HIGHLIGHT: Final = Hcl()
+    def __init__(self) -> None:
+        self.base: Final = Hcl()
+        self.shadow: Final = Hcl()
+        self.midtone: Final = Hcl()
+        self.highlight: Final = Hcl()
 
 
 class HueParams:
-    RED: Final = Value[float](0)
-    YELLOW: Final = Value[float](0)
-    GREEN: Final = Value[float](0)
-    CYAN: Final = Value[float](0)
-    BLUE: Final = Value[float](0)
-    MAGENTA: Final = Value[float](0)
+    def __init__(self) -> None:
+        self.red: Final = Value[float](0)
+        self.yellow: Final = Value[float](0)
+        self.green: Final = Value[float](0)
+        self.cyan: Final = Value[float](0)
+        self.blue: Final = Value[float](0)
+        self.magenta: Final = Value[float](0)
 
 
 class Hsl:
-    HUE: Final = HueParams()
-    SATURATION: Final = HueParams()
-    LUMINANCE: Final = HueParams()
+    def __init__(self) -> None:
+        self.hue: Final = HueParams()
+        self.saturation: Final = HueParams()
+        self.luminance: Final = HueParams()
 
 
 @unique
@@ -90,17 +95,19 @@ class ColorSpace(ProfileParamEnum):
 
 
 class WhiteBalance:
-    TEMPERATURE: Final = Value[int](6504)
-    TINT: Final = Value[float](1)
+    def __init__(self) -> None:
+        self.temperature: Final = Value[int](6504)
+        self.tint: Final = Value[float](1)
 
 
 class Color:
-    VIBRANCE: Final = Value[float](0)
-    CHROME: Final = Value[float](0)
-    grading: Grading = Grading()
-    HSL: Final = Hsl()
-    PROFILE: Final = Value[ColorSpace](ColorSpace.PRO_PHOTO)
-    WHITE_BALANCE: Final = WhiteBalance()
+    def __init__(self) -> None:
+        self.vibrance: Final = Value[float](0)
+        self.chrome: Final = Value[float](0)
+        self.grading: Grading = Grading()
+        self.hsl: Final = Hsl()
+        self.profile: Final = Value[ColorSpace](ColorSpace.PRO_PHOTO)
+        self.white_balance: Final = WhiteBalance()
 
 
 @unique
@@ -110,27 +117,31 @@ class NoiseReductionMode(ProfileParamEnum):
 
 
 class NoiseReduction:
-    MODE: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
-    LUMINANCE: Final = Value[float](0)
-    CHROMINANCE: Final = Value[float](0)
+    def __init__(self) -> None:
+        self.mode: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
+        self.luminance: Final = Value[float](0)
+        self.chrominance: Final = Value[float](0)
 
 
 class CaptureSharpening:
-    RADIUS: Final = Value[float](0)
-    THRESHOLD: Final = Value[int](10)
+    def __init__(self) -> None:
+        self.radius: Final = Value[float](0)
+        self.threshold: Final = Value[int](10)
 
 
 class OutputSharpening:
-    RADIUS: Final = Value[float](0.75)
-    THRESHOLD: Final = Value[int](20)
-    AMOUNT: Final = Value[int](100)
-    DAMPING: Final = Value[int](0)
-    ITERATIONS: Final = Value[int](30)
+    def __init__(self) -> None:
+        self.radius: Final = Value[float](0.75)
+        self.threshold: Final = Value[int](20)
+        self.amount: Final = Value[int](100)
+        self.damping: Final = Value[int](0)
+        self.iterations: Final = Value[int](30)
 
 
 class Sharpening:
-    CAPTURE: Final = CaptureSharpening()
-    OUTPUT: Final = OutputSharpening()
+    def __init__(self) -> None:
+        self.capture: Final = CaptureSharpening()
+        self.output: Final = OutputSharpening()
 
 
 @unique
@@ -143,22 +154,25 @@ class DemosaicMethod(ProfileParamEnum):
 
 
 class Demosaic:
-    METHOD: Final = Value[DemosaicMethod](DemosaicMethod.AMAZE)
-    AUTO_THRESHOLD: Final = Value[bool](True)
-    THRESHOLD: Final = Value[int](20)
+    def __init__(self) -> None:
+        self.method: Final = Value[DemosaicMethod](DemosaicMethod.AMAZE)
+        self.auto_threshold: Final = Value[bool](True)
+        self.threshold: Final = Value[int](20)
 
 
 class Contrast:
-    GREY18: Final = Value[float](90.0)
-    STRENGTH: Final = Value[float](1.6)
-    LINEAR_PROFILE: Final = Value[bool](True)
-    LOCAL: Final = Value[float](0.0)
+    def __init__(self) -> None:
+        self.grey18: Final = Value[float](90.0)
+        self.strength: Final = Value[float](1.6)
+        self.linear_profile: Final = Value[bool](True)
+        self.local: Final = Value[float](0.0)
 
 
 class ProfileParams:
-    CAMERA: Final = Camera()
-    COLOR: Final = Color()
-    NOISE_REDUCTION: Final = NoiseReduction()
-    SHARPENING: Final = Sharpening()
-    DEMOSAIC: Final = Demosaic()
-    CONTRAST: Final = Contrast()
+    def __init__(self) -> None:
+        self.camera: Final = Camera()
+        self.color: Final = Color()
+        self.noise_reduction: Final = NoiseReduction()
+        self.sharpening: Final = Sharpening()
+        self.demosaic: Final = Demosaic()
+        self.contrast: Final = Contrast()

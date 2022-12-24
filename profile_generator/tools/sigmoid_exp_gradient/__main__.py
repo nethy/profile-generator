@@ -17,4 +17,4 @@ def _get_fit():
 
 
 if __name__ == "__main__":
-    pprint(search.get_table(0, 20, 32, sigmoid.contrast_gradient))
+    pprint(search.get_table(0, 20, 16, sigmoid.contrast_gradient))
