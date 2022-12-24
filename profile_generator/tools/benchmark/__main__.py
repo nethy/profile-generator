@@ -2,24 +2,66 @@
 # pylint: skip-file
 
 
+from functools import partial
 from timeit import Timer
 
-from profile_generator.model import sigmoid, spline
-from profile_generator.unit import Point
+from profile_generator.model import bezier
+from profile_generator.unit import Point, curve
 
 
 def run_benchmark():
     bench(
-        bench_tone_curve_exp_fitting_1200,
+        bench_bezier_curve_2,
+        bench_bezier_curve_4,
+        bench_bezier_curve_8,
+        bench_bezier_curve_16,
+        bench_bezier_curve_32,
+        bench_bezier_curve_64,
+        bench_bezier_curve_128,
+        bench_bezier_curve_256,
     )
 
 
-def bench_tone_curve_exp_fitting_1200():
-    for x in test_range(48, 104, 15):
-        for y in test_range(100, 140, 4):
-            middle = Point(x / 255, y / 255)
-            for c in test_range(1, 3, 5):
-                spline.fit(sigmoid.tone_curve_exp(middle, c))
+def bench_bezier_curve_2():
+    bench_bezier_curve(2)
+
+
+def bench_bezier_curve_4():
+    bench_bezier_curve(4)
+
+
+def bench_bezier_curve_8():
+    bench_bezier_curve(8)
+
+
+def bench_bezier_curve_16():
+    bench_bezier_curve(16)
+
+
+def bench_bezier_curve_32():
+    bench_bezier_curve(32)
+
+
+def bench_bezier_curve_64():
+    bench_bezier_curve(64)
+
+
+def bench_bezier_curve_128():
+    bench_bezier_curve(128)
+
+
+def bench_bezier_curve_256():
+    bench_bezier_curve(256)
+
+
+def bench_bezier_curve(table_size):
+    points = [
+        (Point(0, 0), 1),
+        (Point(0.15, 0), 1),
+        (Point(0.25, 1), 1),
+        (Point(1, 1), 1),
+    ]
+    curve.as_points(bezier.curve(points, table_size))
 
 
 def test_over(start, stop, step, fn):

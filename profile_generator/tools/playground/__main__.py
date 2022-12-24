@@ -152,4 +152,9 @@ if __name__ == "__main__":
     #     midtone_pass(contrast_curve),
     # )
 
-    pass
+    fn = spline.interpolate([(0, 0), (0.1, 0.09), (0.32, 0.43), (0.66, 0.87), (1, 1)])
+    linear_fn = lambda x: fn(SRGB.inverse_gamma(x))
+
+    target = SRGB.inverse_gamma(0.9)
+    print(target)
+    print(search.jump_search(0, 1, linear_fn, target))

@@ -1,7 +1,47 @@
+import bisect
 import math
 from collections.abc import Callable
+from typing import Iterator, Mapping
 
 Function = Callable[[float], float]
+
+
+def get_table(
+    lower_bound: float,
+    upper_bound: float,
+    table_size: int,
+    fn: Function,
+) -> Mapping[float, float]:
+    if table_size < 2:
+        raise ValueError(f"Table size cannot be less than 2: {table_size}")
+    if lower_bound > upper_bound:
+        raise ValueError(
+            f"Lower bound {lower_bound} must not be greater "
+            + "than upper bound: {upper_bound}"
+        )
+
+    return {
+        key: fn(key) for key in _get_table_keys(lower_bound, upper_bound, table_size)
+    }
+
+
+def table_search(
+    table: Mapping[float, float],
+    fn: Function,
+    target: float,
+) -> float:
+    keys, values = list(table.keys()), list(table.values())
+    i = bisect.bisect_left(values, target)
+    if math.isclose(values[i], target):
+        return values[i]
+    return _alternating_search(
+        keys[i - 1],
+        values[i - 1],
+        keys[i],
+        values[i],
+        fn,
+        target,
+    )
 
 
 def jump_search(
@@ -25,11 +65,23 @@ def jump_search(
             left, mid, value, fn, target
         )
 
-    return _alternating_search(left, left_value, right, right_value, fn, target)
+    return float(_alternating_search(left, left_value, right, right_value, fn, target))
+
+
+def _get_table_keys(
+    lower_bound: float, upper_bound: float, table_size: int
+) -> Iterator[float]:
+    yield lower_bound
+    for i in range(1, table_size - 1):
+        yield (
+            (1 - i / (table_size - 1)) * lower_bound
+            + i / (table_size - 1) * upper_bound
+        )
+    yield upper_bound
 
 
 _JUMPS = 5
-_JUMP_PART = 2**_JUMPS
+_JUMP_PART = 2 ** _JUMPS
 
 
 def _jump_forward_until(
@@ -89,6 +141,11 @@ def _alternating_search(
         upper_bound,
         upper_bound_value,
     )
+    if target < lower_bound_value:
+        return lower_bound
+    if target > upper_bound_value:
+        return upper_bound
+
     is_binary = True
     for _ in range(_ITERATION_LIMIT):
         if is_binary:
@@ -100,7 +157,7 @@ def _alternating_search(
         is_binary = not is_binary
         value = fn(guess)
 
-        if math.isclose(value, target):
+        if value == target:
             break
 
         if value < target:

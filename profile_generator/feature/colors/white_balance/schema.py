@@ -1,5 +1,5 @@
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Final
 
 from profile_generator.model.view import raw_therapee
 from profile_generator.schema import object_of, range_of
@@ -16,6 +16,12 @@ DEFAULT = {
 
 _DEFAULT_WB_TEMP = 6504
 _DEFAULT_WB_TINT = 1
+
+
+class Field:
+    TEMPERATURE: Final = "temperature"
+    TINT: Final = "tint"
+
 
 SCHEMA = object_of({"temperature": range_of(1500, 60000), "tint": range_of(0.02, 10.0)})
 

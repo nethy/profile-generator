@@ -26,7 +26,7 @@ class SigmoidTest(TestCase):
         _curve = exponential(2)
 
         self.assertAlmostEqual(_curve(0), 0)
-        self.assertAlmostEqual(_curve(0.2), 0.0731484)
+        self.assertAlmostEqual(_curve(0.2), 0.0731485)
         self.assertAlmostEqual(_curve(0.5), 0.5)
-        self.assertAlmostEqual(_curve(0.8), 0.9268516)
+        self.assertAlmostEqual(_curve(0.8), 0.9268515)
         self.assertAlmostEqual(_curve(1), 1)

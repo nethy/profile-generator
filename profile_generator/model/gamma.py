@@ -23,7 +23,7 @@ def power_exponent(point: Point) -> float:
     return math.log(point.y) / math.log(point.x)
 
 
-def algebraic_at(point: Point, exponent: float) -> Curve:
+def algebraic_at(point: Point, exponent: float = 1.0) -> Curve:
     if point.gradient < 1:
         return inverse_algebraic_at(point, exponent)
     g = math.pow(

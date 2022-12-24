@@ -2,7 +2,6 @@ import math
 from collections.abc import Mapping
 from typing import Any, Final
 
-from profile_generator.profile_params import ProfileParams
 from profile_generator.schema import object_of, range_of
 
 _DEFAULT_RESOLUTION_MP = 16
@@ -27,8 +26,4 @@ def _process(data: Any) -> Mapping[str, str]:
     }
 
 
-def _parse(data: Any, profile_input: ProfileParams) -> None:
-    profile_input.camera.resolution_mp = data.get(Field.RESOLUTION)
-
-
-SCHEMA = object_of({Field.RESOLUTION: range_of(1.0, 1000.0)}, _process, _parse)
+SCHEMA = object_of({Field.RESOLUTION: range_of(1.0, 1000.0)}, _process)

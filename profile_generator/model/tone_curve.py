@@ -1,10 +1,12 @@
 import math
 from collections.abc import Callable
+from functools import cache
 
 from profile_generator.model import bezier, gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
 from profile_generator.unit import Curve, Point
+from profile_generator.util import search
 
 
 def get_srgb_flat(grey18: float) -> Curve:
@@ -67,10 +69,20 @@ def _get_highlight_coefficients(
     return (a, b, c)
 
 
+@cache
 def _get_algebraic_flat(linear_grey18: float) -> Curve:
     midtone = Point(linear_grey18, constants.GREY18_LINEAR)
-    exponent = 1 / math.pow(midtone.gradient, 1 / math.e)
-    return gamma.algebraic_at(midtone, exponent)
+    shadow = gamma.algebraic_at(midtone)
+    highlight = gamma.algebraic_at(midtone, 0.25)
+    mask = bezier.curve(
+        [
+            (Point(0, 0), 1),
+            (Point(midtone.x * 0.5, 0), 1),
+            (Point(midtone.x * 1.5, 1), 1),
+            (Point(1, 1), 1),
+        ]
+    )
+    return lambda x: (1 - mask(x)) * shadow(x) + mask(x) * highlight(x)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
@@ -79,13 +91,13 @@ def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
     return lambda x: srgb.gamma(curve(srgb.inverse_gamma(x)))
 
 
-def get_srgb_contrast(gradient: float) -> Curve:
-    contrast = _get_linear_contrast(gradient)
+def get_srgb_contrast(grey18: float, gradient: float) -> Curve:
+    contrast = _get_linear_contrast(srgb.inverse_gamma(grey18), gradient)
     return lambda x: srgb.gamma(contrast(srgb.inverse_gamma(x)))
 
 
-def get_lab_contrast(gradient: float) -> Curve:
-    contrast = _get_linear_contrast(gradient)
+def get_lab_contrast(linear_grey18: float, gradient: float) -> Curve:
+    contrast = _get_linear_contrast(linear_grey18, gradient)
     return lambda x: lab.from_xyz_lum(contrast(lab.to_xyz_lum(x * 100))) / 100
 
 
@@ -102,11 +114,16 @@ _MASK = bezier.curve(
 )
 
 
-def _get_linear_contrast(gradient: float) -> Curve:
+def _get_linear_contrast(linear_grey18: float, gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
+    compression = _get_highlight_compression(linear_grey18)
+    return _get_linear_compressed_contrast(gradient, compression)
+
+
+def _get_linear_compressed_contrast(gradient: float, compression: float) -> Curve:
     shadow = sigmoid.exponential(gradient)
-    highlight = sigmoid.exponential(1 + (gradient - 1) / 2)
+    highlight = sigmoid.exponential((gradient - 1) / compression + 1)
 
     def _curve(x: float) -> float:
         if x < 0.5:
@@ -118,3 +135,34 @@ def _get_linear_contrast(gradient: float) -> Curve:
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
     return lambda x: shift_y(_curve(shift_x(x)))
+
+
+_REFERENCE_GRADIENT = 1.5
+_REFERENCE_X = srgb.inverse_gamma(0.95)
+
+_MAX_COMPRESSION = 8
+
+
+def _get_value_by_gradient(compression: float) -> float:
+    contrast = _get_linear_compressed_contrast(_REFERENCE_GRADIENT, 1 / compression)
+    return contrast(_REFERENCE_X)
+
+
+_HL_COMP_TABLE = search.get_table(1 / _MAX_COMPRESSION, 1, 32, _get_value_by_gradient)
+
+
+@cache
+def _get_highlight_compression(linear_grey18: float) -> float:
+    flat = get_linear_flat(linear_grey18)
+    reference_contrast = _get_linear_compressed_contrast(_REFERENCE_GRADIENT, 1)
+    target = reference_contrast(_REFERENCE_X) - 0.5 * (
+        flat(_REFERENCE_X) - _REFERENCE_X
+    )
+
+    target_gradient = search.table_search(
+        _HL_COMP_TABLE,
+        _get_value_by_gradient,
+        target,
+    )
+
+    return 1 / target_gradient

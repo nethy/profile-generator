@@ -19,8 +19,10 @@ class SplineTest(TestCase):
 
     def test_interpolate_should_interpolate_linear(self) -> None:
         spline = interpolate([(0, 0), (1, 1)])
+        self.assertAlmostEqual(0, spline(0))
         self.assertAlmostEqual(0.2, spline(0.2))
         self.assertAlmostEqual(0.7, spline(0.7))
+        self.assertAlmostEqual(1, spline(1))
 
     def test_interpolate_should_interpolate_non_linear(self) -> None:
         spline = interpolate(

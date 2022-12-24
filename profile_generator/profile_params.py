@@ -1,54 +1,87 @@
 from abc import ABC
-from dataclasses import dataclass
 from enum import Enum, unique
-from typing import Any
+from typing import Any, Final, Generic, TypeVar, cast
 
 
-class NoneSafe(ABC):
-    def __setattr__(self, __name: str, __value: Any) -> None:
-        if __value is not None:
-            super().__setattr__(__name, __value)
+class ProfileParamParser(ABC):
+    def parse(self, data: Any) -> None:
+        if data is None:
+            return
+
+        for name, value in self.__dict__.items():
+            parser = cast(ProfileParamParser, value)
+            parser.parse(data.get(name))
 
 
-@dataclass
-class Camera(NoneSafe):
-    resolution_mp: float = 16.0
+A = TypeVar("A", bound=Enum)
 
 
-@dataclass
-class Hcl(NoneSafe):
-    hue: float = 0.0
-    chromacity: float = 0.0
-    luminance: float = 0.0
+class ProfileParamEnum(Enum):
+    @classmethod
+    def parse(cls: type[A], data: Any) -> A | None:
+        if data is None:
+            return None
+        for member in cls:
+            if member.value.casefold() == data.casefold():
+                return member
+        return None
 
 
-@dataclass
+B = TypeVar("B", str, int, float, bool, ProfileParamEnum)
+
+
+class Value(Generic[B], ProfileParamParser):
+    def __init__(self, value: B):
+        self._value: B = value
+
+    @property
+    def value(self) -> B:
+        return self._value
+
+    def parse(self, data: Any) -> None:
+        if isinstance(self._value, ProfileParamEnum):
+            data = cast(ProfileParamEnum, self._value).parse(data)
+
+        if data is None:
+            return
+
+        self._value = data
+
+
+class Camera:
+    RESOLUTION_MP: Final = Value[float](16)
+
+
+class Hcl:
+    HUE: Final = Value[float](0)
+    CHROMACITY: Final = Value[float](0)
+    LUMINANCE: Final = Value[float](0)
+
+
 class Grading:
-    base: Hcl = Hcl()
-    shadow: Hcl = Hcl()
-    midtone: Hcl = Hcl()
-    highlight: Hcl = Hcl()
+    BASE: Final = Hcl()
+    SHADOW: Final = Hcl()
+    MIDTONE: Final = Hcl()
+    HIGHLIGHT: Final = Hcl()
 
 
-@dataclass
-class HueParams(NoneSafe):
-    red: float = 0.0
-    yellow: float = 0.0
-    green: float = 0.0
-    cyan: float = 0.0
-    blue: float = 0.0
-    magenta: float = 0.0
+class HueParams:
+    RED: Final = Value[float](0)
+    YELLOW: Final = Value[float](0)
+    GREEN: Final = Value[float](0)
+    CYAN: Final = Value[float](0)
+    BLUE: Final = Value[float](0)
+    MAGENTA: Final = Value[float](0)
 
 
-@dataclass
 class Hsl:
-    hue: HueParams = HueParams()
-    saturation: HueParams = HueParams()
-    luminance: HueParams = HueParams()
+    HUE: Final = HueParams()
+    SATURATION: Final = HueParams()
+    LUMINANCE: Final = HueParams()
 
 
 @unique
-class ColorProfile(Enum):
+class ColorSpace(ProfileParamEnum):
     ACES_P0 = "ACESp0"
     ACES_P1 = "ACESp1"
     PRO_PHOTO = "ProPhoto"
@@ -56,51 +89,52 @@ class ColorProfile(Enum):
     SRGB = "sRGB"
 
 
-@dataclass
-class Color(NoneSafe):
-    vibrance: float = 0.0
-    chrome: float = 0.0
+class WhiteBalance:
+    TEMPERATURE: Final = Value[int](6504)
+    TINT: Final = Value[float](1)
+
+
+class Color:
+    VIBRANCE: Final = Value[float](0)
+    CHROME: Final = Value[float](0)
     grading: Grading = Grading()
-    hsl: Hsl = Hsl()
-    profile: ColorProfile = ColorProfile.PRO_PHOTO
+    HSL: Final = Hsl()
+    PROFILE: Final = Value[ColorSpace](ColorSpace.PRO_PHOTO)
+    WHITE_BALANCE: Final = WhiteBalance()
 
 
 @unique
-class NoiseReductionMode(Enum):
+class NoiseReductionMode(ProfileParamEnum):
     AGGRESSIVE = "shalbi"
     CONSERVATIVE = "shal"
 
 
-@dataclass
-class NoiseReduction(NoneSafe):
-    mode: NoiseReductionMode = NoiseReductionMode.CONSERVATIVE
-    luminance: float = 0.0
-    chrominance: float = 0.0
+class NoiseReduction:
+    MODE: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
+    LUMINANCE: Final = Value[float](0)
+    CHROMINANCE: Final = Value[float](0)
 
 
-@dataclass
-class CaptureSharpening(NoneSafe):
-    radius: float = 0.0
-    threshold: int = 10
+class CaptureSharpening:
+    RADIUS: Final = Value[float](0)
+    THRESHOLD: Final = Value[int](10)
 
 
-@dataclass
-class OutputSharpening(NoneSafe):
-    radius: float = 0.75
-    threshold: int = 20
-    amount: int = 100
-    damping: int = 0
-    iterations: int = 30
+class OutputSharpening:
+    RADIUS: Final = Value[float](0.75)
+    THRESHOLD: Final = Value[int](20)
+    AMOUNT: Final = Value[int](100)
+    DAMPING: Final = Value[int](0)
+    ITERATIONS: Final = Value[int](30)
 
 
-@dataclass
 class Sharpening:
-    capture: CaptureSharpening = CaptureSharpening()
-    output: OutputSharpening = OutputSharpening()
+    CAPTURE: Final = CaptureSharpening()
+    OUTPUT: Final = OutputSharpening()
 
 
 @unique
-class DemosaicMethod(Enum):
+class DemosaicMethod(ProfileParamEnum):
     AMAZE = "amaze"
     AMAZE_VNG4 = "amazevng4"
     DCB_VNG4 = "dcbvng4"
@@ -108,26 +142,23 @@ class DemosaicMethod(Enum):
     LMMSE = "lmmse"
 
 
-@dataclass
-class Demosaic(NoneSafe):
-    method: DemosaicMethod = DemosaicMethod.AMAZE
-    auto_threshold: bool = True
-    threshold: int = 20
+class Demosaic:
+    METHOD: Final = Value[DemosaicMethod](DemosaicMethod.AMAZE)
+    AUTO_THRESHOLD: Final = Value[bool](True)
+    THRESHOLD: Final = Value[int](20)
 
 
-@dataclass
-class Contrast(NoneSafe):
-    grey18: float = 90.0
-    strength: float = 1.6
-    linear_profile: bool = True
-    local: float = 0.0
+class Contrast:
+    GREY18: Final = Value[float](90.0)
+    STRENGTH: Final = Value[float](1.6)
+    LINEAR_PROFILE: Final = Value[bool](True)
+    LOCAL: Final = Value[float](0.0)
 
 
-@dataclass
 class ProfileParams:
-    camera: Camera = Camera()
-    color: Color = Color()
-    noise_reduction: NoiseReduction = NoiseReduction()
-    sharpening: Sharpening = Sharpening()
-    demosaic: Demosaic = Demosaic()
-    contrast: Contrast = Contrast()
+    CAMERA: Final = Camera()
+    COLOR: Final = Color()
+    NOISE_REDUCTION: Final = NoiseReduction()
+    SHARPENING: Final = Sharpening()
+    DEMOSAIC: Final = Demosaic()
+    CONTRAST: Final = Contrast()

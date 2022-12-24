@@ -1,7 +1,6 @@
 from collections.abc import Mapping, Sequence
 from typing import Any, Final
 
-from profile_generator import HueParams, ProfileParams
 from profile_generator.feature.colors.white_balance.schema import DEFAULT
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import EqPoint, LinearEqPoint
@@ -106,18 +105,3 @@ def _get_equalizer(
 def _get_value(config: Mapping[str, int], color: str, max_adjustment: float) -> float:
     adjustment = config.get(color, 0)
     return _BASE_VALUE + adjustment / _STEPS * max_adjustment
-
-
-def _parse(data: Any, profile_params: ProfileParams) -> None:
-    _parse_hue_params(profile_params.color.hsl.hue, data.get(Field.HUE))
-    _parse_hue_params(profile_params.color.hsl.saturation, data.get(Field.SATURATION))
-    _parse_hue_params(profile_params.color.hsl.luminance, data.get(Field.LUMINANCE))
-
-
-def _parse_hue_params(hue_params: HueParams, data: Any) -> None:
-    hue_params.red = data.get(Field.RED)
-    hue_params.yellow = data.get(Field.YELLOW)
-    hue_params.green = data.get(Field.GREEN)
-    hue_params.cyan = data.get(Field.CYAN)
-    hue_params.blue = data.get(Field.BLUE)
-    hue_params.magenta = data.get(Field.MAGENTA)

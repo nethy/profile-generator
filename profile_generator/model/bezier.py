@@ -1,6 +1,5 @@
 import math
 from collections.abc import Sequence
-from functools import cache
 
 from profile_generator.unit import Curve, Point
 from profile_generator.util import search
@@ -8,10 +7,14 @@ from profile_generator.util import search
 WeightedPoints = Sequence[tuple[Point, float]]
 
 
-def curve(control_points: WeightedPoints) -> Curve:
-    @cache
+def curve(control_points: WeightedPoints, table_size: int = 32) -> Curve:
+    def x_at(t: float) -> float:
+        return get_point_at(control_points, t).x
+
+    table = search.get_table(0, 1, table_size, x_at)
+
     def _curve(x: float) -> float:
-        t = search.jump_search(0.0, 1.0, lambda t: get_point_at(control_points, t).x, x)
+        t = search.table_search(table, x_at, x)
         return get_point_at(control_points, t).y
 
     return _curve

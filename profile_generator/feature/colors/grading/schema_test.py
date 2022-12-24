@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from profile_generator import Hcl, ProfileParams
 from profile_generator.schema import (
     InvalidListError,
     InvalidListSizeError,
@@ -10,7 +9,7 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
-from .schema import SCHEMA, _parse, process
+from .schema import SCHEMA, process
 
 DEFAULT = {
     "RGBCurvesEnabled": "false",
@@ -23,7 +22,6 @@ DEFAULT = {
 class SchemaTest(TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
-        self.profile_params = ProfileParams()
 
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
@@ -108,19 +106,3 @@ class SchemaTest(TestCase):
                 + "1.0000000;1.0000000;",
             },
         )
-
-    def test_parse(self) -> None:
-        _parse(
-            {
-                "global": [0, 1, 2],
-                "shadow": [30, 5, -5],
-                "midtone": [120, 2, 0],
-                "highlight": [320, 8, 5],
-            },
-            self.profile_params,
-        )
-
-        self.assertEqual(self.profile_params.color.grading.base, Hcl(0, 1, 2))
-        self.assertEqual(self.profile_params.color.grading.shadow, Hcl(30, 5, -5))
-        self.assertEqual(self.profile_params.color.grading.midtone, Hcl(120, 2, 0))
-        self.assertEqual(self.profile_params.color.grading.highlight, Hcl(320, 8, 5))

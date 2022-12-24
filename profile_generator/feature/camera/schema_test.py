@@ -1,6 +1,5 @@
 from unittest import TestCase
 
-from profile_generator import ProfileParams
 from profile_generator.schema import (
     InvalidObjectError,
     InvalidRangeError,
@@ -13,7 +12,6 @@ from .schema import SCHEMA
 class SchemaTest(TestCase):
     def setUp(self) -> None:
         self.validator = SchemaValidator(self, SCHEMA)
-        self.profile_params = ProfileParams()
 
     def test_validate_empty_config(self) -> None:
         self.validator.assert_valid({})
@@ -34,8 +32,3 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {"resolution_mp": 36}, {"SHRadius": "90", "LCRadius": "90"}
         )
-
-    def test_parse(self) -> None:
-        SCHEMA.parse({"resolution_mp": 36}, self.profile_params)
-
-        self.assertEqual(self.profile_params.camera.resolution_mp, 36)

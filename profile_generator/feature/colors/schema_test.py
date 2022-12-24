@@ -8,8 +8,8 @@ from profile_generator.schema import (
 
 from .grading import schema_test as grading_test
 from .hsl import schema_test as hsl_test
-from .profile import schema_test as profile_test
 from .schema import SCHEMA
+from .space import schema_test as profile_test
 from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
