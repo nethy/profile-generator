@@ -2,7 +2,7 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from profile_generator.profile_params import ProfileParams
+from profile_generator.main import ProfileParams
 
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError

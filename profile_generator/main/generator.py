@@ -7,6 +7,7 @@ from json import JSONDecodeError
 from typing import Any
 
 from profile_generator.configuration.preprocessor import dot_notation, variable
+from profile_generator.main import ProfileGenerator, ProfileParams
 from profile_generator.schema import Schema
 from profile_generator.util import file
 
@@ -88,8 +89,12 @@ def create_profile_content(
     template: str,
     config: Mapping[str, Any],
     marshaller: Callable[[Any], Mapping[str, str]],
+    profile_generator: ProfileGenerator,
 ) -> str:
     template_args = marshaller(config)
+    profile_params = ProfileParams()
+    profile_params.parse(config)
+    template_args |= profile_generator(profile_params)
     return template.format(**template_args)
 
 

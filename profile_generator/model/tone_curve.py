@@ -155,7 +155,7 @@ _HL_COMP_TABLE = search.get_table(1 / _MAX_COMPRESSION, 1, 32, _get_value_by_gra
 def _get_highlight_compression(linear_grey18: float) -> float:
     flat = get_linear_flat(linear_grey18)
     reference_contrast = _get_linear_compressed_contrast(_REFERENCE_GRADIENT, 1)
-    target = reference_contrast(_REFERENCE_X) - 0.5 * (
+    target = reference_contrast(_REFERENCE_X) - 1 / 3 * (
         flat(_REFERENCE_X) - _REFERENCE_X
     )
 

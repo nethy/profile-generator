@@ -1,6 +1,8 @@
+import math
 from collections.abc import Mapping
 from typing import Any, Final
 
+from profile_generator.main import ProfileParams
 from profile_generator.schema import composite_process, object_of, range_of
 
 from .grading import schema as grading
@@ -15,6 +17,8 @@ class Field:
 
 class Template:
     CHROMATICITY: Final = "Chromaticity"
+    COLOR_TONING_ENABLED: Final = "CTEnabled"
+    COLOR_TONING_SATURATION: Final = "CTSaturation"
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -45,3 +49,16 @@ SCHEMA = object_of(
         },
     ),
 )
+
+
+def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+    vibrance = profile_params.colors.vibrance.value
+    gradient = profile_params.tone.curve.sigmoid.slope.value
+    strength = math.sqrt((1 - vibrance / 10) + vibrance / 10 * (2 * gradient - 1))
+    chromaticity = round((strength - 1) * 100)
+    saturation = round((strength - 1) * 50)
+    return {
+        Template.CHROMATICITY: str(chromaticity),
+        Template.COLOR_TONING_ENABLED: str(saturation != 0).lower(),
+        Template.COLOR_TONING_SATURATION: str(saturation),
+    }
