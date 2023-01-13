@@ -2,7 +2,7 @@ from enum import unique
 from typing import Final
 from unittest import TestCase
 
-from profile_generator.profile_params import ProfileParamEnum, ProfileParamParser, Value
+from profile_generator.main import ProfileParamEnum, ProfileParamParser, Value
 
 
 @unique
