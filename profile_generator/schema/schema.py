@@ -12,7 +12,7 @@ class Schema(metaclass=ABCMeta):
     def validate(self, data: Any) -> Optional[SchemaError]:
         pass
 
-    def process(  # pylint: disable=no-self-use
+    def process(
         self, data: Any  # pylint: disable=unused-argument
     ) -> Mapping[str, str]:
         return {}

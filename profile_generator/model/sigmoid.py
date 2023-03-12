@@ -47,8 +47,7 @@ def brightness_at(x: float, y: float) -> Curve:
     validation.is_positive(x)
     validation.is_positive(y)
     validation.is_greater_or_equal(y, x)
-    test_curve = lambda b: brightness_curve(b)(x)
-    coeff = search.jump_search(0, 100, test_curve, y)
+    coeff = search.jump_search(0, 100, lambda b: brightness_curve(b)(x), y)
     return brightness_curve(coeff)
 
 

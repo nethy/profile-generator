@@ -126,13 +126,11 @@ class ProfileGeneratorTest(TestCase):
         )
 
     def test_create_profile_content_should_create_profile_content(self) -> None:
-        template = "{a}"
-        cfg = {"a": "1"}
-        marshall = lambda x: x
+        content = generator.create_profile_content(
+            "{a}, {b}", {"a": "1"}, lambda x: x, lambda _: {"b": "2"}
+        )
 
-        content = generator.create_profile_content(template, cfg, marshall)
-
-        self.assertEqual(content, "1")
+        self.assertEqual(content, "1, 2")
 
     @classmethod
     @patch("profile_generator.util.file.write_file")

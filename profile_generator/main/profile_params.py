@@ -27,7 +27,7 @@ class ProfileParamEnum(Enum):
         return None
 
 
-B = TypeVar("B", str, int, float, bool, ProfileParamEnum)
+B = TypeVar("B", str, int, float, bool, tuple, ProfileParamEnum)
 
 
 class Value(Generic[B], ProfileParamParser):
@@ -38,7 +38,7 @@ class Value(Generic[B], ProfileParamParser):
     def value(self) -> B:
         return self._value
 
-    def parse(self, data: Any):
+    def parse(self, data: Any) -> None:
         if isinstance(self._value, ProfileParamEnum):
             data = cast(ProfileParamEnum, self._value).parse(data)
 
@@ -49,19 +49,19 @@ class Value(Generic[B], ProfileParamParser):
 
 
 class Camera(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.resolution_mp: Final = Value[float](16)
 
 
 class Hcl(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.hue: Final = Value[float](0)
         self.chromacity: Final = Value[float](0)
         self.luminance: Final = Value[float](0)
 
 
 class Grading(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.base: Final = Hcl()
         self.shadow: Final = Hcl()
         self.midtone: Final = Hcl()
@@ -69,7 +69,7 @@ class Grading(ProfileParamParser):
 
 
 class HueParams(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.red: Final = Value[float](0)
         self.yellow: Final = Value[float](0)
         self.green: Final = Value[float](0)
@@ -79,7 +79,7 @@ class HueParams(ProfileParamParser):
 
 
 class Hsl(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.hue: Final = HueParams()
         self.saturation: Final = HueParams()
         self.luminance: Final = HueParams()
@@ -95,7 +95,7 @@ class ColorSpace(ProfileParamEnum):
 
 
 class WhiteBalance(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.temperature: Final = Value[int](6504)
         self.tint: Final = Value[float](1)
 
@@ -106,7 +106,7 @@ class ColorProfile(ProfileParamParser):
 
 
 class Colors(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.vibrance: Final = Value[float](0)
         self.chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
@@ -122,20 +122,20 @@ class NoiseReductionMode(ProfileParamEnum):
 
 
 class NoiseReduction(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.mode: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
         self.luminance: Final = Value[float](0)
         self.chrominance: Final = Value[float](0)
 
 
 class CaptureSharpening(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.radius: Final = Value[float](0)
         self.threshold: Final = Value[int](10)
 
 
 class OutputSharpening(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.radius: Final = Value[float](0.75)
         self.threshold: Final = Value[int](20)
         self.amount: Final = Value[int](100)
@@ -144,7 +144,7 @@ class OutputSharpening(ProfileParamParser):
 
 
 class Sharpening(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.capture: Final = CaptureSharpening()
         self.output: Final = OutputSharpening()
 
@@ -159,47 +159,47 @@ class DemosaicMethod(ProfileParamEnum):
 
 
 class Demosaic(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.algorithm: Final = Value[DemosaicMethod](DemosaicMethod.AMAZE)
         self.auto_threshold: Final = Value[bool](True)
         self.threshold: Final = Value[int](20)
 
 
 class Contrast(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.local: Final = Value[float](0.0)
 
 
 class Raw(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.demosaic: Final = Demosaic()
         self.black_points: Final = Value[tuple[int, int, int]]((0, 0, 0))
 
 
 class Sigmoid(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.grey18: Final = Value[float](90.0)
         self.slope: Final = Value[float](1.6)
 
 
 class Curve(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.sigmoid: Final = Sigmoid()
 
 
 class Tone(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.curve: Final = Curve()
         self.contrast: Final = Contrast()
 
 
 class Details(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.sharpening: Final = Sharpening()
 
 
 class ProfileParams(ProfileParamParser):
-    def __init__(self):
+    def __init__(self) -> None:
         self.camera: Final = Camera()
         self.raw: Final = Raw()
         self.tone: Final = Tone()

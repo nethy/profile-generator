@@ -55,9 +55,7 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     vibrance = profile_params.colors.vibrance.value
     gradient = profile_params.tone.curve.sigmoid.slope.value
     chromaticity, saturation = 0, 0
-    strength = math.sqrt(
-        (1 - vibrance / 10) + vibrance / 10 * math.pow(gradient, 2 / 3) * 1.5
-    )
+    strength = math.sqrt((1 - vibrance / 10) + vibrance / 10 * math.sqrt(gradient))
     chromaticity = round((strength - 1) * 100)
     saturation = round((strength - 1) * 50)
     return {

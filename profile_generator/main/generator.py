@@ -94,7 +94,7 @@ def create_profile_content(
     template_args = marshaller(config)
     profile_params = ProfileParams()
     profile_params.parse(config)
-    template_args |= profile_generator(profile_params)
+    template_args = {**template_args, **profile_generator(profile_params)}
     return template.format(**template_args)
 
 

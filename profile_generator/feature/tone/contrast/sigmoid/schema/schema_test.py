@@ -39,7 +39,7 @@ class SchemaTest(TestCase):
     def test_validate_invalid_slope(self) -> None:
         self.validator.assert_error(
             {"slope": False},
-            InvalidObjectError({"slope": InvalidRangeError(1.0, 5.0)}),
+            InvalidObjectError({"slope": InvalidRangeError(1.0, 4.0)}),
         )
 
     @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
@@ -50,14 +50,6 @@ class SchemaTest(TestCase):
             {},
             {
                 "Curve": "1;0.0000000;0.0000000;",
-                "ACurve": "3;0.0000000;0.0000000;"
-                + "0.0554301;0.0000000;"
-                + "0.9445699;1.0000000;"
-                + "1.0000000;1.0000000;",
-                "BCurve": "3;0.0000000;0.0000000;"
-                + "0.0554301;0.0000000;"
-                + "0.9445699;1.0000000;"
-                + "1.0000000;1.0000000;",
             },
         )
         get_tone_curve.assert_called_once_with(90.0 / 255, 1.6)

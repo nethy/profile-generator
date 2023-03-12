@@ -1,9 +1,11 @@
 import re
 import unittest
 
+from profile_generator.main import ProfileParams
 from profile_generator.schema.schema_validator import SchemaValidator
 from profile_generator.util import file
 
+from ..profile_generator import GENERATOR
 from .schema import CONFIGURATION_SCHEMA, SCHEMA
 
 
@@ -95,6 +97,9 @@ class SchemaTest(unittest.TestCase):
             template = reader.read()
         placeholders = re.findall(r"\{(\w+)\}", template)
 
-        result = CONFIGURATION_SCHEMA.process({})
+        result = {
+            **CONFIGURATION_SCHEMA.process({}),
+            **GENERATOR(ProfileParams()),
+        }
 
         self.assertEqual(set(placeholders), set(result.keys()))

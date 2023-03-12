@@ -1,4 +1,5 @@
 from profile_generator.model.linalg_test import LinalgTestCase
+from profile_generator.unit import Vector
 
 from . import xyz
 from .lab import from_lch, from_xyz, from_xyz_lum, to_lch, to_xyz, to_xyz_lum
@@ -7,7 +8,9 @@ from .space import SRGB
 
 class LabTest(LinalgTestCase):
     def test_from_xyz(self) -> None:
-        srgb_to_lab = lambda color: from_xyz(xyz.from_rgb(color, SRGB))
+        def srgb_to_lab(color: Vector) -> Vector:
+            return from_xyz(xyz.from_rgb(color, SRGB))
+
         self.assert_vector_equal([0.0, 0.0, 0.0], srgb_to_lab([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
             [100.0000014, -7.8e-06, 6.8e-06], srgb_to_lab([1.0, 1.0, 1.0])
@@ -18,7 +21,9 @@ class LabTest(LinalgTestCase):
         )
 
     def test_to_xyz(self) -> None:
-        lab_to_srgb = lambda color: xyz.to_rgb(to_xyz(color), SRGB)
+        def lab_to_srgb(color: Vector) -> Vector:
+            return xyz.to_rgb(to_xyz(color), SRGB)
+
         self.assert_vector_equal([0.0, 0.0, 0.0], lab_to_srgb([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
             [1.7344583, 0.5737799, 0.2085584], lab_to_srgb([100.0, 100.0, 100.0])
