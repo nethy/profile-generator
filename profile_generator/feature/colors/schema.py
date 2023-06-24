@@ -21,6 +21,9 @@ class Template:
     COLOR_TONING_SATURATION: Final = "CTSaturation"
 
 
+_MAX_VIBRANCE: Final = 10
+
+
 def _process(data: Any) -> Mapping[str, str]:
     vibrance = _get_vibrance(data)
     return {} | vibrance
@@ -33,7 +36,7 @@ def _get_vibrance(data: Any) -> Mapping[str, str]:
 
 SCHEMA = object_of(
     {
-        Field.VIBRANCE: range_of(0, 10),
+        Field.VIBRANCE: range_of(0, _MAX_VIBRANCE),
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,
         "profile": space.SCHEMA,
@@ -50,14 +53,16 @@ SCHEMA = object_of(
     ),
 )
 
+_MAX_STRENGTH: Final = 1.0
+
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance = profile_params.colors.vibrance.value
+    vibrance = profile_params.colors.vibrance.value / _MAX_VIBRANCE
     gradient = profile_params.tone.curve.sigmoid.slope.value
-    chromaticity, saturation = 0, 0
-    strength = math.sqrt((1 - vibrance / 10) + vibrance / 10 * math.sqrt(gradient))
-    chromaticity = round((strength - 1) * 100)
-    saturation = round((strength - 1) * 50)
+    strength = math.sqrt((1 - vibrance) * math.sqrt(gradient) + vibrance * gradient) - 1
+    strength = min(strength, _MAX_STRENGTH)
+    chromaticity = round(strength * 100)
+    saturation = round(strength / 2 * 100)
     return {
         Template.CHROMATICITY: str(chromaticity),
         Template.COLOR_TONING_ENABLED: str(saturation != 0).lower(),

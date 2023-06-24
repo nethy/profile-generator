@@ -81,7 +81,7 @@ def _get_table_keys(
 
 
 _JUMPS = 5
-_JUMP_PART = 2 ** _JUMPS
+_JUMP_PART = 2**_JUMPS
 
 
 def _jump_forward_until(
