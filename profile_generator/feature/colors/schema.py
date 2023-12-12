@@ -1,4 +1,3 @@
-import math
 from collections.abc import Mapping
 from typing import Any, Final
 
@@ -54,15 +53,16 @@ SCHEMA = object_of(
 )
 
 _MAX_STRENGTH: Final = 1.0
+_MAX_GRADIENT: Final = 4.0
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     vibrance = profile_params.colors.vibrance.value / _MAX_VIBRANCE
     gradient = profile_params.tone.curve.sigmoid.slope.value
-    strength = math.sqrt((1 - vibrance) * math.sqrt(gradient) + vibrance * gradient) - 1
+    strength = vibrance * gradient / _MAX_GRADIENT
     strength = min(strength, _MAX_STRENGTH)
-    chromaticity = round(strength * 100)
-    saturation = round(strength / 2 * 100)
+    chromaticity = 0
+    saturation = round(strength * 100)
     return {
         Template.CHROMATICITY: str(chromaticity),
         Template.COLOR_TONING_ENABLED: str(saturation != 0).lower(),

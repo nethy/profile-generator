@@ -15,16 +15,21 @@ class Field:
 
 class Template:
     CURVE: Final = "Curve"
+    CURVE2: Final = "Curve2"
 
 
 def _process(data: Any) -> Mapping[str, str]:
     grey18 = rgb.normalize_value(data.get(*Field.GREY18))
     slope = data.get(*Field.SLOPE)
-    curve = contrast_sigmoid.get_tone_curve(grey18, slope)
+    flat = contrast_sigmoid.get_flat(grey18)
+    contrast = contrast_sigmoid.get_contrast(grey18, slope)
     return {
         Template.CURVE: raw_therapee.present_curve(
-            raw_therapee.CurveType.STANDARD, curve
-        )
+            raw_therapee.CurveType.STANDARD, flat
+        ),
+        Template.CURVE2: raw_therapee.present_curve(
+            raw_therapee.CurveType.STANDARD, contrast
+        ),
     }
 
 

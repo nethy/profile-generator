@@ -17,9 +17,9 @@ HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
 CurveMode=Perceptual
-CurveMode2=FilmLike
+CurveMode2=Perceptual
 Curve={Curve}
-Curve2=0;
+Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true
@@ -557,9 +557,9 @@ LabRegionSaturation_1={CTSaturation}
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
-LabRegionHueMask_1=1;0.069444444;1;0;0;0.236111111;0.5;0;0;0.305555555;0.5;0;0;0.472222222;1;0;0;
-LabRegionChromaticityMask_1=1;0.2;1;0;0;1;0;0;0;
-LabRegionLightnessMask_1=1;0;0;0;0;0.1;1;0;0;0.8;1;0;0;1;0;0;0;
+LabRegionHueMask_1=1;0.069444444;1;0;0;0.236111111;0.75;0;0;0.305555555;0.75;0;0;0.472222222;1;0;0;
+LabRegionChromaticityMask_1=1;0;1;0;0;0.5;0.5;0;0;1;0.25;0;0;
+LabRegionLightnessMask_1=1;0;0.5;0;0;0.25;1;0;0;0.5;1;0.5;0;0.9;0.5;0;0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
 LabRegionsShowMask=-1
