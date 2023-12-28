@@ -16,7 +16,7 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
         self.assertAlmostEqual(curve(_GREY_18), constants.GREY18_SRGB)
-        self.assertAlmostEqual(curve(0.2), 0.2917833)
+        self.assertAlmostEqual(curve(0.2), 0.2845130)
         self.assertAlmostEqual(curve(0.8), 0.8634577)
 
     def test_srgb_contrast(self) -> None:

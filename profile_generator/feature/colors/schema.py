@@ -58,11 +58,8 @@ _MAX_GRADIENT: Final = 4.0
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     vibrance = profile_params.colors.vibrance.value / _MAX_VIBRANCE
-    gradient = profile_params.tone.curve.sigmoid.slope.value
-    strength = vibrance * gradient / _MAX_GRADIENT
-    strength = min(strength, _MAX_STRENGTH)
     chromaticity = 0
-    saturation = round(strength * 100)
+    saturation = round(vibrance * 30)
     return {
         Template.CHROMATICITY: str(chromaticity),
         Template.COLOR_TONING_ENABLED: str(saturation != 0).lower(),

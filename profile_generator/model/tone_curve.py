@@ -5,7 +5,7 @@ from functools import cache
 from profile_generator.model import bezier, gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
-from profile_generator.unit import Curve, Point
+from profile_generator.unit import Curve, Line, Point
 from profile_generator.util import search
 
 
@@ -82,7 +82,13 @@ def _get_algebraic_flat(linear_grey18: float) -> Curve:
             (Point(1, 1), 1),
         ]
     )
-    return lambda x: (1 - mask(x)) * shadow(x) + mask(x) * highlight(x)
+    combined = lambda x: (1 - mask(x)) * shadow(x) + mask(x) * highlight(x)
+    base_shadow = Line.from_points(Point(0, 0), midtone)
+    base_mask = Line.from_points(Point(0, 0), Point(linear_grey18, 1))
+    return lambda x: (
+        (1 - base_mask.get_y(x)) * base_shadow.get_y(x)
+        + base_mask.get_y(x) * combined(x)
+    ) if x < linear_grey18 else combined(x)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
@@ -92,12 +98,12 @@ def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
 
 
 def get_srgb_contrast(grey18: float, gradient: float) -> Curve:
-    contrast = _get_linear_contrast(srgb.inverse_gamma(grey18), gradient)
+    contrast = get_linear_contrast(srgb.inverse_gamma(grey18), gradient)
     return lambda x: srgb.gamma(contrast(srgb.inverse_gamma(x)))
 
 
 def get_lab_contrast(linear_grey18: float, gradient: float) -> Curve:
-    contrast = _get_linear_contrast(linear_grey18, gradient)
+    contrast = get_linear_contrast(linear_grey18, gradient)
     return lambda x: lab.from_xyz_lum(contrast(lab.to_xyz_lum(x * 100))) / 100
 
 
@@ -114,7 +120,7 @@ _MASK = bezier.curve(
 )
 
 
-def _get_linear_contrast(linear_grey18: float, gradient: float) -> Curve:
+def get_linear_contrast(linear_grey18: float, gradient: float) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
     compression = _get_highlight_compression(linear_grey18)

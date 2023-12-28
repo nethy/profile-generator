@@ -16,10 +16,10 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=Perceptual
+CurveMode=FilmLike
 CurveMode2=Perceptual
 Curve={Curve}
-Curve2={Curve2}
+Curve2=0;
 
 [HLRecovery]
 Enabled=true
@@ -370,8 +370,8 @@ DeconvIterations=100
 
 [Color Management]
 InputProfile=(cameraICC)
-ToneCurve=false
-ApplyLookTable=false
+ToneCurve=true
+ApplyLookTable=true
 ApplyBaselineExposureOffset=false
 ApplyHueSatMap=true
 DCPIlluminant=0
@@ -557,9 +557,9 @@ LabRegionSaturation_1={CTSaturation}
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
-LabRegionHueMask_1=1;0.069444444;1;0;0;0.236111111;0.75;0;0;0.305555555;0.75;0;0;0.472222222;1;0;0;
-LabRegionChromaticityMask_1=1;0;1;0;0;0.5;0.5;0;0;1;0.25;0;0;
-LabRegionLightnessMask_1=1;0;0.5;0;0;0.25;1;0;0;0.5;1;0.5;0;0.9;0.5;0;0;
+LabRegionHueMask_1=1;0.069444444;1;0;0.25;0.270833333;0.75;0.25;0.25;0.472222222;1;0.25;0;
+LabRegionChromaticityMask_1=1;0;1;0;0;1;0.5;0.25;0;
+LabRegionLightnessMask_1=0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
 LabRegionsShowMask=-1
@@ -574,7 +574,7 @@ FlatFieldBlurType=Area Flatfield
 FlatFieldAutoClipControl=false
 FlatFieldClipControl=0
 CA=true
-CAAvoidColourshift=false
+CAAvoidColourshift=true
 CAAutoIterations=2
 CARed=0
 CABlue=0
