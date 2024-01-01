@@ -53,7 +53,3 @@ SCHEMA = object_of(
         },
     ),
 )
-
-
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    return _process({Field.VIBRANCE.name: profile_params.colors.vibrance.value})

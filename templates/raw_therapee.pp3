@@ -97,7 +97,7 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled=false
+Enabled={LcEnabled}
 Brightness=0
 Contrast=0
 Chromaticity=0
@@ -108,9 +108,9 @@ LCurve=0;
 aCurve=0;
 bCurve=0;
 ccCurve=0;
-chCurve={ChCurve}
-lhCurve={LhCurve}
-hhCurve={HhCurve}
+chCurve={LcChCurve}
+lhCurve={LcLhCurve}
+hhCurve={LcHhCurve}
 LcCurve=0;
 ClCurve=0;
 
@@ -499,9 +499,9 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled=false
+Enabled={HsvEnabled}
 HCurve=0;
-SCurve=0;
+SCurve={HsvSCurve}
 VCurve=0;
 
 [SoftLight]
