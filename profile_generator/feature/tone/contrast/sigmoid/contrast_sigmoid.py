@@ -4,7 +4,6 @@ from functools import cache
 
 from profile_generator.model import sigmoid, tone_curve
 from profile_generator.model.color import constants
-from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point, curve
 
 
@@ -36,20 +35,3 @@ def get_chromaticity_curve(slope: float) -> Sequence[Point]:
     if math.isclose(slope, 1):
         return []
     return curve.as_points(sigmoid.algebraic((1 + (slope - 1) / 2), 1))
-
-
-@cache
-def get_hue_correction_curve() -> Sequence[raw_therapee.EqPoint]:
-    return [
-        raw_therapee.LinearEqPoint(x, 0.5 + (y - 0.5) / 2)
-        for x, y in sorted(
-            [
-                (0.603333333, 0.506944444),
-                (0.319166667, 0.500416667),
-                (0.986111111, 0.501388889),
-                (0.128055556, 0.500277778),
-                (0.905833333, 0.500694444),
-                (0.535833333, 0.501388889),
-            ]
-        )
-    ]
