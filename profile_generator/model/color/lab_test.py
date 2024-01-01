@@ -1,13 +1,16 @@
 from profile_generator.model.linalg_test import LinalgTestCase
+from profile_generator.unit import Vector
 
 from . import xyz
-from .lab import from_lch, from_xyz, to_lch, to_xyz
+from .lab import from_lch, from_xyz, from_xyz_lum, to_lch, to_xyz, to_xyz_lum
 from .space import SRGB
 
 
 class LabTest(LinalgTestCase):
     def test_from_xyz(self) -> None:
-        srgb_to_lab = lambda color: from_xyz(xyz.from_rgb(color, SRGB))
+        def srgb_to_lab(color: Vector) -> Vector:
+            return from_xyz(xyz.from_rgb(color, SRGB))
+
         self.assert_vector_equal([0.0, 0.0, 0.0], srgb_to_lab([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
             [100.0000014, -7.8e-06, 6.8e-06], srgb_to_lab([1.0, 1.0, 1.0])
@@ -18,15 +21,19 @@ class LabTest(LinalgTestCase):
         )
 
     def test_to_xyz(self) -> None:
-        lab_to_srgb = lambda color: xyz.to_rgb(to_xyz(color), SRGB)
+        def lab_to_srgb(color: Vector) -> Vector:
+            return xyz.to_rgb(to_xyz(color), SRGB)
+
         self.assert_vector_equal([0.0, 0.0, 0.0], lab_to_srgb([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
-            [1.0, 0.5737799, 0.2085584], lab_to_srgb([100.0, 100.0, 100.0])
+            [1.7344583, 0.5737799, 0.2085584], lab_to_srgb([100.0, 100.0, 100.0])
         )
         self.assert_vector_equal(
-            [0.5491071, 0.4599878, 0.0], lab_to_srgb([50.0, 0.0, 100.0])
+            [0.5491071, 0.4599878, -0.51266], lab_to_srgb([50.0, 0.0, 100.0])
         )
-        self.assert_vector_equal([1.0, 0.0, 0.4878331], lab_to_srgb([50.0, 100.0, 0.0]))
+        self.assert_vector_equal(
+            [1.0006989, -0.9189066, 0.4878331], lab_to_srgb([50.0, 100.0, 0.0])
+        )
 
     def test_to_lch(self) -> None:
         self.assert_vector_equal([0.0, 0.0, 0.0], to_lch([0.0, 0.0, 0.0]))
@@ -52,3 +59,8 @@ class LabTest(LinalgTestCase):
             [50.0, 45.6772729, 20.3368322], from_lch([50.0, 50.0, 24.0])
         )
         self.assert_vector_equal([75.0, 0.0, -1], from_lch([75.0, 1.0, 270.0]))
+
+    def test_from_to_xyz_lum(self) -> None:
+        self.assertEqual(from_xyz_lum(to_xyz_lum(0)), 0)
+        self.assertEqual(from_xyz_lum(to_xyz_lum(50)), 50)
+        self.assertEqual(from_xyz_lum(to_xyz_lum(100)), 100)

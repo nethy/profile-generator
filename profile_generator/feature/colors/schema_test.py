@@ -8,13 +8,14 @@ from profile_generator.schema import (
 
 from .grading import schema_test as grading_test
 from .hsl import schema_test as hsl_test
-from .profile import schema_test as profile_test
 from .schema import SCHEMA
+from .space import schema_test as profile_test
 from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
-    "Chromaticity": "0",
-    "CTLabRegionPower": "1.0",
+    "VibranceEnabled": "false",
+    "VibrancePastels": "0",
+    "VibranceSaturated": "0",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -38,11 +39,6 @@ class SchemaTest(TestCase):
             InvalidObjectError({"vibrance": InvalidRangeError(0, 10)}),
         )
 
-    def test_validate_invalid_chrome(self) -> None:
-        self.validator.assert_error(
-            {"chrome": False}, InvalidObjectError({"chrome": InvalidRangeError(0, 10)})
-        )
-
     def test_process_defaults(self) -> None:
         self.validator.assert_process({}, _DEFAULT)
 
@@ -51,13 +47,10 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"vibrance": 5},
-            _DEFAULT | {"Chromaticity": "25"},
-        )
-
-    def test_process_chrome(self) -> None:
-        self.validator.assert_process({"chrome": 0}, _DEFAULT)
-
-        self.validator.assert_process(
-            {"chrome": 10},
-            _DEFAULT | {"CTLabRegionPower": "2.0"},
+            _DEFAULT
+            | {
+                "VibranceEnabled": "true",
+                "VibrancePastels": "50",
+                "VibranceSaturated": "25",
+            },
         )

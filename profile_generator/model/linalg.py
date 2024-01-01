@@ -1,4 +1,5 @@
 import math
+from decimal import Decimal
 
 from profile_generator.unit import Matrix, Vector
 
@@ -7,21 +8,25 @@ def vector_length(vector: Vector) -> float:
     return math.sqrt(sum((math.pow(i, 2) for i in vector)))
 
 
-def solve(system: Matrix) -> Vector:
+def solve(matrix: Matrix) -> Vector:
+    system = [[Decimal(i) for i in line] for line in matrix]
     _inverse(system)
-    return [line[-1] for line in system]
+    return [float(line[-1]) for line in system]
 
 
 def inverse(matrix: Matrix) -> Matrix:
-    unit_matrix = [[0.0] * len(matrix) for _ in range(len(matrix))]
+    unit_matrix = [[Decimal(0)] * len(matrix) for _ in range(len(matrix))]
     for i, row in enumerate(unit_matrix):
-        row[i] = 1.0
-    system = [row + unit_row for row, unit_row in zip(matrix, unit_matrix)]
+        row[i] = Decimal(1)
+    system = [
+        [Decimal(i) for i in row] + unit_row
+        for row, unit_row in zip(matrix, unit_matrix)
+    ]
     _inverse(system)
-    return [row[len(system) :] for row in system]
+    return [[float(i) for i in row[len(system) :]] for row in system]
 
 
-def _inverse(matrix: Matrix) -> None:
+def _inverse(matrix: list[list[Decimal]]) -> None:
     pivot_idx = 0
     for row in range(len(matrix)):
         if not pivot_idx < len(matrix[0]):
@@ -33,7 +38,7 @@ def _inverse(matrix: Matrix) -> None:
             pivot_idx += 1
 
 
-def _swap_row(matrix: Matrix, row: int, pivot_idx: int) -> int:
+def _swap_row(matrix: list[list[Decimal]], row: int, pivot_idx: int) -> int:
     i = row
     while pivot_idx < len(matrix[0]) and math.isclose(matrix[i][pivot_idx], 0):
         i += 1
@@ -47,12 +52,12 @@ def _swap_row(matrix: Matrix, row: int, pivot_idx: int) -> int:
     return pivot_idx
 
 
-def _normalize(matrix: Matrix, row: int, pivot_idx: int) -> None:
+def _normalize(matrix: list[list[Decimal]], row: int, pivot_idx: int) -> None:
     divisor = matrix[row][pivot_idx]
     matrix[row] = [value / divisor for value in matrix[row]]
 
 
-def _eliminate_column(matrix: Matrix, row: int, pivot_idx: int) -> None:
+def _eliminate_column(matrix: list[list[Decimal]], row: int, pivot_idx: int) -> None:
     for i, actual_row in enumerate(matrix):
         if i != row:
             multiplier = actual_row[pivot_idx]

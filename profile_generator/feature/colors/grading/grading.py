@@ -10,7 +10,9 @@ def rgb_curves(
     global_hcl: Vector, shadow_hcl: Vector, midtone_hcl: Vector, highlight_hcl: Vector
 ) -> list[list[Point]]:
     args = (global_hcl, shadow_hcl, midtone_hcl, highlight_hcl)
-    if all(math.isclose(lum, 0) for _, _, lum in args):
+    if all(
+        math.isclose(chroma, 0) and math.isclose(luma, 0) for _, chroma, luma in args
+    ):
         return []
     grades = _get_grades(*args)
     tones = _interpolate(_get_tones(*grades))
@@ -34,6 +36,8 @@ def _get_grades(
 def _mix_hcl(a: Vector, b: Vector) -> Vector:
     hues, chrs, lums = zip(a, b)
     chrs_sum = sum(chrs)
+    if math.isclose(chrs_sum, 0):
+        return [0, 0, sum(lums)]
     return [
         chrs[0] / chrs_sum * hues[0] + chrs[1] / chrs_sum * hues[1],
         chrs_sum,

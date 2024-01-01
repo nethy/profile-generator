@@ -1,29 +1,38 @@
 from collections.abc import Mapping
-from typing import Any
+from typing import Any, Final
 
 from profile_generator.schema import object_of, range_of
 
-_DPE_ENABLED = "DPEEnabled"
-_DPE_MULT_2 = "DPEMult2"
-_DPE_MULT_3 = "DPEMult3"
-_DPE_MULT_4 = "DPEMult4"
-_DPE_MULT_5 = "DPEMult5"
 
-_DEFAULT_LOCAL_CONTRAST = 0
+class Template:
+    DPE_ENABLED: Final = "DPEEnabled"
+    DPE_MULT_2: Final = "DPEMult2"
+    DPE_MULT_3: Final = "DPEMult3"
+    DPE_MULT_4: Final = "DPEMult4"
+    DPE_MULT_5: Final = "DPEMult5"
+
+
+class Field:
+    LOCAL: Final = "local"
+
+
+class Default:
+    LOCAL_CONTRAST: Final = 0
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    value = data.get("local", _DEFAULT_LOCAL_CONTRAST)
-    amount = 1 + 0.1 * value
-    edge_amount = 1 + 0.05 * value
-    enabled = str(value > _DEFAULT_LOCAL_CONTRAST).lower()
+    value = data.get(Field.LOCAL, Default.LOCAL_CONTRAST)
+    primary = 1 + 0.1 * value
+    secondary = 1 + 0.05 * value
+    tertiary = 1 + 0.025 * value
+    enabled = str(value > Default.LOCAL_CONTRAST).lower()
     return {
-        _DPE_ENABLED: enabled,
-        _DPE_MULT_2: str(edge_amount),
-        _DPE_MULT_3: str(amount),
-        _DPE_MULT_4: str(amount),
-        _DPE_MULT_5: str(edge_amount),
+        Template.DPE_ENABLED: enabled,
+        Template.DPE_MULT_2: str(secondary),
+        Template.DPE_MULT_3: str(primary),
+        Template.DPE_MULT_4: str(secondary),
+        Template.DPE_MULT_5: str(tertiary),
     }
 
 
-SCHEMA = object_of({"local": range_of(0, 10)}, _process)
+SCHEMA = object_of({Field.LOCAL: range_of(0.0, 10.0)}, _process)

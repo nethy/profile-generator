@@ -1,8 +1,10 @@
 import logging
 import sys
 
-from profile_generator import configuration, generator, integration, log
-from profile_generator.generator import (
+from profile_generator import configuration, integration, log
+
+from . import generator
+from .generator import (
     ConfigFileReadError,
     InvalidConfigFileError,
     NoConfigFileError,
@@ -43,7 +45,10 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         cfg = configuration.create_from_template(cfg_template)
         for name, body in cfg.items():
             content = generator.create_profile_content(
-                template, body, integration.CONFIGURATION_SCHEMA.process
+                template,
+                body,
+                integration.CONFIGURATION_SCHEMA.process,
+                integration.GENERATOR,
             )
             _persist_profile(name, content, output_dir)
     except ConfigFileReadError:

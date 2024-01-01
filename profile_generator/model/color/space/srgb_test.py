@@ -1,5 +1,5 @@
 from profile_generator.model import linalg
-from profile_generator.model.color import xyz
+from profile_generator.model.color import constants, xyz
 from profile_generator.model.linalg_test import LinalgTestCase
 
 from . import srgb
@@ -18,4 +18,4 @@ class SrgbTest(LinalgTestCase):
             self.assertAlmostEqual(srgb.inverse_gamma(srgb.gamma(luminance)), luminance)
 
     def test_gamma_middle_grey(self) -> None:
-        self.assertAlmostEqual(srgb.gamma(0.18), 0.4613561)
+        self.assertAlmostEqual(srgb.gamma(constants.GREY18_LINEAR), 0.4663266)

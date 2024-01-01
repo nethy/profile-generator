@@ -1,51 +1,46 @@
 from collections.abc import Mapping
 from typing import Any, Final
 
-from profile_generator.schema import SchemaField, composite_process, object_of, range_of
+from profile_generator.main import ProfileParams
+from profile_generator.schema import composite_process, object_of, range_of
+from profile_generator.schema.schema import SchemaField
 
 from .grading import schema as grading
 from .hsl import schema as hsl
-from .profile import schema as profile
+from .space import schema as space
 from .white_balance import schema as white_balance
 
 
 class Field:
     VIBRANCE: Final = SchemaField("vibrance", 0)
-    CHROME: Final = SchemaField("chrome", 0)
 
 
 class Template:
-    CHROMATICITY: Final = "Chromaticity"
-    COLOR_TONING_POWER: Final = "CTLabRegionPower"
+    VIBRANCE_ENABLED: Final = "VibranceEnabled"
+    VIBRANCE_PASTELS: Final = "VibrancePastels"
+    VIBRANCE_SATURATED: Final = "VibranceSaturated"
+
+
+_MAX_VIBRANCE: Final = 10
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    vibrance = _get_vibrance(data)
-    chrome = _get_chrome(data)
-    return {} | vibrance | chrome
-
-
-def _get_vibrance(data: Any) -> Mapping[str, str]:
     vibrance = data.get(*Field.VIBRANCE)
-    chromaticity = 5 * vibrance
-    return {Template.CHROMATICITY: str(chromaticity)}
-
-
-def _get_chrome(data: Any) -> Mapping[str, str]:
-    chrome = data.get(*Field.CHROME)
-    power = 1 + 0.1 * chrome
+    pastels = round(100 * vibrance / _MAX_VIBRANCE)
+    saturated = round(pastels / 2)
     return {
-        Template.COLOR_TONING_POWER: str(round(power, 3)),
+        Template.VIBRANCE_ENABLED: str(vibrance > Field.VIBRANCE.default_value).lower(),
+        Template.VIBRANCE_PASTELS: str(pastels),
+        Template.VIBRANCE_SATURATED: str(saturated),
     }
 
 
 SCHEMA = object_of(
     {
-        Field.VIBRANCE.name: range_of(0, 10),
-        Field.CHROME.name: range_of(0, 10),
+        Field.VIBRANCE.name: range_of(0, _MAX_VIBRANCE),
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,
-        "profile": profile.SCHEMA,
+        "profile": space.SCHEMA,
         "grading": grading.SCHEMA,
     },
     composite_process(
@@ -53,8 +48,12 @@ SCHEMA = object_of(
         {
             "white_balance": white_balance.process,
             "hsl": hsl.process,
-            "profile": profile.process,
+            "profile": space.process,
             "grading": grading.process,
         },
     ),
 )
+
+
+def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+    return _process({Field.VIBRANCE.name: profile_params.colors.vibrance.value})

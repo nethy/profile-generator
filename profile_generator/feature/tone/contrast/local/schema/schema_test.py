@@ -43,8 +43,8 @@ class SchemaTest(TestCase):
                 "DPEEnabled": "true",
                 "DPEMult2": "1.05",
                 "DPEMult3": "1.1",
-                "DPEMult4": "1.1",
-                "DPEMult5": "1.05",
+                "DPEMult4": "1.05",
+                "DPEMult5": "1.025",
             },
         )
         self.validator.assert_process(
@@ -53,7 +53,7 @@ class SchemaTest(TestCase):
                 "DPEEnabled": "true",
                 "DPEMult2": "1.5",
                 "DPEMult3": "2.0",
-                "DPEMult4": "2.0",
-                "DPEMult5": "1.5",
+                "DPEMult4": "1.5",
+                "DPEMult5": "1.25",
             },
         )

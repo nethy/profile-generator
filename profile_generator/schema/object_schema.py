@@ -2,18 +2,25 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any, Optional
 
+from profile_generator.main import ProfileParams
+
 from .schema import Schema, SchemaError
 from .type_schema import InvalidTypeError
 
 Processor = Callable[[Any], Mapping[str, str]]
+Parser = Callable[[Any, ProfileParams], None]
 
 
 class ObjectSchema(Schema):
     def __init__(
-        self, object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
+        self,
+        object_schema: Mapping[str, Schema],
+        processor: Optional[Processor] = None,
+        parser: Optional[Parser] = None,
     ):
         self._object_schema = object_schema
         self._processor = processor
+        self._parser = parser
 
     def validate(self, data: Any) -> Optional[SchemaError]:
         if not isinstance(data, dict):
@@ -75,6 +82,8 @@ class UnkownMemberError(SchemaError):
 
 
 def object_of(
-    object_schema: Mapping[str, Schema], processor: Optional[Processor] = None
+    object_schema: Mapping[str, Schema],
+    processor: Optional[Processor] = None,
+    parser: Optional[Parser] = None,
 ) -> Schema:
-    return ObjectSchema(object_schema, processor)
+    return ObjectSchema(object_schema, processor, parser)

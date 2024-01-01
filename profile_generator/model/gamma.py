@@ -23,7 +23,7 @@ def power_exponent(point: Point) -> float:
     return math.log(point.y) / math.log(point.x)
 
 
-def algebraic_at(point: Point, exponent: float) -> Curve:
+def algebraic_at(point: Point, exponent: float = 1.0) -> Curve:
     if point.gradient < 1:
         return inverse_algebraic_at(point, exponent)
     g = math.pow(
@@ -38,11 +38,12 @@ def algebraic(coefficient: float, exponent: float) -> Curve:
     y  = ((x^k+(ax)^k)/(1+(ax)^k))^(1/k)
     y' = ((x^k+(ax)^k)/(1+(ax)^k))^(1/k)/(x(ax)^k+x)
     """
-    return lambda x: math.pow(
-        (math.pow(x, exponent) + math.pow(coefficient * x, exponent))
-        / (1 + math.pow(coefficient * x, exponent)),
-        1 / exponent,
-    )
+
+    def _curve(x: float) -> float:
+        acc = math.pow(coefficient * x, exponent)
+        return math.pow((math.pow(x, exponent) + acc) / (1 + acc), 1 / exponent)
+
+    return _curve
 
 
 def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -> Curve:

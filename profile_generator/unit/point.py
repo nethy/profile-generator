@@ -8,6 +8,7 @@ from .precision import DECIMALS, equals
 
 class Point:
     def __init__(self, x: float, y: float):
+        super().__init__()
         self.x = x
         self.y = y
 
