@@ -3,7 +3,7 @@ from unittest import TestCase
 from profile_generator.model.color import constants
 from profile_generator.model.color.space import srgb
 
-from .tone_curve import get_srgb_contrast, get_srgb_flat
+from .tone_curve import _get_highlight_compression, get_srgb_contrast, get_srgb_flat
 
 _GREY_18 = 87 / 255
 
@@ -27,3 +27,9 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(constants.GREY18_SRGB), constants.GREY18_SRGB)
         self.assertAlmostEqual(curve(0.2), 0.0564814)
         self.assertAlmostEqual(curve(0.8), 0.8982875)
+
+    def test_get_highlight_compression(self) -> None:
+        self.assertAlmostEqual(_get_highlight_compression(0.136), 1.1923315)
+        self.assertAlmostEqual(_get_highlight_compression(0.096), 1.3932221)
+        self.assertAlmostEqual(_get_highlight_compression(0.082), 1.4779227)
+        self.assertAlmostEqual(_get_highlight_compression(0.050), 1.7214483)

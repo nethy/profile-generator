@@ -13,7 +13,9 @@ from .space import schema_test as profile_test
 from .white_balance import schema_test as wb_test
 
 _DEFAULT = {
-    "Chromaticity": "0",
+    "VibranceEnabled": "false",
+    "VibrancePastels": "0",
+    "VibranceSaturated": "0",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -45,5 +47,10 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {"vibrance": 5},
-            _DEFAULT | {"Chromaticity": "25"},
+            _DEFAULT
+            | {
+                "VibranceEnabled": "true",
+                "VibrancePastels": "50",
+                "VibranceSaturated": "25",
+            },
         )

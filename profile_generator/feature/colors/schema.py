@@ -3,6 +3,7 @@ from typing import Any, Final
 
 from profile_generator.main import ProfileParams
 from profile_generator.schema import composite_process, object_of, range_of
+from profile_generator.schema.schema import SchemaField
 
 from .grading import schema as grading
 from .hsl import schema as hsl
@@ -11,31 +12,32 @@ from .white_balance import schema as white_balance
 
 
 class Field:
-    VIBRANCE: Final = "vibrance"
+    VIBRANCE: Final = SchemaField("vibrance", 0)
 
 
 class Template:
-    CHROMATICITY: Final = "Chromaticity"
-    COLOR_TONING_ENABLED: Final = "CTEnabled"
-    COLOR_TONING_SATURATION: Final = "CTSaturation"
+    VIBRANCE_ENABLED: Final = "VibranceEnabled"
+    VIBRANCE_PASTELS: Final = "VibrancePastels"
+    VIBRANCE_SATURATED: Final = "VibranceSaturated"
 
 
 _MAX_VIBRANCE: Final = 10
 
 
 def _process(data: Any) -> Mapping[str, str]:
-    vibrance = _get_vibrance(data)
-    return {} | vibrance
-
-
-def _get_vibrance(data: Any) -> Mapping[str, str]:
-    vibrance = data.get(Field.VIBRANCE, 0)
-    return {Template.CHROMATICITY: str(5 * vibrance)}
+    vibrance = data.get(*Field.VIBRANCE)
+    pastels = round(100 * vibrance / _MAX_VIBRANCE)
+    saturated = round(pastels / 2)
+    return {
+        Template.VIBRANCE_ENABLED: str(vibrance > Field.VIBRANCE.default_value).lower(),
+        Template.VIBRANCE_PASTELS: str(pastels),
+        Template.VIBRANCE_SATURATED: str(saturated),
+    }
 
 
 SCHEMA = object_of(
     {
-        Field.VIBRANCE: range_of(0, _MAX_VIBRANCE),
+        Field.VIBRANCE.name: range_of(0, _MAX_VIBRANCE),
         "white_balance": white_balance.SCHEMA,
         "hsl": hsl.SCHEMA,
         "profile": space.SCHEMA,
@@ -52,16 +54,6 @@ SCHEMA = object_of(
     ),
 )
 
-_MAX_STRENGTH: Final = 1.0
-_MAX_GRADIENT: Final = 4.0
-
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance = profile_params.colors.vibrance.value / _MAX_VIBRANCE
-    chromaticity = 0
-    saturation = round(vibrance * 30)
-    return {
-        Template.CHROMATICITY: str(chromaticity),
-        Template.COLOR_TONING_ENABLED: str(saturation != 0).lower(),
-        Template.COLOR_TONING_SATURATION: str(saturation),
-    }
+    return _process({Field.VIBRANCE.name: profile_params.colors.vibrance.value})

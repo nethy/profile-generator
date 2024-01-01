@@ -13,6 +13,7 @@ def main() -> None:
     # dcamprof_tone_curve(0.050)  # G9
     pass
 
+
 def dcamprof_tone_curve(camera_grey18_linear: float) -> None:
     grey18 = SRGB.gamma(camera_grey18_linear)
 
@@ -30,6 +31,7 @@ def dcamprof_tone_curve(camera_grey18_linear: float) -> None:
     write_file("standard.json", standard)
     print()
 
+
 def to_markup(c: Curve) -> dict[str, Any]:
     points = [[round(x, 7), round(y, 7)] for x, y in curve.as_fixed_points(c)]
     return {
@@ -39,9 +41,11 @@ def to_markup(c: Curve) -> dict[str, Any]:
         "CurveGamma": 1,
     }
 
+
 def write_file(file_name: str, content: dict[str, Any]) -> None:
     with open(file_name, "w", encoding="utf-8") as file:
         json.dump(content, file, ensure_ascii=False, indent=4)
+
 
 if __name__ == "__main__":
     main()

@@ -82,13 +82,20 @@ def _get_algebraic_flat(linear_grey18: float) -> Curve:
             (Point(1, 1), 1),
         ]
     )
-    combined = lambda x: (1 - mask(x)) * shadow(x) + mask(x) * highlight(x)
+
+    def combined(x: float) -> float:
+        return (1 - mask(x)) * shadow(x) + mask(x) * highlight(x)
+
     base_shadow = Line.from_points(Point(0, 0), midtone)
     base_mask = Line.from_points(Point(0, 0), Point(linear_grey18, 1))
-    return lambda x: (
-        (1 - base_mask.get_y(x)) * base_shadow.get_y(x)
-        + base_mask.get_y(x) * combined(x)
-    ) if x < linear_grey18 else combined(x)
+    return (
+        lambda x: (
+            (1 - base_mask.get_y(x)) * base_shadow.get_y(x)
+            + base_mask.get_y(x) * combined(x)
+        )
+        if x < linear_grey18
+        else combined(x)
+    )
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
