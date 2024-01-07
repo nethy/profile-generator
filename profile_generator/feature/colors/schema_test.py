@@ -6,21 +6,7 @@ from profile_generator.schema import (
     SchemaValidator,
 )
 
-from .grading import schema_test as grading_test
-from .hsl import schema_test as hsl_test
 from .schema import SCHEMA
-from .space import schema_test as profile_test
-from .white_balance import schema_test as wb_test
-
-_DEFAULT = {
-    "VibranceEnabled": "false",
-    "VibrancePastels": "0",
-    "VibranceSaturated": "0",
-    **wb_test.DEFAULT,
-    **hsl_test.DEFAULT,
-    **profile_test.DEFAULT,
-    **grading_test.DEFAULT,
-}
 
 
 class SchemaTest(TestCase):
@@ -37,20 +23,4 @@ class SchemaTest(TestCase):
         self.validator.assert_error(
             {"vibrance": False},
             InvalidObjectError({"vibrance": InvalidRangeError(0, 10)}),
-        )
-
-    def test_process_defaults(self) -> None:
-        self.validator.assert_process({}, _DEFAULT)
-
-    def test_process_vibrance(self) -> None:
-        self.validator.assert_process({"vibrance": 0}, _DEFAULT)
-
-        self.validator.assert_process(
-            {"vibrance": 5},
-            _DEFAULT
-            | {
-                "VibranceEnabled": "true",
-                "VibrancePastels": "50",
-                "VibranceSaturated": "25",
-            },
         )

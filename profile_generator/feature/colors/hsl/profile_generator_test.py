@@ -18,15 +18,17 @@ class ProfileGeneratorTest(TestCase):
 
     def test_process_hue(self) -> None:
         profile_params = ProfileParams()
-        profile_params.colors.hsl.parse({
-            "hue": {
-                "yellow": -5,
-                "green": 5,
-                "cyan": 0,
-                "blue": 5,
-                "magenta": -5,
+        profile_params.colors.hsl.parse(
+            {
+                "hue": {
+                    "yellow": -5,
+                    "green": 5,
+                    "cyan": 0,
+                    "blue": 5,
+                    "magenta": -5,
+                }
             }
-        })
+        )
         self.assertEqual(
             generate(profile_params),
             DEFAULT
@@ -43,12 +45,14 @@ class ProfileGeneratorTest(TestCase):
 
     def test_process_saturation(self) -> None:
         profile_params = ProfileParams()
-        profile_params.colors.hsl.parse({
-            "saturation": {
-                "red": 5,
-                "magenta": -5,
+        profile_params.colors.hsl.parse(
+            {
+                "saturation": {
+                    "red": 5,
+                    "magenta": -5,
+                }
             }
-        })
+        )
         self.assertEqual(
             generate(profile_params),
             DEFAULT
@@ -65,12 +69,14 @@ class ProfileGeneratorTest(TestCase):
 
     def test_process_luminances(self) -> None:
         profile_params = ProfileParams()
-        profile_params.colors.hsl.parse({
-            "luminance": {
-                "red": 5,
-                "magenta": -5,
+        profile_params.colors.hsl.parse(
+            {
+                "luminance": {
+                    "red": 5,
+                    "magenta": -5,
+                }
             }
-        })
+        )
         self.assertEqual(
             generate(profile_params),
             DEFAULT

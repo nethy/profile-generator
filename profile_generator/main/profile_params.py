@@ -26,21 +26,20 @@ class ProfileParamEnum(Enum):
                 return member
         return None
 
+
 T = TypeVar("T", str, int, float, bool)
+
 
 class ProfileParamTuple(Generic[T], ProfileParamParser):
     def parse(self, data: Any) -> None:
         if data is None:
-            return None
+            return
         for i, value in enumerate(self.__dict__.values()):
             parser = cast(ProfileParamParser, value)
             parser.parse(data[i])
 
     def as_list(self) -> list[T]:
-        return [
-            cast(Value, value).value
-            for value in self.__dict__.values()
-        ]
+        return [cast(Value, value).value for value in self.__dict__.values()]
 
 
 V = TypeVar("V", str, int, float, bool, tuple, ProfileParamEnum)

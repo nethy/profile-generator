@@ -9,6 +9,7 @@ class Template:
     WB_TEMPERATURE: Final = "WBTemperature"
     WB_GREEN: Final = "WBGreen"
 
+
 DEFAULT = {
     Template.WB_SETTING: raw_therapee.WbSetting.CAMERA,
     Template.WB_TEMPERATURE: "6504",
@@ -22,6 +23,7 @@ _DEFAULT_WB_TINT = 1
 class Field:
     TEMPERATURE: Final = "temperature"
     TINT: Final = "tint"
+
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     temperature = profile_params.colors.white_balance.temperature.value

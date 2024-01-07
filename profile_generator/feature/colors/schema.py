@@ -1,8 +1,7 @@
 from collections.abc import Mapping
 from typing import Any, Final
 
-from profile_generator.main import ProfileParams
-from profile_generator.schema import composite_process, object_of, range_of
+from profile_generator.schema import object_of, range_of
 from profile_generator.schema.schema import SchemaField
 
 from .grading import schema as grading
@@ -42,14 +41,5 @@ SCHEMA = object_of(
         "hsl": hsl.SCHEMA,
         "profile": space.SCHEMA,
         "grading": grading.SCHEMA,
-    },
-    composite_process(
-        _process,
-        {
-            "white_balance": white_balance.process,
-            "hsl": hsl.process,
-            "profile": space.process,
-            "grading": grading.process,
-        },
-    ),
+    }
 )

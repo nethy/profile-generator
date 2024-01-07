@@ -16,14 +16,14 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=Perceptual
+CurveMode=SatAndValueBlending
 CurveMode2=Perceptual
 Curve={Curve}
 Curve2=0;
 
 [HLRecovery]
 Enabled=true
-Method=Color
+Method=Blend
 
 [Retinex]
 Enabled=false

@@ -13,6 +13,7 @@ class Template:
     G_CURVE: Final = "RGBCurvesGCurve"
     B_CURVE: Final = "RGBCurvesBCurve"
 
+
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     global_hcl = profile_params.colors.grading.base.as_list()
     shadow_hcl = profile_params.colors.grading.shadow.as_list()
