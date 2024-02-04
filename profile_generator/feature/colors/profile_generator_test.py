@@ -10,13 +10,10 @@ from .white_balance import profile_generator_test as wb_test
 
 _DEFAULT = {
     "VibranceEnabled": "true",
-    "VibrancePastels": "33",
-    "VibranceSaturated": "33",
-    "HsvEnabled": "false",
-    "HsvSCurve": "1;0.0277778;0.5000000;0.2500000;0.2500000;"
-    + "0.1111111;0.5000000;0.2500000;0.2500000;"
-    + "0.1944444;0.5000000;0.2500000;0.2500000;"
-    + "0.9444444;0.5000000;0.2500000;0.2500000;",
+    "VibrancePastels": "15",
+    "VibranceSaturated": "8",
+    "ColorToningEnabled": "true",
+    "ColorToningSaturation": "8",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -38,6 +35,8 @@ class ProfileGeneratorTest(TestCase):
                 "VibranceEnabled": "false",
                 "VibrancePastels": "0",
                 "VibranceSaturated": "0",
+                "ColorToningEnabled": "false",
+                "ColorToningSaturation": "0",
             },
         )
 
@@ -47,14 +46,9 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             _DEFAULT
             | {
-                "VibranceEnabled": "true",
                 "VibrancePastels": "22",
                 "VibranceSaturated": "11",
-                "HsvEnabled": "true",
-                "HsvSCurve": "1;0.0277778;0.5561862;0.2500000;0.2500000;"
-                + "0.1111111;0.5561862;0.2500000;0.2500000;"
-                + "0.1944444;0.6123724;0.2500000;0.2500000;"
-                + "0.9444444;0.6123724;0.2500000;0.2500000;",
+                "ColorToningSaturation": "11",
             },
         )
 
@@ -64,8 +58,8 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             _DEFAULT
             | {
-                "VibranceEnabled": "true",
-                "VibrancePastels": "23",
-                "VibranceSaturated": "23",
+                "VibrancePastels": "11",
+                "VibranceSaturated": "5",
+                "ColorToningSaturation": "5",
             },
         )

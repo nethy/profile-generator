@@ -136,7 +136,7 @@ DeconvIterations={DeconvIterations}
 Enabled={VibranceEnabled}
 Pastels={VibrancePastels}
 Saturated={VibranceSaturated}
-PSThreshold=0;50;
+PSThreshold=0;33;
 ProtectSkins=true
 AvoidColorShift=false
 PastSatTog=false
@@ -499,9 +499,9 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled={HsvEnabled}
+Enabled=false
 HCurve=0;
-SCurve={HsvSCurve}
+SCurve=0;
 VCurve=0;
 
 [SoftLight]
@@ -521,7 +521,7 @@ gCurve={RGBCurvesGCurve}
 bCurve={RGBCurvesBCurve}
 
 [ColorToning]
-Enabled=false
+Enabled={ColorToningEnabled}
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
@@ -553,13 +553,13 @@ LabGridAHigh=0
 LabGridBHigh=0
 LabRegionA_1=0
 LabRegionB_1=0
-LabRegionSaturation_1=0
+LabRegionSaturation_1={ColorToningSaturation}
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
-LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
-LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionHueMask_1=1;0.152777;1;0;0;0.236111;0.5;0;0;0.319444;0.5;0;0;0.402778;1;0;0;
+LabRegionChromaticityMask_1=1;0.1;1;0;0;0.8;0;0;0;
+LabRegionLightnessMask_1=1;0;0;0;0;0.1;1;0;0;0.5;1;0;0;1;0.5;0;0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
 LabRegionsShowMask=-1

@@ -26,8 +26,8 @@ class Template:
     VIBRANCE_ENABLED: Final = "VibranceEnabled"
     VIBRANCE_PASTELS: Final = "VibrancePastels"
     VIBRANCE_SATURATED: Final = "VibranceSaturated"
-    HSV_ENABLED: Final = "HsvEnabled"
-    S_CURVE: Final = "HsvSCurve"
+    CT_ENABLED: Final = "ColorToningEnabled"
+    CT_SATURATION: Final = "ColorToningSaturation"
 
 
 _MAX_VIBRANCE: Final = 10
@@ -38,36 +38,16 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     contrast = profile_params.tone.curve.sigmoid.slope.value
     base = math.pow(contrast, 0.605)
     multiplier = 1 + vibrance / _MAX_VIBRANCE
-    value = math.sqrt(multiplier)
-    result: dict[str, str] = {}
-    result |= _get_vibrance_values(base, value)
-    result |= _get_hsv_values(value)
-    return result
-
-
-def _get_vibrance_values(base: float, value: float) -> Mapping[str, str]:
-    offset = _as_interval(base)
-    pastels = round(offset + _as_interval(value))
-    saturated = round(offset + _as_interval(value) / 2)
+    value = math.sqrt(base * multiplier)
+    vibrance = _as_interval(value)
+    saturation = _as_interval(value) / 2
     return {
-        Template.VIBRANCE_ENABLED: str(pastels > 1).lower(),
-        Template.VIBRANCE_PASTELS: str(pastels),
-        Template.VIBRANCE_SATURATED: str(saturated),
+        Template.VIBRANCE_ENABLED: str(vibrance > 1).lower(),
+        Template.VIBRANCE_PASTELS: str(round(vibrance)),
+        Template.VIBRANCE_SATURATED: str(round(vibrance / 2)),
+        Template.CT_ENABLED: str(saturation > 1).lower(),
+        Template.CT_SATURATION: str(round(saturation))
     }
 
 def _as_interval(value: float) -> float:
     return 100 * (value - 1)
-
-def _get_hsv_values(value: float) -> Mapping[str, str]:
-    base = 0.5 * value
-    skin = 0.5 * ((value - 1) * 0.5 + 1)
-    equalizer = [
-        EqPoint(10 / 360, skin),
-        EqPoint(40 / 360, skin),
-        EqPoint(70 / 360, base),
-        EqPoint(340 / 360, base),
-    ]
-    return {
-        Template.HSV_ENABLED: str(value > 1).lower(),
-        Template.S_CURVE: raw_therapee.present_equalizer(equalizer),
-    }
