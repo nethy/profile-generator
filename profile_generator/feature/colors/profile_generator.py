@@ -1,10 +1,10 @@
 import math
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
-from profile_generator.model.view.raw_therapee import EqPoint
+from profile_generator.unit import Point
 
 from .grading.profile_generator import generate as generate_grading
 from .hsl.profile_generator import generate as generate_hsl
@@ -23,31 +23,35 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
 
 
 class Template:
-    VIBRANCE_ENABLED: Final = "VibranceEnabled"
-    VIBRANCE_PASTELS: Final = "VibrancePastels"
-    VIBRANCE_SATURATED: Final = "VibranceSaturated"
-    CT_ENABLED: Final = "ColorToningEnabled"
-    CT_SATURATION: Final = "ColorToningSaturation"
+    A_CURVE: Final = "LcACurve"
+    B_CURVE: Final = "LcBCurve"
 
 
-_MAX_VIBRANCE: Final = 10
+_MAX_VIBRANCE: Final = 10.0
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance = profile_params.colors.vibrance.value
     contrast = profile_params.tone.curve.sigmoid.slope.value
+    vibrance = profile_params.colors.vibrance.value
     base = math.pow(contrast, 0.605)
     multiplier = 1 + vibrance / _MAX_VIBRANCE
-    value = math.sqrt(base * multiplier)
-    vibrance = _as_interval(value)
-    saturation = _as_interval(value) / 2
-    return {
-        Template.VIBRANCE_ENABLED: str(vibrance > 1).lower(),
-        Template.VIBRANCE_PASTELS: str(round(vibrance)),
-        Template.VIBRANCE_SATURATED: str(round(vibrance / 2)),
-        Template.CT_ENABLED: str(saturation > 1).lower(),
-        Template.CT_SATURATION: str(round(saturation))
-    }
+    points = _control_cage_points(base * multiplier)
+    curve = raw_therapee.present_curve(raw_therapee.CurveType.CONTROL_CAGE, points)
+    return {Template.A_CURVE: curve, Template.B_CURVE: curve}
 
-def _as_interval(value: float) -> float:
-    return 100 * (value - 1)
+
+_DAMPING_THRESHOLD = 0.05
+
+
+def _control_cage_points(value: float) -> Sequence[Point]:
+    x = 0.5 * value / (1 + value)
+    y = 0.5 - x
+    dx = 0.5 * (1 - _DAMPING_THRESHOLD)
+    return [
+        Point(0, 0),
+        Point(x, y),
+        Point(dx, dx),
+        Point(1 - dx, 1 - dx),
+        Point(1 - x, 1 - y),
+        Point(1, 1),
+    ]

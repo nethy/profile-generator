@@ -7,7 +7,6 @@ from profile_generator.model.view.raw_therapee import EqPoint, LinearEqPoint
 
 
 class Template:
-    LC_ENABLED: Final = "LcEnabled"
     HH_CURVE: Final = "LcHhCurve"
     CH_CURVE: Final = "LcChCurve"
     LH_CURVE: Final = "LcLhCurve"
@@ -35,7 +34,6 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     result |= _get_eq_curve(hsl.hue, 0.25, Template.HH_CURVE)
     result |= _get_eq_curve(hsl.saturation, 0.3, Template.CH_CURVE)
     result |= _get_eq_curve(hsl.luminance, 0.07, Template.LH_CURVE)
-    result[Template.LC_ENABLED] = str(len(result) > 0).lower()
     return DEFAULT | result
 
 

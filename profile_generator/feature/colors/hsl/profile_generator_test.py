@@ -5,7 +5,6 @@ from profile_generator.main.profile_params import ProfileParams
 from .profile_generator import generate
 
 DEFAULT = {
-    "LcEnabled": "false",
     "LcHhCurve": "0;",
     "LcChCurve": "0;",
     "LcLhCurve": "0;",
@@ -33,7 +32,6 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             DEFAULT
             | {
-                "LcEnabled": "true",
                 "LcHhCurve": "1;0.0000000;0.5000000;0.0000000;0.0000000;"
                 + "0.1666667;0.3750000;0.0000000;0.0000000;"
                 + "0.3333333;0.6250000;0.0000000;0.0000000;"
@@ -57,7 +55,6 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             DEFAULT
             | {
-                "LcEnabled": "true",
                 "LcChCurve": "1;0.0000000;0.6500000;0.0000000;0.0000000;"
                 + "0.1666667;0.5000000;0.0000000;0.0000000;"
                 + "0.3333333;0.5000000;0.0000000;0.0000000;"
@@ -81,7 +78,6 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             DEFAULT
             | {
-                "LcEnabled": "true",
                 "LcLhCurve": "1;0.0000000;0.5350000;0.0000000;0.0000000;"
                 + "0.1666667;0.5000000;0.0000000;0.0000000;"
                 + "0.3333333;0.5000000;0.0000000;0.0000000;"
