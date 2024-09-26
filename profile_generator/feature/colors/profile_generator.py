@@ -40,7 +40,7 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     return {Template.A_CURVE: curve, Template.B_CURVE: curve}
 
 
-_DAMPING_THRESHOLD = 0.05
+_DAMPING_THRESHOLD = 0.1
 
 
 def _control_cage_points(value: float) -> Sequence[Point]:
