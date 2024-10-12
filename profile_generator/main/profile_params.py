@@ -13,12 +13,12 @@ class ProfileParamParser(ABC):
             parser.parse(data.get(name))
 
 
-A = TypeVar("A", bound=Enum)
+E = TypeVar("E", bound=Enum)
 
 
 class ProfileParamEnum(Enum):
     @classmethod
-    def parse(cls: type[A], data: Any) -> A | None:
+    def parse(cls: type[E], data: Any) -> E | None:
         if data is None:
             return None
         for member in cls:
@@ -27,15 +27,30 @@ class ProfileParamEnum(Enum):
         return None
 
 
-B = TypeVar("B", str, int, float, bool, tuple, ProfileParamEnum)
+T = TypeVar("T", str, int, float, bool)
 
 
-class Value(Generic[B], ProfileParamParser):
-    def __init__(self, value: B):
-        self._value: B = value
+class ProfileParamTuple(Generic[T], ProfileParamParser):
+    def parse(self, data: Any) -> None:
+        if data is None:
+            return
+        for i, value in enumerate(self.__dict__.values()):
+            parser = cast(ProfileParamParser, value)
+            parser.parse(data[i])
+
+    def as_list(self) -> list[T]:
+        return [cast(Value, value).value for value in self.__dict__.values()]
+
+
+V = TypeVar("V", str, int, float, bool, tuple, ProfileParamEnum)
+
+
+class Value(Generic[V], ProfileParamParser):
+    def __init__(self, value: V):
+        self._value: V = value
 
     @property
-    def value(self) -> B:
+    def value(self) -> V:
         return self._value
 
     def parse(self, data: Any) -> None:
@@ -53,7 +68,7 @@ class Camera(ProfileParamParser):
         self.resolution_mp: Final = Value[float](16)
 
 
-class Hcl(ProfileParamParser):
+class Hcl(ProfileParamTuple):
     def __init__(self) -> None:
         self.hue: Final = Value[float](0)
         self.chromacity: Final = Value[float](0)
