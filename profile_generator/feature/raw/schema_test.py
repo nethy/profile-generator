@@ -32,19 +32,3 @@ class SchemaTest(unittest.TestCase):
             {_BLACK_POINTS: [0, 0]},
             InvalidObjectError({_BLACK_POINTS: InvalidListSizeError(3)}),
         )
-
-    def test_process_defaults(self) -> None:
-        self.validator.assert_process({}, _DEFAULT)
-
-    def test_process_black_points(self) -> None:
-        self.validator.assert_process(
-            {
-                _BLACK_POINTS: [-1, 1, 2],
-            },
-            _DEFAULT
-            | {
-                "BayerPreBlackRed": "-1",
-                "BayerPreBlackGreen": "1",
-                "BayerPreBlackBlue": "2",
-            },
-        )

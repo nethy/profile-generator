@@ -21,10 +21,10 @@ _DEFAULT = {
 
 
 class ProfileGeneratorTest(TestCase):
-    def test_process_defaults(self) -> None:
+    def test_generate_defaults(self) -> None:
         self.assertEqual(generate(ProfileParams()), _DEFAULT)
 
-    def test_process_vibrance(self) -> None:
+    def test_generate_vibrance(self) -> None:
         profile_params = ProfileParams()
         profile_params.parse(
             {"colors": {"vibrance": 0}, "tone": {"curve": {"sigmoid": {"slope": 1}}}}

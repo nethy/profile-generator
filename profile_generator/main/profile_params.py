@@ -22,7 +22,7 @@ class ProfileParamEnum(Enum):
         if data is None:
             return None
         for member in cls:
-            if member.value.casefold() == data.casefold():
+            if member.name.casefold() == data.casefold():
                 return member
         return None
 
@@ -167,9 +167,12 @@ class Sharpening(ProfileParamParser):
 @unique
 class DemosaicMethod(ProfileParamEnum):
     AMAZE = "amaze"
+    AMAZE_BILINEAR = "amazebilinear"
     AMAZE_VNG4 = "amazevng4"
-    DCB_VNG4 = "dcbvng4"
+    RCD_BILINEAR = "rcdbilinear"
     RCD_VNG4 = "rcdvng4"
+    DCB_BILINEAR = "dcbbilinear"
+    DCB_VNG4 = "dcbvng4"
     LMMSE = "lmmse"
 
 
