@@ -4,15 +4,8 @@ from profile_generator.schema import InvalidListSizeError, SchemaValidator
 from profile_generator.schema.object_schema import InvalidObjectError
 from profile_generator.schema.type_schema import InvalidTypeError
 
-from .demosaic import schema_test as demosaic_schema_test
 from .schema import SCHEMA
 
-_DEFAULT = {
-    "BayerPreBlackRed": "0",
-    "BayerPreBlackGreen": "0",
-    "BayerPreBlackBlue": "0",
-    **demosaic_schema_test.DEFAULT,
-}
 _BLACK_POINTS = "black_points"
 
 
