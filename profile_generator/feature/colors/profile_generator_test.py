@@ -42,7 +42,7 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             _DEFAULT
             | {
-                "LcChromaticity": "50",
+                "LcChromaticity": "22",
             },
         )
 

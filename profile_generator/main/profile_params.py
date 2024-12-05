@@ -102,10 +102,10 @@ class Hsl(ProfileParamParser):
 
 @unique
 class ColorSpace(ProfileParamEnum):
-    ACES_P0 = "ACESp0"
-    ACES_P1 = "ACESp1"
-    PRO_PHOTO = "ProPhoto"
-    REC_2020 = "Rec2020"
+    ACESP0 = "ACESp0"
+    ACESP1 = "ACESp1"
+    PROPHOTO = "ProPhoto"
+    REC2020 = "Rec2020"
     SRGB = "sRGB"
 
 
@@ -117,7 +117,7 @@ class WhiteBalance(ProfileParamParser):
 
 class ColorProfile(ProfileParamParser):
     def __init__(self) -> None:
-        self.working: Final = Value[ColorSpace](ColorSpace.PRO_PHOTO)
+        self.working: Final = Value[ColorSpace](ColorSpace.PROPHOTO)
 
 
 class Colors(ProfileParamParser):

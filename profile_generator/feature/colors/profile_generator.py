@@ -32,7 +32,7 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     contrast = profile_params.tone.curve.sigmoid.slope.value
     vibrance = profile_params.colors.vibrance.value
     base = math.pow(contrast, _CONTRAST_VIBRANCE_EXPONENT)
-    multiplier = math.sqrt(vibrance / _MAX_VIBRANCE)
+    multiplier = math.sqrt(1 + (vibrance / _MAX_VIBRANCE))
     chromaticity = _get_chromaticity(base * multiplier)
     return {Template.CHROMATICITY: str(chromaticity)}
 
