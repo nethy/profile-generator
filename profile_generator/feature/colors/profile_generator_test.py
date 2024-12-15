@@ -9,7 +9,8 @@ from .space import profile_generator_test as profile_test
 from .white_balance import profile_generator_test as wb_test
 
 _DEFAULT = {
-    "LcChromaticity": "33",
+    "ColorAppEnabled": "false",
+    "ColorAppChroma": "0.0",
     **wb_test.DEFAULT,
     **hsl_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -23,37 +24,12 @@ class ProfileGeneratorTest(TestCase):
 
     def test_generate_vibrance(self) -> None:
         profile_params = ProfileParams()
-        profile_params.parse(
-            {"colors": {"vibrance": 0}, "tone": {"curve": {"sigmoid": {"slope": 1}}}}
-        )
+        profile_params.parse({"colors": {"vibrance": 5}})
         self.assertEqual(
             generate(profile_params),
             _DEFAULT
             | {
-                "LcChromaticity": "0",
-            },
-        )
-
-        profile_params = ProfileParams()
-        profile_params.parse(
-            {"colors": {"vibrance": 5}, "tone": {"curve": {"sigmoid": {"slope": 1}}}}
-        )
-        self.assertEqual(
-            generate(profile_params),
-            _DEFAULT
-            | {
-                "LcChromaticity": "22",
-            },
-        )
-
-        profile_params = ProfileParams()
-        profile_params.parse(
-            {"colors": {"vibrance": 0}, "tone": {"curve": {"sigmoid": {"slope": 1.4}}}}
-        )
-        self.assertEqual(
-            generate(profile_params),
-            _DEFAULT
-            | {
-                "LcChromaticity": "23",
+                "ColorAppEnabled": "true",
+                "ColorAppChroma": "16.6666667",
             },
         )

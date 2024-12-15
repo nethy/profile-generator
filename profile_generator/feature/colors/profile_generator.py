@@ -1,8 +1,8 @@
-import math
 from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
+from profile_generator.unit.precision import DECIMALS
 
 from .grading.profile_generator import generate as generate_grading
 from .hsl.profile_generator import generate as generate_hsl
@@ -21,21 +21,19 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
 
 
 class Template:
-    CHROMATICITY: Final = "LcChromaticity"
+    ENABLED: Final = "ColorAppEnabled"
+    CHROMATICITY: Final = "ColorAppChroma"
 
 
-_MAX_VIBRANCE: Final = 10.0
-_CONTRAST_VIBRANCE_EXPONENT = 0.605
+_MAX_VIBRANCE: Final = 10
+_COEFFICIENT: Final = 100 / 3
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    contrast = profile_params.tone.curve.sigmoid.slope.value
     vibrance = profile_params.colors.vibrance.value
-    base = math.pow(contrast, _CONTRAST_VIBRANCE_EXPONENT)
-    multiplier = math.sqrt(1 + (vibrance / _MAX_VIBRANCE))
-    chromaticity = _get_chromaticity(base * multiplier)
-    return {Template.CHROMATICITY: str(chromaticity)}
-
-
-def _get_chromaticity(value: float) -> int:
-    return min(100, round((value - 1) * 100))
+    chromaticity = vibrance / _MAX_VIBRANCE * _COEFFICIENT
+    is_enabled = chromaticity != 0.0
+    return {
+        Template.ENABLED: str(is_enabled).lower(),
+        Template.CHROMATICITY: str(round(chromaticity, DECIMALS)),
+    }
