@@ -197,7 +197,7 @@ class Raw(ProfileParamParser):
 class Sigmoid(ProfileParamParser):
     def __init__(self) -> None:
         self.grey18: Final = Value[float](90.0)
-        self.slope: Final = Value[float](1.6)
+        self.slope: Final = Value[float](1.0666667)
 
 
 class Curve(ProfileParamParser):
