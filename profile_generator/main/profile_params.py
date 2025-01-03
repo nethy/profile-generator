@@ -130,6 +130,11 @@ class Colors(ProfileParamParser):
         self.white_balance: Final = WhiteBalance()
 
 
+class Grain(ProfileParamParser):
+    def __init__(self) -> None:
+        self.strength: Final = Value[int](0)
+
+
 @unique
 class NoiseReductionMode(ProfileParamEnum):
     AGGRESSIVE = "shalbi"
@@ -140,6 +145,7 @@ class NoiseReduction(ProfileParamParser):
     def __init__(self) -> None:
         self.mode: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
         self.luminance: Final = Value[float](0)
+        self.detail: Final = Value[float](100.0)
         self.chrominance: Final = Value[float](0)
 
 
@@ -214,6 +220,8 @@ class Tone(ProfileParamParser):
 class Details(ProfileParamParser):
     def __init__(self) -> None:
         self.sharpening: Final = Sharpening()
+        self.noise_reduction: Final = NoiseReduction()
+        self.grain: Final = Grain()
 
 
 class ProfileParams(ProfileParamParser):

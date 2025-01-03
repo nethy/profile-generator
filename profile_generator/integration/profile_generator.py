@@ -1,6 +1,7 @@
 from collections.abc import Mapping
 
 import profile_generator.feature.colors.profile_generator as colors
+import profile_generator.feature.details.profile_generator as details
 import profile_generator.feature.raw.profile_generator as raw
 import profile_generator.feature.tone.contrast.local.profile_generator as local_contrast
 from profile_generator.main import ProfileGenerator
@@ -18,4 +19,9 @@ def compose_generators(*profile_generators: ProfileGenerator) -> ProfileGenerato
     return generate
 
 
-GENERATOR = compose_generators(colors.generate, raw.generate, local_contrast.generate)
+GENERATOR = compose_generators(
+    colors.generate,
+    details.generate,
+    raw.generate,
+    local_contrast.generate,
+)
