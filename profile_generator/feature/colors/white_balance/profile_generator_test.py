@@ -11,7 +11,7 @@ DEFAULT = {
 }
 
 
-class SchemaTest(TestCase):
+class ProfileGeneratorTest(TestCase):
     def test_process_wb_temperature(self) -> None:
         profile_params = ProfileParams()
         profile_params.colors.white_balance.parse({"temperature": 5500})

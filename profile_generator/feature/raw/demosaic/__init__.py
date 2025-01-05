@@ -1,1 +1,1 @@
-from .schema import SCHEMA, process
+from .schema import SCHEMA

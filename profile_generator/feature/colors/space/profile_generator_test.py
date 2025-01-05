@@ -14,5 +14,5 @@ class ProfileGeneratorTest(TestCase):
         self.assertEqual(generate(profile_params), {"CMWorkingProfile": "sRGB"})
 
         profile_params = ProfileParams()
-        profile_params.colors.profile.parse({"working": "sRGB"})
-        self.assertEqual(generate(profile_params), {"CMWorkingProfile": "sRGB"})
+        profile_params.colors.profile.parse({"working": "aCeSp1"})
+        self.assertEqual(generate(profile_params), {"CMWorkingProfile": "ACESp1"})

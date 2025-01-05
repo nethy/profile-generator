@@ -18,5 +18,5 @@ def _process(data: Any) -> Mapping[str, str]:
 
 
 SCHEMA = object_of(
-    {"radius": range_of(0.0, 2.0), "threshold": range_of(0, 100)}, _process
+    {"radius": range_of(0.0, 2.0), "threshold": range_of(0, 200)}, _process
 )

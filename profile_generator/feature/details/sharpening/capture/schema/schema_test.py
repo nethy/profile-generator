@@ -27,7 +27,7 @@ class SchemaTest(unittest.TestCase):
     def test_validate_invalid_threshold(self) -> None:
         self.validator.assert_error(
             {"threshold": False},
-            InvalidObjectError({"threshold": InvalidRangeError(0, 100)}),
+            InvalidObjectError({"threshold": InvalidRangeError(0, 200)}),
         )
 
     def test_process_default(self) -> None:

@@ -22,7 +22,7 @@ class ProfileParamEnum(Enum):
         if data is None:
             return None
         for member in cls:
-            if member.value.casefold() == data.casefold():
+            if member.name.casefold() == data.casefold():
                 return member
         return None
 
@@ -102,10 +102,10 @@ class Hsl(ProfileParamParser):
 
 @unique
 class ColorSpace(ProfileParamEnum):
-    ACES_P0 = "ACESp0"
-    ACES_P1 = "ACESp1"
-    PRO_PHOTO = "ProPhoto"
-    REC_2020 = "Rec2020"
+    ACESP0 = "ACESp0"
+    ACESP1 = "ACESp1"
+    PROPHOTO = "ProPhoto"
+    REC2020 = "Rec2020"
     SRGB = "sRGB"
 
 
@@ -117,7 +117,7 @@ class WhiteBalance(ProfileParamParser):
 
 class ColorProfile(ProfileParamParser):
     def __init__(self) -> None:
-        self.working: Final = Value[ColorSpace](ColorSpace.PRO_PHOTO)
+        self.working: Final = Value[ColorSpace](ColorSpace.PROPHOTO)
 
 
 class Colors(ProfileParamParser):
@@ -130,6 +130,11 @@ class Colors(ProfileParamParser):
         self.white_balance: Final = WhiteBalance()
 
 
+class Grain(ProfileParamParser):
+    def __init__(self) -> None:
+        self.strength: Final = Value[int](0)
+
+
 @unique
 class NoiseReductionMode(ProfileParamEnum):
     AGGRESSIVE = "shalbi"
@@ -140,6 +145,7 @@ class NoiseReduction(ProfileParamParser):
     def __init__(self) -> None:
         self.mode: Final = Value[NoiseReductionMode](NoiseReductionMode.CONSERVATIVE)
         self.luminance: Final = Value[float](0)
+        self.detail: Final = Value[float](100.0)
         self.chrominance: Final = Value[float](0)
 
 
@@ -167,9 +173,12 @@ class Sharpening(ProfileParamParser):
 @unique
 class DemosaicMethod(ProfileParamEnum):
     AMAZE = "amaze"
+    AMAZE_BILINEAR = "amazebilinear"
     AMAZE_VNG4 = "amazevng4"
-    DCB_VNG4 = "dcbvng4"
+    RCD_BILINEAR = "rcdbilinear"
     RCD_VNG4 = "rcdvng4"
+    DCB_BILINEAR = "dcbbilinear"
+    DCB_VNG4 = "dcbvng4"
     LMMSE = "lmmse"
 
 
@@ -194,7 +203,7 @@ class Raw(ProfileParamParser):
 class Sigmoid(ProfileParamParser):
     def __init__(self) -> None:
         self.grey18: Final = Value[float](90.0)
-        self.slope: Final = Value[float](1.6)
+        self.slope: Final = Value[float](1.0666667)
 
 
 class Curve(ProfileParamParser):
@@ -211,6 +220,8 @@ class Tone(ProfileParamParser):
 class Details(ProfileParamParser):
     def __init__(self) -> None:
         self.sharpening: Final = Sharpening()
+        self.noise_reduction: Final = NoiseReduction()
+        self.grain: Final = Grain()
 
 
 class ProfileParams(ProfileParamParser):
