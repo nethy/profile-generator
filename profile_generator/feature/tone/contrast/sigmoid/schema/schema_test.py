@@ -48,6 +48,6 @@ class SchemaTest(TestCase):
 
         self.validator.assert_process(
             {},
-            {"Curve": "1;1.0000000;1.0000000;"},
+            {"Curve": "1;1.0000000;1.0000000;", "Saturation": "6"},
         )
         get_contrast.assert_called_once_with(90.0 / 255, 1.167)

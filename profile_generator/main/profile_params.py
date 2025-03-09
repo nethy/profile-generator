@@ -68,19 +68,33 @@ class Camera(ProfileParamParser):
         self.resolution_mp: Final = Value[float](16)
 
 
-class Hcl(ProfileParamTuple):
+class Lch(ProfileParamTuple[float]):
     def __init__(self) -> None:
+        self.lightness: Final = Value[float](0)
+        self.chroma: Final = Value[float](0)
         self.hue: Final = Value[float](0)
-        self.chromacity: Final = Value[float](0)
-        self.luminance: Final = Value[float](0)
+
+
+class ColorGrades(ProfileParamParser):
+    def __init__(self) -> None:
+        self.global_lch: Final = Lch()
+        self.shadow_lch: Final = Lch()
+        self.midtone_lch: Final = Lch()
+        self.highlight_lch: Final = Lch()
+        self.balance: Final = Value[float](50)
+        self.origo: Final = Value[float](50)
+
+
+class Matte(ProfileParamParser):
+    def __init__(self) -> None:
+        self.shadow: Final = Value[float](0)
+        self.highlight: Final = Value[float](255)
 
 
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
-        self.base: Final = Hcl()
-        self.shadow: Final = Hcl()
-        self.midtone: Final = Hcl()
-        self.highlight: Final = Hcl()
+        self.grades: Final = ColorGrades()
+        self.matte: Final = Matte()
 
 
 class HueParams(ProfileParamParser):

@@ -24,3 +24,8 @@ class BezierTest(unittest.TestCase):
         self.assertEqual(Point(0.2166667, 0.0833333), bezier_at(0.5))
         self.assertEqual(Point(0.3136364, 0.2045455), bezier_at(0.75))
         self.assertEqual(Point(0.5, 0.5), bezier_at(1))
+
+    def test_get_control_point_coefficient(self) -> None:
+        self.assertRaises(ValueError, lambda: bezier.get_control_point_coefficent(0.99))
+        self.assertAlmostEqual(bezier.get_control_point_coefficent(1), 0)
+        self.assertAlmostEqual(bezier.get_control_point_coefficent(2), 0.25)

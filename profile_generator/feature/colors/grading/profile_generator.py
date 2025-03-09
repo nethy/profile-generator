@@ -19,7 +19,7 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     shadow_hcl = profile_params.colors.grading.shadow.as_list()
     midtone_hcl = profile_params.colors.grading.midtone.as_list()
     highlight_hcl = profile_params.colors.grading.highlight.as_list()
-    rgb_curve_points = grading.rgb_curves(
+    rgb_curve_points = grading.get_rgb_curves(
         global_hcl, shadow_hcl, midtone_hcl, highlight_hcl
     )
     if len(rgb_curve_points) > 0:

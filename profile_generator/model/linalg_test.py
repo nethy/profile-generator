@@ -3,6 +3,7 @@ from unittest import TestCase
 from .linalg import (
     Matrix,
     Vector,
+    add_vectors,
     inverse,
     multiply_vector_vector,
     scale_matrix,
@@ -79,3 +80,6 @@ class LinalgTest(LinalgTestCase):
             scale_matrix([1, 2, 3], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
             [[1, 2, 3], [8, 10, 12], [21, 24, 27]],
         )
+
+    def test_add_vectors(self) -> None:
+        self.assert_vector_equal(add_vectors([1, 2, 3], [4, 5, 6]), [5, 7, 9])

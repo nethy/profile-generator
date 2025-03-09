@@ -28,7 +28,7 @@ def main() -> None:
         midtone = config.get("midtone", _DEFAULT)
         highlight = config.get("highlight", _DEFAULT)
 
-        curves = grading.rgb_curves(global_hcl, shadow, midtone, highlight)
+        curves = grading.get_rgb_curves(global_hcl, shadow, midtone, highlight)
 
         template_values = {
             template: raw_therapee.present_curve(

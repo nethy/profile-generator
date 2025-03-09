@@ -1,4 +1,5 @@
 import math
+from collections.abc import Callable
 from decimal import Decimal
 
 from profile_generator.unit import Matrix, Vector
@@ -94,5 +95,17 @@ def scale_matrix(scale: Vector, matrix: Matrix) -> Matrix:
     return [[a * x for x in row] for a, row in zip(scale, matrix)]
 
 
-def add_vector(a: Vector, b: Vector) -> Vector:
+def add_vectors(a: Vector, b: Vector) -> Vector:
     return [a_value + b_value for a_value, b_value in zip(a, b)]
+
+
+def multiply_vector(a: Vector, scalar: float) -> Vector:
+    return [scalar * value for value in a]
+
+
+def add_vector(a: Vector, scalar: float) -> Vector:
+    return [scalar + value for value in a]
+
+
+def map_vector(a: Vector, fn: Callable[[float], float]) -> Vector:
+    return [fn(value) for value in a]
