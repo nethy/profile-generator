@@ -35,8 +35,8 @@ def normalize(point):
     return Point(point.x - diff, point.y - diff)
 
 
-def print_points(fn):
-    for x, y in curve.as_points(fn):
+def print_points(points):
+    for x, y in points:
         print_point(x, y)
 
 
@@ -139,11 +139,11 @@ def midtone_pass(curve):
 
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
-    # print_points(contrast_sigmoid.calculate(106.845, 1.85))
-    # print_points(contrast_sigmoid.contrast(87.30522037562211 / 255, 1.85))
+    # print_points(contrast_sigmoid.get_tone_curve(106.845 / 255, 1.85))
+    # print_points(contrast_sigmoid.get_tone_curve(87.30522037562211 / 255, 1))
     # print_points(contrast_sigmoid.flat(80.86382712430665 / 255))
-    # print_points(contrast_sigmoid.contrast(80.86382712430665 / 255, 2))
-    # print_points(contrast_sigmoid.calculate(63.189134638121, 1))
+    # print_points(contrast_sigmoid.get_tone_curve(80.86382712430665 / 255, 1.5))
+    # print_points(contrast_sigmoid.get_tone_curve(63.189134638121 / 255, 2))
 
     # print_points(tone_curve._get_spline_flat(0.05))
 
@@ -152,9 +152,20 @@ if __name__ == "__main__":
     #     midtone_pass(contrast_curve),
     # )
 
-    fn = spline.interpolate([(0, 0), (0.1, 0.09), (0.32, 0.43), (0.66, 0.87), (1, 1)])
-    linear_fn = lambda x: fn(SRGB.inverse_gamma(x))
+    # fn = spline.interpolate([(0, 0), (0.1, 0.09), (0.32, 0.43), (0.66, 0.87), (1, 1)])
+    # linear_fn = lambda x: fn(SRGB.inverse_gamma(x))
 
-    target = SRGB.inverse_gamma(0.9)
-    print(target)
-    print(search.jump_search(0, 1, linear_fn, target))
+    # target = SRGB.inverse_gamma(0.9)
+    # print(target)
+    # print(search.jump_search(0, 1, linear_fn, target))
+
+    grey18_d40 = 103.131714833699 / 255
+    grey18_d7000 = 87.305220375622 / 255
+    grey18_g80 = 80.86382712430665 / 255
+    grey18_g9 = 63.189134638121 / 255
+    slope = 1.6
+
+    # print_points(curve.as_points(catmull_tone_curve(grey18_g9, slope)))
+    # print_points(curve.as_points(catmull_linear_tone_curve(grey18_g9, slope)))
+    print_points(curve.as_points(hybrid_tone_curve(grey18_g9, slope)))
+    # print_points(curve.as_points(exp_tone_curve(grey18_g9, slope)))

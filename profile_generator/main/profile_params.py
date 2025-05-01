@@ -75,14 +75,12 @@ class Lch(ProfileParamTuple[float]):
         self.hue: Final = Value[float](0)
 
 
-class ColorGrades(ProfileParamParser):
+class Toning(ProfileParamParser):
     def __init__(self) -> None:
         self.global_lch: Final = Lch()
         self.shadow_lch: Final = Lch()
         self.midtone_lch: Final = Lch()
         self.highlight_lch: Final = Lch()
-        self.balance: Final = Value[float](50)
-        self.origo: Final = Value[float](50)
 
 
 class Matte(ProfileParamParser):
@@ -91,27 +89,28 @@ class Matte(ProfileParamParser):
         self.highlight: Final = Value[float](255)
 
 
+class BshValue(ProfileParamTuple[float]):
+    def __init__(self) -> None:
+        self.brightness: Final = Value[float](0)
+        self.saturation: Final = Value[float](0)
+        self.hue: Final = Value[float](0)
+
+
+class Bsh(ProfileParamParser):
+    def __init__(self) -> None:
+        self.red: Final = BshValue()
+        self.yellow: Final = BshValue()
+        self.green: Final = BshValue()
+        self.cyan: Final = BshValue()
+        self.blue: Final = BshValue()
+        self.magenta: Final = BshValue()
+
+
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
-        self.grades: Final = ColorGrades()
+        self.bsh: Final = Bsh()
+        self.toning: Final = Toning()
         self.matte: Final = Matte()
-
-
-class HueParams(ProfileParamParser):
-    def __init__(self) -> None:
-        self.red: Final = Value[float](0)
-        self.yellow: Final = Value[float](0)
-        self.green: Final = Value[float](0)
-        self.cyan: Final = Value[float](0)
-        self.blue: Final = Value[float](0)
-        self.magenta: Final = Value[float](0)
-
-
-class Hsl(ProfileParamParser):
-    def __init__(self) -> None:
-        self.hue: Final = HueParams()
-        self.saturation: Final = HueParams()
-        self.luminance: Final = HueParams()
 
 
 @unique
@@ -139,7 +138,6 @@ class Colors(ProfileParamParser):
         self.vibrance: Final = Value[float](0)
         self.chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
-        self.hsl: Final = Hsl()
         self.profile: Final = ColorProfile()
         self.white_balance: Final = WhiteBalance()
 

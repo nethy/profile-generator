@@ -100,7 +100,7 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled=true
+Enabled=false
 Brightness=0
 Contrast=0
 Chromaticity=0
@@ -111,9 +111,9 @@ LCurve=0;
 aCurve=0;
 bCurve=0;
 ccCurve=0;
-chCurve={LcChCurve}
-lhCurve={LcLhCurve}
-hhCurve={LcHhCurve}
+chCurve=0;
+lhCurve=0;
+hhCurve=0;
 LcCurve=0;
 ClCurve=0;
 
@@ -747,10 +747,10 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled=false
-HCurve=0;
-SCurve=0;
-VCurve=0;
+Enabled={HSVEnabled}
+HCurve={HSVHCurve}
+SCurve={HSVSCurve}
+VCurve={HSVVCurve}
 
 [SoftLight]
 Enabled=false
@@ -769,7 +769,7 @@ gCurve={RGBCurvesGCurve}
 bCurve={RGBCurvesBCurve}
 
 [ColorToning]
-Enabled=false
+Enabled={CTEnabled}
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
@@ -799,17 +799,50 @@ LabGridALow=0
 LabGridBLow=0
 LabGridAHigh=0
 LabGridBHigh=0
-LabRegionA_1=0
-LabRegionB_1=0
+LabRegionA_1={CTA1}
+LabRegionB_1={CTB1}
 LabRegionSaturation_1=0
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
-LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
-LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionHueMask_1=0;
+LabRegionChromaticityMask_1=0;
+LabRegionLightnessMask_1=0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
+LabRegionA_2={CTA2}
+LabRegionB_2={CTB2}
+LabRegionSaturation_2=0
+LabRegionSlope_2=1
+LabRegionOffset_2=0
+LabRegionPower_2=1
+LabRegionHueMask_2=0;
+LabRegionChromaticityMask_2=0;
+LabRegionLightnessMask_2=1;0.1666667;1;0.25;0.25;0.5;0;0.25;0.25;
+LabRegionMaskBlur_2=0
+LabRegionChannel_2=-1
+LabRegionA_3={CTA3}
+LabRegionB_3={CTB3}
+LabRegionSaturation_3=0
+LabRegionSlope_3=1
+LabRegionOffset_3=0
+LabRegionPower_3=1
+LabRegionHueMask_3=0;
+LabRegionChromaticityMask_3=0;
+LabRegionLightnessMask_3=1;0.1666667;0;0.25;0.25;0.5;1;0.25;0.25;0.8333333;0;0.25;0.25;
+LabRegionMaskBlur_3=0
+LabRegionChannel_3=-1
+LabRegionA_4={CTA4}
+LabRegionB_4={CTB4}
+LabRegionSaturation_4=0
+LabRegionSlope_4=1
+LabRegionOffset_4=0
+LabRegionPower_4=1
+LabRegionHueMask_4=0;
+LabRegionChromaticityMask_4=0;
+LabRegionLightnessMask_4=1;0.5;0;0.25;0.25;0.8333333;1;0.25;0.25;
+LabRegionMaskBlur_4=0
+LabRegionChannel_4=-1
 LabRegionsShowMask=-1
 
 [RAW]

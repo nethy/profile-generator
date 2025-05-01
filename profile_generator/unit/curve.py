@@ -20,6 +20,10 @@ def as_points(curve: Curve) -> Sequence[Point]:
     points.append(Point(1, curve(1)))
     return points
 
+_POINT_COUNT = 32
 
 def as_fixed_points(curve: Curve) -> Sequence[Point]:
-    return [Point(i / (64 - 1), curve(i / (64 - 1))) for i in range(64)]
+    return [
+        Point(i / (_POINT_COUNT - 1), curve(i / (_POINT_COUNT - 1)))
+        for i in range(_POINT_COUNT)
+    ]

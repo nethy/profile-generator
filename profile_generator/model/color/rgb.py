@@ -5,8 +5,8 @@ from profile_generator.model.color.space.color_space import ColorSpace
 from profile_generator.model.linalg import Vector
 
 
-def normalize(srgb: Vector) -> Vector:
-    return [normalize_value(x) for x in srgb]
+def normalize(rgb: Vector) -> Vector:
+    return [normalize_value(x) for x in rgb]
 
 
 def normalize_value(value: float) -> float:

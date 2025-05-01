@@ -3,7 +3,7 @@ from typing import Final, Optional
 
 from profile_generator.unit import DECIMALS, Point
 
-_EQ_STRENGTH = 0.25
+_EQ_STRENGTH = 0.16666667
 _ONE_SIDE_EQ_STRENGTH = 0.5
 
 

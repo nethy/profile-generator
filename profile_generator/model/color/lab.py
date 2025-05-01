@@ -33,7 +33,7 @@ def to_xyz(lab: Vector) -> Vector:
 
 def to_lch(lab: Vector) -> Vector:
     l, a, b = lab
-    c = math.sqrt(math.pow(a, 2) + math.pow(b, 2))
+    c = math.sqrt(a * a + b * b)
     h = math.degrees(math.atan2(b, a))
     if h < 0:
         h += 360
@@ -45,6 +45,24 @@ def from_lch(lch: Vector) -> Vector:
     a = c * math.cos(math.radians(h))
     b = c * math.sin(math.radians(h))
     return [l, a, b]
+
+
+def to_bsh(lab: Vector) -> Vector:
+    """
+    Brilliance, Saturation, Hue
+    """
+    l, c, h = to_lch(lab)
+    b = math.sqrt(l * l + c * c)
+    s = (1 - math.atan2(l, c) / math.pi * 2) * 100 if l > 0 or c > 0 else 0
+    return [b, s, h]
+
+
+def from_bsh(bsh: Vector) -> Vector:
+    b, s, h = bsh
+    s_radians = (1 - s / 100) * math.pi / 2
+    l = b * math.sin(s_radians)
+    c = b * math.cos(s_radians)
+    return from_lch([l, c, h])
 
 
 def from_xyz_lum(y_d65: float) -> float:
