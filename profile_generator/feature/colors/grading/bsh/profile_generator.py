@@ -50,6 +50,7 @@ Raw Therapee HSV equalizer functions
 
 import math
 from collections.abc import Mapping
+from itertools import starmap
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
@@ -69,9 +70,9 @@ class Template:
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     hsvs = bsh.get_hsvs(profile_params.colors.grading.bsh)
-    hues = [EqPoint(x, y) for x, y in map(_get_hue, hsvs)]
-    saturations = [EqPoint(x, y) for x, y in map(_get_saturation, hsvs)]
-    values = [EqPoint(x, y) for x, y in map(_get_value, hsvs)]
+    hues = [EqPoint(x, y) for x, y in starmap(_get_hue, hsvs)]
+    saturations = [EqPoint(x, y) for x, y in starmap(_get_saturation, hsvs)]
+    values = [EqPoint(x, y) for x, y in starmap(_get_value, hsvs)]
     is_enabled = any((not math.isclose(point.y, 0.5)
                       for point in hues + saturations + values))
     return {

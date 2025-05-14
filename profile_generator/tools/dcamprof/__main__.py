@@ -20,7 +20,7 @@ def dcamprof_tone_curve(camera_grey18_linear: float) -> None:
     print(round(grey18 * 255, 12))
 
     flat_curve = tone_curve.get_linear_flat(camera_grey18_linear)
-    contrast_curve = tone_curve.get_linear_contrast(camera_grey18_linear, 1.5)
+    contrast_curve = tone_curve.get_linear_contrast(1.5)
     flat = to_markup(flat_curve)
     standard = to_markup(lambda x: contrast_curve(flat_curve(x)))
 

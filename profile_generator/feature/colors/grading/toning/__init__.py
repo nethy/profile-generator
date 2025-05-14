@@ -1,2 +1,2 @@
-from .profile_generator import generator
+from .profile_generator import generate
 from .schema import SCHEMA

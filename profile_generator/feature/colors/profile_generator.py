@@ -10,10 +10,12 @@ from .white_balance.profile_generator import generate as generate_white_balance
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    return (_get_vibrance(profile_params)
-        | generate_grading(profile_params)
-        | generate_space(profile_params)
-        | generate_white_balance(profile_params))
+    return {
+        **_get_vibrance(profile_params),
+        **generate_grading(profile_params),
+        **generate_space(profile_params),
+        **generate_white_balance(profile_params)
+    }
 
 
 _MAX_VIBRANCE: Final = 10

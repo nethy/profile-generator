@@ -16,17 +16,17 @@ def get_flat(grey18: float) -> Sequence[Point]:
 
 
 @cache
-def get_contrast(grey18: float, slope: float) -> Sequence[Point]:
+def get_contrast(slope: float) -> Sequence[Point]:
     if math.isclose(slope, 1):
         return []
-    contrast = tone_curve.get_srgb_contrast(grey18, slope)
+    contrast = tone_curve.get_srgb_contrast(slope)
     return curve.as_points(contrast)
 
 
 @cache
 def get_tone_curve(grey18: float, slope: float) -> Sequence[Point]:
     flat = tone_curve.get_srgb_flat(grey18)
-    contrast = tone_curve.get_srgb_contrast(grey18, slope)
+    contrast = tone_curve.get_srgb_contrast(slope)
     return curve.as_points(lambda x: contrast(flat(x)))
 
 

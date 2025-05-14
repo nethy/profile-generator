@@ -5,6 +5,7 @@ from typing import Final
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import CurveType
+from profile_generator.unit import Point
 
 from . import matte
 
@@ -27,10 +28,10 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     curve = lambda x: matte_curve(lightness_curve(x))
 
     refs = (i / (_POINT_COUNT - 1) for i in range(_POINT_COUNT))
-    points = [curve(x) for x in refs]
+    points = [Point(x, curve(x)) for x in refs]
     curve_output = raw_therapee.present_curve(CurveType.STANDARD, points)
 
-    is_enabled = any(not math.isclose(x, y) for x, y in zip(refs, points))
+    is_enabled = any(not math.isclose(x, y) for x, y in points)
     return {
         Template.ENABLED: str(is_enabled).lower(),
         Template.R_CURVE: curve_output,

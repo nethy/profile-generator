@@ -50,7 +50,6 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
 
     is_enabled = any(not math.isclose(x, 0) for x in
                      global_ab + shadow_ab + midtone_ab + highlight_ab)
-
     return {
         Template.ENABLED: str(is_enabled).lower(),
         Template.GLOBAL_A: str(global_ab[0] / 100),

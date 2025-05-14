@@ -27,8 +27,8 @@ def _get_hybrid_log_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
-    weight = lambda x: 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
-    return lambda x: weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x)
+    hermite_weight = lambda x: 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
+    return lambda x: hermite_weight(x) * flat_log(x) + (1 - hermite_weight(x)) * flat_pow(x)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
@@ -37,13 +37,13 @@ def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
     return lambda x: srgb.gamma(curve(srgb.inverse_gamma(x)))
 
 
-def get_srgb_contrast(grey18: float, gradient: float) -> Curve:
-    contrast = get_linear_contrast(srgb.inverse_gamma(grey18), gradient)
+def get_srgb_contrast(gradient: float) -> Curve:
+    contrast = get_linear_contrast(gradient)
     return lambda x: srgb.gamma(contrast(srgb.inverse_gamma(x)))
 
 
-def get_lab_contrast(linear_grey18: float, gradient: float) -> Curve:
-    contrast = get_linear_contrast(linear_grey18, gradient)
+def get_lab_contrast(gradient: float) -> Curve:
+    contrast = get_linear_contrast(gradient)
     return lambda x: lab.from_xyz_lum(contrast(lab.to_xyz_lum(x * 100))) / 100
 
 

@@ -15,19 +15,15 @@ class Field:
 
 class Template:
     CURVE: Final = "Curve"
-    SATURATION: Final = "Saturation"
-
 
 def _process(data: Any) -> Mapping[str, str]:
     grey18 = rgb.normalize_value(data.get(*Field.GREY18))
     slope = data.get(*Field.SLOPE)
-    contrast = contrast_sigmoid.get_contrast(grey18, slope)
-    saturation = (slope - 1) / 3 * 100
+    contrast = contrast_sigmoid.get_tone_curve(grey18, slope)
     return {
         Template.CURVE: raw_therapee.present_curve(
-            raw_therapee.CurveType.STANDARD, contrast
-        ),
-        Template.SATURATION: str(round(saturation)),
+            raw_therapee.CurveType.FLEXIBLE, contrast
+        )
     }
 
 
