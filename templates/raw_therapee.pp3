@@ -16,8 +16,8 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=Perceptual
-CurveMode2=SatAndValueBlending
+CurveMode=SatAndValueBlending
+CurveMode2=FilmLike
 Curve={Curve0}
 Curve2={Curve1}
 

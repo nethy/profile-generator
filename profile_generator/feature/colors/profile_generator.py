@@ -8,7 +8,6 @@ f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
 
 p = 100*(f'(0)-1)/3
 """
-import math
 from collections.abc import Mapping
 from typing import Final
 
@@ -33,9 +32,8 @@ _MAX_VIBRANCE: Final = 10
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    slope = profile_params.tone.curve.sigmoid.slope.value
     vibrance_gain = profile_params.colors.vibrance.value
-    vibrance = math.pow(slope, 0.75) * (1 + vibrance_gain / _MAX_VIBRANCE)
+    vibrance = 1 + vibrance_gain / _MAX_VIBRANCE
     chromaticity = min(100 * (vibrance - 1) / 3, 100)
     is_enabled = chromaticity != 0.0
     return {
