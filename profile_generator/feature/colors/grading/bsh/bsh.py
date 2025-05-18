@@ -29,20 +29,22 @@ def get_hsvs(bsh: Bsh) -> Sequence[tuple[Vector, Vector]]:
         (ReferenceColorLch.BLUE, bsh.blue.as_list()),
         (ReferenceColorLch.MAGENTA, bsh.magenta.as_list()),
     ]
-    new_lchs_by_lch = {lch: _apply(lch, bsh) for lch, bsh in params_by_lch}
+    new_lchs_by_lch = {
+        (lch[0], lch[1], lch[2]): _apply(lch, bsh) for lch, bsh in params_by_lch
+    }
     return [
-        (_to_hsv_from_lch(lch), _to_hsv_from_lch(new_lch))
+        (_to_hsv_from_lch(list(lch)), _to_hsv_from_lch(new_lch))
         for lch, new_lch in new_lchs_by_lch.items()
     ]
 
 
 def _apply(lch: Vector, bsh: Vector) -> Vector:
-    ref_b, ref_s, ref_h = lab.to_bsh(lch)
+    ref_b, ref_s, ref_h = lab.to_bsh(lab.from_lch(lch))
     b, s, h = bsh
     new_b = ref_b * math.pow(2, b / 10.0)
     new_s = ref_s * math.pow(2, s / 10.0)
     new_h = ref_h + (60 / 360) * (h / 10.0)
-    return lab.from_bsh([new_b, new_s, new_h])
+    return lab.to_lch(lab.from_bsh([new_b, new_s, new_h]))
 
 
 def _to_hsv_from_lch(lch: Vector) -> Vector:

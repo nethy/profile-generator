@@ -48,8 +48,10 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     midtone_ab = lab.from_lch(midtone_hcl)[1:]
     highlight_ab = lab.from_lch(highlight_hcl)[1:]
 
-    is_enabled = any(not math.isclose(x, 0) for x in
-                     global_ab + shadow_ab + midtone_ab + highlight_ab)
+    is_enabled = any(
+        not math.isclose(x, 0)
+        for x in global_ab + shadow_ab + midtone_ab + highlight_ab
+    )
     return {
         Template.ENABLED: str(is_enabled).lower(),
         Template.GLOBAL_A: str(global_ab[0] / 100),
@@ -61,4 +63,3 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
         Template.HIGHLIGHT_A: str(highlight_ab[0] / 100),
         Template.HIGHLIGHT_B: str(highlight_ab[1] / 100),
     }
-

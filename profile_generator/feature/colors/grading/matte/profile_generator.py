@@ -25,13 +25,16 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     lightness_curve = matte.get_lightness_curve(grading_params.toning)
     matte_curve = matte.get_matte_curve(grading_params.matte)
 
-    curve = lambda x: matte_curve(lightness_curve(x))
+    def curve(x: float) -> float:
+        return matte_curve(lightness_curve(x))
 
     refs = (i / (_POINT_COUNT - 1) for i in range(_POINT_COUNT))
     points = [Point(x, curve(x)) for x in refs]
     curve_output = raw_therapee.present_curve(CurveType.STANDARD, points)
 
-    is_enabled = any(not math.isclose(x, y) for x, y in points)
+    is_enabled = any(not math.isclose(x, y, rel_tol=1e-7) for x, y in points)
+    if not is_enabled:
+        curve_output = CurveType.LINEAR
     return {
         Template.ENABLED: str(is_enabled).lower(),
         Template.R_CURVE: curve_output,

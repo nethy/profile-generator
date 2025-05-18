@@ -1,4 +1,3 @@
-import math
 from collections.abc import Callable
 from functools import cache
 
@@ -27,8 +26,11 @@ def _get_hybrid_log_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
-    hermite_weight = lambda x: 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
-    return lambda x: hermite_weight(x) * flat_log(x) + (1 - hermite_weight(x)) * flat_pow(x)
+
+    def weight(x: float) -> float:
+        return 1 - x
+
+    return lambda x: (weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x))
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
@@ -48,4 +50,7 @@ def get_lab_contrast(gradient: float) -> Curve:
 
 
 def get_linear_contrast(gradient: float) -> Curve:
-    return sigmoid.exponential(gradient)
+    shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
+    shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
+    contrast = sigmoid.exponential(gradient)
+    return lambda x: shift_y(contrast(shift_x(x)))

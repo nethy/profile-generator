@@ -12,6 +12,7 @@ from profile_generator.unit import Point
 _CONTRAST_SIGMOID = (
     "profile_generator.feature.tone.contrast.sigmoid.schema.schema.contrast_sigmoid"
 )
+_CONTRAST_SIGMOID_GET_FLAT = f"{_CONTRAST_SIGMOID}.get_flat"
 _CONTRAST_SIGMOID_GET_CONTRAST = f"{_CONTRAST_SIGMOID}.get_contrast"
 
 
@@ -43,11 +44,17 @@ class SchemaTest(TestCase):
         )
 
     @patch(_CONTRAST_SIGMOID_GET_CONTRAST)
-    def test_process_default(self, get_contrast: Mock) -> None:
+    @patch(_CONTRAST_SIGMOID_GET_FLAT)
+    def test_process_default(self, get_flat: Mock, get_contrast: Mock) -> None:
+        get_flat.return_value = [Point(1, 1)]
         get_contrast.return_value = [Point(1, 1)]
 
         self.validator.assert_process(
             {},
-            {"Curve": "1;1.0000000;1.0000000;", "Saturation": "6"},
+            {
+                "Curve0": "4;1.0000000;1.0000000;",
+                "Curve1": "4;1.0000000;1.0000000;",
+            },
         )
-        get_contrast.assert_called_once_with(90.0 / 255, 1.167)
+        get_flat.assert_called_once_with(90.0 / 255)
+        get_contrast.assert_called_once_with(1.6)

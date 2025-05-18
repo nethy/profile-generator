@@ -17,9 +17,9 @@ HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
 CurveMode=Perceptual
-CurveMode2=Perceptual
-Curve=0;
-Curve2={Curve}
+CurveMode2=SatAndValueBlending
+Curve={Curve0}
+Curve2={Curve1}
 
 [HLRecovery]
 Enabled=true
@@ -534,8 +534,8 @@ DeconvIterations=100
 
 [Color Management]
 InputProfile=(cameraICC)
-ToneCurve=true
-ApplyLookTable=true
+ToneCurve=false
+ApplyLookTable=false
 ApplyBaselineExposureOffset=false
 ApplyHueSatMap=true
 DCPIlluminant=0

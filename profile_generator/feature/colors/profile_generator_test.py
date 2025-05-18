@@ -8,8 +8,8 @@ from .space import profile_generator_test as profile_test
 from .white_balance import profile_generator_test as wb_test
 
 _DEFAULT = {
-    "ColorAppEnabled": "false",
-    "ColorAppChroma": "0.0",
+    "ColorAppEnabled": "true",
+    "ColorAppChroma": "1.6531505",
     **wb_test.DEFAULT,
     **grading_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -29,6 +29,6 @@ class ProfileGeneratorTest(TestCase):
             _DEFAULT
             | {
                 "ColorAppEnabled": "true",
-                "ColorAppChroma": "16.6666667",
+                "ColorAppChroma": "19.1463925",
             },
         )

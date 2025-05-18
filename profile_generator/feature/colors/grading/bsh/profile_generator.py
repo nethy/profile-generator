@@ -73,8 +73,9 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     hues = [EqPoint(x, y) for x, y in starmap(_get_hue, hsvs)]
     saturations = [EqPoint(x, y) for x, y in starmap(_get_saturation, hsvs)]
     values = [EqPoint(x, y) for x, y in starmap(_get_value, hsvs)]
-    is_enabled = any((not math.isclose(point.y, 0.5)
-                      for point in hues + saturations + values))
+    is_enabled = any(
+        (not math.isclose(point.y, 0.5) for point in hues + saturations + values)
+    )
     return {
         Template.ENABLED: str(is_enabled).lower(),
         Template.H_CURVE: raw_therapee.present_equalizer(hues),
@@ -86,24 +87,26 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
 def _get_hue(ref_hsv: Vector, mod_hsv: Vector) -> tuple[float, float]:
     ref_h, mod_h = ref_hsv[0], mod_hsv[0]
     new_h = mod_h - ref_h
-    if new_h < 0:
-        new_h += 360
-    return (ref_h / 360, new_h / 360 / 2.0 + 0.5)
+    return (ref_h, new_h / 2.0 + 0.5)
+
 
 def _get_saturation(ref_hsv: Vector, mod_hsv: Vector) -> tuple[float, float]:
     ref_h, ref_s, mod_s = ref_hsv[0], ref_hsv[1], mod_hsv[1]
     if mod_s > ref_s:
         new_s = (ref_s - mod_s) / (ref_s + (1 - math.pow(1 - ref_s, 2)))
     else:
-        new_s =  (mod_s / ref_s - 1)
-    return (ref_h / 360, new_s / 2.0 + 0.5)
+        new_s = mod_s / ref_s - 1
+    return (ref_h, new_s / 2.0 + 0.5)
+
 
 def _get_value(ref_hsv: Vector, mod_hsv: Vector) -> tuple[float, float]:
     ref_h, ref_s, ref_v, mod_v = ref_hsv[0], ref_hsv[1], ref_hsv[2], mod_hsv[2]
     if mod_v > ref_v:
-        new_v = ((ref_v - mod_v)
-                 / (ref_v + (1 - math.pow(1 - ref_v, 2)))
-                 / (1 - math.pow(1 - ref_s, 4))) + 0.5
+        new_v = (
+            (ref_v - mod_v)
+            / (ref_v + (1 - math.pow(1 - ref_v, 2)))
+            / (1 - math.pow(1 - ref_s, 4))
+        ) + 0.5
     else:
         new_v = (mod_v / ref_v - 1) / 2.0 + 0.5
-    return (ref_h / 360, new_v)
+    return (ref_h, new_v)

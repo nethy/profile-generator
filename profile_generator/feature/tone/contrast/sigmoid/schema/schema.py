@@ -10,20 +10,26 @@ from .. import contrast_sigmoid
 
 class Field:
     GREY18: Final = SchemaField("grey18", 90.0)
-    SLOPE: Final = SchemaField("slope", 1.167)
+    SLOPE: Final = SchemaField("slope", 1.6)
 
 
 class Template:
-    CURVE: Final = "Curve"
+    CURVE0: Final = "Curve0"
+    CURVE1: Final = "Curve1"
+
 
 def _process(data: Any) -> Mapping[str, str]:
     grey18 = rgb.normalize_value(data.get(*Field.GREY18))
     slope = data.get(*Field.SLOPE)
-    contrast = contrast_sigmoid.get_tone_curve(grey18, slope)
+    flat = contrast_sigmoid.get_flat(grey18)
+    contrast = contrast_sigmoid.get_contrast(slope)
     return {
-        Template.CURVE: raw_therapee.present_curve(
+        Template.CURVE0: raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, flat
+        ),
+        Template.CURVE1: raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, contrast
-        )
+        ),
     }
 
 

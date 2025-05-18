@@ -32,4 +32,4 @@ if __name__ == "__main__":
         contrast_sigmoid.get_flat,
         _GREY18,
     )
-    print_calculation("test_contrast", contrast_sigmoid.get_contrast, _GREY18, _SLOPE)
+    print_calculation("test_contrast", contrast_sigmoid.get_contrast, _SLOPE)

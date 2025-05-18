@@ -11,6 +11,5 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     return {
         **generate_bsh(profile_params),
         **generate_toning(profile_params),
-        **generate_matte(profile_params)
+        **generate_matte(profile_params),
     }
-

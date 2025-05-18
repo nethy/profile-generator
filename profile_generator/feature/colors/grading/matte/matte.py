@@ -3,8 +3,8 @@ import math
 from collections.abc import Callable
 from operator import itemgetter
 
-from profile_generator.main.profile_params import Grading, Matte, Toning
-from profile_generator.model.color import lab, rgb, xyz
+from profile_generator.main.profile_params import Matte, Toning
+from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space.srgb import SRGB
 
 
@@ -13,8 +13,6 @@ def get_matte_curve(matte_param: Matte) -> Callable[[float], float]:
     highlight_offset = matte_param.highlight.value / 255
     shadow_boundary = 2 * shadow_offset
     highlight_boundary = 1 - 2 * (1 - highlight_offset)
-
-    print(shadow_offset, shadow_boundary, highlight_offset, highlight_boundary)
 
     shadow_curve = _get_shadow_curve(shadow_offset, shadow_boundary)
     highlight_curve = _get_highlight_curve(highlight_offset, highlight_boundary)
@@ -63,25 +61,27 @@ def get_lightness_curve(toning: Toning) -> Callable[[float], float]:
         [25, 25 + shadow_l + global_l],
         [50, 50 + midtone_l + global_l],
         [75, 75 + highlight_l + global_l],
-        [1, 1],
+        [100, 100],
     ]
 
     def _curve(x: float) -> float:
-        l = lab.from_xyz_lum(x)
-        i = bisect.bisect(lightnesses, l, key=itemgetter(0))
-        if i < len(lightnesses):
-            begin = lightnesses[i]
-            end = lightnesses[i + 1]
-            range = end[0] - begin[0]
-            return (end[0] - x) / range * begin[1] + (x - begin[0]) / range * end[1]
+        i = bisect.bisect(lightnesses, x, key=itemgetter(0))
+        if i == 0:
+            return 0
+        elif i < len(lightnesses):
+            begin = lightnesses[i - 1]
+            end = lightnesses[i]
+            length = end[0] - begin[0]
+            return (end[0] - x) / length * begin[1] + (x - begin[0]) / length * end[1]
         else:
-            return 1
+            return 100
 
     return lambda x: _to_rgb_from_lab(_curve(_to_lab_from_rgb(x)))
+
 
 def _to_lab_from_rgb(x: float) -> float:
     return lab.from_xyz(xyz.from_rgb([x] * 3, SRGB))[0]
 
+
 def _to_rgb_from_lab(x: float) -> float:
     return xyz.to_rgb(lab.to_xyz([x, 0, 0]), SRGB)[0]
-

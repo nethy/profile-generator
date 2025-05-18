@@ -1,5 +1,3 @@
-from typing import Final
-
 from profile_generator.schema.object_schema import object_of
 
 from .bsh import SCHEMA as BSH_SCHEMA

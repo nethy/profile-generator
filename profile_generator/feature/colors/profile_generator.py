@@ -1,3 +1,14 @@
+"""
+RawTherapee CIECAM chromaticity, saturation, colorfulness function
+
+f(x) = (1-p/100) * x + p/100 * (1-(1-x)^4))
+
+f'(x) = 1-p/100 + p/100 * 4(1-x)^3
+f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
+
+p = 100*(f'(0)-1)/3
+"""
+import math
 from collections.abc import Mapping
 from typing import Final
 
@@ -14,17 +25,18 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
         **_get_vibrance(profile_params),
         **generate_grading(profile_params),
         **generate_space(profile_params),
-        **generate_white_balance(profile_params)
+        **generate_white_balance(profile_params),
     }
 
 
 _MAX_VIBRANCE: Final = 10
-_COEFFICIENT: Final = 100 / 3
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance = profile_params.colors.vibrance.value
-    chromaticity = vibrance / _MAX_VIBRANCE * _COEFFICIENT
+    slope = profile_params.tone.curve.sigmoid.slope.value
+    vibrance_gain = profile_params.colors.vibrance.value
+    vibrance = math.pow(slope, 0.75) * (1 + vibrance_gain / _MAX_VIBRANCE)
+    chromaticity = min(100 * (vibrance - 1) / 3, 100)
     is_enabled = chromaticity != 0.0
     return {
         "ColorAppEnabled": str(is_enabled).lower(),

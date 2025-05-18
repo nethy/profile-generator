@@ -3,7 +3,6 @@ import sys
 
 from profile_generator.feature.colors.grading import toning
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.model.view import raw_therapee
 from profile_generator.util import file
 
 TEMPLATE = """
@@ -84,8 +83,6 @@ LabRegionMaskBlur_4=0
 LabRegionChannel_4=-1
 LabRegionsShowMask=-1
 """
-
-_DEFAULT = [0.0, 0.0, 0.0]
 
 _OUTPUT_DIR = "profiles"
 

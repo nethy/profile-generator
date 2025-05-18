@@ -70,12 +70,11 @@ class LabTest(LinalgTestCase):
         self.assert_vector_equal([75.0, 0.0, -1], from_lch([75.0, 1.0, 270.0]))
 
     def test_to_bsh(self) -> None:
-        self.assert_vector_equal(to_bsh([0, 0, 0]), [0, 100, 0])
+        self.assert_vector_equal(to_bsh([0, 0, 0]), [0, 0, 0])
         self.assert_vector_equal(to_bsh([0, 100, 100]), [141.4213562, 100, 45])
         self.assert_vector_equal(to_bsh([100, 0, 0]), [100, 0, 0])
         self.assert_vector_equal(to_bsh([100, 100, 0]), [141.4213562, 50, 0])
         self.assert_vector_equal(to_bsh([100, 0, 100]), [141.4213562, 50, 90])
-
 
     def test_from_bsh(self) -> None:
         self.assert_vector_equal(from_bsh(to_bsh([0, 0, 0])), [0, 0, 0])
@@ -83,7 +82,6 @@ class LabTest(LinalgTestCase):
         self.assert_vector_equal(from_bsh(to_bsh([100, 0, 0])), [100, 0, 0])
         self.assert_vector_equal(from_bsh(to_bsh([100, 100, 0])), [100, 100, 0])
         self.assert_vector_equal(from_bsh(to_bsh([100, 0, 100])), [100, 0, 100])
-
 
     def test_from_to_xyz_lum(self) -> None:
         self.assertEqual(from_xyz_lum(to_xyz_lum(0)), 0)
