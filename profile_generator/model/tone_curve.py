@@ -1,3 +1,4 @@
+import math
 from collections.abc import Callable
 from functools import cache
 
@@ -28,7 +29,7 @@ def _get_hybrid_log_flat(linear_grey18: float) -> Curve:
     flat_pow = gamma.power_at(mid)
 
     def weight(x: float) -> float:
-        return 1 - x
+        return 1 - math.pow(x, math.sqrt(2))
 
     return lambda x: (weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x))
 

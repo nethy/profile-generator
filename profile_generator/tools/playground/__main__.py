@@ -167,5 +167,5 @@ if __name__ == "__main__":
 
     # print_points(curve.as_points(catmull_tone_curve(grey18_g9, slope)))
     # print_points(curve.as_points(catmull_linear_tone_curve(grey18_g9, slope)))
-    print_points(curve.as_points(hybrid_tone_curve(grey18_g9, slope)))
+    print_points(contrast_sigmoid.get_flat(grey18_g9))
     # print_points(curve.as_points(exp_tone_curve(grey18_g9, slope)))
