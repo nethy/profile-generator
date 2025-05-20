@@ -109,13 +109,6 @@ def spline_flat(midtone):
     return lambda x: c * x if x < midtone.x else a * x * x * x + b * x * x + c * x
 
 
-def get_area_flat(midtone):
-    print(midtone)
-    shadow = tone_curve._get_highlight_curve(midtone, midtone.gradient)[0]
-    highlight = tone_curve._get_naive_flat(midtone)[0]
-    return lambda x: math.pow(shadow(x), 1 - x) * math.pow(highlight(x), x)
-
-
 def to_srgb(fn):
     return lambda x: SRGB.gamma(fn(SRGB.inverse_gamma(x)))
 

@@ -28,10 +28,8 @@ def _get_hybrid_log_flat(linear_grey18: float) -> Curve:
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
 
-    def weight(x: float) -> float:
-        return 1 - math.pow(x, math.sqrt(2))
-
-    return lambda x: (weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x))
+    weight = gamma.log_at(Point(min(linear_grey18, constants.GREY18_LINEAR) * 4, 0.5))
+    return lambda x: (1 - weight(x)) * flat_log(x) + weight(x) * flat_pow(x)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:
