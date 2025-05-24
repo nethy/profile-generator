@@ -8,11 +8,11 @@ f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
 
 p = 100*(f'(0)-1)/3
 """
+import math
 from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.unit.precision import DECIMALS
 
 from .grading.profile_generator import generate as generate_grading
 from .space.profile_generator import generate as generate_space
@@ -32,11 +32,15 @@ _MAX_VIBRANCE: Final = 10
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance_gain = profile_params.colors.vibrance.value
-    vibrance = 1 + vibrance_gain / _MAX_VIBRANCE
-    chromaticity = min(100 * (vibrance - 1) / 3, 100)
-    is_enabled = chromaticity != 0.0
+    slope = profile_params.tone.curve.sigmoid.slope.value
+    gain = profile_params.colors.vibrance.value
+    base = 1 / math.pow(slope, 0.381966)
+    vibrance = base * (1 + gain / _MAX_VIBRANCE)
+    chromaticity = (
+        min(100 * (vibrance - 1) / 3, 100) if vibrance > 1 else (vibrance - 1) * 100
+    )
+    is_enabled = not math.isclose(vibrance, 0, rel_tol=1e-2)
     return {
         "ColorAppEnabled": str(is_enabled).lower(),
-        "ColorAppChroma": str(round(chromaticity, DECIMALS)),
+        "ColorAppChroma": str(round(chromaticity, 1)),
     }

@@ -1,8 +1,7 @@
-import math
 from collections.abc import Callable
 from functools import cache
 
-from profile_generator.model import gamma, sigmoid
+from profile_generator.model import bezier, gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
 from profile_generator.unit import Curve, Point
@@ -18,18 +17,20 @@ def get_lab_flat(grey18: float) -> Curve:
     return lambda x: lab.from_xyz_lum(curve(lab.to_xyz_lum(x * 100))) / 100
 
 
-def get_linear_flat(linear_grey18: float) -> Curve:
-    return _get_hybrid_log_flat(linear_grey18)
-
-
 @cache
-def _get_hybrid_log_flat(linear_grey18: float) -> Curve:
+def get_linear_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
 
-    weight = gamma.log_at(Point(min(linear_grey18, constants.GREY18_LINEAR) * 4, 0.5))
-    return lambda x: (1 - weight(x)) * flat_log(x) + weight(x) * flat_pow(x)
+    control_points = [
+        (Point(0, 1), 1),
+        (Point(linear_grey18, 1), 1),
+        (Point(linear_grey18, 0), 1),
+        (Point(1, 0), 1),
+    ]
+    weight = bezier.curve(control_points)
+    return lambda x: weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x)
 
 
 def _as_srgb(grey18: float, curve_supplier: Callable[[float], Curve]) -> Curve:

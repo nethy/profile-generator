@@ -5,7 +5,7 @@ from .point import Point
 
 Curve = Callable[[float], float]
 
-_TOLERANCE = 0.05
+_TOLERANCE = 12 / 256
 
 
 def as_points(curve: Curve) -> Sequence[Point]:
