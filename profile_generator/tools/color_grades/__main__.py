@@ -1,7 +1,8 @@
 import json
+import pprint
 import sys
 
-from profile_generator.feature.colors.grading import toning
+from profile_generator.feature.colors.grading import profile_generator
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.util import file
 
@@ -82,7 +83,41 @@ LabRegionLightnessMask_4=1;0.5;0;0.25;0.25;0.8333333;1;0.25;0.25;
 LabRegionMaskBlur_4=0
 LabRegionChannel_4=-1
 LabRegionsShowMask=-1
+
+[HSV Equalizer]
+Enabled={HSVEnabled}
+HCurve={HSVHCurve}
+SCurve={HSVSCurve}
+VCurve={HSVVCurve}
+
+[RGB Curves]
+Enabled={RGBCurvesEnabled}
+LumaMode=false
+rCurve={RGBCurvesRCurve}
+gCurve={RGBCurvesGCurve}
+bCurve={RGBCurvesBCurve}
 """
+
+_DEFAULT = {
+    "CTEnabled": "false",
+    "CTA1": "0.0",
+    "CTB1": "0.0",
+    "CTA2": "0.0",
+    "CTB2": "0.0",
+    "CTA3": "0.0",
+    "CTB3": "0.0",
+    "CTA4": "0.0",
+    "CTB4": "0.0",
+    "HSVEnabled": "false",
+    "HSVHCurve": "0;",
+    "HSVSCurve": "0;",
+    "HSVVCurve": "0;",
+    "RGBCurvesEnabled": "false",
+    "RGBCurvesRCurve": "0;",
+    "RGBCurvesGCurve": "0;",
+    "RGBCurvesBCurve": "0;",
+}
+
 
 _OUTPUT_DIR = "profiles"
 
@@ -91,12 +126,15 @@ def main() -> None:
     raw_config = file.read_file(sys.argv[1])
     configuration = json.loads(raw_config)
     for name, config in configuration.items():
+        pprint.pp(config)
+
         profile_params = ProfileParams()
-        profile_params.colors.grading.toning.parse(config)
+        profile_params.colors.grading.parse(config)
 
-        template_values = toning.generate(profile_params)
+        template_values = profile_generator.generate(profile_params)
 
-        template = TEMPLATE.format(**template_values)
+        pprint.pp(template_values)
+        template = TEMPLATE.format(**{**_DEFAULT, **template_values})
 
         file.write_file(template, _OUTPUT_DIR, f"rgb-curves-{name}.pp3")
 
