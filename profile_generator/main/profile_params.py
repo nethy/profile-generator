@@ -42,7 +42,7 @@ class ProfileParamTuple(Generic[T], ProfileParamParser):
         return [cast(Value, value).value for value in self.__dict__.values()]
 
 
-V = TypeVar("V", str, int, float, bool, tuple, ProfileParamEnum)
+V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
 
 
 class Value(Generic[V], ProfileParamParser):
@@ -70,46 +70,34 @@ class Camera(ProfileParamParser):
 
 class Lch(ProfileParamTuple[float]):
     def __init__(self) -> None:
-        self.lightness: Final = Value[float](0)
+        self.luminance: Final = Value[float](0)
         self.chroma: Final = Value[float](0)
         self.hue: Final = Value[float](0)
 
 
-class Toning(ProfileParamParser):
+@unique
+class ColorToningChannels(ProfileParamEnum):
+    TWO = "2"
+    THREE = "3"
+
+
+class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
-        self.global_lch: Final = Lch()
-        self.shadow_lch: Final = Lch()
-        self.midtone_lch: Final = Lch()
-        self.highlight_lch: Final = Lch()
+        self.channels = Value[ColorToningChannels](ColorToningChannels.THREE)
+        self.shadow = Lch()
+        self.midtone = Lch()
+        self.highlight = Lch()
 
 
 class Matte(ProfileParamParser):
     def __init__(self) -> None:
         self.shadow: Final = Value[float](0)
-        self.highlight: Final = Value[float](255)
-
-
-class BshValue(ProfileParamTuple[float]):
-    def __init__(self) -> None:
-        self.brightness: Final = Value[float](0)
-        self.saturation: Final = Value[float](0)
-        self.hue: Final = Value[float](0)
-
-
-class Bsh(ProfileParamParser):
-    def __init__(self) -> None:
-        self.red: Final = BshValue()
-        self.yellow: Final = BshValue()
-        self.green: Final = BshValue()
-        self.cyan: Final = BshValue()
-        self.blue: Final = BshValue()
-        self.magenta: Final = BshValue()
+        self.highlight: Final = Value[float](100)
 
 
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
-        self.bsh: Final = Bsh()
-        self.toning: Final = Toning()
+        self.toning: Final = ColorToning()
         self.matte: Final = Matte()
 
 
@@ -214,8 +202,8 @@ class Raw(ProfileParamParser):
 
 class Sigmoid(ProfileParamParser):
     def __init__(self) -> None:
-        self.grey18: Final = Value[float](90.0)
-        self.slope: Final = Value[float](1.0666667)
+        self.linear_grey18: Final = Value[float](0.1)
+        self.slope: Final = Value[float](1.6)
 
 
 class Curve(ProfileParamParser):

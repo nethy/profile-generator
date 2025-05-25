@@ -8,10 +8,10 @@ from profile_generator.unit import Point, curve
 
 
 @cache
-def get_flat(grey18: float) -> Sequence[Point]:
-    if math.isclose(grey18, constants.GREY18_SRGB):
+def get_flat(linear_grey18: float) -> Sequence[Point]:
+    if math.isclose(linear_grey18, constants.GREY18_LINEAR):
         return []
-    flat = tone_curve.get_srgb_flat(grey18)
+    flat = tone_curve.get_srgb_flat(linear_grey18)
     return curve.as_points(flat)
 
 

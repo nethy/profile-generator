@@ -22,11 +22,7 @@ _POINT_COUNT = 32
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     grading_params = profile_params.colors.grading
-    lightness_curve = matte.get_lightness_curve(grading_params.toning)
-    matte_curve = matte.get_matte_curve(grading_params.matte)
-
-    def curve(x: float) -> float:
-        return matte_curve(lightness_curve(x))
+    curve = matte.get_matte_curve(grading_params.matte)
 
     refs = (i / (_POINT_COUNT - 1) for i in range(_POINT_COUNT))
     points = [Point(x, curve(x)) for x in refs]

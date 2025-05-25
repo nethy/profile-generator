@@ -34,7 +34,7 @@ _MAX_VIBRANCE: Final = 10
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     slope = profile_params.tone.curve.sigmoid.slope.value
     gain = profile_params.colors.vibrance.value
-    base = 1 / math.pow(slope, 0.381966)
+    base = 1 / math.pow(slope, 0.618)
     vibrance = base * (1 + gain / _MAX_VIBRANCE)
     chromaticity = (
         min(100 * (vibrance - 1) / 3, 100) if vibrance > 1 else (vibrance - 1) * 100

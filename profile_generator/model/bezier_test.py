@@ -7,8 +7,16 @@ from . import bezier
 
 
 class BezierTest(unittest.TestCase):
+    def test_as_uniform_points(self) -> None:
+        coordinates = [(0, 0), (1, 1)]
+
+        weighted_points = bezier.as_uniform_points(coordinates)
+
+        self.assertEqual(weighted_points, [(Point(0, 0), 1), (Point(1, 1), 1)])
+
     def test_curve(self) -> None:
         control_points = [(Point(0, 0), 1), (Point(0, 1), 1), (Point(1, 1), 1)]
+
         curve = bezier.curve(control_points)
 
         self.assertAlmostEqual(curve(0), 0)
@@ -17,6 +25,7 @@ class BezierTest(unittest.TestCase):
 
     def test_get_point_at(self) -> None:
         control_points = [(Point(0, 0), 1), (Point(0.2, 0), 2), (Point(0.5, 0.5), 1)]
+
         bezier_at = partial(bezier.get_point_at, control_points)
 
         self.assertEqual(bezier_at(0), Point(0, 0))
