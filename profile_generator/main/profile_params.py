@@ -76,23 +76,25 @@ class Lch(ProfileParamTuple[float]):
 
 
 @unique
-class ColorToningChannels(ProfileParamEnum):
-    TWO = "2"
-    THREE = "3"
+class ColorToningChannel(ProfileParamEnum):
+    TWO = 2
+    THREE = 3
 
 
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
-        self.channels = Value[ColorToningChannels](ColorToningChannels.THREE)
+        self.channels = Value[ColorToningChannel](ColorToningChannel.THREE)
+        self.black = Lch()
         self.shadow = Lch()
         self.midtone = Lch()
         self.highlight = Lch()
+        self.white = Lch()
 
 
 class Matte(ProfileParamParser):
     def __init__(self) -> None:
-        self.shadow: Final = Value[float](0)
-        self.highlight: Final = Value[float](100)
+        self.black: Final = Value[float](0)
+        self.white: Final = Value[float](100)
 
 
 class Grading(ProfileParamParser):

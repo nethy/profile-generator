@@ -1,51 +1,63 @@
 import bisect
 import math
+import operator
 from collections.abc import Callable
+from typing import TypeAlias
 
-from profile_generator.main.profile_params import ColorTone
+from profile_generator.main.profile_params import ColorToning, ColorToningChannel
 from profile_generator.model.color import lab
 from profile_generator.unit import Vector
-from profile_generator.util import validation
 
-COLOR_TONE = tuple[float, Vector]
+ColorTone: TypeAlias = tuple[float, Vector]
 
 
-def get_lab_curve(color_tones: list[ColorTone]) -> Callable[[float], Vector]:
-    sorted_tones = sorted(color_tones, key=lambda item: item.l.value)
-    _validate(sorted_tones)
-    lab_tones = _to_lab(sorted_tones)
+def get_lab_mapping(params: ColorToning) -> Callable[[float], Vector]:
+    tones = _get_tones(params)
 
     def lab_curve(x: float) -> Vector:
-        i = bisect.bisect(lab_tones, x, key=lambda item: item[0])
+        i = bisect.bisect(tones, x, key=lambda item: item[0])
         if i == 0:
-            lab = lab_tones[0][1]
-        elif i == len(lab_tones):
-            lab = lab_tones[-1][1]
+            lab = tones[0][1]
+        elif i == len(tones):
+            lab = tones[-1][1]
         else:
-            lab = _interpolate(x, lab_tones[i-1], lab_tones[i])
+            lab = _interpolate(x, tones[i-1], tones[i])
         return [a + b for a, b in zip(lab, [x, 0, 0])]
 
-    if len(lab_tones) > 0:
+    if len(tones) > 0:
         return lab_curve
     else:
         return lambda x: [x, 0, 0]
 
 
-def _validate(color_tones: list[ColorTone]) -> None:
-    for i in range(len(color_tones) - 1):
-        current = color_tones[i].l.value
-        next = color_tones[i+1].l.value
-        validation.is_greater_or_equal(next - current, 0.1)
+def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
+    channel = color_toning.channels.value
+    if channel == ColorToningChannel.TWO:
+        return [
+            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(100 * 1 / 3, color_toning.shadow.as_list()),
+            _to_lab(100 * 2 / 3, color_toning.highlight.as_list()),
+            _to_lab(100.0, color_toning.white.as_list()),
+        ]
+    elif channel == ColorToningChannel.THREE:
+        return [
+            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(25.0, color_toning.shadow.as_list()),
+            _to_lab(50.0, color_toning.midtone.as_list()),
+            _to_lab(75.0, color_toning.highlight.as_list()),
+            _to_lab(100.0, color_toning.white.as_list()),
+        ]
+    else:
+        raise ValueError(f"Unhandled value: {channel}")
 
 
-def _to_lab(color_tones: list[ColorTone]) -> list[COLOR_TONE]:
-    return [
-        (l, lab.from_lch(lch))
-        for l, *lch in map(ColorTone.as_list, color_tones)
-    ]
+def _to_lab(luminance: float, lch_tone: Vector) -> ColorTone:
+    l, c, h = lch_tone
+    return (luminance, lab.from_lch([luminance + l, c, h]))
 
 
-def _interpolate(x: float, left: COLOR_TONE, right: COLOR_TONE) -> Vector:
+
+def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
     weight = _weight((x - left[0]) / (right[0] - left[0]))
     return [
         weight * a + (1 - weight) * b

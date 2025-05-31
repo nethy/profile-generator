@@ -2,12 +2,12 @@ from unittest import TestCase
 
 from profile_generator.main.profile_params import ColorTone
 
-from .toning import get_lab_curve
+from .toning import get_lab_mapping
 
 
 class ToningTest(TestCase):
     def test_get_lab_curve_empty(self) -> None:
-        curve = get_lab_curve([])
+        curve = get_lab_mapping([])
 
         self.assertEqual(curve(0), [0, 0, 0])
         self.assertEqual(curve(1), [1, 0, 0])
@@ -16,4 +16,4 @@ class ToningTest(TestCase):
         input = [[0.5, 0, 1, 2]]
         color_tones =
 
-        curve = get_lab_curve()
+        curve = get_lab_mapping()
