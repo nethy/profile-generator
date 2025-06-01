@@ -15,16 +15,16 @@ HighlightComprThreshold=0
 ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
-ClampOOG=false
-CurveMode=FilmLike
-CurveMode2=Standard
-Curve={Curve0}
-Curve2={Curve1}
+ClampOOG=true
+CurveMode=Perceptual
+CurveMode2=Perceptual
+Curve={Curve}
+Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true
-Method=Color
-Hlbl=2
+Method=Luminance
+Hlbl=0
 Hlth=1
 
 [Retinex]
@@ -100,17 +100,17 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled=false
+Enabled={LCEnabled}
 Brightness=0
 Contrast=0
 Chromaticity=0
 Gamutmunse=MUN
-RedAndSkinTonesProtection=0
+RedAndSkinTonesProtection=33.3333333
 LCredsk=true
 LCurve=0;
 aCurve=0;
 bCurve=0;
-ccCurve=0;
+ccCurve={CCCurve}
 chCurve=0;
 lhCurve=0;
 hhCurve=0;
@@ -175,7 +175,7 @@ Itcwb_sampling=false
 CompatibilityVersion=2
 
 [Color appearance]
-Enabled={ColorAppEnabled}
+Enabled=false
 Degree=100
 AutoDegree=false
 Degreeout=100
@@ -193,7 +193,7 @@ Algorithm=ALL
 J-Light=0
 Q-Bright=0
 C-Chroma=0
-S-Chroma={ColorAppChroma}
+S-Chroma=0
 M-Chroma=0
 J-Contrast=0
 Q-Contrast=0

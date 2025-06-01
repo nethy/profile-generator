@@ -26,6 +26,6 @@ _POINT_COUNT = 32
 
 def as_fixed_points(curve: Curve) -> Sequence[Point]:
     return [
-        Point(i / (_POINT_COUNT - 1), curve(i / (_POINT_COUNT - 1)))
-        for i in range(_POINT_COUNT)
+        Point(i / _POINT_COUNT, curve(i / _POINT_COUNT))
+        for i in range(_POINT_COUNT + 1)
     ]

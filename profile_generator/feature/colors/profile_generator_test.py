@@ -8,8 +8,8 @@ from .space import profile_generator_test as profile_test
 from .white_balance import profile_generator_test as wb_test
 
 _DEFAULT = {
-    "ColorAppEnabled": "true",
-    "ColorAppChroma": "-2.4",
+    "LCEnabled": "false",
+    "CCCurve": "0;",
     **wb_test.DEFAULT,
     **grading_test.DEFAULT,
     **profile_test.DEFAULT,
@@ -28,6 +28,8 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             _DEFAULT
             | {
-                "ColorAppChroma": "15.4",
+                "LCEnabled": "true",
+                "CCCurve": "3;"
+                + "0.0000000;0.0000000;0.6666667;1.0000000;1.0000000;1.0000000;",
             },
         )

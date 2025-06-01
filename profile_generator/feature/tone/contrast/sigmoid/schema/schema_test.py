@@ -26,15 +26,15 @@ class SchemaTest(TestCase):
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
-                "grey18": 87,
+                "linear_grey18": 0.3,
                 "slope": 1.7,
             }
         )
 
     def test_validate_invalid_grey18(self) -> None:
         self.validator.assert_error(
-            {"grey18": False},
-            InvalidObjectError({"grey18": InvalidRangeError(16, 240)}),
+            {"linear_grey18": False},
+            InvalidObjectError({"linear_grey18": InvalidRangeError(0.01, 0.75)}),
         )
 
     def test_validate_invalid_slope(self) -> None:
@@ -52,9 +52,9 @@ class SchemaTest(TestCase):
         self.validator.assert_process(
             {},
             {
-                "Curve0": "4;1.0000000;1.0000000;",
-                "Curve1": "4;1.0000000;1.0000000;",
+                "Curve": "4;1.0000000;1.0000000;",
+                "Curve2": "4;1.0000000;1.0000000;",
             },
         )
-        get_flat.assert_called_once_with(90.0 / 255)
+        get_flat.assert_called_once_with(0.1)
         get_contrast.assert_called_once_with(1.6)

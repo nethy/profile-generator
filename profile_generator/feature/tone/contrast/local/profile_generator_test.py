@@ -11,8 +11,8 @@ class ProfileGeneratorTest(TestCase):
             generate(ProfileParams()),
             {
                 "WaveletEnabled": "true",
-                "WaveletContrast1": "2",
-                "WaveletContrast2": "2",
+                "WaveletContrast1": "14",
+                "WaveletContrast2": "14",
             },
         )
 
@@ -23,7 +23,7 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params),
             {
                 "WaveletEnabled": "true",
-                "WaveletContrast1": "12",
-                "WaveletContrast2": "12",
+                "WaveletContrast1": "10",
+                "WaveletContrast2": "10",
             },
         )

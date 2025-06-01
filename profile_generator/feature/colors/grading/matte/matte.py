@@ -2,11 +2,12 @@ import math
 from collections.abc import Callable
 
 from profile_generator.main.profile_params import Matte
+from profile_generator.unit import Curve
 
 
-def get_matte_curve(matte_param: Matte) -> Callable[[float], float]:
-    shadow_offset = matte_param.black.value / 255
-    highlight_offset = matte_param.white.value / 255
+def get_matte_curve(matte_param: Matte) -> Curve:
+    shadow_offset = matte_param.black.value / 100
+    highlight_offset = matte_param.white.value / 100
     shadow_boundary = 2 * shadow_offset
     highlight_boundary = 1 - 2 * (1 - highlight_offset)
 

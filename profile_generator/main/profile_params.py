@@ -77,13 +77,14 @@ class Lch(ProfileParamTuple[float]):
 
 @unique
 class ColorToningChannel(ProfileParamEnum):
+    ONE = 1
     TWO = 2
     THREE = 3
 
 
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
-        self.channels = Value[ColorToningChannel](ColorToningChannel.THREE)
+        self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
         self.black = Lch()
         self.shadow = Lch()
         self.midtone = Lch()

@@ -2,16 +2,7 @@ from profile_generator.model.linalg_test import LinalgTestCase
 from profile_generator.unit import Vector
 
 from . import xyz
-from .lab import (
-    from_bsh,
-    from_lch,
-    from_xyz,
-    from_xyz_lum,
-    to_bsh,
-    to_lch,
-    to_xyz,
-    to_xyz_lum,
-)
+from .lab import from_bsh, from_lch, from_xyz, to_bsh, to_lch, to_xyz
 from .space import SRGB
 
 
@@ -82,8 +73,3 @@ class LabTest(LinalgTestCase):
         self.assert_vector_equal(from_bsh(to_bsh([100, 0, 0])), [100, 0, 0])
         self.assert_vector_equal(from_bsh(to_bsh([100, 100, 0])), [100, 100, 0])
         self.assert_vector_equal(from_bsh(to_bsh([100, 0, 100])), [100, 0, 100])
-
-    def test_from_to_xyz_lum(self) -> None:
-        self.assertEqual(from_xyz_lum(to_xyz_lum(0)), 0)
-        self.assertEqual(from_xyz_lum(to_xyz_lum(50)), 50)
-        self.assertEqual(from_xyz_lum(to_xyz_lum(100)), 100)

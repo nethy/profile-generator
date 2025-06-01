@@ -144,13 +144,13 @@ if __name__ == "__main__":
     # print(target)
     # print(search.jump_search(0, 1, linear_fn, target))
 
-    grey18_d40 = 103.131714833699 / 255
-    grey18_d7000 = 87.305220375622 / 255
-    grey18_g80 = 80.86382712430665 / 255
-    grey18_g9 = 63.189134638121 / 255
+    grey18_d40 = 0.136
+    grey18_d7000 = 0.096
+    grey18_g80 = 0.082
+    grey18_g9 = 0.05
     slope = 1.6
 
     # print_points(curve.as_points(catmull_tone_curve(grey18_g9, slope)))
     # print_points(curve.as_points(catmull_linear_tone_curve(grey18_g9, slope)))
-    # print_points(contrast_sigmoid.get_flat(grey18_g9))
+    # print_points(curve.as_points(tone_curve.get_srgb(grey18_g9, slope)))
     # print_points(curve.as_points(exp_tone_curve(grey18_g9, slope)))

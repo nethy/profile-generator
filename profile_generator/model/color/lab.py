@@ -7,7 +7,7 @@ from profile_generator.model.color.xyz import (
 )
 from profile_generator.model.linalg import Vector
 
-from .white_point import D50_XYZ, D65_XYZ
+from .white_point import D50_XYZ
 
 
 def from_xyz(xyz_d65: Vector) -> Vector:
@@ -63,14 +63,6 @@ def from_bsh(bsh: Vector) -> Vector:
     l = b * math.sin(s_radians)
     c = b * math.cos(s_radians)
     return from_lch([l, c, h])
-
-
-def from_xyz_lum(y_d65: float) -> float:
-    return 116 * _lab_f(y_d65 / D65_XYZ[1]) - 16
-
-
-def to_xyz_lum(lum: float) -> float:
-    return D65_XYZ[1] * _lab_f_inverse((lum + 16) / 116)
 
 
 SIGMA = 6.0 / 29.0

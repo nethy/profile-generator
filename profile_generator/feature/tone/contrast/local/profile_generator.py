@@ -13,7 +13,7 @@ class Template:
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     slope = profile_params.tone.curve.sigmoid.slope.value
 
-    contrast_level = round(100 * math.log(slope, 16))
+    contrast_level = round(100 * math.log(slope, 32))
     is_enabled = contrast_level > 0
 
     return {

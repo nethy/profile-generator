@@ -24,4 +24,4 @@ def is_greater_or_equal(value: T, other: T) -> T:
 
 
 def _round(value: T) -> T:
-    return round(value, 9) # type: ignore
+    return round(value, 9)  # type: ignore

@@ -13,8 +13,8 @@ class Field:
 
 
 class Template:
-    CURVE0: Final = "Curve0"
-    CURVE1: Final = "Curve1"
+    CURVE0: Final = "Curve"
+    CURVE1: Final = "Curve2"
 
 
 def _process(data: Any) -> Mapping[str, str]:
