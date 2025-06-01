@@ -1,5 +1,6 @@
-from .toning import profile_generator_test as toning_test
-
 DEFAULT = {
-    **toning_test.DEFAULT,
+    "RGBCurvesEnabled": "false",
+    "RGBCurvesRCurve": "0;",
+    "RGBCurvesGCurve": "0;",
+    "RGBCurvesBCurve": "0;",
 }

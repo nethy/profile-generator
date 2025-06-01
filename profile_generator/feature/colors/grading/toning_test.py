@@ -1,14 +1,14 @@
 from profile_generator.main.profile_params import ColorToning
 from profile_generator.model.linalg_test import LinalgTestCase
 
-from .toning import get_lab_mapping
+from .toning import get_lab_toning
 
 
 class ToningTest(LinalgTestCase):
     def test_get_lab_curve_empty(self) -> None:
         params = ColorToning()
         params.parse({})
-        curve = get_lab_mapping(params)
+        curve = get_lab_toning(params)
 
         self.assertEqual(curve(0), [0, 0, 0])
         self.assertEqual(curve(100), [100, 0, 0])
@@ -24,7 +24,7 @@ class ToningTest(LinalgTestCase):
                 "white": [-2, 3, 270],
             }
         )
-        curve = get_lab_mapping(params)
+        curve = get_lab_toning(params)
 
         self.assert_vector_equal(curve(0.0000000), [1.0, 0.8660254, 0.5])
         self.assert_vector_equal(curve(33.333333), [35.333333, 0.0, 2.0])
@@ -40,7 +40,7 @@ class ToningTest(LinalgTestCase):
                 "highlight": [0, 20, 90],
             }
         )
-        curve = get_lab_mapping(params)
+        curve = get_lab_toning(params)
 
         self.assert_vector_equal(curve(0.0000000), [0, 0, 0])
         self.assert_vector_equal(curve(33.333333), [33.333333, -0.0, -20.0])

@@ -1,6 +1,6 @@
 import bisect
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Callable
 from operator import itemgetter
 from typing import TypeAlias
 
@@ -8,39 +8,27 @@ from profile_generator.main.profile_params import ColorToning, ColorToningChanne
 from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space.srgb import SRGB
 from profile_generator.unit import Vector
-from profile_generator.unit.point import Point
 
 ColorTone: TypeAlias = tuple[float, Vector]
 
 
-def get_rgb_points(
+def get_rgb_toning(
     color_toning: ColorToning,
-) -> tuple[Sequence[Point], Sequence[Point], Sequence[Point]]:
-    lab_mapping = get_lab_mapping(color_toning)
-    rgb_points = _get_rgb_points(lab_mapping)
-    red, green, blue = [], [], []
-    for x, r, g, b in rgb_points:
-        red.append(Point(x, _clip(r, 0, 1)))
-        green.append(Point(x, _clip(g, 0, 1)))
-        blue.append(Point(x, _clip(b, 0, 1)))
-    return (red, green, blue)
+) -> Callable[[float], Vector]:
+    lab_mapping = get_lab_toning(color_toning)
+    return _as_rgb(lab_mapping)
 
 
-_POINT_COUNT = 32
+def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
+    def rgb_toning(rgb: float) -> Vector:
+        luminance = lab.from_xyz(xyz.from_rgb([rgb] * 3, SRGB))[0]
+        lab_color = lab_toning(luminance)
+        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
+
+    return rgb_toning
 
 
-def _get_rgb_points(color_mapping: Callable[[float], Vector]) -> Sequence[Vector]:
-    return [
-        [x]
-        + xyz.to_rgb(
-            lab.to_xyz(color_mapping(lab.from_xyz(xyz.from_rgb([x] * 3, SRGB))[0])),
-            SRGB,
-        )
-        for x in (i / _POINT_COUNT for i in range(_POINT_COUNT + 1))
-    ]
-
-
-def get_lab_mapping(color_toning: ColorToning) -> Callable[[float], Vector]:
+def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
     tones = _get_tones(color_toning)
 
     def lab_curve(x: float) -> Vector:
