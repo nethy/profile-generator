@@ -13,8 +13,8 @@ class Field:
 
 
 class Template:
-    CURVE0: Final = "Curve"
-    CURVE1: Final = "Curve2"
+    FLAT_CURVE: Final = "Curve"
+    CONTRAST_CURVE: Final = "LCurve"
 
 
 def _process(data: Any) -> Mapping[str, str]:
@@ -23,10 +23,10 @@ def _process(data: Any) -> Mapping[str, str]:
     flat = contrast_sigmoid.get_flat(linear_grey18)
     contrast = contrast_sigmoid.get_contrast(slope)
     return {
-        Template.CURVE0: raw_therapee.present_curve(
+        Template.FLAT_CURVE: raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, flat
         ),
-        Template.CURVE1: raw_therapee.present_curve(
+        Template.CONTRAST_CURVE: raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, contrast
         ),
     }

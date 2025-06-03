@@ -19,7 +19,7 @@ ClampOOG=true
 CurveMode=Perceptual
 CurveMode2=Perceptual
 Curve={Curve}
-Curve2={Curve2}
+Curve2=0;
 
 [HLRecovery]
 Enabled=true
@@ -100,14 +100,14 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled={LCEnabled}
+Enabled=true
 Brightness=0
 Contrast=0
 Chromaticity=0
 Gamutmunse=MUN
-RedAndSkinTonesProtection=33.3333333
+RedAndSkinTonesProtection=0
 LCredsk=true
-LCurve=0;
+LCurve={LCurve}
 aCurve=0;
 bCurve=0;
 ccCurve={CCCurve}

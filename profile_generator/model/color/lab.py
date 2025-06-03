@@ -31,6 +31,14 @@ def to_xyz(lab: Vector) -> Vector:
     return xyz_d65
 
 
+def from_xyz_lum(y: float) -> float:
+    return 116 * _lab_f(y) - 16
+
+
+def to_xyz_lum(l: float) -> float:
+    return _lab_f_inverse((l + 16) / 116)
+
+
 def to_lch(lab: Vector) -> Vector:
     l, a, b = lab
     c = math.sqrt(a * a + b * b)

@@ -32,10 +32,7 @@ def _as_srgb(linear_curve: Curve) -> Curve:
 
 
 def _as_lab(linear_curve: Curve) -> Curve:
-    return (
-        lambda x: lab.from_xyz([0, linear_curve(lab.to_xyz([x * 100, 0, 0])[1]), 0])[1]
-        / 100
-    )
+    return lambda x: lab.from_xyz_lum(linear_curve(lab.to_xyz_lum(x * 100))) / 100
 
 
 def get_srgb_contrast(gradient: float) -> Curve:

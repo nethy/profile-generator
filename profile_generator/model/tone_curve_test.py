@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from profile_generator.model.color import constants
+from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space.srgb import SRGB
 
 from .tone_curve import get_srgb_contrast, get_srgb_flat
