@@ -76,10 +76,12 @@ def hybrid_power(point: Point) -> Curve:
         return lambda x: x
 
     shadow_exponent = math.log(1 - point.y) / math.log(1 - point.x)
+
     def shadow(x: float) -> float:
         return 1 - math.pow(1 - x, shadow_exponent)
 
     highlight_exponent = math.log(point.y) / math.log(point.x)
+
     def highlight(x: float) -> float:
         return math.pow(x, highlight_exponent)
 

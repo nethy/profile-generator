@@ -13,7 +13,7 @@ from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.model import bezier, gamma, sigmoid
+from profile_generator.model import bezier
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import curve
 from profile_generator.unit.point import Point
@@ -39,14 +39,12 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
     slope = profile_params.tone.curve.sigmoid.slope.value
     vibrance = math.pow(slope, 1 / 2.2) * (1 + gain / _MAX_VIBRANCE)
-    chroma_points = (
-        [
-            (Point(0, 0), 1),
-            (Point(0.05, 0.05), 2),
-            (Point(1 / vibrance, 1), 1),
-            (Point(1, 1), 1),
-        ]
-    )
+    chroma_points = [
+        (Point(0, 0), 1),
+        (Point(0.1, 0.1), 1),
+        (Point(1 / vibrance, 1), 1),
+        (Point(1, 1), 1),
+    ]
     chroma_curve = bezier.curve(chroma_points)
     return {
         "CCCurve": raw_therapee.present_curve(
