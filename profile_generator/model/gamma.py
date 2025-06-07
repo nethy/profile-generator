@@ -46,16 +46,47 @@ def algebraic(coefficient: float, exponent: float) -> Curve:
     return _curve
 
 
-def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -> Curve:
-    if math.isclose(gradient, 1) and math.isclose(point.gradient, 1):
+def partial_algebraic_at(point: Point, exponent: float = 1.0) -> Curve:
+    if math.isclose(point.gradient, 1):
         return lambda x: x
+
     g = math.pow(
-        math.pow(gradient / (1 - point.y), exponent)
+        math.pow(point.gradient / (1 - point.y), exponent)
         - 1 / math.pow(1 - point.x, exponent),
         1 / exponent,
     )
     curve = algebraic(g, exponent)
+
     return lambda x: curve(x - point.x) / curve(1 - point.x) * (1 - point.y) + point.y
+
+
+def hybrid_power(point: Point) -> Curve:
+    """
+    y = x^a
+    a = ln(y)/ln(x)
+
+    y = 1-(1-x)^a
+    (1-x)^a = 1-y
+    a = ln(1-y)/ln(1-x)
+
+    w(x) = 1-f(x)g(x)
+    """
+
+    if math.isclose(point.gradient, 1):
+        return lambda x: x
+
+    shadow_exponent = math.log(1 - point.y) / math.log(1 - point.x)
+    def shadow(x: float) -> float:
+        return 1 - math.pow(1 - x, shadow_exponent)
+
+    highlight_exponent = math.log(point.y) / math.log(point.x)
+    def highlight(x: float) -> float:
+        return math.pow(x, highlight_exponent)
+
+    def weight(x: float) -> float:
+        return 1 - shadow(x) * highlight(x)
+
+    return lambda x: weight(x) * shadow(x) + (1 - weight(x)) * highlight(x)
 
 
 def inverse_algebraic_at(point: Point, exponent: float) -> Curve:

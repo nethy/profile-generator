@@ -22,8 +22,13 @@ def get_linear_flat(linear_grey18: float) -> Curve:
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
 
-    control_points = [(0, 1), (linear_grey18, 1), (linear_grey18, 0), (1, 0)]
-    weight = bezier.curve(bezier.as_uniform_points(control_points))
+    control_points = [
+        (Point(0, 1), 1),
+        (Point(linear_grey18, 1), 2),
+        (Point(linear_grey18, 0), 2),
+        (Point(1, 0), 1),
+    ]
+    weight = bezier.curve((control_points))
     return lambda x: weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x)
 
 
