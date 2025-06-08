@@ -19,7 +19,7 @@ def get_flat(linear_grey18: float) -> Sequence[Point]:
 def get_contrast(slope: float) -> Sequence[Point]:
     if math.isclose(slope, 1):
         return []
-    contrast = tone_curve.get_lab_contrast(slope)
+    contrast = tone_curve.get_srgb_contrast(slope)
     return curve.as_points(contrast)
 
 

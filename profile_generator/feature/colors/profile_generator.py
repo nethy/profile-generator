@@ -13,10 +13,8 @@ from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.model import bezier
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import curve
-from profile_generator.unit.point import Point
 
 from .grading.profile_generator import generate as generate_grading
 from .space.profile_generator import generate as generate_space
@@ -37,17 +35,17 @@ _MAX_VIBRANCE: Final = 10
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
-    slope = profile_params.tone.curve.sigmoid.slope.value
-    vibrance = math.pow(slope, 1 / 2.2) * (1 + gain / _MAX_VIBRANCE)
-    chroma_points = [
-        (Point(0, 0), 1),
-        (Point(0.1, 0.1), 1),
-        (Point(1 / vibrance, 1), 1),
-        (Point(1, 1), 1),
-    ]
-    chroma_curve = bezier.curve(chroma_points)
+    vibrance = 2 * gain / _MAX_VIBRANCE
+
+    def chroma_curve(x: float) -> float:
+        return (1 - vibrance / 4) * x + vibrance / 4 * (1 - math.pow(1 - x, 4))
+
+    is_enabled = vibrance > 0
     return {
+        "LCEnabled": str(is_enabled).lower(),
         "CCCurve": raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, curve.as_fixed_points(chroma_curve)
-        ),
+            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+        )
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
     }

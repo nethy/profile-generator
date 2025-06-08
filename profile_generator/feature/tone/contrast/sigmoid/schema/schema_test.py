@@ -53,7 +53,7 @@ class SchemaTest(TestCase):
             {},
             {
                 "Curve": "4;1.0000000;1.0000000;",
-                "LCurve": "4;1.0000000;1.0000000;",
+                "Curve2": "4;1.0000000;1.0000000;",
             },
         )
         get_flat.assert_called_once_with(0.1)

@@ -148,9 +148,6 @@ if __name__ == "__main__":
     grey18_d7000 = 0.096
     grey18_g80 = 0.082
     grey18_g9 = 0.05
-    slope = 1.6
+    slope = 1.7
 
-    # print_points(curve.as_points(catmull_tone_curve(grey18_g9, slope)))
-    # print_points(curve.as_points(catmull_linear_tone_curve(grey18_g9, slope)))
-    # print_points(curve.as_points(tone_curve.get_srgb(grey18_g9, slope)))
-    # print_points(curve.as_points(exp_tone_curve(grey18_g9, slope)))
+    print_points(curve.as_points(tone_curve.get_srgb_contrast(slope)))

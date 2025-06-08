@@ -14,7 +14,7 @@ class Field:
 
 class Template:
     FLAT_CURVE: Final = "Curve"
-    CONTRAST_CURVE: Final = "LCurve"
+    CONTRAST_CURVE: Final = "Curve2"
 
 
 def _process(data: Any) -> Mapping[str, str]:
