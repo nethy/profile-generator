@@ -1,6 +1,7 @@
+import math
 from functools import cache
 
-from profile_generator.model import bezier, gamma, sigmoid
+from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import srgb
 from profile_generator.unit import Curve, Point
@@ -21,15 +22,24 @@ def get_linear_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     flat_log = gamma.log_at(mid)
     flat_pow = gamma.power_at(mid)
-
-    control_points = [
-        (Point(0, 1), 1),
-        (Point(linear_grey18, 1), 2),
-        (Point(linear_grey18, 0), 2),
-        (Point(1, 0), 1),
-    ]
-    weight = bezier.curve((control_points))
+    weight = _get_linear_flat_weight(linear_grey18)
     return lambda x: weight(x) * flat_log(x) + (1 - weight(x)) * flat_pow(x)
+
+
+def _get_linear_flat_weight(linear_grey18: float) -> Curve:
+    def _get_shift(linear_grey18: float) -> Curve:
+        if linear_grey18 < 0.5:
+            exp = math.log(1 - 0.5) / math.log(1 - linear_grey18)
+            return lambda x: 1 - math.pow(1 - x, exp)
+        else:
+            exp = math.log(0.5) / math.log(linear_grey18)
+            return lambda x: math.pow(x, exp)
+
+    def _hermite_base(x: float) -> float:
+        return 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
+
+    shift = _get_shift(min(linear_grey18 * 2, 0.8))
+    return lambda x: _hermite_base(shift(x))
 
 
 def _as_srgb(linear_curve: Curve) -> Curve:

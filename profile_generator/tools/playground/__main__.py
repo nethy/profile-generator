@@ -150,4 +150,4 @@ if __name__ == "__main__":
     grey18_g9 = 0.05
     slope = 1.7
 
-    print_points(curve.as_points(tone_curve.get_srgb_contrast(slope)))
+    print_points(curve.as_points(tone_curve.get_linear_flat(grey18_g9)))
