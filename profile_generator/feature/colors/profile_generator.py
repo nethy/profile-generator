@@ -35,12 +35,12 @@ _MAX_VIBRANCE: Final = 10
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
-    vibrance = 2 * gain / _MAX_VIBRANCE
+    vibrance = 1 + gain / _MAX_VIBRANCE
 
     def chroma_curve(x: float) -> float:
-        return (1 - vibrance / 4) * x + vibrance / 4 * (1 - math.pow(1 - x, 4))
+        return 1 - math.pow(1 - x, vibrance)
 
-    is_enabled = vibrance > 0
+    is_enabled = vibrance > 1
     return {
         "LCEnabled": str(is_enabled).lower(),
         "CCCurve": raw_therapee.present_curve(
