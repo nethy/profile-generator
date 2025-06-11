@@ -70,7 +70,7 @@ def contrast_gradient(c: float) -> float:
         return 1 / gradient
 
 
-_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 20, 16, contrast_gradient)
+_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 24, 16, contrast_gradient)
 
 
 @cache

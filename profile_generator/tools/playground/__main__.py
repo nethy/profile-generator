@@ -122,6 +122,21 @@ def midtone_pass(curve):
     return lambda x: mask_curve(x) * curve(x) + (1 - mask_curve(x)) * x
 
 
+def weight(gradient):
+    offset = math.log2(gradient) / 4
+    shadow = sigmoid.exponential(gradient + offset)
+    highlight = sigmoid.exponential(gradient - offset)
+
+    weight_x = gamma.algebraic_at(Point(0.75, 0.5))
+    weight_y = gamma.algebraic_at(Point(0.5, 0.75))
+    weight_base = sigmoid.exponential(2)
+
+    def weight(x: float) -> float:
+        return weight_y(weight_base(weight_x(1 - x)))
+
+    return weight
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.get_tone_curve(106.845 / 255, 1.85))
@@ -150,4 +165,4 @@ if __name__ == "__main__":
     grey18_g9 = 0.05
     slope = 1.7
 
-    print_points(curve.as_points(tone_curve.get_linear_flat(grey18_g9)))
+    print_points(curve.as_points(weight(slope)))
