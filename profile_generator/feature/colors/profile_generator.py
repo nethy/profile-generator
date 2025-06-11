@@ -13,6 +13,7 @@ from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
+from profile_generator.model import sigmoid
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import curve
 
@@ -36,14 +37,16 @@ _MAX_VIBRANCE: Final = 10
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
     vibrance = 1 + gain / _MAX_VIBRANCE
-
-    def chroma_curve(x: float) -> float:
-        return 1 - math.pow(1 - x, vibrance)
-
+    chroma_curve = sigmoid.algebraic(vibrance, 1)
     is_enabled = vibrance > 1
     return {
         "LCEnabled": str(is_enabled).lower(),
-        "CCCurve": raw_therapee.present_curve(
+        "ACurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+        )
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
+        "BCurve": raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
         )
         if is_enabled
