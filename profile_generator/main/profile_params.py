@@ -104,24 +104,10 @@ class Grading(ProfileParamParser):
         self.matte: Final = Matte()
 
 
-@unique
-class ColorSpace(ProfileParamEnum):
-    ACESP0 = "ACESp0"
-    ACESP1 = "ACESp1"
-    PROPHOTO = "ProPhoto"
-    REC2020 = "Rec2020"
-    SRGB = "sRGB"
-
-
 class WhiteBalance(ProfileParamParser):
     def __init__(self) -> None:
         self.temperature: Final = Value[int](6504)
         self.tint: Final = Value[float](1)
-
-
-class ColorProfile(ProfileParamParser):
-    def __init__(self) -> None:
-        self.working: Final = Value[ColorSpace](ColorSpace.PROPHOTO)
 
 
 class Colors(ProfileParamParser):
@@ -129,7 +115,6 @@ class Colors(ProfileParamParser):
         self.vibrance: Final = Value[float](0)
         self.chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
-        self.profile: Final = ColorProfile()
         self.white_balance: Final = WhiteBalance()
 
 

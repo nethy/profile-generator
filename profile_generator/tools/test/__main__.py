@@ -6,11 +6,6 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import gamma, linalg, sigmoid, spline
-from profile_generator.model.color import lab, rgb, xyz
-from profile_generator.model.color.space import SRGB
-from profile_generator.model.color_chart import ColorChart
-from profile_generator.unit import Point, Strength
 
 
 def print_calculation(name, fn, *args, **kwargs):

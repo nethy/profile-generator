@@ -8,7 +8,6 @@ f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
 
 p = 100*(f'(0)-1)/3
 """
-import math
 from collections.abc import Mapping
 from typing import Final
 
@@ -18,7 +17,6 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.unit import curve
 
 from .grading.profile_generator import generate as generate_grading
-from .space.profile_generator import generate as generate_space
 from .white_balance.profile_generator import generate as generate_white_balance
 
 
@@ -26,7 +24,6 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     return {
         **_get_vibrance(profile_params),
         **generate_grading(profile_params),
-        **generate_space(profile_params),
         **generate_white_balance(profile_params),
     }
 

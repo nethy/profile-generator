@@ -6,7 +6,7 @@ from typing import TypeAlias
 
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
 from profile_generator.model.color import lab, xyz
-from profile_generator.model.color.space.srgb import SRGB
+from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Vector
 
 ColorTone: TypeAlias = tuple[float, Vector]
