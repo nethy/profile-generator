@@ -8,8 +8,8 @@ from profile_generator.unit import Curve
 def get_matte_curve(matte_param: Matte) -> Curve:
     shadow_offset = matte_param.black.value / 100
     highlight_offset = matte_param.white.value / 100
-    shadow_boundary = 2 * shadow_offset
-    highlight_boundary = 1 - 2 * (1 - highlight_offset)
+    shadow_boundary = 2.5 * shadow_offset
+    highlight_boundary = 1 - 2.5 * (1 - highlight_offset)
 
     shadow_curve = _get_shadow_curve(shadow_offset, shadow_boundary)
     highlight_curve = _get_highlight_curve(highlight_offset, highlight_boundary)

@@ -85,7 +85,6 @@ def _clip(value: float, lower: float, upper: float) -> float:
 def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
     ratio = (x - left[0]) / (right[0] - left[0])
     luma_weight = _linear_weight(ratio)
-    # chroma_weight = _linear_weight(ratio)
     chroma_weight = _non_linear_weight(ratio)
     return [
         luma_weight * left[1][0] + (1 - luma_weight) * right[1][0],

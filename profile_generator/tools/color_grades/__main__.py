@@ -22,8 +22,6 @@ def main() -> None:
     raw_config = file.read_file(sys.argv[1])
     configuration = json.loads(raw_config)
     for name, config in configuration.items():
-        pprint.pp(config)
-
         profile_params = ProfileParams()
         profile_params.colors.grading.parse(config)
 
