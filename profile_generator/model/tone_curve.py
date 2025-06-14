@@ -47,7 +47,7 @@ def get_linear_contrast(gradient: float) -> Curve:
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
 
-    offset = math.log2(gradient) / 4
+    offset = math.log2(gradient) / 5
     shadow = sigmoid.exponential(gradient + offset)
     highlight = sigmoid.exponential(gradient - offset)
 
@@ -55,8 +55,8 @@ def get_linear_contrast(gradient: float) -> Curve:
         return 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
 
     def contrast(x: float) -> float:
-        return weight(x) * shadow(x) + (1 - weight(x)) * highlight(x)
-
+        # return weight(x) * shadow(x) + (1 - weight(x)) * highlight(x)
+        return math.pow(shadow(x), 1-x) * math.pow(highlight(x), x)
     return lambda x: shift_y(contrast(shift_x(x)))
 
 
