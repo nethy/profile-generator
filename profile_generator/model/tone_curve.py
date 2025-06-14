@@ -20,7 +20,9 @@ def get_lab_flat(linear_grey18: float) -> Curve:
 @cache
 def get_linear_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
-    return gamma.log_at(mid)
+    shadow = gamma.log_at(mid)
+    highlight = gamma.power_at(mid)
+    return lambda x: math.pow(shadow(x), 1 - x) * math.pow(highlight(x), x)
 
 
 def _as_rgb(linear_curve: Curve) -> Curve:

@@ -19,6 +19,12 @@ def is_positive(value: T) -> T:
 
 def is_greater_or_equal(value: T, other: T) -> T:
     if _round(value - other) < 0:
+        raise ValueError(f"{value} must be greater or equal than {other}")
+    return value
+
+
+def is_greater(value: T, other: T) -> T:
+    if _round(value - other) <= 0:
         raise ValueError(f"{value} must be greater than {other}")
     return value
 

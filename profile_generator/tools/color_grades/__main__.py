@@ -1,5 +1,4 @@
 import json
-import pprint
 import sys
 
 from profile_generator.feature.colors.grading import profile_generator

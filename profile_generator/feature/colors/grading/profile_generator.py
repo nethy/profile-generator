@@ -1,22 +1,3 @@
-"""
-Tonal ranges:
-shadow:     0.16667 0.50000
-midtone:    0.16667 0.50000 0.83333
-highlight:  0.50000 0.83333
-
-
-Bezier slope
-
-s = 1/(1-2c)
-
-1-2c = 1/s
-c = 0.5-1/2s
-
-s=2     -> c = 0.25
-s=1.618 -> c = 0.1909765
-s=1.5   -> c = 0.16666667
-"""
-
 import math
 from collections.abc import Mapping
 from typing import Final
