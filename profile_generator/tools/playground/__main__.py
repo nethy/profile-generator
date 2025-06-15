@@ -6,6 +6,8 @@ import math
 from array import array
 from email.mime import base
 from functools import partial
+from itertools import starmap
+from operator import itemgetter
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
@@ -46,95 +48,40 @@ def fn_diff(a, b):
     )
 
 
-def naive_flat(midtone):
-    shadow = Line.from_points(Point(0, 0), midtone)
-    highlight = Line.from_points(midtone, Point(1, 1))
-    return lambda x: shadow.get_y(x) if x < midtone.x else highlight.get_y(x)
+def lch_to_hsv(lab_color):
+    return rgb.to_hsv(xyz.to_rgb(lab.to_xyz(lab.from_lch(lab_color)), SRGB))
 
 
-CURVE_LENGTH = constants.GREY18_LINEAR / 2
-BLACK = Point(0, 0)
-WHITE = Point(1, 1)
+def as_equalizer(cur, new):
+    cur_h, new_h = cur[0], new[0]
+
+    res_h = new_h - cur_h
+    if res_h > 0.5:
+        res_h -= 1
+    elif res_h < -0.5:
+        res_h += 1
+
+    return raw_therapee.EqPoint(cur_h, (new_h - cur_h) / 2 + 0.5)
 
 
-def bezier_flat(midtone):
-    shadow = Line.from_points(BLACK, midtone)
-    highlight = Line.from_points(midtone, WHITE)
-    sh_ratio = min(CURVE_LENGTH / midtone.distance(BLACK), 1)
-    curve_start = Point(
-        midtone.x - midtone.x * sh_ratio, midtone.y - midtone.y * sh_ratio
-    )
-    hl_ratio = min(CURVE_LENGTH / midtone.distance(WHITE), 1)
-    curve_end = Point(
-        midtone.x + (WHITE.x - midtone.x) * hl_ratio,
-        midtone.y + (WHITE.y - midtone.y) * hl_ratio,
-    )
-    transition = bezier.curve([(curve_start, 1), (midtone, 1), (curve_end, 1)])
-    print(curve_start, midtone, curve_end)
-    print(curve_start.distance(midtone), midtone.distance(curve_end))
-    return (
-        lambda x: shadow.get_y(x)
-        if x < curve_start.x
-        else transition(x)
-        if x < curve_end.x
-        else highlight.get_y(x)
+def lab_hue_rgb():
+    shift = 3
+    lab_hue = [(0, shift), (90, -shift), (150, shift), (240, -shift)]
+
+    hsv_values = (
+        (lch_to_hsv(x_lab), lch_to_hsv(y_lab))
+        for x_lab, y_lab in (
+            ([50, 25, x_hue], [50, 25, x_hue + mod_hue]) for x_hue, mod_hue in lab_hue
+        )
     )
 
+    equalizer_values = starmap(as_equalizer, hsv_values)
 
-RATIO = 0.25
-
-
-def bezier_hl_flat(midtone):
-    shadow = Line.from_points(BLACK, midtone)
-    hl_control = Point(
-        midtone.x + (shadow.get_x(1) - midtone.x) * RATIO,
-        midtone.y + (1 - midtone.y) * RATIO,
+    print(
+        raw_therapee.present_equalizer(
+            sorted(list(equalizer_values), key=lambda eq_point: eq_point.x)
+        )
     )
-    highlight = bezier.curve([(midtone, 1), (hl_control, 1), (WHITE, 1)])
-    return lambda x: shadow.get_y(x) if x < midtone.x else highlight(x)
-
-
-def spline_flat(midtone):
-    c = midtone.gradient
-    a = (1 - midtone.y) / (1 - midtone.y) - 2 + c
-    b = 1 - a - c
-    return lambda x: c * x if x < midtone.x else a * x * x * x + b * x * x + c * x
-
-
-def to_srgb(fn):
-    return lambda x: SRGB.gamma(fn(SRGB.inverse_gamma(x)))
-
-
-def midtone_pass(curve):
-    shadow_line = Line.from_points(Point(0.1, 0), Point(0.4, 1))
-    highlight_line = Line.from_points(Point(0.6, 1), Point(0.9, 0))
-    mask_curve = (
-        lambda x: 0
-        if x < 0.1
-        else shadow_line.get_y(x)
-        if x < 0.4
-        else 1
-        if x < 0.6
-        else highlight_line.get_y(x)
-        if x < 0.9
-        else 0
-    )
-    return lambda x: mask_curve(x) * curve(x) + (1 - mask_curve(x)) * x
-
-
-def weight(gradient):
-    offset = math.log2(gradient) / 4
-    shadow = sigmoid.exponential(gradient + offset)
-    highlight = sigmoid.exponential(gradient - offset)
-
-    weight_x = gamma.algebraic_at(Point(0.75, 0.5))
-    weight_y = gamma.algebraic_at(Point(0.5, 0.75))
-    weight_base = sigmoid.exponential(2)
-
-    def weight(x: float) -> float:
-        return weight_y(weight_base(weight_x(1 - x)))
-
-    return weight
 
 
 if __name__ == "__main__":
@@ -165,4 +112,4 @@ if __name__ == "__main__":
     grey18_g9 = 0.05
     slope = 1.7
 
-    print_points(curve.as_points(weight(slope)))
+    lab_hue_rgb()

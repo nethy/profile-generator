@@ -21,9 +21,14 @@ class ProfileGeneratorTest(TestCase):
 
     def test_generate_toning(self) -> None:
         params = ProfileParams()
-        params.parse({"colors": {"grading": {"toning": {"channels": "one", "midtone": [-1, 3, 135]}}}})
+        params.parse(
+            {
+                "colors": {
+                    "grading": {"toning": {"channels": "one", "midtone": [-1, 3, 135]}}
+                }
+            }
+        )
 
-        self.maxDiff = None
         self.assertDictEqual(
             generate(params),
             {
@@ -64,14 +69,13 @@ class ProfileGeneratorTest(TestCase):
                 + "0.8125000;0.8046278;0.8437500;0.8376170;0.8750000;0.8704827;"
                 + "0.9062500;0.9031888;0.9375000;0.9357001;0.9687500;0.9679819;"
                 + "1.0000000;1.0000000;",
-            }
+            },
         )
 
     def test_generate_matte(self) -> None:
         params = ProfileParams()
         params.parse({"colors": {"grading": {"matte": {"black": 5, "white": 95}}}})
 
-        self.maxDiff = None
         self.assertDictEqual(
             generate(params),
             {
@@ -112,5 +116,5 @@ class ProfileGeneratorTest(TestCase):
                 + "0.8125000;0.8125000;0.8437500;0.8437500;0.8750000;0.8750000;"
                 + "0.9062500;0.9031250;0.9375000;0.9250000;0.9687500;0.9406250;"
                 + "1.0000000;0.9500000;",
-            }
+            },
         )
