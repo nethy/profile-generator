@@ -23,7 +23,7 @@ Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true
-Method=Luminance
+Method=Coloropp
 Hlbl=0
 Hlth=1
 
