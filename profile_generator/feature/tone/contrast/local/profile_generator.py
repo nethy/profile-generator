@@ -10,13 +10,10 @@ class Template:
     CONSTRAST_2: Final = "WaveletContrast2"
 
 
-_BASE_SLOPE = 1.5
-
-
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    slope = profile_params.tone.curve.sigmoid.slope.value * _BASE_SLOPE
+    slope = profile_params.tone.curve.sigmoid.slope.value
 
-    contrast_level = round(100 * math.log(slope, 8))
+    contrast_level = round(100 * math.log(slope, 32))
     is_enabled = contrast_level > 0
 
     return {

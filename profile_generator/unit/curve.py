@@ -5,7 +5,7 @@ from .point import Point
 
 Curve = Callable[[float], float]
 
-_TOLERANCE = 0.05
+_TOLERANCE = 12 / 256
 
 
 def as_points(curve: Curve) -> Sequence[Point]:
@@ -21,5 +21,11 @@ def as_points(curve: Curve) -> Sequence[Point]:
     return points
 
 
+_POINT_COUNT = 32
+
+
 def as_fixed_points(curve: Curve) -> Sequence[Point]:
-    return [Point(i / (64 - 1), curve(i / (64 - 1))) for i in range(64)]
+    return [
+        Point(i / _POINT_COUNT, curve(i / _POINT_COUNT))
+        for i in range(_POINT_COUNT + 1)
+    ]

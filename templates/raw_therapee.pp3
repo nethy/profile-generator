@@ -16,16 +16,16 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=WeightedStd
-CurveMode2=WeightedStd
+CurveMode=FilmLike
+CurveMode2=Perceptual
 Curve={Curve}
-Curve2=0;
+Curve2={Curve2}
 
 [HLRecovery]
 Enabled=true
-Method=Coloropp
+Method=Luminance
 Hlbl=0
-Hlth=1.5
+Hlth=1
 
 [Retinex]
 Enabled=false
@@ -100,20 +100,20 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled=true
+Enabled={LCEnabled}
 Brightness=0
 Contrast=0
 Chromaticity=0
-Gamutmunse=MUN
+Gamutmunse=NONE
 RedAndSkinTonesProtection=0
 LCredsk=true
 LCurve=0;
-aCurve=0;
-bCurve=0;
+aCurve={ACurve}
+bCurve={BCurve}
 ccCurve=0;
-chCurve={LcChCurve}
-lhCurve={LcLhCurve}
-hhCurve={LcHhCurve}
+chCurve=0;
+lhCurve=0;
+hhCurve=0;
 LcCurve=0;
 ClCurve=0;
 
@@ -175,13 +175,13 @@ Itcwb_sampling=false
 CompatibilityVersion=2
 
 [Color appearance]
-Enabled={ColorAppEnabled}
+Enabled=false
 Degree=100
 AutoDegree=false
 Degreeout=100
 AutoDegreeout=false
 Surround=Average
-complex=normal
+complex=expert
 ModelCat=16
 CatCat=clas
 Surrsrc=Average
@@ -189,16 +189,16 @@ AdaptLum=2000
 Badpixsl=0
 Model=RawT
 Illum=i50
-Algorithm=JC
+Algorithm=ALL
 J-Light=0
 Q-Bright=0
-C-Chroma={ColorAppChroma}
+C-Chroma=0
 S-Chroma=0
 M-Chroma=0
 J-Contrast=0
 Q-Contrast=0
 H-Hue=0
-RSTProtection=33.333333333333333
+RSTProtection=0
 AdaptScene=2000
 AutoAdapscen=false
 YbScene=18
@@ -215,7 +215,7 @@ Datacie=false
 Tonecie=false
 CurveMode=Lightness
 CurveMode2=Brightness
-CurveMode3=Chroma
+CurveMode3=Colorfullness
 Curve=0;
 Curve2=0;
 Curve3=0;
@@ -254,7 +254,7 @@ RGBMethod=soft
 MethodMed=none
 Redchro=0
 Bluechro=0
-AutoGain=true
+AutoGain=false
 Gamma=1.4
 Passes=1
 LCurve=0;
@@ -284,12 +284,12 @@ Radius={SHRadius}
 Lab=false
 
 [ToneEqualizer]
-Enabled=true
+Enabled=false
 Band0=0
 Band1=0
 Band2=0
 Band3=0
-Band4=-15
+Band4=0
 Band5=0
 Regularization=0
 Pivot=0
@@ -534,12 +534,12 @@ DeconvIterations=100
 
 [Color Management]
 InputProfile=(cameraICC)
-ToneCurve=true
-ApplyLookTable=true
+ToneCurve=false
+ApplyLookTable=false
 ApplyBaselineExposureOffset=false
 ApplyHueSatMap=true
 DCPIlluminant=0
-WorkingProfile={CMWorkingProfile}
+WorkingProfile=ProPhoto
 WorkingTRC=none
 Will=def
 Wprim=def

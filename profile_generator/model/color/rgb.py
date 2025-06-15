@@ -3,14 +3,25 @@ import math
 from profile_generator.model import linalg
 from profile_generator.model.color.space.color_space import ColorSpace
 from profile_generator.model.linalg import Vector
+from profile_generator.util import validation
 
 
-def normalize(srgb: Vector) -> Vector:
-    return [normalize_value(x) for x in srgb]
+def normalize(rgb: Vector) -> Vector:
+    return [normalize_value(x) for x in rgb]
 
 
 def normalize_value(value: float) -> float:
     return value / 255
+
+
+def to_linear_value(value: float, color_space: ColorSpace) -> float:
+    validation.is_in_closed_interval(value, 0.0, 1.0)
+    return color_space.inverse_gamma(value)
+
+
+def from_linear_value(linear_value: float, color_space: ColorSpace) -> float:
+    validation.is_in_closed_interval(linear_value, 0.0, 1.0)
+    return color_space.gamma(linear_value)
 
 
 def ev_comp(

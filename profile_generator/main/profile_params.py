@@ -42,7 +42,7 @@ class ProfileParamTuple(Generic[T], ProfileParamParser):
         return [cast(Value, value).value for value in self.__dict__.values()]
 
 
-V = TypeVar("V", str, int, float, bool, tuple, ProfileParamEnum)
+V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
 
 
 class Value(Generic[V], ProfileParamParser):
@@ -68,45 +68,40 @@ class Camera(ProfileParamParser):
         self.resolution_mp: Final = Value[float](16)
 
 
-class Hcl(ProfileParamTuple):
+class Lch(ProfileParamTuple[float]):
     def __init__(self) -> None:
-        self.hue: Final = Value[float](0)
-        self.chromacity: Final = Value[float](0)
         self.luminance: Final = Value[float](0)
+        self.chroma: Final = Value[float](0)
+        self.hue: Final = Value[float](0)
+
+
+@unique
+class ColorToningChannel(ProfileParamEnum):
+    ONE = 1
+    TWO = 2
+    THREE = 3
+
+
+class ColorToning(ProfileParamParser):
+    def __init__(self) -> None:
+        self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
+        self.black = Lch()
+        self.shadow = Lch()
+        self.midtone = Lch()
+        self.highlight = Lch()
+        self.white = Lch()
+
+
+class Matte(ProfileParamParser):
+    def __init__(self) -> None:
+        self.black: Final = Value[float](0)
+        self.white: Final = Value[float](100)
 
 
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
-        self.base: Final = Hcl()
-        self.shadow: Final = Hcl()
-        self.midtone: Final = Hcl()
-        self.highlight: Final = Hcl()
-
-
-class HueParams(ProfileParamParser):
-    def __init__(self) -> None:
-        self.red: Final = Value[float](0)
-        self.yellow: Final = Value[float](0)
-        self.green: Final = Value[float](0)
-        self.cyan: Final = Value[float](0)
-        self.blue: Final = Value[float](0)
-        self.magenta: Final = Value[float](0)
-
-
-class Hsl(ProfileParamParser):
-    def __init__(self) -> None:
-        self.hue: Final = HueParams()
-        self.saturation: Final = HueParams()
-        self.luminance: Final = HueParams()
-
-
-@unique
-class ColorSpace(ProfileParamEnum):
-    ACESP0 = "ACESp0"
-    ACESP1 = "ACESp1"
-    PROPHOTO = "ProPhoto"
-    REC2020 = "Rec2020"
-    SRGB = "sRGB"
+        self.toning: Final = ColorToning()
+        self.matte: Final = Matte()
 
 
 class WhiteBalance(ProfileParamParser):
@@ -115,18 +110,11 @@ class WhiteBalance(ProfileParamParser):
         self.tint: Final = Value[float](1)
 
 
-class ColorProfile(ProfileParamParser):
-    def __init__(self) -> None:
-        self.working: Final = Value[ColorSpace](ColorSpace.PROPHOTO)
-
-
 class Colors(ProfileParamParser):
     def __init__(self) -> None:
         self.vibrance: Final = Value[float](0)
         self.chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
-        self.hsl: Final = Hsl()
-        self.profile: Final = ColorProfile()
         self.white_balance: Final = WhiteBalance()
 
 
@@ -202,8 +190,8 @@ class Raw(ProfileParamParser):
 
 class Sigmoid(ProfileParamParser):
     def __init__(self) -> None:
-        self.grey18: Final = Value[float](90.0)
-        self.slope: Final = Value[float](1.0666667)
+        self.linear_grey18: Final = Value[float](0.1)
+        self.slope: Final = Value[float](1.6)
 
 
 class Curve(ProfileParamParser):

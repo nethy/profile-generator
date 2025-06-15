@@ -1,12 +1,22 @@
+"""
+RawTherapee CIECAM chromaticity, saturation, colorfulness function
+
+f(x) = (1-p/100) * x + p/100 * (1-(1-x)^4))
+
+f'(x) = 1-p/100 + p/100 * 4(1-x)^3
+f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
+
+p = 100*(f'(0)-1)/3
+"""
 from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.unit.precision import DECIMALS
+from profile_generator.model import sigmoid
+from profile_generator.model.view import raw_therapee
+from profile_generator.unit import curve
 
 from .grading.profile_generator import generate as generate_grading
-from .hsl.profile_generator import generate as generate_hsl
-from .space.profile_generator import generate as generate_space
 from .white_balance.profile_generator import generate as generate_white_balance
 
 
@@ -14,26 +24,28 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     return {
         **_get_vibrance(profile_params),
         **generate_grading(profile_params),
-        **generate_hsl(profile_params),
-        **generate_space(profile_params),
         **generate_white_balance(profile_params),
     }
 
 
-class Template:
-    ENABLED: Final = "ColorAppEnabled"
-    CHROMATICITY: Final = "ColorAppChroma"
-
-
 _MAX_VIBRANCE: Final = 10
-_COEFFICIENT: Final = 100 / 3
 
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    vibrance = profile_params.colors.vibrance.value
-    chromaticity = vibrance / _MAX_VIBRANCE * _COEFFICIENT
-    is_enabled = chromaticity != 0.0
+    gain = profile_params.colors.vibrance.value
+    vibrance = 1 + gain / _MAX_VIBRANCE
+    chroma_curve = sigmoid.algebraic(vibrance, 1)
+    is_enabled = vibrance > 1
     return {
-        Template.ENABLED: str(is_enabled).lower(),
-        Template.CHROMATICITY: str(round(chromaticity, DECIMALS)),
+        "LCEnabled": str(is_enabled).lower(),
+        "ACurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+        )
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
+        "BCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+        )
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
     }

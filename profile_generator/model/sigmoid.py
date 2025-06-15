@@ -70,11 +70,13 @@ def contrast_gradient(c: float) -> float:
         return 1 / gradient
 
 
-_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 20, 16, contrast_gradient)
+_EXP_GRADIENT_SEARCH_TABLE = search.get_table(0, 24, 16, contrast_gradient)
 
 
 @cache
 def exponential(gradient: float) -> Curve:
     validation.is_greater_or_equal(gradient, 1)
+    if math.isclose(gradient, 1):
+        return lambda x: x
     coeff = search.table_search(_EXP_GRADIENT_SEARCH_TABLE, contrast_gradient, gradient)
     return contrast_curve(coeff)

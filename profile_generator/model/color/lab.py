@@ -7,7 +7,7 @@ from profile_generator.model.color.xyz import (
 )
 from profile_generator.model.linalg import Vector
 
-from .white_point import D50_XYZ, D65_XYZ
+from .white_point import D50_XYZ
 
 
 def from_xyz(xyz_d65: Vector) -> Vector:
@@ -31,9 +31,17 @@ def to_xyz(lab: Vector) -> Vector:
     return xyz_d65
 
 
+def from_xyz_lum(y: float) -> float:
+    return 116 * _lab_f(y) - 16
+
+
+def to_xyz_lum(l: float) -> float:
+    return _lab_f_inverse((l + 16) / 116)
+
+
 def to_lch(lab: Vector) -> Vector:
     l, a, b = lab
-    c = math.sqrt(math.pow(a, 2) + math.pow(b, 2))
+    c = math.sqrt(a * a + b * b)
     h = math.degrees(math.atan2(b, a))
     if h < 0:
         h += 360
@@ -47,12 +55,22 @@ def from_lch(lch: Vector) -> Vector:
     return [l, a, b]
 
 
-def from_xyz_lum(y_d65: float) -> float:
-    return 116 * _lab_f(y_d65 / D65_XYZ[1]) - 16
+def to_bsh(lab: Vector) -> Vector:
+    """
+    Brilliance, Saturation, Hue
+    """
+    l, c, h = to_lch(lab)
+    b = math.sqrt(l * l + c * c)
+    s = (1 - math.atan2(l, c) / math.pi * 2) * 100 if l > 0 or c > 0 else 0
+    return [b, s, h]
 
 
-def to_xyz_lum(lum: float) -> float:
-    return D65_XYZ[1] * _lab_f_inverse((lum + 16) / 116)
+def from_bsh(bsh: Vector) -> Vector:
+    b, s, h = bsh
+    s_radians = (1 - s / 100) * math.pi / 2
+    l = b * math.sin(s_radians)
+    c = b * math.cos(s_radians)
+    return from_lch([l, c, h])
 
 
 SIGMA = 6.0 / 29.0

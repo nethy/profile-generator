@@ -39,22 +39,51 @@ def algebraic(coefficient: float, exponent: float) -> Curve:
     y' = ((x^k+(ax)^k)/(1+(ax)^k))^(1/k)/(x(ax)^k+x)
     """
 
-    def _curve(x: float) -> float:
+    def curve(x: float) -> float:
         acc = math.pow(coefficient * x, exponent)
         return math.pow((math.pow(x, exponent) + acc) / (1 + acc), 1 / exponent)
 
-    return _curve
+    return curve
 
 
-def partial_algebraic_at(point: Point, gradient: float, exponent: float = 1.0) -> Curve:
-    if math.isclose(gradient, 1) and math.isclose(point.gradient, 1):
+def exp2_at(point: Point) -> Curve:
+    b = exp2_coefficient(point)
+    print(b)
+    return exp2(b)
+
+
+@cache
+def exp2_coefficient(point: Point) -> float:
+    if math.isclose(point.x, point.y):
+        return 0
+    return search.jump_search(-1e3, 1e3, lambda c: exp2(c)(point.x), point.y)
+
+
+def exp2(coefficient: float) -> Curve:
+    """
+    y  = (2^{-bx}-1)/(2^{-b}-1)
+    y' = (2^{b(1-x)}*b*ld(2))/(2^b-1)
+    """
+    if math.isclose(coefficient, 0):
         return lambda x: x
+
+    def curve(x: float) -> float:
+        return (math.pow(2, -coefficient * x) - 1) / (math.pow(2, -coefficient) - 1)
+
+    return curve
+
+
+def partial_algebraic_at(point: Point, exponent: float = 1.0) -> Curve:
+    if math.isclose(point.gradient, 1):
+        return lambda x: x
+
     g = math.pow(
-        math.pow(gradient / (1 - point.y), exponent)
+        math.pow(point.gradient / (1 - point.y), exponent)
         - 1 / math.pow(1 - point.x, exponent),
         1 / exponent,
     )
     curve = algebraic(g, exponent)
+
     return lambda x: curve(x - point.x) / curve(1 - point.x) * (1 - point.y) + point.y
 
 

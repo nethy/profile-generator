@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from profile_generator.unit import Point
 
-from .gamma import algebraic_at, log_at
+from .gamma import algebraic_at, exp2_at, log_at
 
 _GREY = Point(87 / 255, 119 / 255)
 
@@ -54,4 +54,12 @@ class GammaTest(TestCase):
         self.assertAlmostEqual(gamma(0), 0)
         self.assertAlmostEqual(gamma(0.5), 0.25)
         self.assertAlmostEqual(gamma(0.732486760), 0.5)
+        self.assertAlmostEqual(gamma(1), 1)
+
+    def test_exp2_at(self) -> None:
+        gamma = exp2_at(Point(0.25, 0.5))
+
+        self.assertAlmostEqual(gamma(0), 0)
+        self.assertAlmostEqual(gamma(0.25), 0.5)
+        self.assertAlmostEqual(gamma(0.5), 0.7718445)
         self.assertAlmostEqual(gamma(1), 1)

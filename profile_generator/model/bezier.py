@@ -8,6 +8,10 @@ from profile_generator.util import search
 WeightedPoints = Sequence[tuple[Point, float]]
 
 
+def as_uniform_points(coordinates: Sequence[tuple[float, float]]) -> WeightedPoints:
+    return list((p, 1.0) for p in (Point(x, y) for x, y in coordinates))
+
+
 def curve(control_points: WeightedPoints, table_size: int = 16) -> Curve:
     def x_at(t: float) -> float:
         return get_point_at(control_points, t).x
@@ -35,3 +39,11 @@ def get_point_at(control_points: WeightedPoints, t: float) -> Point:
         weight += b * w
         result += b * p * w
     return result / weight
+
+
+def get_control_point_coefficent(gradient: float) -> float:
+    if gradient < 1 and not math.isclose(gradient, 1):
+        raise ValueError(
+            "Gradient for bezier control point coefficient must be at least 1."
+        )
+    return 0.5 * (gradient - 1) / gradient

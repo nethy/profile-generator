@@ -1,9 +1,15 @@
+"""
+Equalizer symetric slope formula:
+1/(1-2o) = s
+1-2o = 1/s
+o = (s-1)/(2s)
+"""
 from collections.abc import Sequence
 from typing import Final, Optional
 
 from profile_generator.unit import DECIMALS, Point
 
-_EQ_STRENGTH = 0.25
+_EQ_STRENGTH = 0.16666667
 _ONE_SIDE_EQ_STRENGTH = 0.5
 
 
