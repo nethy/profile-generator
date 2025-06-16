@@ -130,34 +130,6 @@ def lch_lightness():
     print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
 
 
-"""
-RawTherapee LAB Curves:
-CH curve:
-    C = (1 + (f(h) - 0.5) * 2) * c
-HH curve:
-    H =(f(rgb_hue(h)) - 0.5) * 1.7 + h
-    f(h) = (H-h)/1.7+0.5
-
-    lab_hue in -pi..pi
-    rgb_hue in   0..1
-
-LH curve:
-    f(h) > 0.5
-        x = (f(h) - 0.5) * 2
-        L = (1-x)*l+x*(1-(1-l)^4)
-        L' = 1-x+x*4*(1-l)^3
-        x = (L'(0)-1)/3
-
-        2*f(h)-1 = (L'-1)/3
-        f(h) = (L'-1)/6+0.5
-    f(h) <= 0.5
-        x = (f(h) - 0.5) * 1.9
-        L = l * (1+x)
-        x = L/l-1
-        f(h) = L/1.9l-1/1.9+0.5
-"""
-
-
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.get_tone_curve(106.845 / 255, 1.85))

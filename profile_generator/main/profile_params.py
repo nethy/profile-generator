@@ -68,7 +68,7 @@ class Camera(ProfileParamParser):
         self.resolution_mp: Final = Value[float](16)
 
 
-class Lch(ProfileParamTuple[float]):
+class LchValue(ProfileParamTuple[float]):
     def __init__(self) -> None:
         self.luminance: Final = Value[float](0)
         self.chroma: Final = Value[float](0)
@@ -85,11 +85,11 @@ class ColorToningChannel(ProfileParamEnum):
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
         self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
-        self.black = Lch()
-        self.shadow = Lch()
-        self.midtone = Lch()
-        self.highlight = Lch()
-        self.white = Lch()
+        self.black = LchValue()
+        self.shadow = LchValue()
+        self.midtone = LchValue()
+        self.highlight = LchValue()
+        self.white = LchValue()
 
 
 class Matte(ProfileParamParser):
@@ -98,10 +98,30 @@ class Matte(ProfileParamParser):
         self.white: Final = Value[float](100)
 
 
+class LchAdjustment(ProfileParamParser):
+    def __init__(self) -> None:
+        self.magenta = Value[float](0)
+        self.orange = Value[float](0)
+        self.yellow = Value[float](0)
+        self.green = Value[float](0)
+        self.aqua = Value[float](0)
+        self.teal = Value[float](0)
+        self.blue = Value[float](0)
+        self.purple = Value[float](0)
+
+
+class Lch(ProfileParamParser):
+    def __init__(self) -> None:
+        self.luminance: Final = LchAdjustment()
+        self.chroma: Final = LchAdjustment()
+        self.hue: Final = LchAdjustment()
+
+
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
         self.toning: Final = ColorToning()
         self.matte: Final = Matte()
+        self.lch: Final = Lch()
 
 
 class WhiteBalance(ProfileParamParser):
