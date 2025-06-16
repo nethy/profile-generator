@@ -98,7 +98,9 @@ def lch_hue():
     shift = 6
     lab_hue = [(0, shift), (90, -shift), (180, shift), (270, -shift)]
 
-    lab_hue_in_radians = starmap(lambda a, b: (to_radians(a), to_radians(a + b)), lab_hue)
+    lab_hue_in_radians = starmap(
+        lambda a, b: (to_radians(a), to_radians(a + b)), lab_hue
+    )
     # print(list(lab_hue_in_radians))
 
     def as_equalizer(cur, new):
@@ -106,9 +108,7 @@ def lch_hue():
 
     equalizer_values = starmap(as_equalizer, lab_hue_in_radians)
 
-    print_eq_points(
-        sorted(list(equalizer_values), key=lambda eq_point: eq_point.x)
-    )
+    print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
 
 
 def lch_lightness():
@@ -127,9 +127,7 @@ def lch_lightness():
 
     equalizer_values = starmap(as_equalizer, lab_hue_in_radians)
 
-    print_eq_points(
-        sorted(list(equalizer_values), key=lambda eq_point: eq_point.x)
-    )
+    print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
 
 
 """

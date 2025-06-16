@@ -1,10 +1,10 @@
 import bisect
-import math
 from collections.abc import Callable
 from operator import itemgetter
 from typing import TypeAlias
 
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
+from profile_generator.model import interpolation
 from profile_generator.model.color import lab, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Vector
@@ -83,19 +83,14 @@ def _clip(value: float, lower: float, upper: float) -> float:
 
 
 def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
-    ratio = (x - left[0]) / (right[0] - left[0])
-    luma_weight = _linear_weight(ratio)
-    chroma_weight = _non_linear_weight(ratio)
     return [
-        luma_weight * left[1][0] + (1 - luma_weight) * right[1][0],
-        chroma_weight * left[1][1] + (1 - chroma_weight) * right[1][1],
-        chroma_weight * left[1][2] + (1 - chroma_weight) * right[1][2],
+        interpolation.interpolate_values(
+            left[1][0], right[1][0], interpolation.linear, x, left[0], right[0]
+        ),
+        interpolation.interpolate_values(
+            left[1][1], right[1][1], interpolation.hermite, x, left[0], right[0]
+        ),
+        interpolation.interpolate_values(
+            left[1][2], right[1][2], interpolation.hermite, x, left[0], right[0]
+        ),
     ]
-
-
-def _linear_weight(x: float) -> float:
-    return 1 - x
-
-
-def _non_linear_weight(x: float) -> float:
-    return 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1

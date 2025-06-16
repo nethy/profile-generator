@@ -8,7 +8,7 @@ from profile_generator.util import validation
 def interpolate(
     a: Curve,
     b: Curve,
-    average: Callable[[float, float, float], float],
+    mean: Callable[[float, float, float], float],
     begin: float = 0.0,
     end: float = 1.0,
 ) -> Curve:
@@ -20,10 +20,37 @@ def interpolate(
         elif x > end:
             return b(x)
         else:
-            return average(a(x), b(x), 1 - (x - begin) / (end - begin))
+            return mean(a(x), b(x), 1 - (x - begin) / (end - begin))
 
     return _interpolate
 
 
-def geometric(a: float, b: float, weight: float) -> float:
-    return math.pow(a, weight) * math.pow(b, 1 - weight)
+def interpolate_values(
+    a: float,
+    b: float,
+    mean: Callable[[float, float, float], float],
+    x: float,
+    begin: float = 0.0,
+    end: float = 1.0,
+) -> float:
+    if x < begin:
+        return a
+    elif x > end:
+        return b
+    else:
+        return mean(a, b, 1 - (x - begin) / (end - begin))
+
+
+def harmonic(a: float, b: float, ratio: float) -> float:
+    left = ratio / a if a > 0 else 0
+    right = (1 - ratio) / b if b > 0 else 0
+    return 1 / (left + right) if left + right > 0 else 0
+
+
+def linear(a: float, b: float, ratio: float) -> float:
+    return ratio * a + (1 - ratio) * b
+
+
+def hermite(a: float, b: float, ratio: float) -> float:
+    weight = 3 * math.pow(ratio, 2) - 2 * math.pow(ratio, 3)
+    return linear(a, b, weight)
