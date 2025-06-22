@@ -144,6 +144,10 @@ def convert_to_lch_hue(value: float) -> float:
 
 
 def _make_equalizer(adjustments: list[tuple[float, float]]) -> Curve:
+    if len(adjustments) == 0:
+        return lambda _: 0.5
+    elif len(adjustments) == 1:
+        return lambda _: adjustments[0][1]
     first, last = adjustments[0], adjustments[-1]
     adjustments.insert(0, (last[0] - 1.0, last[1]))
     adjustments.append((first[0] + 1.0, first[1]))

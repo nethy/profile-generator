@@ -8,6 +8,7 @@ f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
 
 p = 100*(f'(0)-1)/3
 """
+import math
 from collections.abc import Mapping
 from typing import Final
 
@@ -34,7 +35,7 @@ _MAX_VIBRANCE: Final = 10
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
     vibrance = 1 + gain / _MAX_VIBRANCE
-    chroma_curve = sigmoid.algebraic(vibrance, 1)
+    chroma_curve = sigmoid.algebraic(vibrance, 2)
     is_enabled = vibrance > 1
     return {
         "LCEnabled": str(is_enabled).lower(),
