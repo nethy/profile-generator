@@ -48,10 +48,15 @@ V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
 class Value(Generic[V], ProfileParamParser):
     def __init__(self, value: V):
         self._value: V = value
+        self._is_set = True
 
     @property
     def value(self) -> V:
         return self._value
+
+    @property
+    def is_set(self) -> bool:
+        return self._is_set
 
     def parse(self, data: Any) -> None:
         if isinstance(self._value, ProfileParamEnum):
@@ -61,6 +66,7 @@ class Value(Generic[V], ProfileParamParser):
             return
 
         self._value = data
+        self._is_set = False
 
 
 class Camera(ProfileParamParser):
@@ -98,7 +104,7 @@ class Matte(ProfileParamParser):
         self.white: Final = Value[float](100)
 
 
-class LchAdjustment(ProfileParamParser):
+class LchAdjustment(ProfileParamParser):  # pylint: disable=too-many-instance-attributes
     def __init__(self) -> None:
         self.magenta = Value[float](0)
         self.orange = Value[float](0)
@@ -108,6 +114,7 @@ class LchAdjustment(ProfileParamParser):
         self.teal = Value[float](0)
         self.blue = Value[float](0)
         self.purple = Value[float](0)
+        self.skin_tone_protection = Value[float](0)
 
 
 class Lch(ProfileParamParser):

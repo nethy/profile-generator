@@ -73,6 +73,36 @@ def from_bsh(bsh: Vector) -> Vector:
     return from_lch([l, c, h])
 
 
+def to_rgb_hue(lab_hue: float) -> float:
+    rgb_hue = 0.0
+
+    if 180 <= lab_hue < 214.3775:
+        rgb_hue = 0.11666 * lab_hue + 0.93
+    elif 214.3775 <= lab_hue < 260.21416:
+        rgb_hue = 0.1125 * lab_hue - 0.0675
+    elif 260.21416 <= lab_hue < 294.59166:
+        rgb_hue = 0.2666 * lab_hue - 0.2833
+    elif 294.59166 <= lab_hue < 360:
+        rgb_hue = 0.1489 * lab_hue - 0.04785
+    elif 0 <= lab_hue < 19.571682:
+        rgb_hue = 0.23419 * lab_hue + 1.1557
+    elif 19.571682 <= lab_hue < 48.219596:
+        rgb_hue = 0.16 * lab_hue + 0.948
+    elif 48.219596 <= lab_hue < 128.43375:
+        rgb_hue = 0.12143 * lab_hue + 0.85928
+    elif 128.43375 <= lab_hue < 174.27042:
+        rgb_hue = 0.2125 * lab_hue + 0.94125
+    elif 174.27042 <= lab_hue < 180:
+        rgb_hue = 0.1 * lab_hue + 0.93
+
+    if rgb_hue < 0.0:
+        rgb_hue += 1.0
+    elif rgb_hue > 1.0:
+        rgb_hue -= 1.0
+
+    return rgb_hue
+
+
 SIGMA = 6.0 / 29.0
 SIGMA_2 = 36.0 / 841.0
 SIGMA_3 = 216.0 / 24389.0

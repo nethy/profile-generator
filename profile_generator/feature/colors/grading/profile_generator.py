@@ -1,55 +1,30 @@
-import math
 from collections.abc import Mapping
-from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Vector
-from profile_generator.unit.point import Point
+from profile_generator.unit import curve
 
-from . import matte, toning
-
-
-class Template:
-    ENABLED: Final = "RGBCurvesEnabled"
-    RED: Final = "RGBCurvesRCurve"
-    GREEN: Final = "RGBCurvesGCurve"
-    BLUE: Final = "RGBCurvesBCurve"
-
-
-_SECTION_COUNT = 32
+from . import lch, matte, toning_regions
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    rgb_toning = toning.get_rgb_toning(profile_params.colors.grading.toning)
     matte_curve = matte.get_matte_curve(profile_params.colors.grading.matte)
 
-    def rgb_curve(x: float) -> Vector:
-        return list(map(matte_curve, rgb_toning(x)))
-
-    reds, greens, blues = [], [], []
-    for x in (i / _SECTION_COUNT for i in range(_SECTION_COUNT + 1)):
-        r, g, b = rgb_curve(x)
-        reds.append(Point(x, _clip(r, 0, 1)))
-        greens.append(Point(x, _clip(g, 0, 1)))
-        blues.append(Point(x, _clip(b, 0, 1)))
-
-    is_enabled = any(
-        not math.isclose(x, y, rel_tol=1e-3) for x, y in (*reds, *greens, *blues)
-    )
+    matte_points = curve.as_points(matte_curve)
+    black = profile_params.colors.grading.matte.black.value
+    white = profile_params.colors.grading.matte.white.value
+    is_enabled = black > 0 and white > 0
     return {
-        Template.ENABLED: str(is_enabled).lower(),
-        Template.RED: raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, reds if is_enabled else []
+        "RGBCurvesEnabled": str(is_enabled).lower(),
+        "RGBCurvesRCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, matte_points if is_enabled else []
         ),
-        Template.GREEN: raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, greens if is_enabled else []
+        "RGBCurvesGCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, matte_points if is_enabled else []
         ),
-        Template.BLUE: raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, blues if is_enabled else []
+        "RGBCurvesBCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, matte_points if is_enabled else []
         ),
+        **toning_regions.generate(profile_params),
+        **lch.generate(profile_params),
     }
-
-
-def _clip(value: float, low: float, high: float) -> float:
-    return min(max(value, low), high)

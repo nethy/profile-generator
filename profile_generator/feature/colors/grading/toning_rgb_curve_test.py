@@ -1,7 +1,7 @@
 from profile_generator.main.profile_params import ColorToning
 from profile_generator.model.linalg_test import LinalgTestCase
 
-from .toning import get_lab_toning
+from .toning_rgb_curve import get_lab_toning
 
 
 class ToningTest(LinalgTestCase):

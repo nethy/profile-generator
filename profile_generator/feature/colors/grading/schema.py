@@ -40,6 +40,7 @@ _LCH_ADJUSTMENT_SCHEMA = object_of(
         "teal": range_of(-10, 10),
         "blue": range_of(-10, 10),
         "purple": range_of(-10, 10),
+        "skin_tone_protection": range_of(0, 100),
     }
 )
 

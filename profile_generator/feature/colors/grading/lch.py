@@ -29,88 +29,153 @@ LH curve:
         x = L/l-1
         f(h) = (L/l-1)/1.9+0.5
 
-Skin tone:
-    L: [59.7, 73.4]
-    C: [13.2, 21.6]
-    H: [54.0, 77.8]
+Hue Curve
+    H = (f(h)-0.5)*2+h
+    f(h) = (H-h)/2+0.5
+
+Saturation Curve
+    f(h) > 0.5:
+        S' = (1-(f(h)-0.5)*2)-2*(f(h)-0.5)*2*(1-s)*(-1), s=0
+        S' = 1+2*(f(h)-0.5)
+        f(h) = (S'-1)/2+0.5
+    f(h) < 0.5:
+        S = s*(1+2*(f(h)-0.5))
+        f(h) = (S/s-1)/2+0.5
+
+Value Curve
+    f(h) > 0.5:
+        V' = (1-f(h)-0.5)-2*(f(h)-0.5)*(1-v)*(-1), v=0
+        V' = 1+f(h)-0.5
+        f(h) = V'-0.5
+    f(h) < 0.5:
+        V = v * (1+f(h)-0.5)
+        V = v*(0.5+f(h))
+        f(h) = V/v-0.5
+
+Skin tonal range reference:
+https://skintone.google/
 """
 
 import math
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping
 
-from profile_generator.main.profile_params import LchAdjustment
+from profile_generator.main.profile_params import LchAdjustment, ProfileParams
+from profile_generator.model import hermite, interpolation
+from profile_generator.model.color import lab
+from profile_generator.model.view import raw_therapee
+from profile_generator.unit import Curve, curve
+
+_SKIN_TONE_HUE_RANGE = (48.816, 89.129)
+
+
+def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+    lch = profile_params.colors.grading.lch
+    hue = get_adjustments(lch.hue, convert_to_hsv_hue)
+    saturation = get_adjustments(lch.hue, convert_to_saturation)
+    value = get_adjustments(lch.hue, convert_to_value)
+    is_enabled = True
+    return {
+        "HSVEnabled": str(is_enabled).lower(),
+        "HSVHCUrve": raw_therapee.present_linear_equalizer(curve.as_points(hue))
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
+        "HSVSCUrve": raw_therapee.present_linear_equalizer(curve.as_points(saturation))
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
+        "HSVVCUrve": raw_therapee.present_linear_equalizer(curve.as_points(value))
+        if is_enabled
+        else raw_therapee.CurveType.LINEAR,
+    }
 
 
 def get_adjustments(
     adjustment: LchAdjustment, convert_value: Callable[[float], float]
-) -> Sequence[tuple[float, float]]:
-    return [
-        (_lab_hue_to_rgb_hue(hue), convert_value(value))
-        for hue, value in (
-            (0, adjustment.magenta.value),
-            (45, adjustment.orange.value),
-            (90, adjustment.yellow.value),
-            (135, adjustment.green.value),
-            (180, adjustment.aqua.value),
-            (225, adjustment.teal.value),
-            (270, adjustment.blue.value),
-            (315, adjustment.purple.value),
+) -> Curve:
+    adjustments = [
+        (lab.to_rgb_hue(hue), convert_value(adjustment.value))
+        for hue, adjustment in (
+            (0, adjustment.magenta),
+            (45, adjustment.orange),
+            (90, adjustment.yellow),
+            (135, adjustment.green),
+            (180, adjustment.aqua),
+            (225, adjustment.teal),
+            (270, adjustment.blue),
+            (315, adjustment.purple),
         )
+        if not adjustment.is_set
     ]
+    equalizer = _make_equalizer(adjustments)
+    strength = adjustment.skin_tone_protection.value / 100
+    return _clip(_apply_red_skin_protection(equalizer, _SKIN_TONE_HUE_RANGE, strength))
 
 
-def convert_luminance(value: float) -> float:
-    target = 1 + value / 10 * 0.5
-    if target > 1:
-        return (target - 1) / 6 + 0.5
+def convert_to_hsv_hue(value: float) -> float:
+    difference = value * 3
+    return difference / 2 + 0.5
+
+
+def convert_to_saturation(value: float) -> float:
+    scale = value / 10
+    return (scale - 1) / 2 + 0.5
+
+
+def convert_to_value(value: float) -> float:
+    scale = 1 + value / 10 * 0.5
+    return scale - 0.5
+
+
+def convert_to_luminance(value: float) -> float:
+    scale = 1 + value / 10 * 0.5
+    if scale > 1:
+        return (scale - 1) / 6 + 0.5
     else:
-        return (target - 1) / 1.9 + 0.5
+        return (scale - 1) / 1.9 + 0.5
 
 
-def convert_chroma(value: float) -> float:
-    target = 1 + value / 10
-    return (target - 1) / 2 + 0.5
+def convert_to_chroma(value: float) -> float:
+    scale = 1 + value / 10
+    return (scale - 1) / 2 + 0.5
 
 
-def convert_hue(value: float) -> float:
-    target = value * 3
-    return (target / 180 * 3.14159) / 1.7 + 0.5
+def convert_to_lch_hue(value: float) -> float:
+    difference = value * 3
+    return (difference / 180 * 3.14159) / 1.7 + 0.5
 
 
-
-def _lab_hue_to_rgb_hue(lab_hue: float):
-    lab_hue_in_radians = _to_radians(lab_hue)
-    rgb_hue = 0.0
-
-    if lab_hue_in_radians >= 0 and lab_hue_in_radians < 0.6:
-        rgb_hue = 0.11666 * lab_hue_in_radians + 0.93
-    elif lab_hue_in_radians >= 0.6 and lab_hue_in_radians < 1.4:
-        rgb_hue = 0.1125 * lab_hue_in_radians - 0.0675
-    elif lab_hue_in_radians >= 1.4 and lab_hue_in_radians < 2:
-        rgb_hue = 0.2666 * lab_hue_in_radians - 0.2833
-    elif lab_hue_in_radians >= 2 and lab_hue_in_radians < 3.14159:
-        rgb_hue = 0.1489 * lab_hue_in_radians - 0.04785
-    elif lab_hue_in_radians >= -3.14159 and lab_hue_in_radians < -2.8:
-        rgb_hue = 0.23419 * lab_hue_in_radians + 1.1557
-    elif lab_hue_in_radians >= -2.8 and lab_hue_in_radians < -2.3:
-        rgb_hue = 0.16 * lab_hue_in_radians + 0.948
-    elif lab_hue_in_radians >= -2.3 and lab_hue_in_radians < -0.9:
-        rgb_hue = 0.12143 * lab_hue_in_radians + 0.85928
-    elif lab_hue_in_radians >= -0.9 and lab_hue_in_radians < -0.1:
-        rgb_hue = 0.2125 * lab_hue_in_radians + 0.94125
-    elif lab_hue_in_radians >= -0.1 and lab_hue_in_radians < 0:
-        rgb_hue = 0.1 * lab_hue_in_radians + 0.93
-
-    if rgb_hue < 0.0:
-        rgb_hue += 1.0
-    elif rgb_hue > 1.0:
-        rgb_hue -= 1.0
-
-    return rgb_hue
+def _make_equalizer(adjustments: list[tuple[float, float]]) -> Curve:
+    first, last = adjustments[0], adjustments[-1]
+    adjustments.insert(0, (last[0] - 1.0, last[1]))
+    adjustments.append((first[0] + 1.0, first[1]))
+    return hermite.interpolate(adjustments)
 
 
-def _to_radians(degree: float):
-    """
-    0..360 -> -pi..pi
-    """
-    return round(math.radians(degree if degree < 180 else degree - 360), 5)
+def _apply_red_skin_protection(
+    equalizer: Curve, hue_range: tuple[float, float], strength: float
+) -> Curve:
+    if math.isclose(strength, 0):
+        return equalizer
+
+    begin, end = lab.to_rgb_hue(hue_range[0]), lab.to_rgb_hue(hue_range[1])
+    center = (begin + end) / 2
+
+    def red_skin_protected(x: float) -> float:
+        value = equalizer(x)
+        if begin < x <= center:
+            ratio = (x - begin) / (center - begin)
+            value = interpolation.hermite(
+                value, value * (1 - strength) + 0.5 * strength, ratio
+            )
+        elif center < x <= end:
+            ratio = (x - center) / (end - center)
+            value = interpolation.hermite(
+                value * (1 - strength) + 0.5 * strength, value, ratio
+            )
+
+        return value
+
+    return red_skin_protected
+
+
+def _clip(fn: Curve) -> Curve:
+    return lambda x: min(max(fn(x), 0), 1)

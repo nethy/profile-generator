@@ -65,3 +65,7 @@ def present_equalizer(points: Optional[Sequence[EqPoint]]) -> str:
     if points is None or len(points) == 0:
         return CurveType.LINEAR
     return CurveType.STANDARD + "".join(p.present() for p in points)
+
+
+def present_linear_equalizer(points: Sequence[Point]) -> str:
+    return present_equalizer([LinearEqPoint(x, y) for x, y in points])

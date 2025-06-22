@@ -16,8 +16,8 @@ ShadowCompr=50
 HistogramMatching=false
 CurveFromHistogramMatching=false
 ClampOOG=true
-CurveMode=FilmLike
-CurveMode2=Perceptual
+CurveMode=Perceptual
+CurveMode2=SatAndValueBlending
 Curve={Curve}
 Curve2={Curve2}
 
@@ -747,10 +747,10 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled=false
-HCurve=0;
-SCurve=0;
-VCurve=0;
+Enabled={HSVEnabled}
+HCurve={HSVHCUrve}
+SCurve={HSVSCUrve}
+VCurve={HSVVCUrve}
 
 [SoftLight]
 Enabled=false
@@ -769,7 +769,7 @@ gCurve={RGBCurvesGCurve}
 bCurve={RGBCurvesBCurve}
 
 [ColorToning]
-Enabled=false
+Enabled={CTEnabled}
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
@@ -799,17 +799,39 @@ LabGridALow=0
 LabGridBLow=0
 LabGridAHigh=0
 LabGridBHigh=0
-LabRegionA_1=0
-LabRegionB_1=0
+LabRegionA_1={CTShadowA}
+LabRegionB_1={CTShadowB}
 LabRegionSaturation_1=0
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1=1
-LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
-LabRegionChromaticityMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
-LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionHueMask_1=0;
+LabRegionChromaticityMask_1=0;
+LabRegionLightnessMask_1={CTShadowMask}
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
+LabRegionA_2={CTMidtoneA}
+LabRegionB_2={CTMidtoneB}
+LabRegionSaturation_2=0
+LabRegionSlope_2=1
+LabRegionOffset_2=0
+LabRegionPower_2=1
+LabRegionHueMask_2=0;
+LabRegionChromaticityMask_2=0;
+LabRegionLightnessMask_2={CTMidtoneMask}
+LabRegionMaskBlur_2=0
+LabRegionChannel_2=-1
+LabRegionA_3={CTHighlightA}
+LabRegionB_3={CTHighlightB}
+LabRegionSaturation_3=0
+LabRegionSlope_3=1
+LabRegionOffset_3=0
+LabRegionPower_3=1
+LabRegionHueMask_3=0;
+LabRegionChromaticityMask_3=0;
+LabRegionLightnessMask_3={CTHighlightMask}
+LabRegionMaskBlur_3=0
+LabRegionChannel_3=-1
 LabRegionsShowMask=-1
 
 [RAW]
