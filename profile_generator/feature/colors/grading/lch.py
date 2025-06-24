@@ -73,24 +73,24 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     hue = get_adjustments(lch.hue, convert_to_hsv_hue)
     saturation = get_adjustments(lch.hue, convert_to_saturation)
     value = get_adjustments(lch.hue, convert_to_value)
-    is_enabled = True
+    is_enabled = hue is not None and saturation is not None and value is not None
     return {
         "HSVEnabled": str(is_enabled).lower(),
         "HSVHCUrve": raw_therapee.present_linear_equalizer(curve.as_points(hue))
-        if is_enabled
+        if hue is not None
         else raw_therapee.CurveType.LINEAR,
         "HSVSCUrve": raw_therapee.present_linear_equalizer(curve.as_points(saturation))
-        if is_enabled
+        if saturation is not None
         else raw_therapee.CurveType.LINEAR,
         "HSVVCUrve": raw_therapee.present_linear_equalizer(curve.as_points(value))
-        if is_enabled
+        if value is not None
         else raw_therapee.CurveType.LINEAR,
     }
 
 
 def get_adjustments(
     adjustment: LchAdjustment, convert_value: Callable[[float], float]
-) -> Curve:
+) -> Curve | None:
     adjustments = [
         (lab.to_rgb_hue(hue), convert_value(adjustment.value))
         for hue, adjustment in (
@@ -103,9 +103,11 @@ def get_adjustments(
             (270, adjustment.blue),
             (315, adjustment.purple),
         )
-        if not adjustment.is_set
+        if adjustment.is_set
     ]
     equalizer = _make_equalizer(adjustments)
+    if equalizer is None:
+        return None
     strength = adjustment.skin_tone_protection.value / 100
     return _clip(_apply_red_skin_protection(equalizer, _SKIN_TONE_HUE_RANGE, strength))
 
@@ -143,9 +145,9 @@ def convert_to_lch_hue(value: float) -> float:
     return (difference / 180 * 3.14159) / 1.7 + 0.5
 
 
-def _make_equalizer(adjustments: list[tuple[float, float]]) -> Curve:
+def _make_equalizer(adjustments: list[tuple[float, float]]) -> Curve | None:
     if len(adjustments) == 0:
-        return lambda _: 0.5
+        return None
     elif len(adjustments) == 1:
         return lambda _: adjustments[0][1]
     first, last = adjustments[0], adjustments[-1]

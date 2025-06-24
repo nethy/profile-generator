@@ -48,7 +48,7 @@ V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
 class Value(Generic[V], ProfileParamParser):
     def __init__(self, value: V):
         self._value: V = value
-        self._is_set = True
+        self._is_set = False
 
     @property
     def value(self) -> V:
@@ -66,7 +66,7 @@ class Value(Generic[V], ProfileParamParser):
             return
 
         self._value = data
-        self._is_set = False
+        self._is_set = True
 
 
 class Camera(ProfileParamParser):

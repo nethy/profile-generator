@@ -28,22 +28,27 @@ from profile_generator.unit import Vector
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     toning_params = profile_params.colors.grading.toning
     shadow, midtone, highlight = (0.0, 0.0), (0.0, 0.0), (0.0, 0.0)
-    shadow_mask, midtone_mask, highlight_mask = (
-        [EqPoint(0, 1), EqPoint(1, 1)],
-        [EqPoint(0, 1), EqPoint(1, 1)],
-        [EqPoint(0, 1), EqPoint(1, 1)],
-    )
-    if toning_params.channels.value == ColorToningChannel.ONE:
+    shadow_mask, midtone_mask, highlight_mask = [], [], []
+    if (
+        toning_params.channels.is_set
+        and toning_params.channels.value == ColorToningChannel.ONE
+    ):
         midtone_lch = toning_params.midtone.as_list()
         midtone = _lch_to_ab(midtone_lch)
-    elif toning_params.channels.value == ColorToningChannel.TWO:
+    elif (
+        toning_params.channels.is_set
+        and toning_params.channels.value == ColorToningChannel.TWO
+    ):
         shadow_lch = toning_params.shadow.as_list()
         highlight_lch = toning_params.highlight.as_list()
         shadow = _lch_to_ab(shadow_lch)
         highlight = _lch_to_ab(highlight_lch)
         shadow_mask = [EqPoint(1 / 3, 1), EqPoint(2 / 3, 0)]
         highlight_mask = [EqPoint(1 / 3, 0), EqPoint(2 / 3, 1)]
-    elif toning_params.channels.value == ColorToningChannel.THREE:
+    elif (
+        toning_params.channels.is_set
+        and toning_params.channels.value == ColorToningChannel.THREE
+    ):
         shadow_lch = toning_params.shadow.as_list()
         midtone_lch = toning_params.midtone.as_list()
         highlight_lch = toning_params.highlight.as_list()

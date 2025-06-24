@@ -9,6 +9,20 @@ DEFAULT = {
     "RGBCurvesRCurve": "0;",
     "RGBCurvesGCurve": "0;",
     "RGBCurvesBCurve": "0;",
+    "CTEnabled": "false",
+    "CTShadowA": "0.0",
+    "CTShadowB": "0.0",
+    "CTShadowMask": "0;",
+    "CTMidtoneA": "0.0",
+    "CTMidtoneB": "0.0",
+    "CTMidtoneMask": "0;",
+    "CTHighlightA": "0.0",
+    "CTHighlightB": "0.0",
+    "CTHighlightMask": "0;",
+    "HSVEnabled": "false",
+    "HSVHCUrve": "0;",
+    "HSVSCUrve": "0;",
+    "HSVVCUrve": "0;",
 }
 
 
