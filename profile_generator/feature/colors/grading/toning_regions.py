@@ -22,7 +22,7 @@ from collections.abc import Mapping
 from profile_generator.main.profile_params import ColorToningChannel, ProfileParams
 from profile_generator.model.view import raw_therapee
 from profile_generator.model.view.raw_therapee import EqPoint
-from profile_generator.unit import Vector
+from profile_generator.unit import Vector, precision
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
@@ -35,6 +35,7 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     ):
         midtone_lch = toning_params.midtone.as_list()
         midtone = _lch_to_ab(midtone_lch)
+        midtone_mask = [EqPoint(0, 1), EqPoint(1, 1)]
     elif (
         toning_params.channels.is_set
         and toning_params.channels.value == ColorToningChannel.TWO
@@ -69,14 +70,14 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     )
     return {
         "CTEnabled": str(is_enabled).lower(),
-        "CTShadowA": str(shadow[0] / 100),
-        "CTShadowB": str(shadow[1] / 100),
+        "CTShadowA": str(precision.round_float(shadow[0] / 100)),
+        "CTShadowB": str(precision.round_float(shadow[1] / 100)),
         "CTShadowMask": raw_therapee.present_equalizer(shadow_mask),
-        "CTMidtoneA": str(midtone[0] / 100),
-        "CTMidtoneB": str(midtone[1] / 100),
+        "CTMidtoneA": str(precision.round_float(midtone[0] / 100)),
+        "CTMidtoneB": str(precision.round_float(midtone[1] / 100)),
         "CTMidtoneMask": raw_therapee.present_equalizer(midtone_mask),
-        "CTHighlightA": str(highlight[0] / 100),
-        "CTHighlightB": str(highlight[1] / 100),
+        "CTHighlightA": str(precision.round_float(highlight[0] / 100)),
+        "CTHighlightB": str(precision.round_float(highlight[1] / 100)),
         "CTHighlightMask": raw_therapee.present_equalizer(highlight_mask),
     }
 

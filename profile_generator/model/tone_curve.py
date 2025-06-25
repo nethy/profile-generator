@@ -22,7 +22,7 @@ def get_linear_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     shadow = gamma.log_at(mid)
     highlight = gamma.power_at(mid)
-    return interpolation.interpolate(shadow, highlight, interpolation.harmonic)
+    return interpolation.interpolate(shadow, highlight, interpolation.geometric)
 
 
 def _as_rgb(linear_curve: Curve) -> Curve:
@@ -53,7 +53,7 @@ def get_linear_contrast(gradient: float) -> Curve:
     highlight = sigmoid.exponential(gradient - offset)
 
     contrast = interpolation.interpolate(
-        shadow, highlight, interpolation.harmonic, 0.5, 1
+        shadow, highlight, interpolation.geometric, 0.5, 1
     )
 
     return lambda x: shift_y(contrast(shift_x(x)))

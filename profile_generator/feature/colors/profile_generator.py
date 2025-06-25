@@ -34,17 +34,17 @@ _MAX_VIBRANCE: Final = 10
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
     vibrance = 1 + gain / _MAX_VIBRANCE
-    chroma_curve = sigmoid.algebraic(vibrance, 2)
+    chroma_curve = curve.as_points(sigmoid.algebraic(vibrance, 2))
     is_enabled = vibrance > 1
     return {
         "LCEnabled": str(is_enabled).lower(),
         "ACurve": raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+            raw_therapee.CurveType.FLEXIBLE, chroma_curve
         )
         if is_enabled
         else raw_therapee.CurveType.LINEAR,
         "BCurve": raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, curve.as_points(chroma_curve)
+            raw_therapee.CurveType.FLEXIBLE, chroma_curve
         )
         if is_enabled
         else raw_therapee.CurveType.LINEAR,

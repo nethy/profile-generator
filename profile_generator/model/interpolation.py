@@ -1,6 +1,7 @@
 import math
 from collections.abc import Callable
 
+from profile_generator.model import sigmoid
 from profile_generator.unit import Curve
 from profile_generator.util import validation
 
@@ -41,16 +42,14 @@ def interpolate_values(
         return mean(a, b, 1 - (x - begin) / (end - begin))
 
 
-def harmonic(a: float, b: float, ratio: float) -> float:
-    left = ratio / a if a > 0 else 0
-    right = (1 - ratio) / b if b > 0 else 0
-    return 1 / (left + right) if left + right > 0 else 0
-
-
 def linear(a: float, b: float, ratio: float) -> float:
     return ratio * a + (1 - ratio) * b
 
 
+def geometric(a: float, b: float, ratio: float) -> float:
+    return math.pow(a, ratio) * math.pow(b, 1 - ratio)
+
+
 def hermite(a: float, b: float, ratio: float) -> float:
-    weight = 3 * math.pow(ratio, 2) - 2 * math.pow(ratio, 3)
+    weight = 2 * math.pow(ratio, 3) - 3 * math.pow(ratio, 2) + 1
     return linear(a, b, weight)

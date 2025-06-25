@@ -71,18 +71,18 @@ _SKIN_TONE_HUE_RANGE = (48.816, 89.129)
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
     lch = profile_params.colors.grading.lch
     hue = get_adjustments(lch.hue, convert_to_hsv_hue)
-    saturation = get_adjustments(lch.hue, convert_to_saturation)
-    value = get_adjustments(lch.hue, convert_to_value)
-    is_enabled = hue is not None and saturation is not None and value is not None
+    saturation = get_adjustments(lch.chroma, convert_to_saturation)
+    value = get_adjustments(lch.luminance, convert_to_value)
+    is_enabled = hue is not None or saturation is not None or value is not None
     return {
         "HSVEnabled": str(is_enabled).lower(),
-        "HSVHCUrve": raw_therapee.present_linear_equalizer(curve.as_points(hue))
+        "HSVHCurve": raw_therapee.present_linear_equalizer(curve.as_points(hue)[:-1])
         if hue is not None
         else raw_therapee.CurveType.LINEAR,
-        "HSVSCUrve": raw_therapee.present_linear_equalizer(curve.as_points(saturation))
+        "HSVSCurve": raw_therapee.present_linear_equalizer(curve.as_points(saturation)[:-1])
         if saturation is not None
         else raw_therapee.CurveType.LINEAR,
-        "HSVVCUrve": raw_therapee.present_linear_equalizer(curve.as_points(value))
+        "HSVVCurve": raw_therapee.present_linear_equalizer(curve.as_points(value)[:-1])
         if value is not None
         else raw_therapee.CurveType.LINEAR,
     }
@@ -113,7 +113,7 @@ def get_adjustments(
 
 
 def convert_to_hsv_hue(value: float) -> float:
-    difference = value * 3
+    difference = value * 3 / 360
     return difference / 2 + 0.5
 
 
@@ -172,7 +172,7 @@ def _apply_red_skin_protection(
             value = interpolation.hermite(
                 value, value * (1 - strength) + 0.5 * strength, ratio
             )
-        elif center < x <= end:
+        elif center < x < end:
             ratio = (x - center) / (end - center)
             value = interpolation.hermite(
                 value * (1 - strength) + 0.5 * strength, value, ratio

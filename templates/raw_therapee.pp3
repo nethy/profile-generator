@@ -748,9 +748,9 @@ Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
 Enabled={HSVEnabled}
-HCurve={HSVHCUrve}
-SCurve={HSVSCUrve}
-VCurve={HSVVCUrve}
+HCurve={HSVHCurve}
+SCurve={HSVSCurve}
+VCurve={HSVVCurve}
 
 [SoftLight]
 Enabled=false
