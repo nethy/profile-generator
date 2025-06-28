@@ -4,7 +4,8 @@ from functools import cache
 from profile_generator.model import gamma, interpolation, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import SRGB
-from profile_generator.unit import Curve, Point
+from profile_generator.model.view import raw_therapee
+from profile_generator.unit import Curve, Point, curve
 
 
 def get_rgb_flat(linear_grey18: float) -> Curve:

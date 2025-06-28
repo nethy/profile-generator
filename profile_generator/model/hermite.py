@@ -37,14 +37,14 @@ def interpolate(points: Sequence[tuple[float, float]]) -> Curve:
         i = 0
         while points[i + 1][0] <= x:
             i += 1
-        return _hermite_interpolate(
+        return hermite_interpolate(
             x, points[i], points[i + 1], slopes[i], slopes[i + 1]
         )
 
     return curve
 
 
-def _hermite_interpolate(
+def hermite_interpolate(
     x: float,
     left: tuple[float, float],
     right: tuple[float, float],

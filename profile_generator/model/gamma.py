@@ -48,7 +48,6 @@ def algebraic(coefficient: float, exponent: float) -> Curve:
 
 def exp2_at(point: Point) -> Curve:
     b = exp2_coefficient(point)
-    print(b)
     return exp2(b)
 
 

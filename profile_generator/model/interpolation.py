@@ -1,7 +1,6 @@
 import math
 from collections.abc import Callable
 
-from profile_generator.model import sigmoid
 from profile_generator.unit import Curve
 from profile_generator.util import validation
 
@@ -24,7 +23,6 @@ def interpolate(
             return mean(a(x), b(x), 1 - (x - begin) / (end - begin))
 
     return _interpolate
-
 
 def interpolate_values(
     a: float,
@@ -51,5 +49,5 @@ def geometric(a: float, b: float, ratio: float) -> float:
 
 
 def hermite(a: float, b: float, ratio: float) -> float:
-    weight = 2 * math.pow(ratio, 3) - 3 * math.pow(ratio, 2) + 1
+    weight = 3 * math.pow(ratio, 2) - 2 * math.pow(ratio, 3)
     return linear(a, b, weight)

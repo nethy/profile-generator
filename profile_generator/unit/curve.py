@@ -29,3 +29,7 @@ def as_fixed_points(curve: Curve) -> Sequence[Point]:
         Point(i / _POINT_COUNT, curve(i / _POINT_COUNT))
         for i in range(_POINT_COUNT + 1)
     ]
+
+
+def invert_y(curve: Curve) -> Curve:
+    return lambda x: 1 - curve(x)
