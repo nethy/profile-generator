@@ -24,6 +24,7 @@ def interpolate(
 
     return _interpolate
 
+
 def interpolate_values(
     a: float,
     b: float,
@@ -48,6 +49,6 @@ def geometric(a: float, b: float, ratio: float) -> float:
     return math.pow(a, ratio) * math.pow(b, 1 - ratio)
 
 
-def hermite(a: float, b: float, ratio: float) -> float:
+def hermite_linear(a: float, b: float, ratio: float) -> float:
     weight = 3 * math.pow(ratio, 2) - 2 * math.pow(ratio, 3)
     return linear(a, b, weight)

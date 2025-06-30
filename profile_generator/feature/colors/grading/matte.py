@@ -39,6 +39,7 @@ from profile_generator.unit import Curve
 
 SQRT_8 = math.sqrt(8)
 
+
 def get_matte_curve(matte_param: Matte) -> Curve:
     shadow_offset = matte_param.black.value / 100
     highlight_offset = matte_param.white.value / 100
@@ -78,4 +79,4 @@ def _get_highlight_curve(offset: float, threshold: float) -> Callable[[float], f
     b = (1 - threshold) / (offset - threshold)
     a = (offset - threshold) / math.pow(1 - threshold, b)
 
-    return lambda x: 1 - (a * math.pow(1 - x, b) + c)
+    return lambda x: 1 - (a * math.pow(1 - x, b) + c) if x < 1 else 1 - c

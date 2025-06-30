@@ -88,9 +88,9 @@ def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
             left[1][0], right[1][0], interpolation.linear, x, left[0], right[0]
         ),
         interpolation.interpolate_values(
-            left[1][1], right[1][1], interpolation.hermite, x, left[0], right[0]
+            left[1][1], right[1][1], interpolation.hermite_linear, x, left[0], right[0]
         ),
         interpolation.interpolate_values(
-            left[1][2], right[1][2], interpolation.hermite, x, left[0], right[0]
+            left[1][2], right[1][2], interpolation.hermite_linear, x, left[0], right[0]
         ),
     ]

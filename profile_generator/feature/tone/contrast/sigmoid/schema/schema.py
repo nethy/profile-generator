@@ -12,22 +12,13 @@ class Field:
     SLOPE: Final = SchemaField("slope", 1.6)
 
 
-class Template:
-    FLAT_CURVE: Final = "Curve"
-    CONTRAST_CURVE: Final = "Curve2"
-
-
 def _process(data: Any) -> Mapping[str, str]:
     linear_grey18 = data.get(*Field.LINEAR_GREY18)
     slope = data.get(*Field.SLOPE)
-    flat = contrast_sigmoid.get_flat(linear_grey18)
-    contrast = contrast_sigmoid.get_contrast(slope)
+    tone_curve = contrast_sigmoid.get_tone_curve(linear_grey18, slope)
     return {
-        Template.FLAT_CURVE: raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, flat
-        ),
-        Template.CONTRAST_CURVE: raw_therapee.present_curve(
-            raw_therapee.CurveType.FLEXIBLE, contrast
+        "Curve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, tone_curve
         ),
     }
 

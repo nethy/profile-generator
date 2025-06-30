@@ -4,8 +4,7 @@ from functools import cache
 from profile_generator.model import gamma, interpolation, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import SRGB
-from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Curve, Point, curve
+from profile_generator.unit import Curve, Point
 
 
 def get_rgb_flat(linear_grey18: float) -> Curve:
@@ -50,12 +49,10 @@ def get_linear_contrast(gradient: float) -> Curve:
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
 
     offset = math.log2(gradient) / 4
-    shadow = sigmoid.exponential(gradient)
+    shadow = sigmoid.exponential(gradient + offset)
     highlight = sigmoid.exponential(gradient - offset)
 
-    contrast = interpolation.interpolate(
-        shadow, highlight, interpolation.geometric, 0.5, 1
-    )
+    contrast = interpolation.interpolate(shadow, highlight, interpolation.geometric)
 
     return lambda x: shift_y(contrast(shift_x(x)))
 

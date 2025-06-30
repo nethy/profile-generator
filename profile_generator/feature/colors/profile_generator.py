@@ -36,18 +36,20 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     vibrance = 1 + gain / _MAX_VIBRANCE
     is_vibrance_enabled = vibrance > 1
     chroma_curve = curve.as_points(sigmoid.algebraic(vibrance))
-    chrome_points = (raw_therapee.present_curve(
-        raw_therapee.CurveType.FLEXIBLE, chroma_curve
+    chrome_points = (
+        raw_therapee.present_curve(raw_therapee.CurveType.FLEXIBLE, chroma_curve)
+        if is_vibrance_enabled
+        else raw_therapee.CurveType.LINEAR
     )
-    if is_vibrance_enabled
-    else raw_therapee.CurveType.LINEAR)
 
-    color_chrome = 1 + profile_params.colors.color_chrome.value / 10
-    is_color_chrome_enabled = color_chrome > 1
+    power = 1 + profile_params.colors.color_chrome.value / 10
+    saturation = (1 / power - 1) * 100
+    is_color_chrome_enabled = power > 1
     return {
         "LCEnabled": str(is_vibrance_enabled).lower(),
         "ACurve": chrome_points,
         "BCurve": chrome_points,
         "CTEnabled": str(is_color_chrome_enabled).lower(),
-        "CTPower": str(color_chrome)
+        "CTPower": str(power),
+        "CTSaturation": str(round(saturation)),
     }

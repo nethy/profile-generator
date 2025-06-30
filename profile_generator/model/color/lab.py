@@ -73,27 +73,27 @@ def from_bsh(bsh: Vector) -> Vector:
     return from_lch([l, c, h])
 
 
-def to_rgb_hue(lab_hue: float):
+def to_rgb_hue(lab_hue: float) -> float:
     lab_hue_in_radians = _to_radians(lab_hue)
     rgb_hue = 0.0
 
-    if lab_hue_in_radians >= 0 and lab_hue_in_radians < 0.6:
+    if 0 <= lab_hue_in_radians < 0.6:
         rgb_hue = 0.11666 * lab_hue_in_radians + 0.93
-    elif lab_hue_in_radians >= 0.6 and lab_hue_in_radians < 1.4:
+    elif 0.6 <= lab_hue_in_radians < 1.4:
         rgb_hue = 0.1125 * lab_hue_in_radians - 0.0675
-    elif lab_hue_in_radians >= 1.4 and lab_hue_in_radians < 2:
+    elif 1.4 <= lab_hue_in_radians < 2:
         rgb_hue = 0.2666 * lab_hue_in_radians - 0.2833
-    elif lab_hue_in_radians >= 2 and lab_hue_in_radians < 3.14159:
+    elif 2 <= lab_hue_in_radians < 3.14159:
         rgb_hue = 0.1489 * lab_hue_in_radians - 0.04785
-    elif lab_hue_in_radians >= -3.14159 and lab_hue_in_radians < -2.8:
+    elif -3.14159 <= lab_hue_in_radians < -2.8:
         rgb_hue = 0.23419 * lab_hue_in_radians + 1.1557
-    elif lab_hue_in_radians >= -2.8 and lab_hue_in_radians < -2.3:
+    elif -2.8 <= lab_hue_in_radians < -2.3:
         rgb_hue = 0.16 * lab_hue_in_radians + 0.948
-    elif lab_hue_in_radians >= -2.3 and lab_hue_in_radians < -0.9:
+    elif -2.3 <= lab_hue_in_radians < -0.9:
         rgb_hue = 0.12143 * lab_hue_in_radians + 0.85928
-    elif lab_hue_in_radians >= -0.9 and lab_hue_in_radians < -0.1:
+    elif -0.9 <= lab_hue_in_radians < -0.1:
         rgb_hue = 0.2125 * lab_hue_in_radians + 0.94125
-    elif lab_hue_in_radians >= -0.1 and lab_hue_in_radians < 0:
+    elif -0.1 <= lab_hue_in_radians < 0:
         rgb_hue = 0.1 * lab_hue_in_radians + 0.93
 
     if rgb_hue < 0.0:
@@ -104,7 +104,7 @@ def to_rgb_hue(lab_hue: float):
     return rgb_hue
 
 
-def _to_radians(degree: float):
+def _to_radians(degree: float) -> float:
     """
     0..360 -> -pi..pi
     """

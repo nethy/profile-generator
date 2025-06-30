@@ -77,7 +77,7 @@ def load_configuration_file(file_name: str, schema: Schema) -> dict[str, Any]:
     except OSError as exc:
         raise ConfigFileReadError from exc
     except JSONDecodeError as exc:
-        raise InvalidConfigFileError([]) from exc
+        raise InvalidConfigFileError([exc]) from exc
 
 
 @dataclass
