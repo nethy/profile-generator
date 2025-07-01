@@ -23,7 +23,7 @@ Curve2=0;
 
 [HLRecovery]
 Enabled=true
-Method=Coloropp
+Method=Luminance
 Hlbl=0
 Hlth=1
 
@@ -806,7 +806,7 @@ LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1={CTPower}
 LabRegionHueMask_1=1;0.1944444;1;0;0.1666667;0.25;0;0.1666667;0;0.3055555;0;0.1666667;0.1666667;0.3611111;1;0.1666667;0;
-LabRegionChromaticityMask_1=1;0.1;0;0;0.3333333;1;1;0;0;
+LabRegionChromaticityMask_1=1;0.3;0;0;0.1666667;1;1;0.1666667;0;
 LabRegionLightnessMask_1=1;0.25;1;0;0.1666667;0.75;0.25;0.1666667;0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1

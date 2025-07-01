@@ -157,6 +157,3 @@ if __name__ == "__main__":
     grey18_g80 = 0.082
     grey18_g9 = 0.05
     slope = 1.7
-
-    # lch_hue()
-    lch_lightness()

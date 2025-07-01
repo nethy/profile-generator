@@ -1,7 +1,7 @@
 import math
 from functools import cache
 
-from profile_generator.model import gamma, interpolation, sigmoid
+from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Curve, Point
@@ -22,7 +22,19 @@ def get_linear_flat(linear_grey18: float) -> Curve:
     mid = Point(linear_grey18, constants.GREY18_LINEAR)
     shadow = gamma.log_at(mid)
     highlight = gamma.power_at(mid)
-    return interpolation.interpolate(shadow, highlight, interpolation.geometric)
+    return _interpolate(shadow, highlight, mid.x)
+
+
+def _interpolate(left: Curve, right: Curve, mid: float) -> Curve:
+    ev_range = math.log2(1 / mid)
+    grey18 = mid * math.pow(2, ev_range / 2)
+
+    def _weight(x: float) -> float:
+        if x < mid:
+            return 1
+        return 1 - min(max((math.log2(x / grey18) + ev_range / 2) / (ev_range), 0), 1)
+
+    return lambda x: math.pow(left(x), _weight(x)) * math.pow(right(x), 1 - _weight(x))
 
 
 def _as_rgb(linear_curve: Curve) -> Curve:
@@ -48,11 +60,7 @@ def get_linear_contrast(gradient: float) -> Curve:
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
 
-    offset = math.log2(gradient) / 4
-    shadow = sigmoid.exponential(gradient + offset)
-    highlight = sigmoid.exponential(gradient - offset)
-
-    contrast = interpolation.interpolate(shadow, highlight, interpolation.geometric)
+    contrast = sigmoid.exponential(gradient)
 
     return lambda x: shift_y(contrast(shift_x(x)))
 
