@@ -43,16 +43,16 @@ SQRT_8 = math.sqrt(8)
 def get_matte_curve(matte_param: Matte) -> Curve:
     shadow_offset = matte_param.black.value / 100
     highlight_offset = matte_param.white.value / 100
-    shadow_threshold = shadow_offset * SQRT_8 / (SQRT_8 - 1)
-    highlight_threshold = 1 - (1 - highlight_offset) * SQRT_8 / (SQRT_8 - 1)
+    shadow_treshold = shadow_offset * 2
+    highlight_treshold = 0.6
 
-    shadow_curve = _get_shadow_curve(shadow_offset, shadow_threshold)
-    highlight_curve = _get_highlight_curve(highlight_offset, highlight_threshold)
+    shadow_curve = _get_shadow_curve(shadow_offset, shadow_treshold)
+    highlight_curve = _get_highlight_curve(highlight_offset, highlight_treshold)
 
     def _curve(x: float) -> float:
-        if x < shadow_threshold:
+        if x < shadow_treshold:
             return shadow_curve(x)
-        elif x < highlight_threshold:
+        elif x < highlight_treshold:
             return x
         else:
             return highlight_curve(x)
@@ -60,23 +60,23 @@ def get_matte_curve(matte_param: Matte) -> Curve:
     return _curve
 
 
-def _get_shadow_curve(offset: float, threshold: float) -> Callable[[float], float]:
+def _get_shadow_curve(offset: float, boundary: float) -> Callable[[float], float]:
     if math.isclose(offset, 0):
         return lambda x: x
 
+    a = offset / math.pow(boundary, 2)
+    b = 1 - 2 * offset / boundary
     c = offset
-    b = threshold / (threshold - offset)
-    a = (threshold - offset) / math.pow(threshold, b)
 
-    return lambda x: a * math.pow(x, b) + c
+    return lambda x: a * x * x + b * x + c
 
 
-def _get_highlight_curve(offset: float, threshold: float) -> Callable[[float], float]:
+def _get_highlight_curve(offset: float, boundary: float) -> Callable[[float], float]:
     if math.isclose(offset, 1):
         return lambda x: x
 
-    c = 1 - offset
-    b = (1 - threshold) / (offset - threshold)
-    a = (offset - threshold) / math.pow(1 - threshold, b)
+    a = (offset - 1) / math.pow(boundary - 1, 2)
+    b = (boundary - a * math.pow(boundary, 2) + a - offset) / (boundary - 1)
+    c = offset - a - b
 
-    return lambda x: 1 - (a * math.pow(1 - x, b) + c) if x < 1 else 1 - c
+    return lambda x: a * x * x + b * x + c

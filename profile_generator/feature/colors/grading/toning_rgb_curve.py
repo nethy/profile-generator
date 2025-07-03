@@ -19,15 +19,6 @@ def get_rgb_toning(
     return _as_rgb(lab_mapping)
 
 
-def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
-    def rgb_toning(rgb: float) -> Vector:
-        luminance = lab.from_xyz(xyz.from_rgb([rgb] * 3, SRGB))[0]
-        lab_color = lab_toning(luminance)
-        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
-
-    return rgb_toning
-
-
 def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
     tones = _get_tones(color_toning)
 
@@ -44,6 +35,15 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
         return lab_curve
     else:
         return lambda x: [x, 0, 0]
+
+
+def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
+    def rgb_toning(rgb: float) -> Vector:
+        luminance = lab.from_xyz(xyz.from_rgb([rgb] * 3, SRGB))[0]
+        lab_color = lab_toning(luminance)
+        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
+
+    return rgb_toning
 
 
 def _get_tones(color_toning: ColorToning) -> list[ColorTone]:

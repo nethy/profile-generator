@@ -3,7 +3,7 @@ from collections.abc import Mapping
 
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Point, Vector
+from profile_generator.unit import Point
 
 from . import matte, toning_rgb_curve
 
@@ -11,15 +11,12 @@ _SECTION_COUNT = 32
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    toning_curve = toning_rgb_curve.get_rgb_toning(profile_params.colors.grading.toning)
     matte_curve = matte.get_matte_curve(profile_params.colors.grading.matte)
-
-    def rgb_curve(x: float) -> Vector:
-        return list(map(matte_curve, toning_curve(x)))
+    toning_curve = toning_rgb_curve.get_rgb_toning(profile_params.colors.grading.toning)
 
     reds, greens, blues = [], [], []
     for x in (i / _SECTION_COUNT for i in range(_SECTION_COUNT + 1)):
-        r, g, b = rgb_curve(x)
+        r, g, b = toning_curve(matte_curve(x))
         reds.append(Point(x, _clip(r, 0, 1)))
         greens.append(Point(x, _clip(g, 0, 1)))
         blues.append(Point(x, _clip(b, 0, 1)))

@@ -25,7 +25,7 @@ class MatteTest(TestCase):
         curve = get_matte_curve(params)
 
         self.assertAlmostEqual(curve(0), 0.1)
-        self.assertAlmostEqual(curve(0.1), 0.1159231)
+        self.assertAlmostEqual(curve(0.1), 0.125)
         self.assertAlmostEqual(curve(0.5), 0.5)
-        self.assertAlmostEqual(curve(0.9), 0.8840769)
+        self.assertAlmostEqual(curve(0.9), 0.84375)
         self.assertAlmostEqual(curve(1), 0.9)
