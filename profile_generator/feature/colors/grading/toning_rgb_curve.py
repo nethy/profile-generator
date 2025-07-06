@@ -46,6 +46,9 @@ def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
     return rgb_toning
 
 
+_NONE = [0, 0, 0]
+
+
 def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
     channel = color_toning.channels.value
     if channel == ColorToningChannel.ONE:
@@ -56,18 +59,18 @@ def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
         ]
     elif channel == ColorToningChannel.TWO:
         return [
-            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(0.0, [0, 0, 0]),
             _to_lab(100 * 1 / 3, color_toning.shadow.as_list()),
             _to_lab(100 * 2 / 3, color_toning.highlight.as_list()),
-            _to_lab(100.0, color_toning.white.as_list()),
+            _to_lab(100.0, [0, 0, 0]),
         ]
     elif channel == ColorToningChannel.THREE:
         return [
-            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(0.0, [0, 0, 0]),
             _to_lab(25.0, color_toning.shadow.as_list()),
             _to_lab(50.0, color_toning.midtone.as_list()),
             _to_lab(75.0, color_toning.highlight.as_list()),
-            _to_lab(100.0, color_toning.white.as_list()),
+            _to_lab(100.0, [0, 0, 0]),
         ]
     else:
         raise ValueError(f"Unhandled value: {channel}")

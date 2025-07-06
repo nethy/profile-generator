@@ -91,11 +91,9 @@ class ColorToningChannel(ProfileParamEnum):
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
         self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
-        self.black = LchValue()
         self.shadow = LchValue()
         self.midtone = LchValue()
         self.highlight = LchValue()
-        self.white = LchValue()
 
 
 class Matte(ProfileParamParser):
