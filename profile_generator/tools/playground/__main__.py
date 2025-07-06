@@ -157,10 +157,3 @@ if __name__ == "__main__":
     grey18_g80 = 0.082
     grey18_g9 = 0.05
     slope = 1.7
-
-    print(lab.to_lch(ColorChartLab.RED))
-    print(lab.to_lch(ColorChartLab.YELLOW))
-    print(lab.to_lch(ColorChartLab.GREEN))
-    print(lab.to_lch(ColorChartLab.CYAN))
-    print(lab.to_lch(ColorChartLab.BLUE))
-    print(lab.to_lch(ColorChartLab.MAGENTA))
