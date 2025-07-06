@@ -90,23 +90,21 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
 def get_adjustments(
     adjustment: LchAdjustment, convert: Callable[[float], float]
 ) -> Sequence[Point]:
-    adjustments = sorted(
-        [
-            (hue, convert(adjustment.value))
-            for hue, adjustment in (
-                (_get_hue(ColorChartLab.RED), adjustment.red),
-                (_get_hue(ColorChartLab.YELLOW), adjustment.yellow),
-                (_get_hue(ColorChartLab.GREEN), adjustment.green),
-                (_get_hue(ColorChartLab.CYAN), adjustment.cyan),
-                (_get_hue(ColorChartLab.BLUE), adjustment.blue),
-                (_get_hue(ColorChartLab.MAGENTA), adjustment.magenta),
-            )
-            if adjustment.is_set
-        ]
-    )
+    adjustments = [
+        (hue, convert(adjustment.value))
+        for hue, adjustment in (
+            (_get_hue(ColorChartLab.RED), adjustment.red),
+            (_get_hue(ColorChartLab.YELLOW), adjustment.yellow),
+            (_get_hue(ColorChartLab.GREEN), adjustment.green),
+            (_get_hue(ColorChartLab.CYAN), adjustment.cyan),
+            (_get_hue(ColorChartLab.BLUE), adjustment.blue),
+            (_get_hue(ColorChartLab.MAGENTA), adjustment.magenta),
+        )
+        if adjustment.is_set
+    ]
     skin_tone_protection = adjustment.skin_tone_protection.value / 100
     equalizer = _make_lch_equalizer(adjustments, skin_tone_protection)
-    return [Point(lab.to_rgb_hue(x), y) for x, y in equalizer]
+    return sorted([Point(lab.to_rgb_hue(x), y) for x, y in equalizer])
 
 
 def _get_hue(color: Vector) -> float:
@@ -150,14 +148,17 @@ def _make_lch_equalizer(
     adjustments: list[tuple[float, float]], skin_tone_protection: float
 ) -> list[Point]:
     equalizer = [Point(x, y) for x, y in adjustments]
+
     if len(equalizer) == 0:
         return equalizer
 
-    skin_tone_begin, skin_tone_end = _SKIN_TONE_HUE_RANGE
-    skin_tone_center = (skin_tone_begin + skin_tone_end) / 2
-    _add_eq_point(equalizer, skin_tone_begin, 0.0)
-    _add_eq_point(equalizer, skin_tone_center, skin_tone_protection)
-    _add_eq_point(equalizer, skin_tone_end, 0.0)
+    if skin_tone_protection > 0.1:
+        skin_tone_begin, skin_tone_end = _SKIN_TONE_HUE_RANGE
+        skin_tone_center = (skin_tone_begin + skin_tone_end) / 2
+        _add_eq_point(equalizer, skin_tone_begin, 0.0)
+        _add_eq_point(equalizer, skin_tone_center, skin_tone_protection)
+        _add_eq_point(equalizer, skin_tone_end, 0.0)
+
     return equalizer
 
 
