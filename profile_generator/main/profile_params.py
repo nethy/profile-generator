@@ -104,10 +104,29 @@ class Matte(ProfileParamParser):
         self.white: Final = Value[float](100)
 
 
+class LchAdjustment(ProfileParamParser):  # pylint: disable=too-many-instance-attributes
+    def __init__(self) -> None:
+        self.red = Value[float](0)
+        self.yellow = Value[float](0)
+        self.green = Value[float](0)
+        self.cyan = Value[float](0)
+        self.blue = Value[float](0)
+        self.magenta = Value[float](0)
+        self.skin_tone_protection = Value[float](0)
+
+
+class Hsv(ProfileParamParser):
+    def __init__(self) -> None:
+        self.hue: Final = LchAdjustment()
+        self.saturation: Final = LchAdjustment()
+        self.value: Final = LchAdjustment()
+
+
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
         self.toning: Final = ColorToning()
         self.matte: Final = Matte()
+        self.hsv: Final = Hsv()
 
 
 class WhiteBalance(ProfileParamParser):

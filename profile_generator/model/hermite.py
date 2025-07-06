@@ -23,7 +23,7 @@ def interpolate(points: Sequence[tuple[float, float]]) -> Curve:
             alpha = slopes[i] / secants[i]
             beta = slopes[i + 1] / secants[i]
             h = math.hypot(alpha, beta)
-            if h > 9:
+            if h > 3:
                 t = 3 / h
                 slopes[i] = t * alpha * secants[i]
                 slopes[i + 1] = t * beta * secants[i]

@@ -747,10 +747,10 @@ Skinprotect=0
 Hueskin=-5;25;170;120;
 
 [HSV Equalizer]
-Enabled=false
-HCurve=0;
-SCurve=0;
-VCurve=0;
+Enabled={HSVEnabled}
+HCurve={HSVHCurve}
+SCurve={HSVSCurve}
+VCurve={HSVVCurve}
 
 [SoftLight]
 Enabled=false
@@ -805,9 +805,9 @@ LabRegionSaturation_1={CTSaturation}
 LabRegionSlope_1=1
 LabRegionOffset_1=0
 LabRegionPower_1={CTPower}
-LabRegionHueMask_1=1;0.1944444;1;0;0.1666667;0.25;0;0.1666667;0;0.3055555;0;0.1666667;0.1666667;0.3611111;1;0.1666667;0;
-LabRegionChromaticityMask_1=1;0.3;0;0;0.1666667;1;1;0.1666667;0;
-LabRegionLightnessMask_1=1;0.25;1;0;0.1666667;0.75;0.25;0.1666667;0;
+LabRegionHueMask_1=1;0.1944444;1;0;0;0.25;0.5;0;0;0.3055555;0.5;0;0;0.3611111;1;0;0;
+LabRegionChromaticityMask_1=1;0.3;0;0;0;1;1;0;0;
+LabRegionLightnessMask_1=1;0;1;0;0;1;0;0;0;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
 LabRegionsShowMask=-1

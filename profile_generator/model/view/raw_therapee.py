@@ -4,6 +4,7 @@ Equalizer symetric slope formula:
 1-2o = 1/s
 o = (s-1)/(2s)
 """
+
 from collections.abc import Sequence
 from typing import Final, Optional
 

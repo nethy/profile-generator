@@ -31,6 +31,7 @@ b = S/(S-s)
 
 
 """
+
 import math
 from collections.abc import Callable
 

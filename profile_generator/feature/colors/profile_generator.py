@@ -8,6 +8,7 @@ f'(0) = 1-p/100 + 4p/100 = 1 + 3p/100
 
 p = 100*(f'(0)-1)/3
 """
+
 from collections.abc import Mapping
 from typing import Final
 

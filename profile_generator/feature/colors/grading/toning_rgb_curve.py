@@ -4,8 +4,8 @@ from operator import itemgetter
 from typing import TypeAlias
 
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
-from profile_generator.model import interpolation
-from profile_generator.model.color import lab, xyz
+from profile_generator.model import interpolation, linalg
+from profile_generator.model.color import lab, rgb, xyz
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Vector
 
@@ -27,7 +27,7 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
         if i == 0:
             return tones[0][1]
         elif i == len(tones):
-            return tones[-1][1]
+            return linalg.add_vectors(tones[-1][1], [100, 0, 0])
         else:
             return _interpolate(x, tones[i - 1], tones[i])
 
@@ -38,8 +38,8 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
 
 
 def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
-    def rgb_toning(rgb: float) -> Vector:
-        luminance = lab.from_xyz(xyz.from_rgb([rgb] * 3, SRGB))[0]
+    def rgb_toning(x: float) -> Vector:
+        luminance = lab.from_xyz_lum(rgb.to_linear_value(x, SRGB))
         lab_color = lab_toning(luminance)
         return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
 
@@ -74,8 +74,7 @@ def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
 
 
 def _to_lab(luminance: float, lch_tone: Vector) -> ColorTone:
-    l, c, h = lch_tone
-    return (luminance, lab.from_lch([_clip(luminance + l, 0, 100), c, h]))
+    return (luminance, lab.from_lch(lch_tone))
 
 
 def _clip(value: float, lower: float, upper: float) -> float:
@@ -84,13 +83,18 @@ def _clip(value: float, lower: float, upper: float) -> float:
 
 def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
     return [
-        interpolation.interpolate_values(
-            left[1][0], right[1][0], interpolation.linear, x, left[0], right[0]
+        _clip(
+            x
+            + interpolation.interpolate_values(
+                left[1][0], right[1][0], interpolation.hermite, x, left[0], right[0]
+            ),
+            0,
+            100,
         ),
         interpolation.interpolate_values(
-            left[1][1], right[1][1], interpolation.hermite_linear, x, left[0], right[0]
+            left[1][1], right[1][1], interpolation.hermite, x, left[0], right[0]
         ),
         interpolation.interpolate_values(
-            left[1][2], right[1][2], interpolation.hermite_linear, x, left[0], right[0]
+            left[1][2], right[1][2], interpolation.hermite, x, left[0], right[0]
         ),
     ]

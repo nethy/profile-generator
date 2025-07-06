@@ -18,8 +18,7 @@ _TEMPLATES_DIR = "templates"
 _RAW_THERAPEE_TEMPLATE = "raw_therapee.pp3"
 
 
-class NoConfigFileError(Exception):
-    ...
+class NoConfigFileError(Exception): ...
 
 
 def get_config_files() -> Sequence[str]:
@@ -29,8 +28,7 @@ def get_config_files() -> Sequence[str]:
     return sys.argv[1:]
 
 
-class OutputDirCreationFailure(Exception):
-    ...
+class OutputDirCreationFailure(Exception): ...
 
 
 def create_output_dir() -> str:
@@ -40,8 +38,7 @@ def create_output_dir() -> str:
         raise OutputDirCreationFailure from exc
 
 
-class TemplateFileReadError(Exception):
-    ...
+class TemplateFileReadError(Exception): ...
 
 
 def get_profile_template() -> str:
@@ -52,8 +49,7 @@ def get_profile_template() -> str:
         raise TemplateFileReadError from exc
 
 
-class ConfigFileReadError(Exception):
-    ...
+class ConfigFileReadError(Exception): ...
 
 
 class InvalidConfigFileError(Exception):

@@ -5,7 +5,7 @@ from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Point
 
-from . import matte, toning_rgb_curve
+from . import hsv, matte, toning_rgb_curve
 
 _SECTION_COUNT = 32
 
@@ -35,6 +35,7 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
         "RGBCurvesBCurve": raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, blues if is_enabled else []
         ),
+        **hsv.generate(profile_params),
     }
 
 
