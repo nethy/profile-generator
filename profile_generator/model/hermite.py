@@ -1,10 +1,36 @@
+import bisect
 import math
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 
-from profile_generator.unit import Curve
+Points = list[tuple[float, float]]
+
+_EPSILON = 1 / 256
 
 
-def interpolate(points: Sequence[tuple[float, float]]) -> Curve:
+def fit(fn: Callable[[float], float]) -> Points:
+    references = [(i / 255, fn(i / 255)) for i in range(1, 255)]
+    knots = [(0.0, fn(0.0)), (1.0, fn(1.0))]
+    max_diff, _ = _find_max_diff(references, knots)
+    if max_diff < _EPSILON:
+        return knots
+    _fit(references, knots)
+    return knots
+
+
+def _find_max_diff(references: Points, knots: Points) -> tuple[float, int]:
+    spline = interpolate(knots)
+    return max((abs(p[1] - spline(p[0])), i) for i, p in enumerate(references))
+
+
+def _fit(references: Points, knots: Points) -> None:
+    for _ in range(31):
+        max_diff, i = _find_max_diff(references, knots)
+        if max_diff < _EPSILON:
+            break
+        bisect.insort(knots, references.pop(i))
+
+
+def interpolate(points: Sequence[tuple[float, float]]) -> Callable[[float], float]:
     secants = []
     for i in range(len(points) - 1):
         secants.append(

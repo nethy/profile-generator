@@ -38,7 +38,7 @@ def main() -> None:
 
         template = TEMPLATE.format(**template_values)
 
-        file.write_file(template, _OUTPUT_DIR, f"rgb-curves-{name}.pp3")
+        file.write_file(template, _OUTPUT_DIR, f"color-grading-{name}.pp3")
 
         print("Profile has been generated: " + name)
 

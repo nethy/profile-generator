@@ -48,15 +48,7 @@ def _buffer(references: Points, knots: Points) -> None:
     for i in range(
         BUFFER_STEP - 1, SAMPLES_COUNT - 2 - BUFFER_SIZE + 1, BUFFER_STEP - 1
     ):
-        _transfer_knot(i, references, knots)
-
-
-def _transfer_knot(
-    i: int,
-    references: Points,
-    knots: Points,
-) -> None:
-    bisect.insort(knots, references.pop(i))
+        bisect.insort(knots, references.pop(i))
 
 
 def _approximate(references: Points, knots: Points, epsilon: float) -> None:
@@ -64,7 +56,7 @@ def _approximate(references: Points, knots: Points, epsilon: float) -> None:
         max_diff, i = _find_max_diff(references, knots)
         if max_diff < epsilon:
             break
-        _transfer_knot(i, references, knots)
+        bisect.insort(knots, references.pop(i))
 
 
 def interpolate(points: Points) -> Curve:

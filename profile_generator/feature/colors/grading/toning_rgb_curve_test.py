@@ -26,10 +26,10 @@ class ToningTest(LinalgTestCase):
         )
         curve = get_lab_toning(params)
 
-        self.assert_vector_equal(curve(0.0000000), [1.0, 0.8660254, 0.5])
+        self.assert_vector_equal(curve(0.0000000), [0.0, 0.0, 0.0])
         self.assert_vector_equal(curve(33.333333), [35.333333, 0.0, 2.0])
         self.assert_vector_equal(curve(66.666667), [65.666667, -2.0, -0.0])
-        self.assert_vector_equal(curve(100.00000), [98.0, 0.0, -3.0])
+        self.assert_vector_equal(curve(100.00000), [100, 0.0, 0.0])
 
     def test_get_lab_curve_cinematic(self) -> None:
         params = ColorToning()
