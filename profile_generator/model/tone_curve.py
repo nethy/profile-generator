@@ -1,7 +1,7 @@
 import math
 from functools import cache
 
-from profile_generator.model import gamma, interpolation, sigmoid
+from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants, lab
 from profile_generator.model.color.space import SRGB
 from profile_generator.unit import Curve, Point
@@ -60,12 +60,7 @@ def get_linear_contrast(gradient: float) -> Curve:
     shift_x = gamma.power_at(Point(constants.GREY18_LINEAR, 0.5))
     shift_y = gamma.power_at(Point(0.5, constants.GREY18_LINEAR))
 
-    gain = math.log2(gradient) / 4
-    shadow = sigmoid.exponential(gradient + gain)
-    highglight = sigmoid.exponential(gradient)
-    contrast = interpolation.interpolate(
-        shadow, highglight, interpolation.geometric, 0.5 / 8, 0.5
-    )
+    contrast = sigmoid.exponential(gradient)
 
     return lambda x: shift_y(contrast(shift_x(x)))
 

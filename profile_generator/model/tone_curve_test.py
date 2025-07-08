@@ -24,5 +24,5 @@ class TestToneCurve(TestCase):
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
         self.assertAlmostEqual(curve(constants.GREY18_RGB), constants.GREY18_RGB)
-        self.assertAlmostEqual(curve(0.2), 0.0446404)
+        self.assertAlmostEqual(curve(0.2), 0.0564814)
         self.assertAlmostEqual(curve(0.8), 0.9306251)
