@@ -2,7 +2,7 @@ import json
 from typing import Any
 
 from profile_generator.model import tone_curve
-from profile_generator.model.color.space import SRGB
+from profile_generator.model.color.profile import SRGB
 from profile_generator.unit import Curve, curve
 
 

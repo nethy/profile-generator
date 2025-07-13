@@ -13,11 +13,9 @@ _LCH_VALUE_SCHEMA = tuple_of(
 _TONING_SCHEMA = object_of(
     {
         "channels": options_of(*[item.name for item in ColorToningChannel]),
-        "black": _LCH_VALUE_SCHEMA,
         "shadow": _LCH_VALUE_SCHEMA,
         "midtone": _LCH_VALUE_SCHEMA,
         "highlight": _LCH_VALUE_SCHEMA,
-        "white": _LCH_VALUE_SCHEMA,
     }
 )
 

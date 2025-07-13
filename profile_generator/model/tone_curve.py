@@ -3,7 +3,7 @@ from functools import cache
 
 from profile_generator.model import gamma, sigmoid
 from profile_generator.model.color import constants, lab
-from profile_generator.model.color.space import SRGB
+from profile_generator.model.color.profile import SRGB
 from profile_generator.unit import Curve, Point
 
 
@@ -65,7 +65,7 @@ def get_linear_contrast(gradient: float) -> Curve:
     return lambda x: shift_y(contrast(shift_x(x)))
 
 
-def get_srgb(linear_grey18: float, slope: float) -> Curve:
+def get_rgb(linear_grey18: float, slope: float) -> Curve:
     flat = get_linear_flat(linear_grey18)
     contrast = get_linear_contrast(slope)
     return _as_rgb(lambda x: contrast(flat(x)))

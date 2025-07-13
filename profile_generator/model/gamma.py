@@ -158,3 +158,11 @@ def inverse_log_at(point: Point) -> Curve:
 
 def inverse_log(coefficient: float) -> Curve:
     return lambda x: (math.pow(coefficient + 1, x) - 1) / coefficient
+
+
+def reciprocal(coefficient: float) -> Curve:
+    """
+    f = (cx) / ((c-1)x+1)
+    f'(0) = c
+    """
+    return lambda x: (coefficient * x) / ((coefficient - 1.0) * x + 1.0)

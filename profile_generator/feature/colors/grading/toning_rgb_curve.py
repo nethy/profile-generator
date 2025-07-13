@@ -6,7 +6,7 @@ from typing import TypeAlias
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
 from profile_generator.model import interpolation, linalg
 from profile_generator.model.color import lab, rgb, xyz
-from profile_generator.model.color.space import SRGB
+from profile_generator.model.color.profile import SRGB
 from profile_generator.unit import Vector
 
 ColorTone: TypeAlias = tuple[float, Vector]
@@ -89,7 +89,12 @@ def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
         _clip(
             x
             + interpolation.interpolate_values(
-                left[1][0], right[1][0], interpolation.hermite, x, left[0], right[0]
+                left[1][0],
+                right[1][0],
+                interpolation.hermite,
+                x,
+                left[0],
+                right[0],
             ),
             0,
             100,

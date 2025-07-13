@@ -1,7 +1,7 @@
 import math
 
 from profile_generator.model import linalg
-from profile_generator.model.color.space.color_space import ColorSpace
+from profile_generator.model.color.profile.color_profile import ColorProfile
 from profile_generator.model.linalg import Vector
 from profile_generator.util import validation
 
@@ -14,19 +14,19 @@ def normalize_value(value: float) -> float:
     return value / 255
 
 
-def to_linear_value(value: float, color_space: ColorSpace) -> float:
+def to_linear_value(value: float, color_space: ColorProfile) -> float:
     validation.is_in_closed_interval(value, 0.0, 1.0)
     return color_space.inverse_gamma(value)
 
 
-def from_linear_value(linear_value: float, color_space: ColorSpace) -> float:
+def from_linear_value(linear_value: float, color_space: ColorProfile) -> float:
     validation.is_in_closed_interval(linear_value, 0.0, 1.0)
     return color_space.gamma(linear_value)
 
 
 def ev_comp(
     rgb: Vector,
-    color_space: ColorSpace,
+    color_space: ColorProfile,
     compensation: float,
 ) -> Vector:
     if math.isclose(compensation, 0):
@@ -86,6 +86,8 @@ def from_hsv(hsv: Vector) -> Vector:
     return [x + modifier for x in intermediate]
 
 
-def luminance(linear_rgb: Vector, color_space: ColorSpace) -> float:
-    coeffs = color_space.xyz_matrix[1]
-    return linalg.multiply_vector_vector(coeffs, linear_rgb)
+def luminance(rgb: Vector, color_space: ColorProfile) -> float:
+    linear_rgb = [color_space.inverse_gamma(c) for c in rgb]
+    return color_space.gamma(
+        linalg.multiply_vector_vector(color_space.xyz_matrix[1], linear_rgb)
+    )

@@ -1,18 +1,12 @@
 import math
 
-from profile_generator.model import linalg
-from profile_generator.model.color.xyz import (
-    D50_TO_D65_ADAPTATION,
-    D65_TO_D50_ADAPTATION,
-)
 from profile_generator.model.linalg import Vector
 
-from .white_point import D50_XYZ
+from .illuminant import D50_XYZ
 
 
-def from_xyz(xyz_d65: Vector) -> Vector:
-    xyz_d50 = linalg.multiply_matrix_vector(D65_TO_D50_ADAPTATION, xyz_d65)
-    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz_d50, D50_XYZ)]
+def from_xyz(xyz: Vector) -> Vector:
+    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz, D50_XYZ)]
     l = 116 * _lab_f(y_ratio) - 16
     a = 500 * (_lab_f(x_ratio) - _lab_f(y_ratio))
     b = 200 * (_lab_f(y_ratio) - _lab_f(z_ratio))
@@ -26,9 +20,7 @@ def to_xyz(lab: Vector) -> Vector:
     x = x_ref * _lab_f_inverse(l_ref + a / 500)
     y = y_ref * _lab_f_inverse(l_ref)
     z = z_ref * _lab_f_inverse(l_ref - b / 200)
-    xyz_d50 = [x, y, z]
-    xyz_d65 = linalg.multiply_matrix_vector(D50_TO_D65_ADAPTATION, xyz_d50)
-    return xyz_d65
+    return [x, y, z]
 
 
 def from_xyz_lum(y: float) -> float:

@@ -1,7 +1,7 @@
 import math
 from unittest import TestCase
 
-from .hermite import interpolate
+from .hermite_spline import interpolate
 
 
 class HermiteTest(TestCase):

@@ -52,3 +52,23 @@ def geometric(a: float, b: float, ratio: float) -> float:
 def hermite(a: float, b: float, ratio: float) -> float:
     weight = 3 * math.pow(ratio, 2) - 2 * math.pow(ratio, 3)
     return linear(a, b, weight)
+
+
+def hermite_mask(
+    begin: float, end: float, low: float = 0.0, high: float = 1.0
+) -> Callable[[float], float]:
+    validation.is_greater(end, begin)
+    validation.is_greater(high, low)
+
+    def base(x: float) -> float:
+        return 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1
+
+    def mask(x: float) -> float:
+        if x < begin:
+            return low
+        elif x > end:
+            return high
+        else:
+            return (high - low) * base(1 - (x - begin) / (end - begin)) + low
+
+    return mask

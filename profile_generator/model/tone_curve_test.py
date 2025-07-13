@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from profile_generator.model.color import constants
-from profile_generator.model.color.space import SRGB
+from profile_generator.model.color.profile import SRGB
 
 from .tone_curve import get_rgb_contrast, get_rgb_flat
 
@@ -14,7 +14,7 @@ class TestToneCurve(TestCase):
 
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
-        self.assertAlmostEqual(curve(SRGB.gamma(_GREY_18)), constants.GREY18_RGB)
+        self.assertAlmostEqual(curve(SRGB.gamma(_GREY_18)), constants.GREY18_SRGB)
         self.assertAlmostEqual(curve(0.2), 0.2851172)
         self.assertAlmostEqual(curve(0.8), 0.8548618)
 
@@ -23,6 +23,6 @@ class TestToneCurve(TestCase):
 
         self.assertAlmostEqual(curve(0), 0)
         self.assertAlmostEqual(curve(1), 1)
-        self.assertAlmostEqual(curve(constants.GREY18_RGB), constants.GREY18_RGB)
+        self.assertAlmostEqual(curve(constants.GREY18_SRGB), constants.GREY18_SRGB)
         self.assertAlmostEqual(curve(0.2), 0.0564814)
         self.assertAlmostEqual(curve(0.8), 0.9306251)

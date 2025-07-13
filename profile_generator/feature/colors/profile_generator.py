@@ -13,7 +13,7 @@ from collections.abc import Mapping
 from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
-from profile_generator.model import sigmoid
+from profile_generator.model import gamma
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import curve
 
@@ -34,11 +34,13 @@ _MAX_VIBRANCE: Final = 10
 
 def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     gain = profile_params.colors.vibrance.value
-    vibrance = 1 + gain / _MAX_VIBRANCE
-    is_vibrance_enabled = vibrance > 1
-    chroma_curve = curve.as_points(sigmoid.algebraic(vibrance))
-    chrome_points = (
-        raw_therapee.present_curve(raw_therapee.CurveType.FLEXIBLE, chroma_curve)
+    vibrance = 1.0 + gain / _MAX_VIBRANCE
+    is_vibrance_enabled = vibrance > 1.0
+    cc_curve = gamma.reciprocal(vibrance)
+    cc_points = (
+        raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, curve.as_points(cc_curve)
+        )
         if is_vibrance_enabled
         else raw_therapee.CurveType.LINEAR
     )
@@ -48,8 +50,7 @@ def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
     is_color_chrome_enabled = power > 1
     return {
         "LCEnabled": str(is_vibrance_enabled).lower(),
-        "ACurve": chrome_points,
-        "BCurve": chrome_points,
+        "CCCurve": cc_points,
         "CTEnabled": str(is_color_chrome_enabled).lower(),
         "CTPower": str(power),
         "CTSaturation": str(round(saturation)),

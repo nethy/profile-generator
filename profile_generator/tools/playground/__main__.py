@@ -3,11 +3,15 @@
 
 import json
 import math
+import os
 from array import array
 from email.mime import base
 from functools import partial
 from itertools import starmap
 from operator import itemgetter
+
+import matplotlib.pyplot as plt
+from PIL import Image
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
@@ -15,9 +19,9 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _SLOPE,
 )
 from profile_generator.model import bezier, gamma, linalg, sigmoid, spline, tone_curve
-from profile_generator.model.color import constants, lab, rgb, xyz
-from profile_generator.model.color.space import SRGB
-from profile_generator.model.color.space.prophoto import PROPHOTO
+from profile_generator.model.color import constants, ergb, lab, rgb, xyz
+from profile_generator.model.color.profile import SRGB
+from profile_generator.model.color.profile.prophoto import PROPHOTO
 from profile_generator.model.color_chart import ColorChartLab
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Curve, Line, Point, Strength, curve
@@ -130,6 +134,15 @@ def lch_lightness():
     print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
 
 
+def display_fn(fn):
+    xs, ys = zip(*curve.as_points(fn))
+
+    plt.figure(figsize=(8, 8))
+    plt.plot(xs, ys)
+    plt.grid()
+    plt.show()
+
+
 if __name__ == "__main__":
     # grey = SRGB.gamma(SRGB.inverse_gamma(87.975 / 255) / 2) * 255
     # print_points(contrast_sigmoid.get_tone_curve(106.845 / 255, 1.85))
@@ -157,3 +170,5 @@ if __name__ == "__main__":
     grey18_g80 = 0.082
     grey18_g9 = 0.05
     slope = 1.7
+
+    print_points(curve.as_points(gamma.reciprocal(1.8)))
