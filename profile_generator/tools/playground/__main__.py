@@ -171,4 +171,5 @@ if __name__ == "__main__":
     grey18_g9 = 0.05
     slope = 1.7
 
-    print_points(curve.as_points(gamma.reciprocal(1.8)))
+    print(rgb.luminance(rgb.normalize([170, 123, 28]), SRGB))
+    print(rgb.luminance(rgb.normalize([170, 135, 43]), SRGB))
