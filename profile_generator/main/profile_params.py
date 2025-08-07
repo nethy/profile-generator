@@ -48,10 +48,15 @@ V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
 class Value(Generic[V], ProfileParamParser):
     def __init__(self, value: V):
         self._value: V = value
+        self._is_set = False
 
     @property
     def value(self) -> V:
         return self._value
+
+    @property
+    def is_set(self) -> bool:
+        return self._is_set
 
     def parse(self, data: Any) -> None:
         if isinstance(self._value, ProfileParamEnum):
@@ -61,6 +66,7 @@ class Value(Generic[V], ProfileParamParser):
             return
 
         self._value = data
+        self._is_set = True
 
 
 class Camera(ProfileParamParser):
@@ -68,7 +74,7 @@ class Camera(ProfileParamParser):
         self.resolution_mp: Final = Value[float](16)
 
 
-class Lch(ProfileParamTuple[float]):
+class LchValue(ProfileParamTuple[float]):
     def __init__(self) -> None:
         self.luminance: Final = Value[float](0)
         self.chroma: Final = Value[float](0)
@@ -85,11 +91,9 @@ class ColorToningChannel(ProfileParamEnum):
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
         self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
-        self.black = Lch()
-        self.shadow = Lch()
-        self.midtone = Lch()
-        self.highlight = Lch()
-        self.white = Lch()
+        self.shadow = LchValue()
+        self.midtone = LchValue()
+        self.highlight = LchValue()
 
 
 class Matte(ProfileParamParser):
@@ -98,10 +102,29 @@ class Matte(ProfileParamParser):
         self.white: Final = Value[float](100)
 
 
+class LchAdjustment(ProfileParamParser):  # pylint: disable=too-many-instance-attributes
+    def __init__(self) -> None:
+        self.red = Value[float](0)
+        self.yellow = Value[float](0)
+        self.green = Value[float](0)
+        self.cyan = Value[float](0)
+        self.blue = Value[float](0)
+        self.magenta = Value[float](0)
+        self.skin_tone_protection = Value[float](0)
+
+
+class Hsv(ProfileParamParser):
+    def __init__(self) -> None:
+        self.hue: Final = LchAdjustment()
+        self.saturation: Final = LchAdjustment()
+        self.value: Final = LchAdjustment()
+
+
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
         self.toning: Final = ColorToning()
         self.matte: Final = Matte()
+        self.hsv: Final = Hsv()
 
 
 class WhiteBalance(ProfileParamParser):
@@ -113,7 +136,7 @@ class WhiteBalance(ProfileParamParser):
 class Colors(ProfileParamParser):
     def __init__(self) -> None:
         self.vibrance: Final = Value[float](0)
-        self.chrome: Final = Value[float](0)
+        self.color_chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
         self.white_balance: Final = WhiteBalance()
 

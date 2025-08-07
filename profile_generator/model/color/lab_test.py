@@ -12,7 +12,7 @@ from .lab import (
     to_xyz,
     to_xyz_lum,
 )
-from .space import SRGB
+from .profile import SRGB
 
 
 class LabTest(LinalgTestCase):
@@ -25,7 +25,7 @@ class LabTest(LinalgTestCase):
             [100.0000014, -7.8e-06, 6.8e-06], rgb_to_lab([1.0, 1.0, 1.0])
         )
         self.assert_vector_equal(
-            [51.5430656, -3.6629291, -47.2441356],
+            [51.5434241, -3.6616937, -47.2433875],
             rgb_to_lab([0.2, 0.5, 0.8]),
         )
 
@@ -35,13 +35,13 @@ class LabTest(LinalgTestCase):
 
         self.assert_vector_equal([0.0, 0.0, 0.0], lab_to_rgb([0.0, 0.0, 0.0]))
         self.assert_vector_equal(
-            [1.7344583, 0.5737799, 0.2085584], lab_to_rgb([100.0, 100.0, 100.0])
+            [1.7345078, 0.5737999, 0.2085525], lab_to_rgb([100.0, 100.0, 100.0])
         )
         self.assert_vector_equal(
-            [0.5491071, 0.4599878, -0.51266], lab_to_rgb([50.0, 0.0, 100.0])
+            [0.5491124, 0.4599881, -0.5126734], lab_to_rgb([50.0, 0.0, 100.0])
         )
         self.assert_vector_equal(
-            [1.0006989, -0.9189066, 0.4878331], lab_to_rgb([50.0, 100.0, 0.0])
+            [1.0007333, -0.918808, 0.4878343], lab_to_rgb([50.0, 100.0, 0.0])
         )
 
     def test_to_lch(self) -> None:

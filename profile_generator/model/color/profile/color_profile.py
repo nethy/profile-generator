@@ -4,7 +4,7 @@ from typing import NamedTuple
 from profile_generator.model.linalg import Matrix, Vector
 
 
-class ColorSpace(NamedTuple):
+class ColorProfile(NamedTuple):
     xyz_matrix: Matrix
     xyz_inverse_matrix: Matrix
     white_point: Vector

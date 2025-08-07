@@ -1,12 +1,12 @@
 import bisect
-import math
 from collections.abc import Callable
 from operator import itemgetter
 from typing import TypeAlias
 
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
-from profile_generator.model.color import lab, xyz
-from profile_generator.model.color.space import SRGB
+from profile_generator.model import interpolation, linalg
+from profile_generator.model.color import lab, rgb, xyz
+from profile_generator.model.color.profile import SRGB
 from profile_generator.unit import Vector
 
 ColorTone: TypeAlias = tuple[float, Vector]
@@ -19,15 +19,6 @@ def get_rgb_toning(
     return _as_rgb(lab_mapping)
 
 
-def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
-    def rgb_toning(rgb: float) -> Vector:
-        luminance = lab.from_xyz(xyz.from_rgb([rgb] * 3, SRGB))[0]
-        lab_color = lab_toning(luminance)
-        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
-
-    return rgb_toning
-
-
 def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
     tones = _get_tones(color_toning)
 
@@ -36,7 +27,7 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
         if i == 0:
             return tones[0][1]
         elif i == len(tones):
-            return tones[-1][1]
+            return linalg.add_vectors(tones[-1][1], [100, 0, 0])
         else:
             return _interpolate(x, tones[i - 1], tones[i])
 
@@ -44,6 +35,18 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
         return lab_curve
     else:
         return lambda x: [x, 0, 0]
+
+
+def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
+    def rgb_toning(x: float) -> Vector:
+        luminance = lab.from_xyz_lum(rgb.to_linear_value(x, SRGB))
+        lab_color = lab_toning(luminance)
+        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
+
+    return rgb_toning
+
+
+_NONE = [0, 0, 0]
 
 
 def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
@@ -56,26 +59,25 @@ def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
         ]
     elif channel == ColorToningChannel.TWO:
         return [
-            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(0.0, [0, 0, 0]),
             _to_lab(100 * 1 / 3, color_toning.shadow.as_list()),
             _to_lab(100 * 2 / 3, color_toning.highlight.as_list()),
-            _to_lab(100.0, color_toning.white.as_list()),
+            _to_lab(100.0, [0, 0, 0]),
         ]
     elif channel == ColorToningChannel.THREE:
         return [
-            _to_lab(0.0, color_toning.black.as_list()),
+            _to_lab(0.0, [0, 0, 0]),
             _to_lab(25.0, color_toning.shadow.as_list()),
             _to_lab(50.0, color_toning.midtone.as_list()),
             _to_lab(75.0, color_toning.highlight.as_list()),
-            _to_lab(100.0, color_toning.white.as_list()),
+            _to_lab(100.0, [0, 0, 0]),
         ]
     else:
         raise ValueError(f"Unhandled value: {channel}")
 
 
 def _to_lab(luminance: float, lch_tone: Vector) -> ColorTone:
-    l, c, h = lch_tone
-    return (luminance, lab.from_lch([_clip(luminance + l, 0, 100), c, h]))
+    return (luminance, lab.from_lch(lch_tone))
 
 
 def _clip(value: float, lower: float, upper: float) -> float:
@@ -83,19 +85,24 @@ def _clip(value: float, lower: float, upper: float) -> float:
 
 
 def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
-    ratio = (x - left[0]) / (right[0] - left[0])
-    luma_weight = _linear_weight(ratio)
-    chroma_weight = _non_linear_weight(ratio)
     return [
-        luma_weight * left[1][0] + (1 - luma_weight) * right[1][0],
-        chroma_weight * left[1][1] + (1 - chroma_weight) * right[1][1],
-        chroma_weight * left[1][2] + (1 - chroma_weight) * right[1][2],
+        _clip(
+            x
+            + interpolation.interpolate_values(
+                left[1][0],
+                right[1][0],
+                interpolation.hermite,
+                x,
+                left[0],
+                right[0],
+            ),
+            0,
+            100,
+        ),
+        interpolation.interpolate_values(
+            left[1][1], right[1][1], interpolation.hermite, x, left[0], right[0]
+        ),
+        interpolation.interpolate_values(
+            left[1][2], right[1][2], interpolation.hermite, x, left[0], right[0]
+        ),
     ]
-
-
-def _linear_weight(x: float) -> float:
-    return 1 - x
-
-
-def _non_linear_weight(x: float) -> float:
-    return 2 * math.pow(x, 3) - 3 * math.pow(x, 2) + 1

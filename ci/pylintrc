@@ -506,6 +506,9 @@ max-returns=6
 # Maximum number of statements in function / method body.
 max-statements=50
 
+# Maximum number of positional arguments for function / method.
+max-positional-arguments=8
+
 # Minimum number of public methods for a class (see R0903).
 min-public-methods=2
 

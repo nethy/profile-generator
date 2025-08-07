@@ -26,6 +26,9 @@ class Point:
         else:
             return self.y / self.x
 
+    def to_tuple(self) -> tuple[float, float]:
+        return (self.x, self.y)
+
     def __repr__(self) -> str:
         return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
 

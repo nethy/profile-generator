@@ -1,35 +1,22 @@
 import math
 from collections.abc import Mapping
-from typing import Final
 
 from profile_generator.main.profile_params import ProfileParams
 from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Vector
-from profile_generator.unit.point import Point
+from profile_generator.unit import Point
 
-from . import matte, toning
-
-
-class Template:
-    ENABLED: Final = "RGBCurvesEnabled"
-    RED: Final = "RGBCurvesRCurve"
-    GREEN: Final = "RGBCurvesGCurve"
-    BLUE: Final = "RGBCurvesBCurve"
-
+from . import hsv, matte, toning_rgb_curve
 
 _SECTION_COUNT = 32
 
 
 def generate(profile_params: ProfileParams) -> Mapping[str, str]:
-    rgb_toning = toning.get_rgb_toning(profile_params.colors.grading.toning)
     matte_curve = matte.get_matte_curve(profile_params.colors.grading.matte)
-
-    def rgb_curve(x: float) -> Vector:
-        return list(map(matte_curve, rgb_toning(x)))
+    toning_curve = toning_rgb_curve.get_rgb_toning(profile_params.colors.grading.toning)
 
     reds, greens, blues = [], [], []
     for x in (i / _SECTION_COUNT for i in range(_SECTION_COUNT + 1)):
-        r, g, b = rgb_curve(x)
+        r, g, b = toning_curve(matte_curve(x))
         reds.append(Point(x, _clip(r, 0, 1)))
         greens.append(Point(x, _clip(g, 0, 1)))
         blues.append(Point(x, _clip(b, 0, 1)))
@@ -38,16 +25,17 @@ def generate(profile_params: ProfileParams) -> Mapping[str, str]:
         not math.isclose(x, y, rel_tol=1e-3) for x, y in (*reds, *greens, *blues)
     )
     return {
-        Template.ENABLED: str(is_enabled).lower(),
-        Template.RED: raw_therapee.present_curve(
+        "RGBCurvesEnabled": str(is_enabled).lower(),
+        "RGBCurvesRCurve": raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, reds if is_enabled else []
         ),
-        Template.GREEN: raw_therapee.present_curve(
+        "RGBCurvesGCurve": raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, greens if is_enabled else []
         ),
-        Template.BLUE: raw_therapee.present_curve(
+        "RGBCurvesBCurve": raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, blues if is_enabled else []
         ),
+        **hsv.generate(profile_params),
     }
 
 

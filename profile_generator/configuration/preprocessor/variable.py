@@ -4,8 +4,7 @@ from dataclasses import dataclass
 from typing import Any
 
 
-class VariableError(Exception, metaclass=ABCMeta):
-    ...
+class VariableError(Exception, metaclass=ABCMeta): ...
 
 
 @dataclass
@@ -19,7 +18,7 @@ class IllegalReferenceError(VariableError):
 
 
 def replace(
-    data: MutableMapping[str, Any]
+    data: MutableMapping[str, Any],
 ) -> tuple[Mapping[str, Any], Sequence[VariableError]]:
     result = data
     variables = result.pop("variables", {})

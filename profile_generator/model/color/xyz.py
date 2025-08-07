@@ -2,8 +2,8 @@ import math
 from typing import Optional
 
 from profile_generator.model import linalg
-from profile_generator.model.color.space.color_space import ColorSpace
-from profile_generator.model.color.white_point import D50_XYZ, D65_XYZ
+from profile_generator.model.color.illuminant import D50_XYZ, D65_XYZ
+from profile_generator.model.color.profile.color_profile import ColorProfile
 from profile_generator.model.linalg import Matrix, Vector
 
 BRADFORD = [
@@ -18,13 +18,21 @@ BRADFORD_INVERSE = [
 ]
 
 
-def from_rgb(rgb: Vector, color_space: ColorSpace) -> Vector:
+def from_rgb(rgb: Vector, color_space: ColorProfile) -> Vector:
     linear = [color_space.inverse_gamma(x) for x in rgb]
-    return linalg.multiply_matrix_vector(color_space.xyz_matrix, linear)
+    xyz = linalg.multiply_matrix_vector(color_space.xyz_matrix, linear)
+    if color_space.white_point != D50_XYZ:
+        adaptation_matrix = chromatic_adaptation(color_space.white_point, D50_XYZ)
+        xyz = linalg.multiply_matrix_vector(adaptation_matrix, xyz)
+    return xyz
 
 
-def to_rgb(xyz: Vector, color_space: ColorSpace) -> Vector:
-    linear = linalg.multiply_matrix_vector(color_space.xyz_inverse_matrix, xyz)
+def to_rgb(xyz: Vector, color_space: ColorProfile) -> Vector:
+    xyz_d50 = xyz
+    if color_space.white_point != D50_XYZ:
+        adaptation_matrix = chromatic_adaptation(D50_XYZ, color_space.white_point)
+        xyz_d50 = linalg.multiply_matrix_vector(adaptation_matrix, xyz)
+    linear = linalg.multiply_matrix_vector(color_space.xyz_inverse_matrix, xyz_d50)
     return [color_space.gamma(x) for x in linear]
 
 
@@ -63,7 +71,3 @@ def conversion_matrix_of(refs: Matrix, white_point: Vector) -> Matrix:
     inverse = linalg.inverse(list(matrix))
     coeffs = linalg.multiply_matrix_vector(inverse, white_point)
     return [[coeff * value for coeff, value in zip(coeffs, row)] for row in matrix]
-
-
-D65_TO_D50_ADAPTATION = chromatic_adaptation(D65_XYZ, D50_XYZ)
-D50_TO_D65_ADAPTATION = chromatic_adaptation(D50_XYZ, D65_XYZ)

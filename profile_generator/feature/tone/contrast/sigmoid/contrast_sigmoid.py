@@ -25,9 +25,7 @@ def get_contrast(slope: float) -> Sequence[Point]:
 
 @cache
 def get_tone_curve(grey18: float, slope: float) -> Sequence[Point]:
-    flat = tone_curve.get_rgb_flat(grey18)
-    contrast = tone_curve.get_rgb_contrast(slope)
-    return curve.as_points(lambda x: contrast(flat(x)))
+    return curve.as_points(tone_curve.get_rgb(grey18, slope))
 
 
 @cache

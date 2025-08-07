@@ -12,8 +12,7 @@ from profile_generator.unit import Point
 _CONTRAST_SIGMOID = (
     "profile_generator.feature.tone.contrast.sigmoid.schema.schema.contrast_sigmoid"
 )
-_CONTRAST_SIGMOID_GET_FLAT = f"{_CONTRAST_SIGMOID}.get_flat"
-_CONTRAST_SIGMOID_GET_CONTRAST = f"{_CONTRAST_SIGMOID}.get_contrast"
+_CONTRAST_SIGMOID_GET_TONE_CURVE = f"{_CONTRAST_SIGMOID}.get_tone_curve"
 
 
 class SchemaTest(TestCase):
@@ -43,18 +42,14 @@ class SchemaTest(TestCase):
             InvalidObjectError({"slope": InvalidRangeError(1.0, 4.0)}),
         )
 
-    @patch(_CONTRAST_SIGMOID_GET_CONTRAST)
-    @patch(_CONTRAST_SIGMOID_GET_FLAT)
-    def test_process_default(self, get_flat: Mock, get_contrast: Mock) -> None:
-        get_flat.return_value = [Point(1, 1)]
-        get_contrast.return_value = [Point(1, 1)]
+    @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
+    def test_process_default(self, get_tone_curve: Mock) -> None:
+        get_tone_curve.return_value = [Point(1, 1)]
 
         self.validator.assert_process(
             {},
             {
                 "Curve": "4;1.0000000;1.0000000;",
-                "Curve2": "4;1.0000000;1.0000000;",
             },
         )
-        get_flat.assert_called_once_with(0.1)
-        get_contrast.assert_called_once_with(1.6)
+        get_tone_curve.assert_called_once_with(0.1, 1.6)

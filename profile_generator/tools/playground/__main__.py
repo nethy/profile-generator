@@ -3,11 +3,15 @@
 
 import json
 import math
+import os
 from array import array
 from email.mime import base
 from functools import partial
 from itertools import starmap
 from operator import itemgetter
+
+import matplotlib.pyplot as plt
+from PIL import Image
 
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
@@ -15,10 +19,10 @@ from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test impor
     _SLOPE,
 )
 from profile_generator.model import bezier, gamma, linalg, sigmoid, spline, tone_curve
-from profile_generator.model.color import constants, lab, rgb, xyz
-from profile_generator.model.color.space import SRGB
-from profile_generator.model.color.space.prophoto import PROPHOTO
-from profile_generator.model.color_chart import ColorChart
+from profile_generator.model.color import constants, ergb, lab, rgb, xyz
+from profile_generator.model.color.profile import SRGB
+from profile_generator.model.color.profile.prophoto import PROPHOTO
+from profile_generator.model.color_chart import ColorChartLab
 from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Curve, Line, Point, Strength, curve
 from profile_generator.util import search
@@ -38,6 +42,14 @@ def print_point(x, y):
     print(f"{x:.7f} {y:.7f}")
 
 
+def print_eq_points(points):
+    shoulder = 1 / 6
+    print("ControlPoints")
+    for p in points:
+        print(round(p.x, 6), round(p.y, 6))
+        print(round(shoulder, 6), round(shoulder, 6))
+
+
 def find_x(fn, y):
     return search.jump_search(0, 1, fn, y)
 
@@ -52,36 +64,83 @@ def lch_to_hsv(lab_color):
     return rgb.to_hsv(xyz.to_rgb(lab.to_xyz(lab.from_lch(lab_color)), SRGB))
 
 
-def as_equalizer(cur, new):
-    cur_h, new_h = cur[0], new[0]
+def lab_hue_to_rgb_hue(HH):
+    hr = 0.0
 
-    res_h = new_h - cur_h
-    if res_h > 0.5:
-        res_h -= 1
-    elif res_h < -0.5:
-        res_h += 1
+    if HH >= 0 and HH < 0.6:
+        hr = 0.11666 * HH + 0.93
+    elif HH >= 0.6 and HH < 1.4:
+        hr = 0.1125 * HH - 0.0675
+    elif HH >= 1.4 and HH < 2:
+        hr = 0.2666 * HH - 0.2833
+    elif HH >= 2 and HH < 3.14159:
+        hr = 0.1489 * HH - 0.04785
+    elif HH >= -3.14159 and HH < -2.8:
+        hr = 0.23419 * HH + 1.1557
+    elif HH >= -2.8 and HH < -2.3:
+        hr = 0.16 * HH + 0.948
+    elif HH >= -2.3 and HH < -0.9:
+        hr = 0.12143 * HH + 0.85928
+    elif HH >= -0.9 and HH < -0.1:
+        hr = 0.2125 * HH + 0.94125
+    elif HH >= -0.1 and HH < 0:
+        hr = 0.1 * HH + 0.93
 
-    return raw_therapee.EqPoint(cur_h, (new_h - cur_h) / 2 + 0.5)
+    if hr < 0.0:
+        hr += 1.0
+    elif hr > 1.0:
+        hr -= 1.0
+
+    return hr
 
 
-def lab_hue_rgb():
-    shift = 3
-    lab_hue = [(0, shift), (90, -shift), (150, shift), (240, -shift)]
+def to_radians(degree):
+    return round(math.radians(degree if degree < 180 else degree - 360), 5)
 
-    hsv_values = (
-        (lch_to_hsv(x_lab), lch_to_hsv(y_lab))
-        for x_lab, y_lab in (
-            ([50, 25, x_hue], [50, 25, x_hue + mod_hue]) for x_hue, mod_hue in lab_hue
-        )
+
+def lch_hue():
+    shift = 6
+    lab_hue = [(0, shift), (90, -shift), (180, shift), (270, -shift)]
+
+    lab_hue_in_radians = starmap(
+        lambda a, b: (to_radians(a), to_radians(a + b)), lab_hue
     )
+    # print(list(lab_hue_in_radians))
 
-    equalizer_values = starmap(as_equalizer, hsv_values)
+    def as_equalizer(cur, new):
+        return raw_therapee.EqPoint(lab_hue_to_rgb_hue(cur), (new - cur) / 1.7 + 0.5)
 
-    print(
-        raw_therapee.present_equalizer(
-            sorted(list(equalizer_values), key=lambda eq_point: eq_point.x)
-        )
-    )
+    equalizer_values = starmap(as_equalizer, lab_hue_in_radians)
+
+    print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
+
+
+def lch_lightness():
+    lab_lightness = [(45, 1.05), (225, 0.95)]
+
+    lab_hue_in_radians = starmap(lambda a, b: (to_radians(a), b), lab_lightness)
+    # print(list(lab_hue_in_radians))
+
+    def as_equalizer(cur, new):
+        result = 1
+        if new > 1:
+            result = (new - 1) / 6 + 0.5
+        else:
+            result = (new - 1) / 1.9 + 0.5
+        return raw_therapee.EqPoint(lab_hue_to_rgb_hue(cur), result)
+
+    equalizer_values = starmap(as_equalizer, lab_hue_in_radians)
+
+    print_eq_points(sorted(list(equalizer_values), key=lambda eq_point: eq_point.x))
+
+
+def display_fn(fn):
+    xs, ys = zip(*curve.as_points(fn))
+
+    plt.figure(figsize=(8, 8))
+    plt.plot(xs, ys)
+    plt.grid()
+    plt.show()
 
 
 if __name__ == "__main__":
@@ -112,4 +171,5 @@ if __name__ == "__main__":
     grey18_g9 = 0.05
     slope = 1.7
 
-    lab_hue_rgb()
+    print(rgb.luminance(rgb.normalize([170, 123, 28]), SRGB))
+    print(rgb.luminance(rgb.normalize([170, 135, 43]), SRGB))

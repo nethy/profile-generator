@@ -5,7 +5,7 @@ from profile_generator.unit import Curve
 from profile_generator.util import search, validation
 
 
-def algebraic(gradient: float, exponent: float) -> Curve:
+def algebraic(gradient: float, exponent: float = 1) -> Curve:
     if math.isclose(gradient, 1):
         return lambda x: x
     elif gradient < 1 and not math.isclose(exponent, 1):

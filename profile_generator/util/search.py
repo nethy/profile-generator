@@ -127,7 +127,7 @@ def _jump_backward_until(
 _ITERATION_LIMIT = 100
 
 
-def _alternating_search(
+def _alternating_search(  # pylint: disable=too-many-positional-arguments
     lower_bound: float,
     lower_bound_value: float,
     upper_bound: float,

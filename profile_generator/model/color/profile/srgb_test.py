@@ -10,8 +10,8 @@ class SrgbTest(LinalgTestCase):
         matrix = xyz.conversion_matrix_of(srgb.SRGB_XY, srgb.SRGB.white_point)
         inverse = linalg.inverse(matrix)
 
-        self.assert_matrix_equal(srgb.SRGB.xyz_matrix, matrix)
-        self.assert_matrix_equal(srgb.SRGB.xyz_inverse_matrix, inverse)
+        self.assert_matrix_equal(srgb.SRGB.xyz_matrix, matrix, 21)
+        self.assert_matrix_equal(srgb.SRGB.xyz_inverse_matrix, inverse, 21)
 
     def test_gamma(self) -> None:
         for luminance in (i / 100 for i in range(101)):

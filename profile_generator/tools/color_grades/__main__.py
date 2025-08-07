@@ -6,6 +6,16 @@ from profile_generator.main.profile_params import ProfileParams
 from profile_generator.util import file
 
 TEMPLATE = """
+[Version]
+AppVersion=5.11
+Version=351
+
+[HSV Equalizer]
+Enabled={HSVEnabled}
+HCurve={HSVHCurve}
+SCurve={HSVSCurve}
+VCurve={HSVVCurve}
+
 [RGB Curves]
 Enabled={RGBCurvesEnabled}
 LumaMode=false
@@ -18,7 +28,7 @@ _OUTPUT_DIR = "profiles"
 
 
 def main() -> None:
-    raw_config = file.read_file(sys.argv[1])
+    raw_config = file.read_file((sys.argv[1]))
     configuration = json.loads(raw_config)
     for name, config in configuration.items():
         profile_params = ProfileParams()
@@ -28,7 +38,7 @@ def main() -> None:
 
         template = TEMPLATE.format(**template_values)
 
-        file.write_file(template, _OUTPUT_DIR, f"rgb-curves-{name}.pp3")
+        file.write_file(template, _OUTPUT_DIR, f"color-grading-{name}.pp3")
 
         print("Profile has been generated: " + name)
 

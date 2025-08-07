@@ -1,18 +1,12 @@
 import math
 
-from profile_generator.model import linalg
-from profile_generator.model.color.xyz import (
-    D50_TO_D65_ADAPTATION,
-    D65_TO_D50_ADAPTATION,
-)
 from profile_generator.model.linalg import Vector
 
-from .white_point import D50_XYZ
+from .illuminant import D50_XYZ
 
 
-def from_xyz(xyz_d65: Vector) -> Vector:
-    xyz_d50 = linalg.multiply_matrix_vector(D65_TO_D50_ADAPTATION, xyz_d65)
-    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz_d50, D50_XYZ)]
+def from_xyz(xyz: Vector) -> Vector:
+    x_ratio, y_ratio, z_ratio = [value / ref for value, ref in zip(xyz, D50_XYZ)]
     l = 116 * _lab_f(y_ratio) - 16
     a = 500 * (_lab_f(x_ratio) - _lab_f(y_ratio))
     b = 200 * (_lab_f(y_ratio) - _lab_f(z_ratio))
@@ -26,9 +20,7 @@ def to_xyz(lab: Vector) -> Vector:
     x = x_ref * _lab_f_inverse(l_ref + a / 500)
     y = y_ref * _lab_f_inverse(l_ref)
     z = z_ref * _lab_f_inverse(l_ref - b / 200)
-    xyz_d50 = [x, y, z]
-    xyz_d65 = linalg.multiply_matrix_vector(D50_TO_D65_ADAPTATION, xyz_d50)
-    return xyz_d65
+    return [x, y, z]
 
 
 def from_xyz_lum(y: float) -> float:
@@ -71,6 +63,44 @@ def from_bsh(bsh: Vector) -> Vector:
     l = b * math.sin(s_radians)
     c = b * math.cos(s_radians)
     return from_lch([l, c, h])
+
+
+def to_rgb_hue(lab_hue: float) -> float:
+    lab_hue_in_radians = _to_radians(lab_hue)
+    rgb_hue = 0.0
+
+    if 0 <= lab_hue_in_radians < 0.6:
+        rgb_hue = 0.11666 * lab_hue_in_radians + 0.93
+    elif 0.6 <= lab_hue_in_radians < 1.4:
+        rgb_hue = 0.1125 * lab_hue_in_radians - 0.0675
+    elif 1.4 <= lab_hue_in_radians < 2:
+        rgb_hue = 0.2666 * lab_hue_in_radians - 0.2833
+    elif 2 <= lab_hue_in_radians < 3.14159:
+        rgb_hue = 0.1489 * lab_hue_in_radians - 0.04785
+    elif -3.14159 <= lab_hue_in_radians < -2.8:
+        rgb_hue = 0.23419 * lab_hue_in_radians + 1.1557
+    elif -2.8 <= lab_hue_in_radians < -2.3:
+        rgb_hue = 0.16 * lab_hue_in_radians + 0.948
+    elif -2.3 <= lab_hue_in_radians < -0.9:
+        rgb_hue = 0.12143 * lab_hue_in_radians + 0.85928
+    elif -0.9 <= lab_hue_in_radians < -0.1:
+        rgb_hue = 0.2125 * lab_hue_in_radians + 0.94125
+    elif -0.1 <= lab_hue_in_radians < 0:
+        rgb_hue = 0.1 * lab_hue_in_radians + 0.93
+
+    if rgb_hue < 0.0:
+        rgb_hue += 1.0
+    elif rgb_hue > 1.0:
+        rgb_hue -= 1.0
+
+    return rgb_hue
+
+
+def _to_radians(degree: float) -> float:
+    """
+    0..360 -> -pi..pi
+    """
+    return round(math.radians(degree if degree < 180 else degree - 360), 5)
 
 
 SIGMA = 6.0 / 29.0

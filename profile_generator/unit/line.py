@@ -13,7 +13,7 @@ class Line:
 
     @staticmethod
     def from_points(a: Point, b: Point) -> Line:
-        gradient = (b.y - a.y) / (b.x - a.x)
+        gradient = (b.y - a.y) / (b.x - a.x) if not math.isclose(a.x, b.x) else 0
         offset = a.y - gradient * a.x
         return Line(gradient, offset)
 

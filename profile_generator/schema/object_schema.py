@@ -77,8 +77,7 @@ class InvalidObjectError(SchemaError):
 
 
 @dataclass
-class UnkownMemberError(SchemaError):
-    ...
+class UnkownMemberError(SchemaError): ...
 
 
 def object_of(
