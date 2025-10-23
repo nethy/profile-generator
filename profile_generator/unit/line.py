@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-import math
-
 from .point import Point
-from .precision import DECIMALS
+from .precision import DECIMALS, equals
 
 
 class Line:
@@ -13,7 +11,7 @@ class Line:
 
     @staticmethod
     def from_points(a: Point, b: Point) -> Line:
-        gradient = (b.y - a.y) / (b.x - a.x) if not math.isclose(a.x, b.x) else 0
+        gradient = (b.y - a.y) / (b.x - a.x) if not equals(a.x, b.x) else 0
         offset = a.y - gradient * a.x
         return Line(gradient, offset)
 
@@ -42,6 +40,6 @@ class Line:
         if not isinstance(other, Line):
             return NotImplemented
 
-        return math.isclose(self.gradient, other.gradient) and math.isclose(
+        return equals(self.gradient, other.gradient) and equals(
             self.offset, other.offset
         )

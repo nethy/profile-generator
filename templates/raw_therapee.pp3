@@ -63,7 +63,7 @@ GainTransmissionCurve=1;0;0.10000000000000001;0.34999999999999998;0;0.25;0.25;0.
 
 [Local Contrast]
 Enabled=false
-Radius={LCRadius}
+Radius=80
 Amount=0.20000000000000001
 Darkness=1
 Lightness=0.5
@@ -280,7 +280,7 @@ Highlights=0
 HighlightTonalWidth=75
 Shadows=0
 ShadowTonalWidth=25
-Radius={SHRadius}
+Radius=40
 Lab=false
 
 [ToneEqualizer]

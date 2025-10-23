@@ -5,6 +5,7 @@ from collections.abc import Sequence
 from profile_generator.model import linalg
 from profile_generator.model.linalg import Matrix, Vector
 from profile_generator.unit import Curve
+from profile_generator.unit.precision import PRECISION, equals
 
 BUFFER_SIZE = 8
 BUFFER_STEP = 33
@@ -18,7 +19,7 @@ def fit(
 ) -> Points:
     if start > end:
         raise ValueError(f"Start {start} must be smaller than end {end}")
-    if math.isclose(start, end):
+    if equals(start, end):
         return [(start, fn(start))]
 
     references = _generate_references(fn, start, end)
@@ -145,10 +146,6 @@ def _spline(x: float, knots: Vector, coefficients: Vector) -> float:
 
 def _find_coeffs(x: float, knots: Vector, coefficients: Vector) -> Sequence[float]:
     for i in range(len(knots) - 1):
-        if (
-            knots[i] < x < knots[i + 1]
-            or math.isclose(x, knots[i])
-            or math.isclose(x, knots[i + 1])
-        ):
+        if knots[i] - PRECISION < x < knots[i + 1] + PRECISION:
             return coefficients[i * 4 : (i + 1) * 4]
     return [0.0, 0.0, 0.0, 0.0]

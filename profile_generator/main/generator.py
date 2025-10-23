@@ -7,7 +7,11 @@ from json import JSONDecodeError
 from typing import Any
 
 from profile_generator.configuration.preprocessor import dot_notation, variable
-from profile_generator.main import ProfileGenerator, ProfileParams
+from profile_generator.main import (
+    ProfileGenerator,
+    ProfileParams,
+    profile_template_processor,
+)
 from profile_generator.schema import Schema
 from profile_generator.util import file
 
@@ -82,15 +86,21 @@ class ProfileWriteError(Exception):
 
 
 def create_profile_content(
-    template: str,
+    profile_template: str,
     config: Mapping[str, Any],
     marshaller: Callable[[Any], Mapping[str, str]],
     profile_generator: ProfileGenerator,
+    is_partial: bool,
 ) -> str:
     template_args = marshaller(config)
     profile_params = ProfileParams()
     profile_params.parse(config)
     template_args = {**template_args, **profile_generator(profile_params)}
+    template = profile_template
+    if is_partial:
+        template = profile_template_processor.extract_partial(
+            profile_template, template_args.keys()
+        )
     return template.format(**template_args)
 
 
@@ -99,8 +109,8 @@ def persist_profile(
     content: str,
     output_dir: str,
 ) -> None:
+    output_filename = f"{name}.pp3"
     try:
-        output_filename = f"{name}.pp3"
         file.write_file(content, output_dir, output_filename)
     except Exception as exc:
         filename = os.path.normpath(os.path.join(output_dir, output_filename))

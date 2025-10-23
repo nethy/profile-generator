@@ -2,6 +2,7 @@ import math
 from functools import cache
 
 from profile_generator.unit import Curve, Point
+from profile_generator.unit.precision import equals
 from profile_generator.util import search
 
 
@@ -16,9 +17,9 @@ def power_derivative_at(point: Point) -> Curve:
 
 
 def power_exponent(point: Point) -> float:
-    if math.isclose(point.x, 0):
+    if equals(point.x, 0):
         return 0
-    elif math.isclose(point.x, 1):
+    elif equals(point.x, 1):
         return math.inf
     return math.log(point.y) / math.log(point.x)
 
@@ -53,7 +54,7 @@ def exp2_at(point: Point) -> Curve:
 
 @cache
 def exp2_coefficient(point: Point) -> float:
-    if math.isclose(point.x, point.y):
+    if equals(point.x, point.y):
         return 0
     return search.jump_search(-1e3, 1e3, lambda c: exp2(c)(point.x), point.y)
 
@@ -63,7 +64,7 @@ def exp2(coefficient: float) -> Curve:
     y  = (2^{-bx}-1)/(2^{-b}-1)
     y' = (2^{b(1-x)}*b*ld(2))/(2^b-1)
     """
-    if math.isclose(coefficient, 0):
+    if equals(coefficient, 0):
         return lambda x: x
 
     def curve(x: float) -> float:
@@ -73,7 +74,7 @@ def exp2(coefficient: float) -> Curve:
 
 
 def partial_algebraic_at(point: Point, exponent: float = 1.0) -> Curve:
-    if math.isclose(point.gradient, 1):
+    if equals(point.gradient, 1):
         return lambda x: x
 
     g = math.pow(
@@ -108,7 +109,7 @@ def inverse_algebraic(coefficient: float, exponent: float) -> Curve:
 def partial_inverse_algebraic_at(
     p: Point, gradient: float, exponent: float = 1.0
 ) -> Curve:
-    if math.isclose(gradient, 1) and math.isclose(p.gradient, 1):
+    if equals(gradient, 1) and equals(p.gradient, 1):
         return lambda x: x
     g = math.pow(gradient * p.x / p.y - 1, 1 / exponent)
     curve = inverse_algebraic(g, exponent)
@@ -116,7 +117,7 @@ def partial_inverse_algebraic_at(
 
 
 def log_at(point: Point) -> Curve:
-    if math.isclose(point.x, point.y):
+    if equals(point.x, point.y):
         return lambda x: x
     elif point.y < point.x:
         return inverse_log_at(point)
@@ -125,7 +126,7 @@ def log_at(point: Point) -> Curve:
 
 
 def log_derivative_at(point: Point) -> Curve:
-    if math.isclose(point.x, point.y):
+    if equals(point.x, point.y):
         return lambda _: 1
     g = log_coefficient(point)
     return log_derivative(g)
@@ -133,19 +134,19 @@ def log_derivative_at(point: Point) -> Curve:
 
 @cache
 def log_coefficient(point: Point) -> float:
-    if math.isclose(point.x, point.y):
+    if equals(point.x, point.y):
         return 0
     return search.jump_search(1e-9, 1e3, lambda c: log(c)(point.x), point.y)
 
 
 def log(coefficient: float) -> Curve:
-    if math.isclose(coefficient, 0):
+    if equals(coefficient, 0):
         return lambda x: x
     return lambda x: math.log(coefficient * x + 1) / math.log(coefficient + 1)
 
 
 def log_derivative(coefficient: float) -> Curve:
-    if math.isclose(coefficient, 0):
+    if equals(coefficient, 0):
         return lambda _: 1
     return lambda x: coefficient / (coefficient * x + 1) / math.log(coefficient + 1)
 

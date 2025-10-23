@@ -6,11 +6,11 @@ from .lab import (
     from_bsh,
     from_lch,
     from_xyz,
-    from_xyz_lum,
+    from_xyz_luminance,
     to_bsh,
     to_lch,
     to_xyz,
-    to_xyz_lum,
+    to_xyz_luminance,
 )
 from .profile import SRGB
 
@@ -84,4 +84,4 @@ class LabTest(LinalgTestCase):
         self.assert_vector_equal(from_bsh(to_bsh([100, 0, 100])), [100, 0, 100])
 
     def test_xyz_lum(self) -> None:
-        self.assertEqual(from_xyz_lum(to_xyz_lum(50)), 50)
+        self.assertEqual(from_xyz_luminance(to_xyz_luminance(50)), 50)

@@ -7,14 +7,14 @@ Configuration = dict[str, dict[str, Any]]
 _DEFAULT_NAME = "Default"
 
 
-def create_from_template(template: dict[str, Any]) -> Configuration:
-    defaults = template.get("defaults", {})
-    templates = template.get("templates", [])
+def create_from_template(config_template: dict[str, Any]) -> Configuration:
+    defaults = config_template.get("defaults", {})
+    templates = config_template.get("templates", [])
 
-    return reduce(_merge_template, templates, {_DEFAULT_NAME: defaults})
+    return reduce(_merge_config_template, templates, {_DEFAULT_NAME: defaults})
 
 
-def _merge_template(
+def _merge_config_template(
     configuration: Configuration, template: Configuration
 ) -> Configuration:
     settings = _get_settings(template)
@@ -23,7 +23,7 @@ def _merge_template(
 
     is_directory = _is_directory(template)
 
-    merged = {
+    merged: dict[str, Any] = {
         _merge_name(cfg_name, template_name, is_directory): _merge_dicts(
             cfg_body, template_body
         )
@@ -38,13 +38,13 @@ def _merge_template(
 def _merge_name(cfg_name: str, template_name: str, is_directory: bool) -> str:
     directory, name = os.path.dirname(cfg_name), os.path.basename(cfg_name)
     if is_directory:
-        directory = "/".join(filter(None, (directory, template_name)))
+        directory = os.path.join(directory, template_name)
     else:
         if name == _DEFAULT_NAME:
             name = template_name
         else:
             name = name + "_" + template_name
-    return "/".join(filter(None, (directory, name)))
+    return os.path.join(directory, name)
 
 
 def _merge_dicts(base: dict[str, Any], overrider: dict[str, Any]) -> dict[str, Any]:

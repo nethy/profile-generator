@@ -23,11 +23,11 @@ def to_xyz(lab: Vector) -> Vector:
     return [x, y, z]
 
 
-def from_xyz_lum(y: float) -> float:
+def from_xyz_luminance(y: float) -> float:
     return 116 * _lab_f(y) - 16
 
 
-def to_xyz_lum(l: float) -> float:
+def to_xyz_luminance(l: float) -> float:
     return _lab_f_inverse((l + 16) / 116)
 
 

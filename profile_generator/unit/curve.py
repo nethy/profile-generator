@@ -21,6 +21,27 @@ def as_points(curve: Curve) -> Sequence[Point]:
     return points
 
 
+def as_points_multiple(
+    curve: Callable[[float], list[float]],
+) -> Sequence[Sequence[Point]]:
+    prevs = [Point(0, y) for y in curve(0)]
+    points: list[list[Point]] = [[prev] for prev in prevs]
+    for i in range(1, 255):
+        currents = [Point(i / 255, y) for y in curve(i / 255)]
+        distance = max(prev.distance(current) for prev, current in zip(prevs, currents))
+        if not distance < _TOLERANCE:
+            _append_multiple(points, currents)
+            prevs = currents
+    currents = [Point(1, y) for y in curve(1)]
+    _append_multiple(points, currents)
+    return points
+
+
+def _append_multiple(points: list[list[Point]], currents: list[Point]) -> None:
+    for i, current in enumerate(currents):
+        points[i].append(current)
+
+
 _POINT_COUNT = 32
 
 

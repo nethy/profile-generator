@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 from profile_generator import configuration, integration, log
@@ -42,6 +43,7 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
         cfg_template = generator.load_configuration_file(
             cfg_file_name, integration.SCHEMA
         )
+        is_partial = cfg_template.get("partial", False)
         cfg = configuration.create_from_template(cfg_template)
         for name, body in cfg.items():
             content = generator.create_profile_content(
@@ -49,8 +51,11 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
                 body,
                 integration.CONFIGURATION_SCHEMA.process,
                 integration.GENERATOR,
+                is_partial,
             )
-            _persist_profile(name, content, output_dir)
+            cfg_name = os.path.splitext(os.path.basename(cfg_file_name))[0]
+            cfg_output_dir = os.path.join(output_dir, cfg_name)
+            _persist_profile(name, content, cfg_output_dir)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_file_name)
     except InvalidConfigFileError as exc:

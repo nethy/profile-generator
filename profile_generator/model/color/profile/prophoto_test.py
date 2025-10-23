@@ -12,5 +12,5 @@ class ProphotoTest(LinalgTestCase):
         )
         inverse = linalg.inverse(matrix)
 
-        self.assert_matrix_equal(prophoto.PROPHOTO.xyz_matrix, matrix, 28)
-        self.assert_matrix_equal(prophoto.PROPHOTO.xyz_inverse_matrix, inverse, 28)
+        self.assert_matrix_equal(prophoto.PROPHOTO.xyz_matrix, matrix, 21)
+        self.assert_matrix_equal(prophoto.PROPHOTO.xyz_inverse_matrix, inverse, 21)

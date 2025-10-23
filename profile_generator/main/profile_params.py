@@ -69,11 +69,6 @@ class Value(Generic[V], ProfileParamParser):
         self._is_set = True
 
 
-class Camera(ProfileParamParser):
-    def __init__(self) -> None:
-        self.resolution_mp: Final = Value[float](16)
-
-
 class LchValue(ProfileParamTuple[float]):
     def __init__(self) -> None:
         self.luminance: Final = Value[float](0)
@@ -91,15 +86,11 @@ class ColorToningChannel(ProfileParamEnum):
 class ColorToning(ProfileParamParser):
     def __init__(self) -> None:
         self.channels = Value[ColorToningChannel](ColorToningChannel.TWO)
+        self.black = LchValue()
         self.shadow = LchValue()
         self.midtone = LchValue()
         self.highlight = LchValue()
-
-
-class Matte(ProfileParamParser):
-    def __init__(self) -> None:
-        self.black: Final = Value[float](0)
-        self.white: Final = Value[float](100)
+        self.white = LchValue()
 
 
 class LchAdjustment(ProfileParamParser):  # pylint: disable=too-many-instance-attributes
@@ -123,7 +114,6 @@ class Hsv(ProfileParamParser):
 class Grading(ProfileParamParser):
     def __init__(self) -> None:
         self.toning: Final = ColorToning()
-        self.matte: Final = Matte()
         self.hsv: Final = Hsv()
 
 
@@ -168,6 +158,7 @@ class CaptureSharpening(ProfileParamParser):
 
 class OutputSharpening(ProfileParamParser):
     def __init__(self) -> None:
+        self.enabled: Final = Value[bool](False)
         self.radius: Final = Value[float](0.75)
         self.threshold: Final = Value[int](20)
         self.amount: Final = Value[int](100)
@@ -237,8 +228,10 @@ class Details(ProfileParamParser):
 
 class ProfileParams(ProfileParamParser):
     def __init__(self) -> None:
-        self.camera: Final = Camera()
         self.raw: Final = Raw()
         self.tone: Final = Tone()
         self.details: Final = Details()
         self.colors: Final = Colors()
+
+
+DEFAULT = ProfileParams()

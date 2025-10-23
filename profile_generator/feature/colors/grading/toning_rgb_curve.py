@@ -6,7 +6,6 @@ from typing import TypeAlias
 from profile_generator.main.profile_params import ColorToning, ColorToningChannel
 from profile_generator.model import interpolation, linalg
 from profile_generator.model.color import lab, rgb, xyz
-from profile_generator.model.color.profile import SRGB
 from profile_generator.unit import Vector
 
 ColorTone: TypeAlias = tuple[float, Vector]
@@ -39,38 +38,37 @@ def get_lab_toning(color_toning: ColorToning) -> Callable[[float], Vector]:
 
 def _as_rgb(lab_toning: Callable[[float], Vector]) -> Callable[[float], Vector]:
     def rgb_toning(x: float) -> Vector:
-        luminance = lab.from_xyz_lum(rgb.to_linear_value(x, SRGB))
+        luminance = lab.from_xyz_luminance(rgb.to_linear_value(x))
         lab_color = lab_toning(luminance)
-        return xyz.to_rgb(lab.to_xyz(lab_color), SRGB)
+        return rgb.from_linear(
+            rgb.clip_linear(xyz.to_linear_rgb(lab.to_xyz(lab_color)))
+        )
 
     return rgb_toning
-
-
-_NONE = [0, 0, 0]
 
 
 def _get_tones(color_toning: ColorToning) -> list[ColorTone]:
     channel = color_toning.channels.value
     if channel == ColorToningChannel.ONE:
         return [
-            _to_lab(0.0, [0, 0, 0]),
+            _to_lab(0.0, color_toning.black.as_list()),
             _to_lab(50.0, color_toning.midtone.as_list()),
-            _to_lab(100.0, [0, 0, 0]),
+            _to_lab(100.0, color_toning.white.as_list()),
         ]
     elif channel == ColorToningChannel.TWO:
         return [
-            _to_lab(0.0, [0, 0, 0]),
+            _to_lab(0.0, color_toning.black.as_list()),
             _to_lab(100 * 1 / 3, color_toning.shadow.as_list()),
             _to_lab(100 * 2 / 3, color_toning.highlight.as_list()),
-            _to_lab(100.0, [0, 0, 0]),
+            _to_lab(100.0, color_toning.white.as_list()),
         ]
     elif channel == ColorToningChannel.THREE:
         return [
-            _to_lab(0.0, [0, 0, 0]),
+            _to_lab(0.0, color_toning.black.as_list()),
             _to_lab(25.0, color_toning.shadow.as_list()),
             _to_lab(50.0, color_toning.midtone.as_list()),
             _to_lab(75.0, color_toning.highlight.as_list()),
-            _to_lab(100.0, [0, 0, 0]),
+            _to_lab(100.0, color_toning.white.as_list()),
         ]
     else:
         raise ValueError(f"Unhandled value: {channel}")
@@ -80,24 +78,16 @@ def _to_lab(luminance: float, lch_tone: Vector) -> ColorTone:
     return (luminance, lab.from_lch(lch_tone))
 
 
-def _clip(value: float, lower: float, upper: float) -> float:
-    return min(max(value, lower), upper)
-
-
 def _interpolate(x: float, left: ColorTone, right: ColorTone) -> Vector:
     return [
-        _clip(
-            x
-            + interpolation.interpolate_values(
-                left[1][0],
-                right[1][0],
-                interpolation.hermite,
-                x,
-                left[0],
-                right[0],
-            ),
-            0,
-            100,
+        x
+        + interpolation.interpolate_values(
+            left[1][0],
+            right[1][0],
+            interpolation.hermite,
+            x,
+            left[0],
+            right[0],
         ),
         interpolation.interpolate_values(
             left[1][1], right[1][1], interpolation.hermite, x, left[0], right[0]

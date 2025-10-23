@@ -3,6 +3,7 @@ from collections.abc import Callable
 from decimal import Decimal
 
 from profile_generator.unit import Matrix, Vector
+from profile_generator.unit.precision import PRECISION
 
 
 def vector_length(vector: Vector) -> float:
@@ -41,7 +42,9 @@ def _inverse(matrix: list[list[Decimal]]) -> None:
 
 def _swap_row(matrix: list[list[Decimal]], row: int, pivot_idx: int) -> int:
     i = row
-    while pivot_idx < len(matrix[0]) and math.isclose(matrix[i][pivot_idx], 0):
+    while pivot_idx < len(matrix[0]) and math.isclose(
+        matrix[i][pivot_idx], 0, rel_tol=PRECISION
+    ):
         i += 1
         if i == len(matrix):
             i = row

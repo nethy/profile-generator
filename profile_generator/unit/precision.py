@@ -1,11 +1,13 @@
 import math
 
 DECIMALS = 7
-_PRECISION = 1e-7
+
+PRECISION = 1e-13
+PRECISION_DECIMALS = 13
 
 
-def equals(a: float, b: float) -> bool:
-    return math.isclose(a, b, abs_tol=_PRECISION)
+def equals(a: float, b: float, tolerance: float = PRECISION) -> bool:
+    return math.isclose(a, b, rel_tol=tolerance, abs_tol=tolerance)
 
 
 def round_float(value: float) -> float:

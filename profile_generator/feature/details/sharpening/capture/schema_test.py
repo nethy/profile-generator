@@ -5,8 +5,6 @@ from profile_generator.schema.range_schema import InvalidRangeError
 
 from .schema import SCHEMA
 
-_DEFAULT = {"PDSEnabled": "false", "PDSDeconvRadius": "0.0", "PDSContrast": "10"}
-
 
 class SchemaTest(unittest.TestCase):
     def setUp(self) -> None:
@@ -28,22 +26,4 @@ class SchemaTest(unittest.TestCase):
         self.validator.assert_error(
             {"threshold": False},
             InvalidObjectError({"threshold": InvalidRangeError(0, 200)}),
-        )
-
-    def test_process_default(self) -> None:
-        self.validator.assert_process({}, _DEFAULT)
-
-    def test_process_radius(self) -> None:
-        self.validator.assert_process(
-            {"radius": 0.7},
-            _DEFAULT | {"PDSEnabled": "true", "PDSDeconvRadius": "0.7"},
-        )
-        self.validator.assert_process(
-            {"radius": 0.39},
-            _DEFAULT | {"PDSEnabled": "false", "PDSDeconvRadius": "0.0"},
-        )
-
-    def test_process_threshold(self) -> None:
-        self.validator.assert_process(
-            {"threshold": 30}, _DEFAULT | {"PDSContrast": "30"}
         )

@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 from collections.abc import Iterator
 
-from .precision import DECIMALS, equals
+from .precision import PRECISION_DECIMALS, equals
 
 
 class Point:
@@ -19,9 +19,9 @@ class Point:
 
     @property
     def gradient(self) -> float:
-        if math.isclose(self.x, self.y):
+        if equals(self.x, self.y):
             return 1
-        elif math.isclose(self.x, 0):
+        elif equals(self.x, 0):
             return math.inf
         else:
             return self.y / self.x
@@ -30,7 +30,11 @@ class Point:
         return (self.x, self.y)
 
     def __repr__(self) -> str:
-        return f"Point(x={self.x:.{DECIMALS}f}, y={self.y:.{DECIMALS}f})"
+        return (
+            "Point("
+            + f"x={self.x:.{PRECISION_DECIMALS}f}, "
+            + f"y={self.y:.{PRECISION_DECIMALS}f})"
+        )
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, Point):

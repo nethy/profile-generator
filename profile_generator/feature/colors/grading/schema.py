@@ -20,14 +20,6 @@ _TONING_SCHEMA = object_of(
 )
 
 
-_MATTE_SCHEMA = object_of(
-    {
-        "black": range_of(0, 20),
-        "white": range_of(80, 100),
-    }
-)
-
-
 _LCH_ADJUSTMENT_SCHEMA = object_of(
     {
         "magenta": range_of(-10, 10),
@@ -55,7 +47,6 @@ _LCH_SCHEMA = object_of(
 SCHEMA = object_of(
     {
         "toning": _TONING_SCHEMA,
-        "matte": _MATTE_SCHEMA,
         "lch": _LCH_SCHEMA,
     }
 )

@@ -2,8 +2,7 @@ import math
 from functools import cache
 
 from profile_generator.model import gamma, sigmoid
-from profile_generator.model.color import constants, lab
-from profile_generator.model.color.profile import SRGB
+from profile_generator.model.color import constants, lab, rgb
 from profile_generator.unit import Curve, Point
 
 
@@ -38,11 +37,14 @@ def _interpolate(left: Curve, right: Curve, mid: float) -> Curve:
 
 
 def _as_rgb(linear_curve: Curve) -> Curve:
-    return lambda x: SRGB.gamma(linear_curve(SRGB.inverse_gamma(x)))
+    return lambda x: rgb.from_linear_value(linear_curve(rgb.to_linear_value(x)))
 
 
 def _as_lab(linear_curve: Curve) -> Curve:
-    return lambda x: lab.from_xyz_lum(linear_curve(lab.to_xyz_lum(x * 100))) / 100
+    return (
+        lambda x: lab.from_xyz_luminance(linear_curve(lab.to_xyz_luminance(x * 100)))
+        / 100
+    )
 
 
 def get_rgb_contrast(gradient: float) -> Curve:

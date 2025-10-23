@@ -1,10 +1,11 @@
-import math
 from typing import Optional
 
 from profile_generator.model import linalg
 from profile_generator.model.color.illuminant import D50_XYZ, D65_XYZ
+from profile_generator.model.color.profile import SRGB
 from profile_generator.model.color.profile.color_profile import ColorProfile
 from profile_generator.model.linalg import Matrix, Vector
+from profile_generator.unit import equals
 
 BRADFORD = [
     [0.8951, 0.2664, -0.1614],
@@ -18,27 +19,34 @@ BRADFORD_INVERSE = [
 ]
 
 
-def from_rgb(rgb: Vector, color_space: ColorProfile) -> Vector:
-    linear = [color_space.inverse_gamma(x) for x in rgb]
-    xyz = linalg.multiply_matrix_vector(color_space.xyz_matrix, linear)
-    if color_space.white_point != D50_XYZ:
-        adaptation_matrix = chromatic_adaptation(color_space.white_point, D50_XYZ)
+def from_linear_rgb(linear_rgb: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    xyz = linalg.multiply_matrix_vector(color_profile.xyz_matrix, linear_rgb)
+    if color_profile.white_point != D50_XYZ:
+        adaptation_matrix = chromatic_adaptation(color_profile.white_point, D50_XYZ)
         xyz = linalg.multiply_matrix_vector(adaptation_matrix, xyz)
     return xyz
 
 
-def to_rgb(xyz: Vector, color_space: ColorProfile) -> Vector:
+def from_rgb(rgb: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    linear = [color_profile.inverse_gamma(x) for x in rgb]
+    return from_linear_rgb(linear, color_profile)
+
+
+def to_linear_rgb(xyz: Vector, color_profile: ColorProfile = SRGB) -> Vector:
     xyz_d50 = xyz
-    if color_space.white_point != D50_XYZ:
-        adaptation_matrix = chromatic_adaptation(D50_XYZ, color_space.white_point)
+    if color_profile.white_point != D50_XYZ:
+        adaptation_matrix = chromatic_adaptation(D50_XYZ, color_profile.white_point)
         xyz_d50 = linalg.multiply_matrix_vector(adaptation_matrix, xyz)
-    linear = linalg.multiply_matrix_vector(color_space.xyz_inverse_matrix, xyz_d50)
-    return [color_space.gamma(x) for x in linear]
+    return linalg.multiply_matrix_vector(color_profile.xyz_inverse_matrix, xyz_d50)
+
+
+def to_rgb(xyz: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    return [color_profile.gamma(x) for x in to_linear_rgb(xyz, color_profile)]
 
 
 def from_xyy(xyy: Vector) -> Vector:
     x, y, big_y = xyy
-    if math.isclose(y, 0):
+    if equals(y, 0):
         return [0.0, 0.0, 0.0]
     return [x * big_y / y, big_y, (1 - x - y) * big_y / y]
 
@@ -47,7 +55,7 @@ def to_xyy(xyz: Vector, white_point: Optional[Vector] = None) -> Vector:
     white_point = white_point or D65_XYZ
     x, y, z = xyz
     summary = x + y + z
-    if math.isclose(summary, 0):
+    if equals(summary, 0):
         return white_point[:2] + [0.0]
     return [x / summary, y / summary, y]
 

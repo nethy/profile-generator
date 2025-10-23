@@ -1,18 +1,11 @@
 from unittest import TestCase
-from unittest.mock import Mock, patch
 
-from profile_generator.feature.tone.contrast.sigmoid.schema import schema
+from profile_generator.feature.tone.contrast.sigmoid import schema
 from profile_generator.schema import (
     InvalidObjectError,
     InvalidRangeError,
     SchemaValidator,
 )
-from profile_generator.unit import Point
-
-_CONTRAST_SIGMOID = (
-    "profile_generator.feature.tone.contrast.sigmoid.schema.schema.contrast_sigmoid"
-)
-_CONTRAST_SIGMOID_GET_TONE_CURVE = f"{_CONTRAST_SIGMOID}.get_tone_curve"
 
 
 class SchemaTest(TestCase):
@@ -41,15 +34,3 @@ class SchemaTest(TestCase):
             {"slope": False},
             InvalidObjectError({"slope": InvalidRangeError(1.0, 4.0)}),
         )
-
-    @patch(_CONTRAST_SIGMOID_GET_TONE_CURVE)
-    def test_process_default(self, get_tone_curve: Mock) -> None:
-        get_tone_curve.return_value = [Point(1, 1)]
-
-        self.validator.assert_process(
-            {},
-            {
-                "Curve": "4;1.0000000;1.0000000;",
-            },
-        )
-        get_tone_curve.assert_called_once_with(0.1, 1.6)

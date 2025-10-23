@@ -1,4 +1,4 @@
-from profile_generator.feature import camera, colors, raw
+from profile_generator.feature import colors, raw
 from profile_generator.feature.details import grain, noise_reduction
 from profile_generator.feature.details.sharpening import capture, output
 from profile_generator.feature.tone.contrast import local, sigmoid
@@ -23,7 +23,6 @@ _DETAILS_SCHEMA = object_of(
 
 CONFIGURATION_SCHEMA = object_of(
     {
-        "camera": camera.SCHEMA,
         "raw": raw.SCHEMA,
         "tone": _TONE_SCHEMA,
         "details": _DETAILS_SCHEMA,
@@ -40,5 +39,9 @@ _TEMPLATE_SCHAME = object_of(
 )
 
 SCHEMA = object_of(
-    {"defaults": CONFIGURATION_SCHEMA, "templates": list_of(_TEMPLATE_SCHAME)}
+    {
+        "partial_to": list_of(type_of(str)),
+        "defaults": CONFIGURATION_SCHEMA,
+        "templates": list_of(_TEMPLATE_SCHAME),
+    }
 )

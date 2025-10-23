@@ -1,7 +1,8 @@
 import bisect
-import math
 from collections.abc import Callable
 from typing import Iterator, Mapping
+
+from profile_generator.unit.precision import equals
 
 Function = Callable[[float], float]
 
@@ -32,7 +33,7 @@ def table_search(
 ) -> float:
     keys, values = list(table.keys()), list(table.values())
     i = bisect.bisect_left(values, target)
-    if math.isclose(values[i], target):
+    if equals(values[i], target):
         return values[i]
     return _alternating_search(
         keys[i - 1],
@@ -53,7 +54,7 @@ def jump_search(
     left, right = lower_bound, upper_bound
     mid = (left + right) / 2
     value = fn(mid)
-    if math.isclose(value, target):
+    if equals(value, target):
         return mid
 
     if value < target:
@@ -96,7 +97,7 @@ def _jump_forward_until(
     left, right = origo, origo + jump
     left_value, right_value = origo_value, fn(right)
     for _ in range(_JUMPS):
-        if right_value > target or math.isclose(right_value, target):
+        if right_value > target or equals(right_value, target):
             break
         jump *= 2
         left, right = right, origo + jump
@@ -116,7 +117,7 @@ def _jump_backward_until(
     left, right = origo - jump, origo
     left_value, right_value = fn(left), origo_value
     for _ in range(_JUMPS):
-        if left_value < target or math.isclose(left_value, target):
+        if left_value < target or equals(left_value, target):
             break
         jump *= 2
         left, right = origo - jump, left
@@ -157,7 +158,7 @@ def _alternating_search(  # pylint: disable=too-many-positional-arguments
         is_binary = not is_binary
         value = fn(guess)
 
-        if math.isclose(value, target):
+        if equals(value, target):
             break
 
         if value < target:

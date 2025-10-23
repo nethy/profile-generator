@@ -1,8 +1,10 @@
 import math
 
 from profile_generator.model import linalg
+from profile_generator.model.color.profile import SRGB
 from profile_generator.model.color.profile.color_profile import ColorProfile
 from profile_generator.model.linalg import Vector
+from profile_generator.unit import equals
 from profile_generator.util import validation
 
 
@@ -14,27 +16,35 @@ def normalize_value(value: float) -> float:
     return value / 255
 
 
-def to_linear_value(value: float, color_space: ColorProfile) -> float:
+def to_linear(rgb: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    return [to_linear_value(c, color_profile) for c in rgb]
+
+
+def from_linear(linear_rgb: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    return [from_linear_value(c, color_profile) for c in linear_rgb]
+
+
+def to_linear_value(value: float, color_profile: ColorProfile = SRGB) -> float:
     validation.is_in_closed_interval(value, 0.0, 1.0)
-    return color_space.inverse_gamma(value)
+    return color_profile.inverse_gamma(value)
 
 
-def from_linear_value(linear_value: float, color_space: ColorProfile) -> float:
+def from_linear_value(linear_value: float, color_profile: ColorProfile = SRGB) -> float:
     validation.is_in_closed_interval(linear_value, 0.0, 1.0)
-    return color_space.gamma(linear_value)
+    return color_profile.gamma(linear_value)
 
 
 def ev_comp(
     rgb: Vector,
-    color_space: ColorProfile,
     compensation: float,
+    color_profile: ColorProfile = SRGB,
 ) -> Vector:
-    if math.isclose(compensation, 0):
+    if equals(compensation, 0):
         return rgb
 
-    linear = (color_space.inverse_gamma(x) for x in rgb)
+    linear = (color_profile.inverse_gamma(x) for x in rgb)
     linear = (x * math.pow(2, compensation) for x in linear)
-    return [color_space.gamma(x) for x in linear]
+    return [color_profile.gamma(x) for x in linear]
 
 
 def to_hsv(rgb: Vector) -> Vector:
@@ -86,8 +96,35 @@ def from_hsv(hsv: Vector) -> Vector:
     return [x + modifier for x in intermediate]
 
 
-def luminance(rgb: Vector, color_space: ColorProfile) -> float:
-    linear_rgb = [color_space.inverse_gamma(c) for c in rgb]
-    return color_space.gamma(
-        linalg.multiply_vector_vector(color_space.xyz_matrix[1], linear_rgb)
-    )
+def luminance(rgb: Vector, color_profile: ColorProfile = SRGB) -> float:
+    linear_rgb = [color_profile.inverse_gamma(c) for c in rgb]
+    return color_profile.gamma(linear_luminance(linear_rgb, color_profile))
+
+
+def linear_luminance(linear_rgb: Vector, color_profile: ColorProfile = SRGB) -> float:
+    return linalg.multiply_vector_vector(color_profile.xyz_matrix[1], linear_rgb)
+
+
+def clip_linear(linear_rgb: Vector, color_profile: ColorProfile = SRGB) -> Vector:
+    r, g, b = linear_rgb
+    lum = linear_luminance(linear_rgb, color_profile)
+    if lum > 1.0:
+        return [1.0, 1.0, 1.0]
+    elif lum < 0:
+        return [0.0, 0.0, 0.0]
+
+    minimum, maximum = min(r, g, b), max(r, g, b)
+
+    min_k = max_k = 1.0
+    if minimum < 0.0:
+        min_k = lum / (lum - minimum)
+    if maximum > (1.0 + 1e-21):
+        max_k = (1.0 - lum) / (maximum - lum)
+
+    k = min(min_k, max_k)
+    if k < 1.0:
+        r = lum + k * (r - lum)
+        g = lum + k * (g - lum)
+        b = lum + k * (b - lum)
+
+    return [r, g, b]

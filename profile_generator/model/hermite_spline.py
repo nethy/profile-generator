@@ -1,6 +1,8 @@
 import math
 from collections.abc import Callable, Sequence
 
+from profile_generator.unit.precision import equals
+
 
 def interpolate(points: Sequence[tuple[float, float]]) -> Callable[[float], float]:
     secants = []
@@ -15,7 +17,7 @@ def interpolate(points: Sequence[tuple[float, float]]) -> Callable[[float], floa
     slopes.append(secants[-1])
 
     for i in range(0, len(points) - 1):
-        if math.isclose(secants[i], 0):
+        if equals(secants[i], 0):
             slopes[i] = slopes[i + 1] = 0
         else:
             alpha = slopes[i] / secants[i]

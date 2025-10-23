@@ -4,6 +4,9 @@ import profile_generator.feature.colors.profile_generator as colors
 import profile_generator.feature.details.profile_generator as details
 import profile_generator.feature.raw.profile_generator as raw
 import profile_generator.feature.tone.contrast.local.profile_generator as local_contrast
+from profile_generator.feature.tone.contrast.sigmoid import (
+    profile_generator as sigmoid_contrast,
+)
 from profile_generator.main import ProfileGenerator
 from profile_generator.main.profile_params import ProfileParams
 
@@ -24,4 +27,5 @@ GENERATOR = compose_generators(
     details.generate,
     raw.generate,
     local_contrast.generate,
+    sigmoid_contrast.generate,
 )
