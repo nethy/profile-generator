@@ -8,10 +8,10 @@ from .sharpening.capture.profile_generator import generate as capture_sharpening
 from .sharpening.output.profile_generator import generate as output_sharpening
 
 
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     return {
-        **grain(profile_params),
-        **noise_reduction(profile_params),
-        **capture_sharpening(profile_params),
-        **output_sharpening(profile_params),
+        **grain(profile_params, exclude_default),
+        **noise_reduction(profile_params, exclude_default),
+        **capture_sharpening(profile_params, exclude_default),
+        **output_sharpening(profile_params, exclude_default),
     }

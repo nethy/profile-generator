@@ -20,7 +20,7 @@ class ProfileGeneratorTest(TestCase):
         params = ProfileParams()
         params.parse({})
 
-        self.assertEqual(generate(params), _DEFAULT)
+        self.assertEqual(generate(params, False), _DEFAULT)
 
     def test_process_enabled(self) -> None:
         self._assert_process({"enabled": True}, SharpeningEnabled="true")
@@ -50,4 +50,4 @@ class ProfileGeneratorTest(TestCase):
         params = ProfileParams()
         params.details.sharpening.output.parse(data)
 
-        self.assertEqual(generate(params), _DEFAULT | expected_output)
+        self.assertEqual(generate(params, False), _DEFAULT | expected_output)

@@ -12,14 +12,14 @@ class ProfileGeneratorTest(TestCase):
         params = ProfileParams()
         params.parse({})
 
-        self.assertEqual(generate(params), _DEFAULT)
+        self.assertEqual(generate(params, False), _DEFAULT)
 
     def test_process_radius(self) -> None:
         params = ProfileParams()
         params.details.sharpening.capture.parse({"radius": 0.7})
 
         self.assertEqual(
-            generate(params),
+            generate(params, False),
             _DEFAULT | {"PDSEnabled": "true", "PDSDeconvRadius": "0.7"},
         )
 
@@ -27,7 +27,7 @@ class ProfileGeneratorTest(TestCase):
         params.details.sharpening.capture.parse({"radius": 0.39})
 
         self.assertEqual(
-            generate(params),
+            generate(params, False),
             _DEFAULT,
         )
 
@@ -36,6 +36,6 @@ class ProfileGeneratorTest(TestCase):
         params.details.sharpening.capture.parse({"threshold": 30})
 
         self.assertEqual(
-            generate(params),
+            generate(params, False),
             _DEFAULT | {"PDSContrast": "30"},
         )

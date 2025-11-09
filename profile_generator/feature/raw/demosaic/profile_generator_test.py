@@ -16,7 +16,7 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.raw.demosaic.parse({})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             DEFAULT,
         )
 
@@ -24,17 +24,19 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.raw.demosaic.parse({"algorithm": "rcd_vng4"})
         self.assertEqual(
-            generate(profile_params), {**DEFAULT, "BayerMethod": "rcdvng4"}
+            generate(profile_params, False), {**DEFAULT, "BayerMethod": "rcdvng4"}
         )
 
     def test_generate_auto_threshold(self) -> None:
         profile_params = ProfileParams()
         profile_params.raw.demosaic.parse({"auto_threshold": False})
         self.assertEqual(
-            generate(profile_params), {**DEFAULT, "BayerDDAutoContrast": "false"}
+            generate(profile_params, False), {**DEFAULT, "BayerDDAutoContrast": "false"}
         )
 
     def test_generate_threshold(self) -> None:
         profile_params = ProfileParams()
         profile_params.raw.demosaic.parse({"threshold": 50})
-        self.assertEqual(generate(profile_params), {**DEFAULT, "BayerDDContrast": "50"})
+        self.assertEqual(
+            generate(profile_params, False), {**DEFAULT, "BayerDDContrast": "50"}
+        )

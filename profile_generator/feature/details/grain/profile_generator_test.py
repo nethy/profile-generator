@@ -10,7 +10,7 @@ _DEFAULT = {"GrainEnabled": "false", "GrainStrength": "0"}
 class ProfileGeneratorTest(TestCase):
     def test_generate_default(self) -> None:
         self.assertEqual(
-            generate(ProfileParams()),
+            generate(ProfileParams(), False),
             _DEFAULT,
         )
 
@@ -18,6 +18,6 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.parse({"details": {"grain": {"strength": 40}}})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {"GrainEnabled": "true", "GrainStrength": "40"},
         )

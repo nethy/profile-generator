@@ -99,7 +99,7 @@ class SchemaTest(unittest.TestCase):
 
         result = {
             **CONFIGURATION_SCHEMA.process({}),
-            **GENERATOR(ProfileParams()),
+            **GENERATOR(ProfileParams(), False),
         }
 
         self.assertEqual(set(placeholders), set(result.keys()))

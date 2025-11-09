@@ -12,11 +12,13 @@ from profile_generator.main.profile_params import ProfileParams
 
 
 def compose_generators(*profile_generators: ProfileGenerator) -> ProfileGenerator:
-    def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+    def generate(
+        profile_params: ProfileParams, exclude_default: bool
+    ) -> Mapping[str, str]:
         return {
             k: v
             for generator in profile_generators
-            for k, v in generator(profile_params).items()
+            for k, v in generator(profile_params, exclude_default).items()
         }
 
     return generate

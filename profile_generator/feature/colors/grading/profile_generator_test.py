@@ -19,7 +19,7 @@ class ProfileGeneratorTest(TestCase):
         params = ProfileParams()
         params.parse({})
 
-        self.assertDictEqual(generate(params), DEFAULT)
+        self.assertDictEqual(generate(params, False), DEFAULT)
 
     def test_generate_toning(self) -> None:
         params = ProfileParams()
@@ -32,7 +32,7 @@ class ProfileGeneratorTest(TestCase):
         )
 
         self.assertDictEqual(
-            generate(params),
+            generate(params, False),
             DEFAULT
             | {
                 "RGBCurvesEnabled": "true",

@@ -25,7 +25,11 @@ class Field:
     TINT: Final = "tint"
 
 
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
+    white_balance = profile_params.colors.white_balance
+    if exclude_default and not white_balance.is_set:
+        return {}
+
     temperature = profile_params.colors.white_balance.temperature.value
     tint = profile_params.colors.white_balance.tint.value
     result = {}

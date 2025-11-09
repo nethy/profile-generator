@@ -17,7 +17,7 @@ class ProfileGeneratorTest(TestCase):
         get_tone_curve.return_value = [Point(1, 1)]
 
         self.assertEqual(
-            generate(ProfileParams()),
+            generate(ProfileParams(), False),
             {
                 "Curve": "4;1.0000000;1.0000000;",
             },

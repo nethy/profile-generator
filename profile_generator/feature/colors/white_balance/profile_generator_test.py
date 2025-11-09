@@ -16,7 +16,7 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.colors.white_balance.parse({"temperature": 5500})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {**DEFAULT, "WBSetting": "Custom", "WBTemperature": "5500"},
         )
 
@@ -24,6 +24,6 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.colors.white_balance.parse({"tint": 0.880})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {**DEFAULT, "WBSetting": "Custom", "WBGreen": "0.88"},
         )

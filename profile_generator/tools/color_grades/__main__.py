@@ -34,7 +34,7 @@ def main() -> None:
         profile_params = ProfileParams()
         profile_params.colors.grading.parse(config)
 
-        template_values = profile_generator.generate(profile_params)
+        template_values = profile_generator.generate(profile_params, False)
 
         template = TEMPLATE.format(**template_values)
 

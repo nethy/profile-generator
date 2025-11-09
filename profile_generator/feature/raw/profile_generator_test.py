@@ -17,13 +17,13 @@ class ProfileGeneratorTest(TestCase):
     def test_generate_defaults(self) -> None:
         profile_params = ProfileParams()
         profile_params.raw.parse({})
-        self.assertEqual(generate(profile_params), DEFAULT)
+        self.assertEqual(generate(profile_params, False), DEFAULT)
 
     def test_generate_black_points(self) -> None:
         profile_params = ProfileParams()
         profile_params.raw.parse({"black_points": [-1, 1, 2]})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {
                 **DEFAULT,
                 "BayerPreBlackRed": "-1",

@@ -23,11 +23,11 @@ from .grading.profile_generator import generate as generate_grading
 from .white_balance.profile_generator import generate as generate_white_balance
 
 
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     return {
-        **_get_vibrance(profile_params),
-        **generate_grading(profile_params),
-        **generate_white_balance(profile_params),
+        **_get_vibrance(profile_params, exclude_default),
+        **generate_grading(profile_params, exclude_default),
+        **generate_white_balance(profile_params, exclude_default),
     }
 
 
@@ -35,8 +35,14 @@ _MAX_VIBRANCE: Final = 10
 _WEIGHT_TRESHOLD = 0.5
 
 
-def _get_vibrance(profile_params: ProfileParams) -> Mapping[str, str]:
-    gain = profile_params.colors.vibrance.value
+def _get_vibrance(
+    profile_params: ProfileParams, exclude_default: bool
+) -> Mapping[str, str]:
+    vibrance_params = profile_params.colors.vibrance
+    if exclude_default and not vibrance_params.is_set:
+        return {}
+
+    gain = vibrance_params.value
     vibrance = 1.0 + gain / _MAX_VIBRANCE
     is_vibrance_enabled = vibrance > 1.0
     cc_curve = _get_cc_curve(vibrance)

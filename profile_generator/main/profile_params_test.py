@@ -37,10 +37,10 @@ class DummyParams(ProfileParamParser):
 
 class ProfileParamsTest(TestCase):
     def setUp(self) -> None:
-        self.dummy_params = DummyParams()
+        self._reset_mocks()
 
     def test_parse_default(self) -> None:
-        self.dummy_params.parse({})
+        self.params.parse({})
         self._assert_params(2, DummyEnum.APPLE, [1, 2], 1)
 
     def test_parse(self) -> None:
@@ -50,8 +50,45 @@ class ProfileParamsTest(TestCase):
             "tuple_param": [3, 4],
             "nested_param": {"param": 4},
         }
-        self.dummy_params.parse(data)
+        self.params.parse(data)
         self._assert_params(3, DummyEnum.BANANA, [3, 4], 4)
+
+    def test_is_set_false(self) -> None:
+        self.assertFalse(self.params.is_set)
+
+        self.params.parse({})
+        self.assertFalse(self.params.is_set)
+
+    def test_is_set_true(self) -> None:
+        self.params.parse({"int_param": 3})
+        self.assertTrue(self.params.is_set)
+
+        self._reset_mocks()
+        self.params.parse(
+            {
+                "enum_param": "BANANA",
+            }
+        )
+        self.assertTrue(self.params.is_set)
+
+        self._reset_mocks()
+        self.params.parse(
+            {
+                "tuple_param": [3, 4],
+            }
+        )
+        self.assertTrue(self.params.is_set)
+
+        self._reset_mocks()
+        self.params.parse(
+            {
+                "nested_param": {"param": 4},
+            }
+        )
+        self.assertTrue(self.params.is_set)
+
+    def _reset_mocks(self) -> None:
+        self.params = DummyParams()
 
     def _assert_params(
         self,
@@ -60,7 +97,7 @@ class ProfileParamsTest(TestCase):
         tuple_param: list[int],
         nested_param: int,
     ) -> None:
-        self.assertEqual(self.dummy_params.int_param.value, int_param)
-        self.assertEqual(self.dummy_params.enum_param.value, enum_param)
-        self.assertEqual(self.dummy_params.tuple_param.as_list(), tuple_param)
-        self.assertEqual(self.dummy_params.nested_param.param.value, nested_param)
+        self.assertEqual(self.params.int_param.value, int_param)
+        self.assertEqual(self.params.enum_param.value, enum_param)
+        self.assertEqual(self.params.tuple_param.as_list(), tuple_param)
+        self.assertEqual(self.params.nested_param.param.value, nested_param)

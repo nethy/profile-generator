@@ -8,7 +8,7 @@ from .profile_generator import generate
 class ProfileGeneratorTest(TestCase):
     def test_generate_defaults(self) -> None:
         self.assertEqual(
-            generate(ProfileParams()),
+            generate(ProfileParams(), False),
             {
                 "WaveletEnabled": "true",
                 "WaveletContrast1": "14",
@@ -20,7 +20,7 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.parse({"tone": {"curve": {"sigmoid": {"slope": 1.4}}}})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {
                 "WaveletEnabled": "true",
                 "WaveletContrast1": "10",

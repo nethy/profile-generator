@@ -17,7 +17,7 @@ class LchTest(TestCase):
         params = ProfileParams()
         params.parse({})
 
-        self.assertDictEqual(generate(params), DEFAULT)
+        self.assertDictEqual(generate(params, False), DEFAULT)
 
     def test_generate_hue(self) -> None:
         params = ProfileParams()
@@ -37,7 +37,7 @@ class LchTest(TestCase):
         )
 
         self.assertDictEqual(
-            generate(params),
+            generate(params, False),
             DEFAULT
             | {
                 "HSVEnabled": "true",

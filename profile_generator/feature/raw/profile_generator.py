@@ -12,14 +12,18 @@ class Template:
     BLUE: Final = "BayerPreBlackBlue"
 
 
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     return {
-        **_get_raw(profile_params),
-        **generate_demosaic(profile_params),
+        **_get_raw(profile_params, exclude_default),
+        **generate_demosaic(profile_params, exclude_default),
     }
 
 
-def _get_raw(profile_params: ProfileParams) -> Mapping[str, str]:
+def _get_raw(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
+    black_points = profile_params.raw.black_points
+    if exclude_default and not black_points.is_set:
+        return {}
+
     return {
         name: str(value)
         for name, value in zip(

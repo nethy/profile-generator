@@ -4,8 +4,11 @@ from typing import cast
 from profile_generator.main.profile_params import NoiseReductionMode, ProfileParams
 
 
-def generate(profile_params: ProfileParams) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     noise_reduction = profile_params.details.noise_reduction
+    if exclude_default and not noise_reduction.is_set:
+        return {}
+
     mode = cast(NoiseReductionMode, noise_reduction.mode.value)
     luminance = noise_reduction.luminance.value
     detail = noise_reduction.detail.value

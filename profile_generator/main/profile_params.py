@@ -7,10 +7,17 @@ class ProfileParamParser(ABC):
     def parse(self, data: Any) -> None:
         if data is None:
             return
-
         for name, value in self.__dict__.items():
             parser = cast(ProfileParamParser, value)
             parser.parse(data.get(name))
+
+    @property
+    def is_set(self) -> bool:
+        for value in self.__dict__.values():
+            if cast(ProfileParamParser, value).is_set:
+                return True
+
+        return False
 
 
 E = TypeVar("E", bound=Enum)
@@ -21,9 +28,11 @@ class ProfileParamEnum(Enum):
     def parse(cls: type[E], data: Any) -> E | None:
         if data is None:
             return None
+
         for member in cls:
             if member.name.casefold() == data.casefold():
                 return member
+
         return None
 
 
@@ -34,6 +43,7 @@ class ProfileParamTuple(Generic[T], ProfileParamParser):
     def parse(self, data: Any) -> None:
         if data is None:
             return
+
         for i, value in enumerate(self.__dict__.values()):
             parser = cast(ProfileParamParser, value)
             parser.parse(data[i])

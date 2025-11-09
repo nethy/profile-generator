@@ -1,14 +1,57 @@
 import bisect
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from operator import itemgetter
 from typing import TypeAlias
 
-from profile_generator.main.profile_params import ColorToning, ColorToningChannel
+from profile_generator.main.profile_params import (
+    ColorToning,
+    ColorToningChannel,
+    ProfileParams,
+)
 from profile_generator.model import interpolation, linalg
 from profile_generator.model.color import lab, rgb, xyz
-from profile_generator.unit import Vector
+from profile_generator.model.view import raw_therapee
+from profile_generator.unit import Vector, curve
 
 ColorTone: TypeAlias = tuple[float, Vector]
+
+
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
+    toning_params = profile_params.colors.grading.toning
+    if exclude_default and not toning_params.is_set:
+        return {}
+
+    is_enabled = any(
+        map(
+            lambda param: param.as_list() != [0, 0, 0],
+            (
+                toning_params.black,
+                toning_params.shadow,
+                toning_params.midtone,
+                toning_params.highlight,
+                toning_params.white,
+            ),
+        )
+    )
+
+    if is_enabled:
+        toning_curve = get_rgb_toning(toning_params)
+        reds, greens, blues = curve.as_points_multiple(toning_curve)
+    else:
+        reds = greens = blues = []
+
+    return {
+        "RGBCurvesEnabled": str(is_enabled).lower(),
+        "RGBCurvesRCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, reds
+        ),
+        "RGBCurvesGCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, greens
+        ),
+        "RGBCurvesBCurve": raw_therapee.present_curve(
+            raw_therapee.CurveType.FLEXIBLE, blues
+        ),
+    }
 
 
 def get_rgb_toning(

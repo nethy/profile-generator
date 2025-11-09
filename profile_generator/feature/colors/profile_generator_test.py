@@ -19,14 +19,14 @@ _DEFAULT = {
 
 class ProfileGeneratorTest(TestCase):
     def test_generate_defaults(self) -> None:
-        self.assertEqual(generate(ProfileParams()), _DEFAULT)
+        self.assertEqual(generate(ProfileParams(), False), _DEFAULT)
 
     def test_generate_vibrance(self) -> None:
         profile_params = ProfileParams()
         profile_params.parse({"colors": {"vibrance": 5}})
 
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             _DEFAULT
             | {
                 "LCEnabled": "true",

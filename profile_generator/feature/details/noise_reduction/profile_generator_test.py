@@ -17,7 +17,7 @@ _DEFAULT = {
 class ProfileGeneratorTest(TestCase):
     def test_generate_default(self) -> None:
         self.assertEqual(
-            generate(ProfileParams()),
+            generate(ProfileParams(), False),
             _DEFAULT,
         )
 
@@ -27,7 +27,7 @@ class ProfileGeneratorTest(TestCase):
             {"details": {"noise_reduction": {"luminance": 40, "detail": 50}}}
         )
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             _DEFAULT
             | {
                 "DenoiseEnabled": "true",
@@ -40,7 +40,7 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.parse({"details": {"noise_reduction": {"chrominance": 40}}})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             _DEFAULT
             | {
                 "DenoiseEnabled": "true",
@@ -52,7 +52,7 @@ class ProfileGeneratorTest(TestCase):
         profile_params = ProfileParams()
         profile_params.parse({"details": {"noise_reduction": {"mode": "conservative"}}})
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {**_DEFAULT, "DenoiseSMethod": "shal"},
         )
 
@@ -61,7 +61,7 @@ class ProfileGeneratorTest(TestCase):
             {"details": {"noise_reduction": {"mode": "aggressive", "luminance": 20}}}
         )
         self.assertEqual(
-            generate(profile_params),
+            generate(profile_params, False),
             {
                 **_DEFAULT,
                 "DenoiseSMethod": "shalbi",
