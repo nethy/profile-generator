@@ -9,9 +9,9 @@ _DEFAULT = {
     "SharpeningEnabled": "false",
     "SharpeningContrast": "20",
     "DeconvRadius": "0.75",
-    "DeconvAmount": "100",
-    "DeconvDamping": "0",
-    "DeconvIterations": "30",
+    "DeconvAmount": "0",
+    "DeconvDamping": "5",
+    "DeconvIterations": "10",
 }
 
 
@@ -21,10 +21,6 @@ class ProfileGeneratorTest(TestCase):
         params.parse({})
 
         self.assertEqual(generate(params, False), _DEFAULT)
-
-    def test_process_enabled(self) -> None:
-        self._assert_process({"enabled": True}, SharpeningEnabled="true")
-        self._assert_process({"enabled": False}, SharpeningEnabled="false")
 
     def test_process_threshold(self) -> None:
         self._assert_process({"threshold": 0}, SharpeningContrast="0")
@@ -36,7 +32,9 @@ class ProfileGeneratorTest(TestCase):
 
     def test_process_amount(self) -> None:
         self._assert_process({"amount": 0}, DeconvAmount="0")
-        self._assert_process({"amount": 100}, DeconvAmount="100")
+        self._assert_process(
+            {"amount": 100}, SharpeningEnabled="true", DeconvAmount="100"
+        )
 
     def test_process_damping(self) -> None:
         self._assert_process({"damping": 0}, DeconvDamping="0")

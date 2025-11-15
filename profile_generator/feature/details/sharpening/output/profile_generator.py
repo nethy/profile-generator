@@ -8,15 +8,16 @@ def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[st
     if exclude_default and not output_sharpening.is_set:
         return {}
 
-    enabled = output_sharpening.enabled.value
     threshold = output_sharpening.threshold.value
     radius = output_sharpening.radius.value
     amount = output_sharpening.amount.value
     damping = output_sharpening.damping.value
     iterations = output_sharpening.iterations.value
 
+    is_enabled = amount > 0
+
     return {
-        "SharpeningEnabled": str(enabled).lower(),
+        "SharpeningEnabled": str(is_enabled).lower(),
         "SharpeningContrast": str(threshold),
         "DeconvRadius": f"{radius:.2f}",
         "DeconvAmount": str(amount),

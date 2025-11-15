@@ -40,7 +40,7 @@ _TEMPLATE_SCHAME = object_of(
 
 SCHEMA = object_of(
     {
-        "partial_to": list_of(type_of(str)),
+        "partial": type_of(bool),
         "defaults": CONFIGURATION_SCHEMA,
         "templates": list_of(_TEMPLATE_SCHAME),
     }

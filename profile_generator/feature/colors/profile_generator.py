@@ -20,14 +20,12 @@ from profile_generator.model.view import raw_therapee
 from profile_generator.unit import Curve, curve
 
 from .grading.profile_generator import generate as generate_grading
-from .white_balance.profile_generator import generate as generate_white_balance
 
 
 def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     return {
         **_get_vibrance(profile_params, exclude_default),
         **generate_grading(profile_params, exclude_default),
-        **generate_white_balance(profile_params, exclude_default),
     }
 
 
@@ -54,15 +52,9 @@ def _get_vibrance(
         else raw_therapee.CurveType.LINEAR
     )
 
-    power = 1 + profile_params.colors.color_chrome.value / 10
-    saturation = (1 / power - 1) * 100
-    is_color_chrome_enabled = power > 1
     return {
         "LCEnabled": str(is_vibrance_enabled).lower(),
         "CCCurve": cc_points,
-        "CTEnabled": str(is_color_chrome_enabled).lower(),
-        "CTPower": str(power),
-        "CTSaturation": str(round(saturation)),
     }
 
 

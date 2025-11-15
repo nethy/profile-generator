@@ -3,7 +3,6 @@ import unittest
 from profile_generator.schema import (
     InvalidObjectError,
     InvalidRangeError,
-    InvalidTypeError,
     SchemaValidator,
 )
 
@@ -20,19 +19,12 @@ class SchemaTest(unittest.TestCase):
     def test_validate_valid_config(self) -> None:
         self.validator.assert_valid(
             {
-                "enabled": True,
                 "threshold": 50,
                 "radius": 0.5,
                 "amount": 50,
                 "damping": 0,
                 "iterations": 5,
             }
-        )
-
-    def test_validate_invalid_enabled(self) -> None:
-        self.validator.assert_error(
-            {"enabled": "false"},
-            InvalidObjectError({"enabled": InvalidTypeError(bool)}),
         )
 
     def test_validate_invalid_threshold(self) -> None:

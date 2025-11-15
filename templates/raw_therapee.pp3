@@ -2,6 +2,10 @@
 AppVersion=5.11
 Version=351
 
+[General]
+ColorLabel=0
+InTrash=false
+
 [Exposure]
 Auto=false
 Clip=0.02
@@ -66,7 +70,7 @@ Enabled=false
 Radius=80
 Amount=0.20000000000000001
 Darkness=1
-Lightness=0.5
+Lightness=1
 
 [Channel Mixer]
 Enabled=false
@@ -160,9 +164,9 @@ Uniformity=5
 
 [White Balance]
 Enabled=true
-Setting={WBSetting}
-Temperature={WBTemperature}
-Green={WBGreen}
+Setting=Camera
+Temperature=6504
+Green=1
 Equal=1
 TemperatureBias=0
 StandardObserver=TWO_DEGREES
@@ -255,7 +259,7 @@ MethodMed=none
 Redchro=0
 Bluechro=0
 AutoGain=false
-Gamma=1.4
+Gamma=1.7
 Passes=1
 LCurve=0;
 CCCurve=0;
@@ -277,9 +281,9 @@ Anchor=50
 [Shadows & Highlights]
 Enabled=false
 Highlights=0
-HighlightTonalWidth=75
+HighlightTonalWidth=70
 Shadows=0
-ShadowTonalWidth=25
+ShadowTonalWidth=30
 Radius=40
 Lab=false
 
@@ -769,7 +773,7 @@ gCurve={RGBCurvesGCurve}
 bCurve={RGBCurvesBCurve}
 
 [ColorToning]
-Enabled={CTEnabled}
+Enabled=false
 Method=LabRegions
 Lumamode=true
 Twocolor=Std
@@ -801,13 +805,13 @@ LabGridAHigh=0
 LabGridBHigh=0
 LabRegionA_1=0
 LabRegionB_1=0
-LabRegionSaturation_1={CTSaturation}
+LabRegionSaturation_1=0
 LabRegionSlope_1=1
 LabRegionOffset_1=0
-LabRegionPower_1={CTPower}
-LabRegionHueMask_1=1;0.1944444;1;0;0;0.25;0.5;0;0;0.3055555;0.5;0;0;0.3611111;1;0;0;
-LabRegionChromaticityMask_1=1;0.3;0;0;0;1;1;0;0;
-LabRegionLightnessMask_1=1;0;1;0;0;1;0;0;0;
+LabRegionPower_1=1
+LabRegionHueMask_1=1;0.16666666699999999;1;0.34999999999999998;0.34999999999999998;0.82877752459999998;1;0.34999999999999998;0.34999999999999998;
+LabRegionChromaticityMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
+LabRegionLightnessMask_1=1;0;1;0.34999999999999998;0.34999999999999998;1;1;0.34999999999999998;0.34999999999999998;
 LabRegionMaskBlur_1=0
 LabRegionChannel_1=-1
 LabRegionsShowMask=-1

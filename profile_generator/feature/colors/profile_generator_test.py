@@ -4,15 +4,10 @@ from profile_generator.main.profile_params import ProfileParams
 
 from .grading import profile_generator_test as grading_test
 from .profile_generator import generate
-from .white_balance import profile_generator_test as wb_test
 
 _DEFAULT = {
     "LCEnabled": "false",
     "CCCurve": "0;",
-    "CTEnabled": "false",
-    "CTPower": "1.0",
-    "CTSaturation": "0",
-    **wb_test.DEFAULT,
     **grading_test.DEFAULT,
 }
 

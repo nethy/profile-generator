@@ -127,18 +127,10 @@ class Grading(ProfileParamParser):
         self.hsv: Final = Hsv()
 
 
-class WhiteBalance(ProfileParamParser):
-    def __init__(self) -> None:
-        self.temperature: Final = Value[int](6504)
-        self.tint: Final = Value[float](1)
-
-
 class Colors(ProfileParamParser):
     def __init__(self) -> None:
         self.vibrance: Final = Value[float](0)
-        self.color_chrome: Final = Value[float](0)
         self.grading: Grading = Grading()
-        self.white_balance: Final = WhiteBalance()
 
 
 class Grain(ProfileParamParser):
@@ -168,12 +160,11 @@ class CaptureSharpening(ProfileParamParser):
 
 class OutputSharpening(ProfileParamParser):
     def __init__(self) -> None:
-        self.enabled: Final = Value[bool](False)
         self.radius: Final = Value[float](0.75)
         self.threshold: Final = Value[int](20)
-        self.amount: Final = Value[int](100)
-        self.damping: Final = Value[int](0)
-        self.iterations: Final = Value[int](30)
+        self.amount: Final = Value[int](0)
+        self.damping: Final = Value[int](5)
+        self.iterations: Final = Value[int](10)
 
 
 class Sharpening(ProfileParamParser):

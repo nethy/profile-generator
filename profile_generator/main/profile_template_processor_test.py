@@ -25,10 +25,10 @@ class ProfileTemplateProcessorTest(TestCase):
 
     def test_extract_partial(self) -> None:
         self.assertEqual(
-            extract_partial(_TEMPLATE, {"a"}),
+            extract_partial(_TEMPLATE, {"p1"}),
             os.linesep.join(("[a]", "a2={p1}", "", "")),
         )
         self.assertEqual(
-            extract_partial(_TEMPLATE, {"b", "c"}),
-            os.linesep.join(("[c]", "c1={p2}", "", "")),
+            extract_partial(_TEMPLATE, {"p2", "p1"}),
+            os.linesep.join(("[a]", "a2={p1}", "", "[C]", "c1={p2}", "", "")),
         )
