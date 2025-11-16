@@ -36,15 +36,15 @@ def main() -> None:
         sys.exit(1)
 
 
-def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> None:
+def process_config_file(cfg_path: str, template: str, output_dir: str) -> None:
     logger = logging.getLogger(__name__)
     console_logger = log.get_console_logger()
     try:
-        cfg_template = generator.load_configuration_file(
-            cfg_file_name, integration.SCHEMA
-        )
+        cfg_name = os.path.splitext(os.path.basename(cfg_path))[0]
+        cfg_template = generator.load_configuration_file(cfg_path, integration.SCHEMA)
         is_partial = cfg_template.get("partial", False)
         cfg = configuration.create_from_template(cfg_template)
+        is_single = len(cfg) == 1
         for name, body in cfg.items():
             content = generator.create_profile_content(
                 template,
@@ -53,13 +53,16 @@ def process_config_file(cfg_file_name: str, template: str, output_dir: str) -> N
                 integration.GENERATOR,
                 is_partial,
             )
-            cfg_name = os.path.splitext(os.path.basename(cfg_file_name))[0]
-            cfg_output_dir = os.path.join(output_dir, cfg_name)
+            if is_single:
+                name = cfg_name
+                cfg_output_dir = output_dir
+            else:
+                cfg_output_dir = os.path.join(output_dir, cfg_name)
             _persist_profile(name, content, cfg_output_dir)
     except ConfigFileReadError:
-        console_logger.error("%s: file read failure", cfg_file_name)
+        console_logger.error("%s: file read failure", cfg_path)
     except InvalidConfigFileError as exc:
-        console_logger.error("%s: invalid configuration", cfg_file_name)
+        console_logger.error("%s: invalid configuration", cfg_path)
         logger.error(exc.errors)
 
 
