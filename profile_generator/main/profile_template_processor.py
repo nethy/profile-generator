@@ -1,4 +1,3 @@
-import os
 from collections.abc import Set
 
 
@@ -47,8 +46,10 @@ def _find_param_index(line: str, params: list[str]) -> int | None:
 def _to_str(parameters_by_section: dict[str, list[str]]) -> str:
     result = ""
     for section, parameters in parameters_by_section.items():
-        result += "[" + section + "]" + os.linesep
+        result += "[" + section + "]" + "\n"
         for parameter in parameters:
-            result += parameter + os.linesep
-        result += os.linesep
+            result += parameter + "\n"
+        result += "\n"
+    if len(parameters_by_section) > 0:
+        result = result[:-1]
     return result

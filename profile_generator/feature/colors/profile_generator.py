@@ -42,18 +42,16 @@ def _get_vibrance(
 
     gain = vibrance_params.value
     vibrance = 1.0 + gain / _MAX_VIBRANCE
-    is_vibrance_enabled = vibrance > 1.0
     cc_curve = _get_cc_curve(vibrance)
     cc_points = (
         raw_therapee.present_curve(
             raw_therapee.CurveType.FLEXIBLE, curve.as_points(cc_curve)
         )
-        if is_vibrance_enabled
-        else raw_therapee.CurveType.LINEAR
+        if vibrance > 1.0
+        else raw_therapee.present_linear_curve()
     )
 
     return {
-        "LCEnabled": str(is_vibrance_enabled).lower(),
         "CCCurve": cc_points,
     }
 

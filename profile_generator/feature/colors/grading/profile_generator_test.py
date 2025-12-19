@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from profile_generator.feature.colors.grading import hsv_test
+from profile_generator.feature.colors.grading import hsv_test, matte_test
 from profile_generator.main.profile_params import ProfileParams
 
 from .profile_generator import generate
@@ -11,6 +11,7 @@ DEFAULT = {
     "RGBCurvesGCurve": "0;",
     "RGBCurvesBCurve": "0;",
     **hsv_test.DEFAULT,
+    **matte_test.DEFAULT,
 }
 
 

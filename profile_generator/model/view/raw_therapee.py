@@ -58,6 +58,10 @@ def present_curve(curve_type: str, points: Sequence[Point]) -> str:
     return curve_type + "".join((_present_point(p) for p in points))
 
 
+def present_linear_curve() -> str:
+    return CurveType.LINEAR
+
+
 def _present_point(point: Point) -> str:
     return f"{point.x:.{DECIMALS}f};{point.y:.{DECIMALS}f};"
 

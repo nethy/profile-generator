@@ -2,18 +2,21 @@ from abc import ABC
 from enum import Enum, unique
 from typing import Any, Final, Generic, TypeVar, cast
 
+from profile_generator.model.color import constants
+from profile_generator.util.util import get_fields
+
 
 class ProfileParamParser(ABC):
     def parse(self, data: Any) -> None:
         if data is None:
             return
-        for name, value in self.__dict__.items():
+        for name, value in get_fields(self).items():
             parser = cast(ProfileParamParser, value)
             parser.parse(data.get(name))
 
     @property
     def is_set(self) -> bool:
-        for value in self.__dict__.values():
+        for value in get_fields(self).values():
             if cast(ProfileParamParser, value).is_set:
                 return True
 
@@ -44,12 +47,12 @@ class ProfileParamTuple(Generic[T], ProfileParamParser):
         if data is None:
             return
 
-        for i, value in enumerate(self.__dict__.values()):
+        for i, value in enumerate(get_fields(self).values()):
             parser = cast(ProfileParamParser, value)
             parser.parse(data[i])
 
     def as_list(self) -> list[T]:
-        return [cast(Value, value).value for value in self.__dict__.values()]
+        return [cast(Value, value).value for value in get_fields(self).values()]
 
 
 V = TypeVar("V", str, int, float, bool, tuple, list, ProfileParamEnum)
@@ -125,6 +128,7 @@ class Grading(ProfileParamParser):
     def __init__(self) -> None:
         self.toning: Final = ColorToning()
         self.hsv: Final = Hsv()
+        self.matte: Final = Value[float](0)
 
 
 class Colors(ProfileParamParser):
@@ -205,8 +209,8 @@ class Raw(ProfileParamParser):
 
 class Sigmoid(ProfileParamParser):
     def __init__(self) -> None:
-        self.linear_grey18: Final = Value[float](0.1)
-        self.slope: Final = Value[float](1.6)
+        self.linear_grey18: Final = Value[float](constants.GREY18_LINEAR)
+        self.slope: Final = Value[float](1.0)
 
 
 class Curve(ProfileParamParser):

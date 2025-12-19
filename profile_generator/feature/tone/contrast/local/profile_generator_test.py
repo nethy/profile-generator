@@ -10,9 +10,9 @@ class ProfileGeneratorTest(TestCase):
         self.assertEqual(
             generate(ProfileParams(), False),
             {
-                "WaveletEnabled": "true",
-                "WaveletContrast1": "14",
-                "WaveletContrast2": "14",
+                "WaveletEnabled": "false",
+                "WaveletContrast1": "0",
+                "WaveletContrast2": "0",
             },
         )
 

@@ -104,14 +104,14 @@ BeforeCurve=0;
 AfterCurve=0;
 
 [Luminance Curve]
-Enabled={LCEnabled}
+Enabled=true
 Brightness=0
 Contrast=0
 Chromaticity=0
 Gamutmunse=LAB
 RedAndSkinTonesProtection=0
 LCredsk=true
-LCurve=0;
+LCurve={LCurve}
 aCurve=0;
 bCurve=0;
 ccCurve={CCCurve}

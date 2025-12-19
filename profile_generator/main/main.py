@@ -58,7 +58,7 @@ def process_config_file(cfg_path: str, template: str, output_dir: str) -> None:
                 cfg_output_dir = output_dir
             else:
                 cfg_output_dir = os.path.join(output_dir, cfg_name)
-            _persist_profile(name, content, cfg_output_dir)
+            _persist_profile(cfg_name, name, content, cfg_output_dir)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_path)
     except InvalidConfigFileError as exc:
@@ -66,10 +66,16 @@ def process_config_file(cfg_path: str, template: str, output_dir: str) -> None:
         logger.error(exc.errors)
 
 
-def _persist_profile(name: str, content: str, output_dir: str) -> None:
+def _persist_profile(
+    filename: str, cfg_name: str, content: str, output_dir: str
+) -> None:
     logger = log.get_console_logger()
     try:
-        generator.persist_profile(name, content, output_dir)
-        logger.info("Profile has been created: %s", name)
+        generator.persist_profile(cfg_name, content, output_dir)
+        if logger.isEnabledFor(logging.INFO):
+            log_name = f"{filename} / {cfg_name}"
+            if filename == cfg_name:
+                log_name = cfg_name
+            logger.info("Profile has been created: %s", log_name)
     except ProfileWriteError as exc:
         logger.error("%s: file write failure", exc.filename)

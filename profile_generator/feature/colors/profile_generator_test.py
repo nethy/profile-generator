@@ -6,7 +6,6 @@ from .grading import profile_generator_test as grading_test
 from .profile_generator import generate
 
 _DEFAULT = {
-    "LCEnabled": "false",
     "CCCurve": "0;",
     **grading_test.DEFAULT,
 }
@@ -24,7 +23,6 @@ class ProfileGeneratorTest(TestCase):
             generate(profile_params, False),
             _DEFAULT
             | {
-                "LCEnabled": "true",
                 "CCCurve": "4;0.0000000;0.0000000;0.0313725;0.0397615;"
                 + "0.0627451;0.0803531;0.0941176;0.1214170;0.1254902;0.1626383;"
                 + "0.1568627;0.2037420;0.1882353;0.2444901;0.2196078;0.2846790;"

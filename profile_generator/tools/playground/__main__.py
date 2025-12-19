@@ -12,15 +12,23 @@ from operator import itemgetter
 
 import matplotlib.pyplot as plt
 from PIL import Image
-
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _GREY18,
     _SLOPE,
 )
-from profile_generator.model import bezier, gamma, linalg, sigmoid, spline, tone_curve
+from profile_generator.model import (
+    bezier,
+    color_chart,
+    gamma,
+    linalg,
+    sigmoid,
+    spline,
+    tone_curve,
+)
 from profile_generator.model.color import constants, ergb, lab, rgb, xyz
 from profile_generator.model.color.profile import SRGB
+from profile_generator.model.color.profile.color_profile import ColorProfile
 from profile_generator.model.color.profile.prophoto import PROPHOTO
 from profile_generator.model.color_chart import ColorChartLab
 from profile_generator.model.view import raw_therapee
