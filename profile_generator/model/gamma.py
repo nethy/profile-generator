@@ -161,9 +161,36 @@ def inverse_log(coefficient: float) -> Curve:
     return lambda x: (math.pow(coefficient + 1, x) - 1) / coefficient
 
 
-def reciprocal(coefficient: float) -> Curve:
+def reciprocal(gradient: float) -> Curve:
     """
     f = (cx) / ((c-1)x+1)
     f'(0) = c
     """
-    return lambda x: (coefficient * x) / ((coefficient - 1.0) * x + 1.0)
+    return lambda x: (gradient * x) / ((gradient - 1.0) * x + 1.0)
+
+
+def exp(gradient: float) -> Curve:
+    """
+    f  = (1 / (1+e^{-ax}) - 0.5) / (1 / (1+e^{-a}) - 0.5)
+    f' = (2a(e^a+1)e^{ax})/((e^a-1)(e^{ax}+1)^2)
+    """
+    coefficient = exp_coefficient(gradient)
+    if equals(coefficient, 0):
+        return lambda x: x
+    return lambda x: (1 / (1 + math.exp(-coefficient * x)) - 0.5) / (
+        1 / (1 + math.exp(-coefficient)) - 0.5
+    )
+
+
+def exp_derivative(coefficient: float) -> Curve:
+    if equals(coefficient, 0):
+        return lambda _: 1
+    return lambda x: (
+        2 * coefficient * (math.exp(coefficient) + 1) * math.exp(coefficient * x)
+    ) / ((math.exp(coefficient) - 1) * math.pow(math.exp(coefficient * x) + 1, 2))
+
+
+def exp_coefficient(gradient: float) -> float:
+    if equals(gradient, 1):
+        return 0
+    return search.jump_search(1e-13, 20, lambda c: exp_derivative(c)(0), gradient)

@@ -44,15 +44,12 @@ def process_config_file(cfg_path: str, template: str, output_dir: str) -> None:
         cfg_template = generator.load_configuration_file(cfg_path, integration.SCHEMA)
         is_partial = cfg_template.get("partial", False)
         cfg = configuration.create_from_template(cfg_template)
+        create_profile_content = generator.get_create_profile_content(
+            template, integration.GENERATOR
+        )
         is_single = len(cfg) == 1
         for name, body in cfg.items():
-            content = generator.create_profile_content(
-                template,
-                body,
-                integration.CONFIGURATION_SCHEMA.process,
-                integration.GENERATOR,
-                is_partial,
-            )
+            content = create_profile_content(body, is_partial)
             if is_single:
                 name = cfg_name
                 cfg_output_dir = output_dir

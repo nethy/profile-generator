@@ -87,21 +87,30 @@ class ProfileWriteError(Exception):
 
 def create_profile_content(
     profile_template: str,
-    config: Mapping[str, Any],
-    marshaller: Callable[[Any], Mapping[str, str]],
+    profile_sections: Mapping[str, Sequence[str]],
     profile_generator: ProfileGenerator,
+    config: Mapping[str, Any],
     is_partial: bool,
 ) -> str:
-    template_args = marshaller(config)
     profile_params = ProfileParams()
     profile_params.parse(config)
-    template_args = {**template_args, **profile_generator(profile_params, is_partial)}
+    template_args = profile_generator(profile_params, is_partial)
     template = profile_template
     if is_partial:
-        template = profile_template_processor.extract_partial(
-            profile_template, template_args.keys()
+        template = profile_template_processor.get_partial_template(
+            profile_sections, template_args.keys()
         )
     return template.format(**template_args)
+
+
+def get_create_profile_content(
+    profile_template: str,
+    profile_generator: ProfileGenerator,
+) -> Callable[[Mapping[str, Any], bool], str]:
+    profile_sections = profile_template_processor.get_sections(profile_template)
+    return lambda config, is_partial: create_profile_content(
+        profile_template, profile_sections, profile_generator, config, is_partial
+    )
 
 
 def persist_profile(

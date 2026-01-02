@@ -12,6 +12,7 @@ from operator import itemgetter
 
 import matplotlib.pyplot as plt
 from PIL import Image
+
 from profile_generator.feature.tone.contrast.sigmoid import contrast_sigmoid
 from profile_generator.feature.tone.contrast.sigmoid.contrast_sigmoid_test import (
     _GREY18,

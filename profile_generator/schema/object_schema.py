@@ -51,17 +51,6 @@ class ObjectSchema(Schema):
             member_schema = self._object_schema.get(name, _ANY_SCHEMA)
             return member_schema.validate(value)
 
-    def process(self, data: Any) -> Mapping[str, str]:
-        if self._processor is not None:
-            return self._processor(data)
-        else:
-            result: dict[str, str] = {}
-            for member, schema in self._object_schema.items():
-                config = data.get(member, {})
-                partial_result = schema.process(config)
-                result.update(partial_result)
-            return result
-
 
 class AnySchema(Schema):
     def validate(self, data: Any) -> Optional[SchemaError]:

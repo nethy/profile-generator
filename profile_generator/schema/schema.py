@@ -12,11 +12,6 @@ class Schema(metaclass=ABCMeta):
     def validate(self, data: Any) -> Optional[SchemaError]:
         pass
 
-    def process(
-        self, data: Any  # pylint: disable=unused-argument
-    ) -> Mapping[str, str]:
-        return {}
-
 
 class SchemaField(NamedTuple):
     name: str

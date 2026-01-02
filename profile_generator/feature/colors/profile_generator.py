@@ -58,7 +58,7 @@ def _get_vibrance(
 
 @cache
 def _get_cc_curve(vibrance: float) -> Curve:
-    cc_base_curve = gamma.reciprocal(vibrance)
+    cc_base_curve = gamma.exp(vibrance)
 
     def weight(x: float) -> float:
         if x < _WEIGHT_TRESHOLD:

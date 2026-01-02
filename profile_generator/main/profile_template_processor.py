@@ -1,28 +1,19 @@
-from collections.abc import Set
+from collections.abc import Mapping, Sequence, Set
 
 
-def extract_partial(profile_template: str, parameters: Set[str]) -> str:
-    sections = _get_sections_by_parameters(profile_template, parameters)
-    return _to_str(sections)
-
-
-def _get_sections_by_parameters(
-    profile_template: str, params: Set[str]
-) -> dict[str, list[str]]:
+def get_sections(profile_template: str) -> Mapping[str, Sequence[str]]:
     parameters_by_section: dict[str, list[str]] = {}
     section_name = None
     section_params: list[str] = []
-    remaining_params = list(params)
     for line in profile_template.splitlines():
-        if len(line) > 0 and line[0] == "[":
+        if len(line) == 0:
+            continue
+        if line[-1] == "]":
             _add_section(parameters_by_section, section_name, section_params)
             section_name = line[1:-1]
             section_params = []
-        elif "{" in line:
-            idx = _find_param_index(line, remaining_params)
-            if idx is not None:
-                remaining_params.pop(idx)
-                section_params.append(line)
+        elif line[-1] == "}":
+            section_params.append(line)
     _add_section(parameters_by_section, section_name, section_params)
     return parameters_by_section
 
@@ -34,6 +25,40 @@ def _add_section(
 ) -> None:
     if section is not None and len(parameters) > 0:
         parameters_by_section[section] = parameters
+
+
+def get_partial_template(
+    sections: Mapping[str, Sequence[str]], parameters: Set[str]
+) -> str:
+    relevant_sections = _filter_sections_by_parameters(sections, parameters)
+    return _to_str(relevant_sections)
+
+
+def _filter_sections_by_parameters(
+    sections: Mapping[str, Sequence[str]], params: Set[str]
+) -> dict[str, list[str]]:
+    relevant_sections: dict[str, list[str]] = {}
+    remaining_params = list(params)
+    for section_name, section_params in sections.items():
+        for section_param in section_params:
+            _filter_section_by_parameters(
+                relevant_sections, remaining_params, section_name, section_param
+            )
+    return relevant_sections
+
+
+def _filter_section_by_parameters(
+    relevant_sections: dict[str, list[str]],
+    remaining_params: list[str],
+    section_name: str,
+    section_param: str,
+) -> None:
+    param_index = _find_param_index(section_param, remaining_params)
+    if param_index is not None:
+        if relevant_sections.get(section_name) is None:
+            relevant_sections[section_name] = []
+        relevant_sections[section_name].append(section_param)
+        remaining_params.pop(param_index)
 
 
 def _find_param_index(line: str, params: list[str]) -> int | None:
