@@ -71,11 +71,9 @@ t = 0.5
 """
 
 import math
-from collections.abc import Callable, Mapping
+from collections.abc import Callable
 
-from profile_generator.main.profile_params import ProfileParams
-from profile_generator.model.view import raw_therapee
-from profile_generator.unit import Curve, curve, equals
+from profile_generator.unit import Curve, equals
 from profile_generator.util import validation
 
 SQRT_8 = math.sqrt(8)
@@ -83,29 +81,12 @@ SQRT_8 = math.sqrt(8)
 OFFSET_MAXIMUM = 1 / (2 + math.sqrt(2))
 
 
-def generate(profile_params: ProfileParams, exclude_defult: bool) -> Mapping[str, str]:
-    matte_strength = profile_params.colors.grading.matte
-    if exclude_defult and not matte_strength.is_set:
-        return {}
-
-    normalized_strength = matte_strength.value / 10.0
+def get_matte_curve(strength: float) -> Curve | None:
+    normalized_strength = strength / 10.0
     offset = 0.0 * (1.0 - normalized_strength) + OFFSET_MAXIMUM * normalized_strength
-    matte_curve = get_matte_curve(offset)
-    return {
-        "LCurve": (
-            raw_therapee.present_curve(
-                raw_therapee.CurveType.FLEXIBLE, curve.as_points(matte_curve)
-            )
-            if normalized_strength > 0.0
-            else raw_therapee.present_linear_curve()
-        )
-    }
-
-
-def get_matte_curve(offset: float) -> Curve:
     validation.is_in_closed_interval(offset, 0.0, OFFSET_MAXIMUM)
     if equals(offset, 0.0):
-        return lambda x: x
+        return None
 
     shadow_threshold = (1 + math.sqrt(2) / 2) * offset
     highlight_threshold = 0.5  # [0.5, 1-offset)

@@ -1,6 +1,8 @@
 import logging
 import os
 import sys
+from collections.abc import Callable, Mapping
+from typing import Any
 
 from profile_generator import configuration, integration, log
 
@@ -47,20 +49,30 @@ def process_config_file(cfg_path: str, template: str, output_dir: str) -> None:
         create_profile_content = generator.get_create_profile_content(
             template, integration.GENERATOR
         )
-        is_single = len(cfg) == 1
-        for name, body in cfg.items():
-            content = create_profile_content(body, is_partial)
-            if is_single:
-                name = cfg_name
-                cfg_output_dir = output_dir
-            else:
-                cfg_output_dir = os.path.join(output_dir, cfg_name)
-            _persist_profile(cfg_name, name, content, cfg_output_dir)
+        _persist_profiles(cfg_name, cfg, create_profile_content, is_partial, output_dir)
     except ConfigFileReadError:
         console_logger.error("%s: file read failure", cfg_path)
     except InvalidConfigFileError as exc:
         console_logger.error("%s: invalid configuration", cfg_path)
         logger.error(exc.errors)
+
+
+def _persist_profiles(
+    cfg_name: str,
+    cfg: configuration.Configuration,
+    create_profile_content: Callable[[Mapping[str, Any], bool], str],
+    is_partial: bool,
+    output_dir: str,
+) -> None:
+    is_single = len(cfg) == 1
+    for name, body in cfg.items():
+        content = create_profile_content(body, is_partial)
+        if is_single:
+            name = cfg_name
+            cfg_output_dir = output_dir
+        else:
+            cfg_output_dir = os.path.join(output_dir, cfg_name)
+        _persist_profile(cfg_name, name, content, cfg_output_dir)
 
 
 def _persist_profile(

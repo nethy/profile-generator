@@ -127,7 +127,7 @@ class ProfileGeneratorTest(TestCase):
 
     def test_create_profile_content_should_create_profile_content(self) -> None:
         content = generator.create_profile_content(
-            "{a}, {b}", {"a": "1"}, lambda x: x, lambda a, b: {"b": "2"}, False
+            "{a}, {b}", {}, lambda a, b: {"a": "1", "b": "2"}, {}, False
         )
 
         self.assertEqual(content, "1, 2")

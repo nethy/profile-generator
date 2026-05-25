@@ -1,6 +1,4 @@
 import unittest
-from collections.abc import Mapping
-from typing import Any
 
 from .object_schema import (
     InvalidObjectError,
@@ -36,32 +34,3 @@ class ObjectSchemaTest(unittest.TestCase):
             {"b": False, "a": 0},
             InvalidObjectError({"b": UnkownMemberError(), "a": InvalidTypeError(bool)}),
         )
-
-    def test_process_object_with_processor(self) -> None:
-        schema = object_of({"a": type_of(bool)}, ObjectSchemaTest._to_string)
-        validator = SchemaValidator(self, schema)
-
-        validator.assert_process({"a": True}, {"a": "True", "default": "_"})
-
-    def test_process_object_without_processor(self) -> None:
-        schema = object_of(
-            {"a": object_of({"b": type_of(bool)}, ObjectSchemaTest._to_string)}
-        )
-        validator = SchemaValidator(self, schema)
-
-        validator.assert_process({"a": {"b": False}}, {"b": "False", "default": "_"})
-
-    def test_process_should_call_all_schemas(self) -> None:
-        schema = object_of(
-            {
-                "a": object_of({"1": type_of(bool)}, ObjectSchemaTest._to_string),
-                "b": object_of({"2": type_of(bool)}, ObjectSchemaTest._to_string),
-            }
-        )
-        validator = SchemaValidator(self, schema)
-
-        validator.assert_process({}, {"default": "_"})
-
-    @staticmethod
-    def _to_string(data: Any) -> Mapping[str, str]:
-        return {key: str(value) for key, value in data.items()} | {"default": "_"}

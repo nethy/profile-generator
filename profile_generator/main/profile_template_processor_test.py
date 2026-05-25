@@ -1,7 +1,4 @@
-from pprint import pprint
 from unittest import TestCase
-
-from profile_generator.main import generator
 
 from .profile_template_processor import get_partial_template, get_sections
 
@@ -23,17 +20,17 @@ _SECTIONS = {"a": ["a2={p1}"], "C": ["c1={p2}"]}
 
 class ProfileTemplateProcessorTest(TestCase):
     def test_get_partial_template_empty(self) -> None:
-        self.assertEqual(get_partial_template("", set()), "")
-        self.assertEqual(get_partial_template("", {"p2"}), "")
-        self.assertEqual(get_partial_template(_TEMPLATE, set()), "")
+        self.assertEqual(get_partial_template({}, set()), "")
+        self.assertEqual(get_partial_template({}, {"p2"}), "")
+        self.assertEqual(get_partial_template(_SECTIONS, set()), "")
 
     def test_get_partial_template(self) -> None:
         self.assertEqual(
-            get_partial_template(_TEMPLATE, {"p1"}),
+            get_partial_template(_SECTIONS, {"p1"}),
             "\n".join(("[a]", "a2={p1}", "")),
         )
         self.assertEqual(
-            get_partial_template(_TEMPLATE, {"p2", "p1"}),
+            get_partial_template(_SECTIONS, {"p2", "p1"}),
             "\n".join(("[a]", "a2={p1}", "", "[C]", "c1={p2}", "")),
         )
 

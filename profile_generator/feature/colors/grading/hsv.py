@@ -73,9 +73,9 @@ from profile_generator.unit.point import Point
 _SKIN_TONE_HUE_RANGE = (45, 85)
 
 
-def generate(profile_params: ProfileParams, exclude_defult: bool) -> Mapping[str, str]:
+def generate(profile_params: ProfileParams, exclude_default: bool) -> Mapping[str, str]:
     hsv = profile_params.colors.grading.hsv
-    if exclude_defult and not hsv.is_set:
+    if exclude_default and not hsv.is_set:
         return {}
 
     hue = get_adjustments(hsv.hue, _convert_to_hsv_hue)

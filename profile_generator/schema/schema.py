@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-from collections.abc import Mapping
 from typing import Any, NamedTuple, Optional
 
 
